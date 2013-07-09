@@ -2,7 +2,7 @@
 
 This project contains the OSIAM Connector for Java.
 
-For more information on OSIAM have a look into the [OSIAM server repository's README.md](https://github.com/osiam/server/README.md) or visit OSIAM's homepage: [https//osiam.org](https://osiam.org)
+For more information on OSIAM have a look into the [OSIAM server repository's README.md](https://github.com/osiam/server/README.md) or visit OSIAM's homepage at [www.osiam.org](https://www.osiam.org).
 
 #project structure
 
