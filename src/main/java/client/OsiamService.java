@@ -14,6 +14,7 @@ public class OsiamService {
     }
 
     public User getUserByUUID(UUID id, String accessToken) {
-        return userWebResource.path(id.toString()).get(User.class);
+        return userWebResource.path(id.toString()).
+                header("Authorization", "Bearer " + accessToken).get(User.class);
     }
 }
