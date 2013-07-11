@@ -11,24 +11,27 @@ import org.osiam.resources.scim.User;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OsiamServiceTest {
+public class OsiamUserServiceTest {
     final private static String uuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private UUID existingUserUUID;
     private String access_token;
 
     @Mock
-    private WebResource userService;
+    private WebResource userServiceMock;
 
-    OsiamService service;
+    @Mock
+    private WebResource.Builder webResourceBuilderMock;
+
+    OsiamUserService service;
 
     @Before
     public void setUp() {
-        service = new OsiamService(userService);
+        service = new OsiamUserService(userServiceMock);
     }
 
     @Test
@@ -49,13 +52,14 @@ public class OsiamServiceTest {
 
     private void when_uuid_is_looked_up() {
         User result = new User.Builder().setId(uuidString).build();
-        when(userService.path(anyString())).thenReturn(userService);
-        when(userService.get(User.class)).thenReturn(result);
+        when(userServiceMock.header(anyString(), anyObject())).thenReturn(webResourceBuilderMock);
+        when(userServiceMock.path(anyString())).thenReturn(userServiceMock);
+        when(webResourceBuilderMock.get(User.class)).thenReturn(result);
     }
 
     private void then_returned_user_has_uuid(UUID uuid) {
         User result = service.getUserByUUID(uuid, access_token);
-        verify(userService).path(uuidString);
+        verify(userServiceMock).path(uuidString);
         assertEquals(uuidString, result.getId());
     }
 }

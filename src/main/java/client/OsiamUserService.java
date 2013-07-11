@@ -5,11 +5,11 @@ import org.osiam.resources.scim.User;
 
 import java.util.UUID;
 
-public class OsiamService {
+public class OsiamUserService {
 
     private WebResource userWebResource;
 
-    public OsiamService(WebResource userWebResource) {
+    public OsiamUserService(WebResource userWebResource) {
         this.userWebResource = userWebResource;
     }
 

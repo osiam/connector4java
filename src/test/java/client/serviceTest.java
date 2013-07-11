@@ -21,7 +21,7 @@ public class serviceTest {
     private URI redirectURL;
     private String clientId = "example-client";
     private String clientSecret = "secret";
-    private OsiamService service;
+    private OsiamUserService service;
 
     @Before
     public void setUp() throws URISyntaxException {
@@ -29,7 +29,7 @@ public class serviceTest {
         serviceEndpoint = new URI(endpointAddress);
         redirectURL = new URI(redirectAddress);
 
-        service = ServiceBuilder.buildService(serviceEndpoint, clientId, redirectURL, clientSecret);
+        service = ServiceBuilder.buildUserService(serviceEndpoint, clientId, redirectURL, clientSecret);
     }
 
     /* Attention this test does not work automated for now! Please provide a valid access token before using it */
