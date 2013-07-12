@@ -11,6 +11,10 @@ import javax.ws.rs.core.MediaType;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * The ServiceBuilder is responsible for providing the respective OSIAM-service that allow access to the
+ * respective entities stored in the OSIAM installation.
+ */
 public class ServiceBuilder {
 
     public static OsiamUserService buildUserService(URI endpoint, String clientId, URI redirectURL, String clientSecret) {
