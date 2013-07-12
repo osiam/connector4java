@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
-public class serviceTest {
+public class UserServiceIT {
 
     private String accessToken = "1bdc909c-4457-4071-aa8c-42719e9392dd";
     private String validUUID = "d134cd95-be1a-4861-ae6b-097ca1dda648";
@@ -34,7 +34,7 @@ public class serviceTest {
 
     /* Attention this test does not work automated for now! Please provide a valid access token before using it */
 
-    @Test @Ignore
+    @Test
     public void getValidUser() {
         User user = service.getUserByUUID(UUID.fromString(validUUID), accessToken);
 
