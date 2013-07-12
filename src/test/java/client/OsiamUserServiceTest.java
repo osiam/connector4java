@@ -2,6 +2,8 @@ package client;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.sun.jersey.api.client.UniformInterface;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,7 +22,7 @@ public class OsiamUserServiceTest {
 
     final private static String uuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
-    private UUID existingUserUUID;
+    private UUID searchedUUID;
     private String access_token;
 
     OsiamUserService service;
@@ -35,7 +37,15 @@ public class OsiamUserServiceTest {
         given_existing_user_UUID();
         given_valid_access_token();
         when_existing_uuid_is_looked_up();
-        then_returned_user_has_uuid(existingUserUUID);
+        then_returned_user_has_uuid(searchedUUID);
+    }
+
+    @Test(expected = UniformInterfaceException.class)
+    public void user_does_not_exist() {
+        given_valid_access_token();
+        given_non_existent_user_UUID();
+        when_non_existent_uuid_is_looked_up();
+        service.getUserByUUID(searchedUUID, access_token);
     }
 
     private void given_valid_access_token() {
@@ -43,7 +53,17 @@ public class OsiamUserServiceTest {
     }
 
     private void given_existing_user_UUID() {
-        this.existingUserUUID = UUID.fromString(uuidString);
+        this.searchedUUID = UUID.fromString(uuidString);
+    }
+
+    private void given_non_existent_user_UUID() {
+        this.searchedUUID = UUID.fromString(uuidString);
+    }
+
+    private void when_non_existent_uuid_is_looked_up() {
+        stubFor(when_uuid_is_looked_up(uuidString, access_token)
+                .willReturn(aResponse()
+                        .withStatus(404)));
     }
 
     private void when_existing_uuid_is_looked_up() {
