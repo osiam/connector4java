@@ -1,5 +1,7 @@
 package client;
-
+/*
+ * for licensing see in the license.txt
+ */
 import client.exception.ConnectionInitializationException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -17,6 +19,14 @@ import java.net.URISyntaxException;
  */
 public class ServiceBuilder {
 
+	/**
+	 * 
+	 * @param endpoint the address of the OSIAM installation for example http://localhost:8080/osiam-server
+	 * @param clientId the in OSIAM registered client_id
+	 * @param redirectURL the redirect uri after the login from a user. This url has to be registered in OSIAM to avoid pishing
+	 * @param clientSecret the in OSIAM registered client secret to avoid pishing
+	 * @return a OsiamUserService which will be connected to the given OSIAM and provides all needed User methods
+	 */
     public static OsiamUserService buildUserService(URI endpoint, String clientId, URI redirectURL, String clientSecret) {
         final WebResource userWebResource;
         try {
