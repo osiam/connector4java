@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 public class UserServiceIT {
 
-    private String accessToken = "2b534de7-d248-4f86-a508-e4decd0a3795";
+    private String accessToken = "5dffcca8-59be-46d2-90c7-fbc6fb8451ac";
     private String validUserUUID = "4a51b8fa-e4c5-4164-8864-b52a1bb5ca17";
     private String endpointAddress = "http://localhost:8080/osiam-server";
     private URI serviceEndpoint;
@@ -50,5 +50,10 @@ public class UserServiceIT {
     @Test(expected = UniformInterfaceException.class)
     public void getInvalidUser() {
     	service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);       
+    }
+    
+    @Test(expected = UniformInterfaceException.class)
+    public void provideWrongAccessToken() {
+    	service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), "wrongToken");       
     }
 }
