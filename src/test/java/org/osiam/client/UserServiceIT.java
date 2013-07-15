@@ -1,8 +1,10 @@
-package client;
+package org.osiam.client;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.osiam.client.OsiamUserService;
+import org.osiam.client.ServiceBuilder;
 import org.osiam.resources.scim.User;
 
 import com.sun.jersey.api.client.UniformInterfaceException;

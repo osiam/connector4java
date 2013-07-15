@@ -1,8 +1,7 @@
-package client;
+package org.osiam.client;
 /*
  * for licensing see in the license.txt
  */
-import client.exception.ConnectionInitializationException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -10,6 +9,9 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
 import javax.ws.rs.core.MediaType;
+
+import org.osiam.client.exception.ConnectionInitializationException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 

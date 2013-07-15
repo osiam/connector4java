@@ -1,4 +1,4 @@
-package client.exception;
+package org.osiam.client.exception;
 
 public class ConnectionInitializationException extends RuntimeException {
     ConnectionInitializationException(String message) {

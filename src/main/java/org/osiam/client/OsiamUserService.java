@@ -1,4 +1,4 @@
-package client;
+package org.osiam.client;
 /*
  * for licensing see in the license.txt
  */
@@ -8,7 +8,7 @@ import org.osiam.resources.scim.User;
 import java.util.UUID;
 
 /**
- * A OSIAM Service which will be connected to the given Osiam and provides all needed User methods
+ * A OSIAM Service which will be connected to the given OSIAM and provides all needed User methods
  */
 public class OsiamUserService {
 

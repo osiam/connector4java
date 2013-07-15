@@ -1,4 +1,4 @@
-package client;
+package org.osiam.client;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -11,6 +11,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.osiam.client.OsiamUserService;
+import org.osiam.client.ServiceBuilder;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
