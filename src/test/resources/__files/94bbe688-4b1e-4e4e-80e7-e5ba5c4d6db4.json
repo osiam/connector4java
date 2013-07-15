@@ -20,6 +20,19 @@
             "type":"work"
         }
     ],
+    "addresses":[
+        {
+            "streetAddress":"example street 42",
+            "locality":"germany",
+            "region":"germany",
+            "postalCode":"11111",
+            "country":"germany",
+            "type":"work"
+        }
+    ],
+    "displayName":"bjensen",
+    "nickName":"benny",
+    "locale":"de",
     "emails":[
         {
             "value":"bjensen@example.com",
