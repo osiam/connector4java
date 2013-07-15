@@ -148,6 +148,24 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
+            <!-- If not given, gpg passphrase has to be provided interactively -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.4</version>
+              <executions>
+                  <execution>
+                      <id>sign-artifacts</id>
+                      <phase>verify</phase>
+                      <goals>
+                          <goal>sign</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+
             <!-- Needed due to a problem with SSH -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
