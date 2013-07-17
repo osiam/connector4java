@@ -310,7 +310,7 @@ public class User extends CoreResource {
          * lists; if a list is empty it will be nulled so that json-mapping will ignore it.
          *
          * @param user
-         * @return
+         * @return new (filtered) {@link User} object
          */
         public static User generateForOuput(User user) {
             if (user == null) {
