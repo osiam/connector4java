@@ -8,7 +8,7 @@ public class ConnectionInitializationException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	ConnectionInitializationException(String message) {
+	public ConnectionInitializationException(String message) {
         super(message);
     }
 
