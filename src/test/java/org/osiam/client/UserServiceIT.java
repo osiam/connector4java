@@ -1,13 +1,8 @@
 package org.osiam.client;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.osiam.client.OsiamUserService;
-import org.osiam.client.ServiceBuilder;
-import org.osiam.resources.scim.User;
-
-import com.sun.jersey.api.client.UniformInterfaceException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,12 +11,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.resources.scim.User;
 
 public class UserServiceIT {
 
-    private String accessToken = "83e1fe67-3259-486b-9b0f-774e51537c6b";
+    private String accessToken = "c923fe21-cd4b-49b4-86bb-197ab28906b8";
     private String uuidStandardUser = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private String endpointAddress = "http://localhost:8080/osiam-server";
     private URI serviceEndpoint;
@@ -33,7 +30,6 @@ public class UserServiceIT {
 
     @Before
     public void setUp() throws URISyntaxException {
-
         serviceEndpoint = new URI(endpointAddress);
         redirectURL = new URI(redirectAddress);
 
@@ -87,13 +83,15 @@ public class UserServiceIT {
         assertEquals(null, actualUser.isActive());
     }
     
-    @Test(expected = UniformInterfaceException.class)
+    @Test
     public void getInvalidUser() {
-    	service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);       
+    	User user = service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
+    	assertEquals(null, user);
     }
     
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = UnauthorizedException.class)
     public void provideWrongAccessToken() {
-    	service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), "wrongToken");       
+    	service.getUserByUUID(UUID.fromString(uuidStandardUser), "wrongToken");   
+    	fail("A Exception should be thrown");
     }
 }

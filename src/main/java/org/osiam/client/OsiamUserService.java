@@ -44,7 +44,7 @@ public class OsiamUserService {
     	}catch(UniformInterfaceException e) {
     		if(e.getResponse().getStatus() == 404){
         		//nothing to do. The User doesn't exists and a null will be returned    			
-    		}else if(e.getResponse().getStatus() == 404){
+    		}else if(e.getResponse().getStatus() == 401){
     			throw new UnauthorizedException("You are not authorized to access OSIAM. " +
     					"Please check if your access token is valid");
     		}
