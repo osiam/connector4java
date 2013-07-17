@@ -39,7 +39,7 @@
         {
             "value":"MaxExample@work.com",
 	    "primary":true,
-            "type":"work", 
+            "type":"work"
         },
         {
 	    "value":"MaxExample@home.de",
