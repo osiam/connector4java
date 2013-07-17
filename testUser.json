@@ -31,6 +31,18 @@
             "type":"work"
         }
     ],
+    "photos": [
+	    {
+	      "value": "https://photos.example.com/profilephoto/72930000000Ccne.jpg",
+	      "type": "photo"
+	    }
+	],    
+    "ims":[
+         {
+            "value": "someaimhandle",
+            "type": "aim"
+         }
+     ],
     "displayName":"MaxExample",
     "nickName":"Max",
     "password":"Test123",

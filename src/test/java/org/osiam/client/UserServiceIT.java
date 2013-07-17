@@ -30,7 +30,7 @@ public class UserServiceIT {
 
     /* Attention this test does not work automated for now! Please provide a valid access token before using it */
     private void giveAccessToken(){
-    	accessToken = "29e14e79-548a-4dae-a371-c609b9d89d0e";
+    	accessToken = "3562a632-70ff-45ab-ae98-74db1b5b6d83";
     }
     
     private void giveTestUserUUID(){
@@ -92,6 +92,12 @@ public class UserServiceIT {
         assertEquals("MaxExample", actualUser.getUserName());
         assertEquals("User", actualUser.getUserType());
         assertEquals(null, actualUser.isActive());
+        assertEquals(1, actualUser.getPhotos().size());
+        assertEquals("photo", actualUser.getPhotos().get(0).getType());
+        assertEquals("https://photos.example.com/profilephoto/72930000000Ccne.jpg"
+        		, actualUser.getPhotos().get(0).getValue().toString());
+        assertEquals(1, actualUser.getIms().size());
+        assertEquals("someaimhandle", actualUser.getIms().get(0).getValue().toString());
     }
     
     @Test
