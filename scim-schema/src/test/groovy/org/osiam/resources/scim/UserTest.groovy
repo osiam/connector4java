@@ -64,7 +64,7 @@ class UserTest extends Specification {
         def schemas = ["urn:wtf", "urn:hajo"] as Set
         User oldUser = new User.Builder("username").setSchemas(schemas).build()
         when:
-        User user = User.Builder.generateForOuput(oldUser);
+        User user = User.Builder.generateForOutput(oldUser);
         then:
         user.schemas == oldUser.schemas
 
@@ -142,7 +142,7 @@ class UserTest extends Specification {
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
                 .build()
         when:
-        User clonedUser = User.Builder.generateForOuput(user)
+        User clonedUser = User.Builder.generateForOutput(user)
         then:
         clonedUser.password == null
 
@@ -180,7 +180,7 @@ class UserTest extends Specification {
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
                 .build()
         when:
-        User clonedUser = User.Builder.generateForOuput(user)
+        User clonedUser = User.Builder.generateForOutput(user)
         then:
         clonedUser.addresses.empty
         clonedUser.emails.empty
@@ -224,7 +224,7 @@ class UserTest extends Specification {
         user.x509Certificates.add(generalAttribute)
 
         when:
-        User clonedUser = User.Builder.generateForOuput(user)
+        User clonedUser = User.Builder.generateForOutput(user)
         then:
         clonedUser.addresses.get(0) == address
         clonedUser.emails.get(0) == generalAttribute

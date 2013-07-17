@@ -312,7 +312,7 @@ public class User extends CoreResource {
          * @param user
          * @return new (filtered) {@link User} object
          */
-        public static User generateForOuput(User user) {
+        public static User generateForOutput(User user) {
             if (user == null) {
                 return null;
             }
