@@ -30,7 +30,7 @@ public class UserServiceIT {
 
     /* Attention this test does not work automated for now! Please provide a valid access token before using it */
     private void giveAccessToken(){
-    	accessToken = "3562a632-70ff-45ab-ae98-74db1b5b6d83";
+    	accessToken = "validAccessToken";
     }
     
     private void giveTestUserUUID(){

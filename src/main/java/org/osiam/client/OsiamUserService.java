@@ -20,7 +20,7 @@ public class OsiamUserService {
     private WebResource userWebResource;
 
     /**
-     * With a OsiamUserService is it possible to retrieve or to save any User saved in the OSIAM serv
+     * With a OsiamUserService is it possible to retrieve or to save any User saved in the OSIAM server
      * The needed WebResource can be build with help of the ServiceBuilder.buildUserService(...) 
      * @param userWebResource a valid WebResource to connect to a given OSIAM server
      */
@@ -29,7 +29,7 @@ public class OsiamUserService {
     }
 
     /**
-     * a single User with the given id. Null if no user could be found
+     * this method will retrieve a single User with the given id. A null User will be returned if no user with the given id could be found
      * @param id the uuid from the wanted user
      * @param accessToken the access token from OSIAM for the actual session
      * @return the wanted user or null

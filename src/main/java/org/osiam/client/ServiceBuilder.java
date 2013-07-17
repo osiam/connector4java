@@ -24,7 +24,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class ServiceBuilder {
 
 	/**
-	 * Returns a OsiamUSerService of the given OSIAM Service to retrieve or to save any OSIAM users
+	 * Returns a OsiamUserService of the given OSIAM Service to retrieve or to save any OSIAM users
 	 * @param endpoint the address of the OSIAM installation for example http://localhost:8080/osiam-server
 	 * @param clientId the in OSIAM registered client_id
 	 * @param redirectURL the redirect uri after the login from a user. This url has to be registered in OSIAM to avoid pishing

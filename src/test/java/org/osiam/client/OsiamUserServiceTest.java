@@ -1,23 +1,12 @@
 package org.osiam.client;
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.sun.jersey.api.client.UniformInterface;
-import com.sun.jersey.api.client.UniformInterfaceException;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.osiam.client.OsiamUserService;
-import org.osiam.client.ServiceBuilder;
-import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.MultiValuedAttribute;
-import org.osiam.resources.scim.Name;
-import org.osiam.resources.scim.User;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,10 +15,21 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.Meta;
+import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.User;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.assertEquals;
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 public class OsiamUserServiceTest {
 
@@ -137,7 +137,6 @@ public class OsiamUserServiceTest {
         assertEquals(expectedUser.getDisplayName(), actualUser.getDisplayName());
         assertEqualsMultiValueList(expectedUser.getEmails(), actualUser.getEmails());
         assertEquals(expectedUser.getExternalId(), actualUser.getExternalId());
-        assertEquals(expectedUser.getIms(), actualUser.getIms());//TODO
         assertEquals(expectedUser.getLocale(), actualUser.getLocale());
         assertEqualsName(expectedUser.getName(), actualUser.getName());
         assertEquals(expectedUser.getNickName(), actualUser.getNickName());
@@ -151,7 +150,6 @@ public class OsiamUserServiceTest {
         assertEquals(expectedUser.getUserName(), actualUser.getUserName());
         assertEquals(expectedUser.getUserType(), actualUser.getUserType());
         assertEquals(expectedUser.isActive(), actualUser.isActive());
-       
     }
 
     private void assertEqualsMetaData(Meta expected, Meta actual){
