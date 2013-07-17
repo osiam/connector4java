@@ -29,7 +29,7 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>0.4-SNAPSHOT</version>
+    <version>0.3</version>
 
     <description>Native Java API to connect to the REST based OSIAM services</description>
     <licenses>
