@@ -31,7 +31,7 @@
 
     <version>0.8-SNAPSHOT</version>
 
-    <description>Scim conform User to be used by the OSIAM services and the OSIAM connector4Jave to echhange User data</description>
+    <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
