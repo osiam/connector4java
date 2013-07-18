@@ -8,6 +8,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.model.AccessToken;
 import org.osiam.resources.scim.User;
 
 import java.util.UUID;
@@ -36,11 +37,11 @@ public class OsiamUserService {
      * @exception UnauthorizedException in case you are not authorized. For example the accesstoken is not valid anymore
      * @exception ConnectionInitializationException will be thrown if no connection to the given OSIAM services could be initialized
      */
-    public User getUserByUUID(UUID id, String accessToken) {
+    public User getUserByUUID(UUID id, AccessToken accessToken) {
     	User user = null;
     	try{
     		user = userWebResource.path(id.toString()).
-                    header("Authorization", "Bearer " + accessToken).get(User.class); 
+                    header("Authorization", "Bearer " + accessToken.getAccess_token()).get(User.class); 
     	}catch(UniformInterfaceException e) {
     		if(e.getResponse().getStatus() == 404){
         		//nothing to do. The User doesn't exists and a null will be returned    			

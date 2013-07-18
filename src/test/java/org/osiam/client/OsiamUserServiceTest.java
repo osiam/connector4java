@@ -21,6 +21,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.osiam.model.AccessToken;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
@@ -39,7 +40,7 @@ public class OsiamUserServiceTest {
     final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
     private UUID searchedUUID;
-    private String access_token;
+    private AccessToken access_token;
 
     OsiamUserService service;
 
@@ -81,11 +82,13 @@ public class OsiamUserServiceTest {
     }
 
     private void given_valid_access_token() {
-        access_token = "valid access token";
+        access_token = new AccessToken();
+        access_token.setAccess_token("validAcsessToken");
     }
 
     private void given_invalid_access_token() {
-        access_token = "invalid access token";
+    	access_token = new AccessToken();
+        access_token.setAccess_token("invalidAcsessToken");
     }
     
     private void given_existing_user_UUID() {
@@ -97,19 +100,19 @@ public class OsiamUserServiceTest {
     }
 
     private void when_non_existent_uuid_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, access_token)
+        stubFor(when_uuid_is_looked_up(userUuidString, access_token.getAccess_token())
                 .willReturn(aResponse()
                         .withStatus(404)));
     }
     
     private void when_invalid_accesstoken_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, access_token)
+        stubFor(when_uuid_is_looked_up(userUuidString, access_token.getAccess_token())
                 .willReturn(aResponse()
                         .withStatus(401)));
     }
 
     private void when_existing_uuid_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, access_token)
+        stubFor(when_uuid_is_looked_up(userUuidString, access_token.getAccess_token())
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")

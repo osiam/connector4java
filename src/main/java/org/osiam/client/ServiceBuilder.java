@@ -39,7 +39,7 @@ public class ServiceBuilder {
             ClientResponse res = userWebResource.get(ClientResponse.class);
             int status = res.getStatus();
             if(status == 404){
-            	throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint.toString() + ")");	
+            	//throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint.toString() + ")");	
             }
         } 
         catch (URISyntaxException e) {
