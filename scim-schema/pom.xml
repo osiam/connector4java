@@ -31,7 +31,7 @@
 
     <version>0.8-SNAPSHOT</version>
 
-    <description>Native Java API to connect to the REST based OSIAM services</description>
+    <description>Scim conform User to be used by the OSIAM services and the OSIAM connector4Jave to echhange User data</description>
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
