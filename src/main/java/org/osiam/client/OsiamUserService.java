@@ -2,13 +2,13 @@ package org.osiam.client;
 /*
  * for licensing see in the license.txt
  */
+
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
-
 import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.model.AccessToken;
 import org.osiam.resources.scim.User;
 
 import java.util.UUID;
@@ -22,7 +22,8 @@ public class OsiamUserService {
 
     /**
      * With a OsiamUserService is it possible to retrieve or to save any User saved in the OSIAM server
-     * The needed WebResource can be build with help of the ServiceBuilder.buildUserService(...) 
+     * The needed WebResource can be build with help of the ServiceBuilder.buildUserService(...)
+     *
      * @param userWebResource a valid WebResource to connect to a given OSIAM server
      */
     public OsiamUserService(WebResource userWebResource) {
@@ -30,31 +31,34 @@ public class OsiamUserService {
     }
 
     /**
-     * this method will retrieve a single User with the given id. A null User will be returned if no user with the given id could be found
-     * @param id the uuid from the wanted user
+     * this method retrieves a single User with the given id. If no user with the given id can be found an
+     * {@link NoResultException} is thrown.
+     *
+     * @param id          the uuid from the wanted user
      * @param accessToken the access token from OSIAM for the actual session
-     * @return the wanted user or null
-     * @exception UnauthorizedException in case you are not authorized. For example the accesstoken is not valid anymore
-     * @exception ConnectionInitializationException will be thrown if no connection to the given OSIAM services could be initialized
+     * @return the user with the given id
+     * @throws UnauthorizedException in case you are not authorized. For example the access-token is not valid anymore
+     * @throws NoResultException     is thrown if no user with the given id can be found
+     * @throws ConnectionInitializationException
+     *                               is thrown if no connection to the given OSIAM services could be initialized
      */
-    public User getUserByUUID(UUID id, AccessToken accessToken) {
-    	User user = null;
-    	try{
-    		user = userWebResource.path(id.toString()).
-                    header("Authorization", "Bearer " + accessToken.getAccess_token()).get(User.class); 
-    	}catch(UniformInterfaceException e) {
-    		if(e.getResponse().getStatus() == 404){
-        		//nothing to do. The User doesn't exists and a null will be returned    			
-    		}else if(e.getResponse().getStatus() == 401){
-    			throw new UnauthorizedException("You are not authorized to access OSIAM. " +
-    					"Please check if your access token is valid");
-    		}
-    		else{
-    			throw e;
-    		}
-    	}catch(ClientHandlerException e){
-    		throw new ConnectionInitializationException("Unable to setup connection", e);
-		}
+    public User getUserByUUID(UUID id, String accessToken) {
+        final User user;
+        try {
+            user = userWebResource.path(id.toString()).
+                    header("Authorization", "Bearer " + accessToken).get(User.class);
+        } catch (UniformInterfaceException e) {
+            switch (e.getResponse().getStatus()) {
+                case 401:
+                    throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                case 404:
+                    throw new NoResultException("No User with given UUID " + id);
+                default:
+                    throw e;
+            }
+        } catch (ClientHandlerException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
+        }
         return user;
     }
 }
