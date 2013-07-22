@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * provides static methods to provide easy logins
  */
-public class LoginService {
+public class AuthService {
 
     static final Charset CHARSET = Charset.forName("UTF-8");
 
