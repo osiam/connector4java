@@ -1,0 +1,6 @@
+{
+    "access_token": "c5d116cb-2758-4e7c-9aca-4a115bc4f19e",
+    "token_type": "bearer",
+    "expires_in": 3599,
+    "scope": "DELETE GET PATCH POST PUT"
+}
