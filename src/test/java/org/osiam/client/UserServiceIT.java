@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -15,11 +16,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.model.AccessToken;
 import org.osiam.resources.scim.User;
 
 public class UserServiceIT {
 
-    private String accessToken;
+    private AccessToken accessToken;
     private UUID uuidStandardUser = null;
     private String endpointAddress = "http://localhost:8080/osiam-server";
     private URI serviceEndpoint;
@@ -29,9 +31,10 @@ public class UserServiceIT {
     private String clientSecret = "secret";
     private OsiamUserService service;
 
-    /* Attention this test does not work automated for now! Please provide a valid access token before using it */
-    private void giveAccessToken(){
-    	accessToken = "4fdefa4b-5cd5-42f2-b2d4-eac2609784e4";
+    private void giveAccessToken() throws IOException{
+    	if(accessToken == null){
+    		accessToken = new AuthService().retrieveAccessToken(endpointAddress + "/oauth/token", clientId, clientSecret, "marissa", "koala");
+    	}
     }
 
     private void giveTestUserUUID(){
@@ -47,7 +50,7 @@ public class UserServiceIT {
     }
 
     @Test
-    public void getValidUser() {
+    public void getValidUser() throws IOException {
     	giveTestUserUUID();
     	giveAccessToken();
         User user = service.getUserByUUID(uuidStandardUser, accessToken);
@@ -55,7 +58,7 @@ public class UserServiceIT {
     }
 
     @Test
-    public void ensureValuesStandardUser() throws ParseException {
+    public void ensureValuesStandardUser() throws ParseException, IOException {
     	giveTestUserUUID();
     	giveAccessToken();
         User actualUser = service.getUserByUUID(uuidStandardUser, accessToken);
@@ -102,7 +105,7 @@ public class UserServiceIT {
     }
 
     @Test(expected = NoResultException.class)
-    public void getInvalidUser() {
+    public void getInvalidUser() throws IOException {
     	giveAccessToken();
     	User user = service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
     }
@@ -110,7 +113,9 @@ public class UserServiceIT {
     @Test(expected = UnauthorizedException.class)
     public void provideWrongAccessToken() {
     	giveTestUserUUID();
-    	service.getUserByUUID(uuidStandardUser, "wrongToken");
+    	AccessToken wrongAccessToken = new AccessToken();
+    	wrongAccessToken.setAccessToken("wrong Token");
+    	service.getUserByUUID(uuidStandardUser, wrongAccessToken);
     	fail("A Exception should be thrown");
     }
 

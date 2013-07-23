@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.model.AccessToken;
 import org.osiam.resources.scim.*;
 
 import java.io.FileReader;
@@ -31,7 +32,7 @@ public class OsiamUserServiceTest {
     final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
     private UUID searchedUUID;
-    private String accessToken;
+    private AccessToken accessToken;
 
     OsiamUserService service;
 
@@ -73,11 +74,15 @@ public class OsiamUserServiceTest {
     }
 
     private void given_valid_access_token() {
-        accessToken = "Valid Access Token";
+    	AccessToken accessToken = new AccessToken();
+    	accessToken.setAccessToken("Valid Access Token");
+        this.accessToken = accessToken;
     }
 
     private void given_invalid_access_token() {
-        accessToken = "invalidAcsessToken";
+    	AccessToken accessToken = new AccessToken();
+    	accessToken.setAccessToken("Invalid Access Token");
+        this.accessToken = accessToken;
     }
 
     private void given_existing_user_UUID() {
@@ -108,10 +113,10 @@ public class OsiamUserServiceTest {
                         .withBodyFile(userUuidString + ".json")));
     }
 
-    private MappingBuilder when_uuid_is_looked_up(String uuidString, String access_token) {
+    private MappingBuilder when_uuid_is_looked_up(String uuidString, AccessToken access_token) {
         return get(urlEqualTo("/osiam-server//User/" + uuidString))
                 .withHeader("Content-Type", equalTo("application/json"))
-                .withHeader("Authorization", equalTo("Bearer " + access_token));
+                .withHeader("Authorization", equalTo("Bearer " + access_token.getAccessToken()));
     }
 
     private void then_returned_user_has_uuid(UUID uuid) {

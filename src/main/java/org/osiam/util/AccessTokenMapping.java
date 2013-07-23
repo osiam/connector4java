@@ -28,7 +28,7 @@ public class AccessTokenMapping {
 	 * @throws JsonMappingException in case the inputStream could not be mapped or a field is missing
 	 * @throws IOException
 	 */
-	public static AccessToken getAccessToken(InputStream content) throws JsonParseException, JsonMappingException, IOException{
+	public AccessToken getAccessToken(InputStream content) throws JsonParseException, JsonMappingException, IOException{
 		
 		AccessToken accessToken = new AccessToken();
 		String key;

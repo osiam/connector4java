@@ -8,6 +8,7 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.OAuthClientRequest;
 import org.osiam.model.AccessToken;
+import org.osiam.util.AccessTokenMapping;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,10 +17,9 @@ import java.io.InputStream;
  */
 
 /**
- * provides static methods to provide easy logins
+ * provides methods to provide easy logins
  */
 public class AuthService {
-
 
     public AccessToken retrieveAccessToken(String endpoint, String clientId, String clientSecret, String username, String password) throws IOException {
 
@@ -48,8 +48,7 @@ public class AuthService {
         }
 
         InputStream content = response.getEntity().getContent();
-        ObjectMapper mapper = new ObjectMapper();
-        AccessToken accessToken = mapper.readValue(content, AccessToken.class);
+        AccessToken accessToken = new AccessTokenMapping().getAccessToken(content);
 
         return accessToken;
     }

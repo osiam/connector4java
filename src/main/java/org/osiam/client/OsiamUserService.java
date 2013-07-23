@@ -9,6 +9,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.model.AccessToken;
 import org.osiam.resources.scim.User;
 
 import java.util.UUID;
@@ -42,11 +43,11 @@ public class OsiamUserService {
      * @throws ConnectionInitializationException
      *                               is thrown if no connection to the given OSIAM services could be initialized
      */
-    public User getUserByUUID(UUID id, String accessToken) {
+    public User getUserByUUID(UUID id, AccessToken accessToken) {
         final User user;
         try {
             user = userWebResource.path(id.toString()).
-                    header("Authorization", "Bearer " + accessToken).get(User.class);
+                    header("Authorization", "Bearer " + accessToken.getAccessToken()).get(User.class);
         } catch (UniformInterfaceException e) {
             switch (e.getResponse().getStatus()) {
                 case 401:
