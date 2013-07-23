@@ -43,10 +43,10 @@ public class AccessToken {
      * Refreshing of tokens is not yet implemented in OSIAM
      *
      * @return
-     * @throws NotImplementedException
+     * @throws NoSuchMethodError
      */
     public String getRefreshToken() {
-        throw new NotImplementedException();
+        throw new NoSuchMethodError("Not yet implemented");
     }
 
     /**

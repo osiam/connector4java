@@ -3,8 +3,6 @@ package org.osiam.model;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -40,7 +38,7 @@ public class AccessTokenTest {
         assertTrue(accessToken.isExpired());
     }
 
-    @Test(expected = NotImplementedException.class)
+    @Test(expected = NoSuchMethodError.class)
     public void getRefreshToken_raises_exception() throws IOException {
         given_a_valid_access_token();
         accessToken.getRefreshToken();
