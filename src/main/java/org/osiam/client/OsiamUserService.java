@@ -9,7 +9,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.model.AccessToken;
+import org.osiam.client.oauth.AccessToken;
 import org.osiam.resources.scim.User;
 
 import java.util.UUID;
@@ -47,7 +47,7 @@ public class OsiamUserService {
         final User user;
         try {
             user = userWebResource.path(id.toString()).
-                    header("Authorization", "Bearer " + accessToken.getAccessToken()).get(User.class);
+                    header("Authorization", "Bearer " + accessToken.getToken()).get(User.class);
         } catch (UniformInterfaceException e) {
             switch (e.getResponse().getStatus()) {
                 case 401:
