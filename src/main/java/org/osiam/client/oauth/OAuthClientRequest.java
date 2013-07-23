@@ -53,7 +53,6 @@ public class OAuthClientRequest {
 
     public static class Builder {
 
-        // Client credentials
         private String clientId;
         private String clientSecret;
         private GrantType grantType;
@@ -119,10 +118,9 @@ public class OAuthClientRequest {
         private Header[] buildHead() {
             String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
             Header authHeader = new BasicHeader("Authorization", authHeaderValue);
-            Header[] headers = {
+            return new Header[]{
                     authHeader
             };
-            return headers;
         }
 
         private HttpEntity buildBody() {
