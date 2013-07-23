@@ -4,7 +4,6 @@ package org.osiam.client.oauth;
  */
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Date;
 
