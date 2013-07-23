@@ -10,7 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.model.AccessToken;
+import org.osiam.client.oauth.AccessToken;
 import org.osiam.resources.scim.*;
 
 import java.io.FileReader;
@@ -33,16 +33,19 @@ public class OsiamUserServiceTest {
 
     private UUID searchedUUID;
     private AccessToken accessToken;
+    private AccessTokenMockProvider tokenProvider;
 
     OsiamUserService service;
 
     @Before
     public void setUp() {
         service = ServiceBuilder.buildUserService(URI.create("http://localhost:8080/osiam-server/"), "irrelvevant", URI.create("http://localhost:5000"), "irrelevant");
+        tokenProvider = new AccessTokenMockProvider("/valid_accesstoken.json");
+
     }
 
     @Test
-    public void existing_user_is_returned() {
+    public void existing_user_is_returned() throws IOException {
         given_existing_user_UUID();
         given_valid_access_token();
         when_existing_uuid_is_looked_up();
@@ -58,7 +61,7 @@ public class OsiamUserServiceTest {
     }
 
     @Test(expected = NoResultException.class)
-    public void user_does_not_exist() {
+    public void user_does_not_exist() throws IOException {
         given_valid_access_token();
         given_non_existent_user_UUID();
         when_non_existent_uuid_is_looked_up();
@@ -66,23 +69,19 @@ public class OsiamUserServiceTest {
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void invalid_access_token() {
+    public void invalid_access_token() throws Exception {
         given_invalid_access_token();
         given_non_existent_user_UUID();
         when_invalid_accesstoken_is_looked_up();
         service.getUserByUUID(searchedUUID, accessToken);
     }
 
-    private void given_valid_access_token() {
-    	AccessToken accessToken = new AccessToken();
-    	accessToken.setAccessToken("Valid Access Token");
-        this.accessToken = accessToken;
+    private void given_valid_access_token() throws IOException {
+        this.accessToken = tokenProvider.given_a_valid_access_token();
     }
 
-    private void given_invalid_access_token() {
-    	AccessToken accessToken = new AccessToken();
-    	accessToken.setAccessToken("Invalid Access Token");
-        this.accessToken = accessToken;
+    private void given_invalid_access_token() throws Exception {
+        this.accessToken = tokenProvider.given_an_expired_access_token();
     }
 
     private void given_existing_user_UUID() {
@@ -113,10 +112,10 @@ public class OsiamUserServiceTest {
                         .withBodyFile(userUuidString + ".json")));
     }
 
-    private MappingBuilder when_uuid_is_looked_up(String uuidString, AccessToken access_token) {
-        return get(urlEqualTo("/osiam-server//User/" + uuidString))
+    private MappingBuilder when_uuid_is_looked_up(String uuidString, AccessToken accessToken) {
+        return get(urlEqualTo("/osiam-server//Users/" + uuidString))
                 .withHeader("Content-Type", equalTo("application/json"))
-                .withHeader("Authorization", equalTo("Bearer " + access_token.getAccessToken()));
+                .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private void then_returned_user_has_uuid(UUID uuid) {

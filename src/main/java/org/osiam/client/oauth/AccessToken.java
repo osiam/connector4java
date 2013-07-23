@@ -1,4 +1,4 @@
-package org.osiam.model;
+package org.osiam.client.oauth;
 /*
  * for licensing see in the license.txt
  */
