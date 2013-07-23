@@ -25,7 +25,6 @@ public class AccessTokenTest {
     @Test
     public void access_token_is_deserialized_without_errors() throws IOException {
         given_a_valid_access_token();
-        System.out.println(accessToken);
         assertEquals(TOKEN, accessToken.getToken());
         assertEquals(TOKEN_TYPE, accessToken.getType());
         assertFalse(accessToken.isExpired());
