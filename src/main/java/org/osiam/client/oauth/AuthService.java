@@ -46,7 +46,7 @@ public class AuthService {
         return post.getURI();
     }
 
-    public HttpResponse perform() throws ConnectionInitializationException {
+    private HttpResponse perform() throws ConnectionInitializationException {
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;
         try {
