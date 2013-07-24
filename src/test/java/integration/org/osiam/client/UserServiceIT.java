@@ -1,57 +1,48 @@
 package integration.org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.osiam.client.OsiamUserService;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.AuthService;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.resources.scim.User;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.osiam.client.OsiamUserService;
-import org.osiam.client.ServiceBuilder;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.oauth.AuthService;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.resources.scim.User;
+import static org.junit.Assert.*;
 
 public class UserServiceIT {
 
     private AccessToken accessToken;
-    private UUID uuidStandardUser = null;
+    private UUID uuidStandardUser;
     private String endpointAddress = "http://localhost:8080/osiam-server";
-    private URI serviceEndpoint;
-    private String redirectAddress = "http://localhost:5000/oauth2";
-    private URI redirectURL;
     private String clientId = "example-client";
     private String clientSecret = "secret";
     private AuthService authService;
     private OsiamUserService service;
 
-    private void giveAccessToken() throws IOException{
-    	if(accessToken == null){
+    private void giveAccessToken() throws IOException {
+        if (accessToken == null) {
 
-    		accessToken = authService.retrieveAccessToken();
-    	}
+            accessToken = authService.retrieveAccessToken();
+        }
     }
 
-    private void giveTestUserUUID(){
-    	uuidStandardUser = UUID.fromString("94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4");
+    private void giveTestUserUUID() {
+        uuidStandardUser = UUID.fromString("94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4");
     }
 
     @Before
     public void setUp() throws URISyntaxException {
-        serviceEndpoint = new URI(endpointAddress);
-        redirectURL = new URI(redirectAddress);
 
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress + "/oauth/token").
                 withClientId(clientId).withClientSecret(clientSecret).
@@ -59,26 +50,25 @@ public class UserServiceIT {
                 withUsername("marissa").
                 withPassword("koala");
         authService = authBuilder.build();
-
-        service = ServiceBuilder.buildUserService(serviceEndpoint, clientId, redirectURL, clientSecret);
+        service = new OsiamUserService.Builder(endpointAddress).build();
     }
 
     @Test
     public void getValidUser() throws IOException {
-    	giveTestUserUUID();
-    	giveAccessToken();
+        giveTestUserUUID();
+        giveAccessToken();
         User user = service.getUserByUUID(uuidStandardUser, accessToken);
         assertEquals(uuidStandardUser.toString(), user.getId());
     }
 
     @Test
     public void ensureValuesStandardUser() throws ParseException, IOException {
-    	giveTestUserUUID();
-    	giveAccessToken();
+        giveTestUserUUID();
+        giveAccessToken();
         User actualUser = service.getUserByUUID(uuidStandardUser, accessToken);
 
         assertEquals("User", actualUser.getMeta().getResourceType());
-        Date created = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" ).parse("01.08.2011 18:29:49");
+        Date created = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("01.08.2011 18:29:49");
         assertEquals(created, actualUser.getMeta().getCreated());
         assertEquals(created, actualUser.getMeta().getLastModified());
         assertEquals(uuidStandardUser.toString(), actualUser.getId());
@@ -113,24 +103,24 @@ public class UserServiceIT {
         assertEquals(1, actualUser.getPhotos().size());
         assertEquals("photo", actualUser.getPhotos().get(0).getType());
         assertEquals("https://photos.example.com/profilephoto/72930000000Ccne.jpg"
-        		, actualUser.getPhotos().get(0).getValue().toString());
+                , actualUser.getPhotos().get(0).getValue().toString());
         assertEquals(1, actualUser.getIms().size());
         assertEquals("someaimhandle", actualUser.getIms().get(0).getValue().toString());
     }
 
     @Test(expected = NoResultException.class)
     public void getInvalidUser() throws IOException {
-    	giveAccessToken();
-    	User user = service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
+        giveAccessToken();
+        service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
     }
 
     @Test(expected = UnauthorizedException.class)
     @Ignore
     public void provideWrongAccessToken() {
-    	giveTestUserUUID();
-    	AccessToken wrongAccessToken = new AccessToken();
-    	service.getUserByUUID(uuidStandardUser, wrongAccessToken);
-    	fail("A Exception should be thrown");
+        giveTestUserUUID();
+        AccessToken wrongAccessToken = new AccessToken();
+        service.getUserByUUID(uuidStandardUser, wrongAccessToken);
+        fail("A Exception should be thrown");
     }
 
 }

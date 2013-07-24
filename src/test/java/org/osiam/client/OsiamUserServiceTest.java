@@ -2,11 +2,8 @@ package org.osiam.client;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
@@ -17,7 +14,6 @@ import org.osiam.resources.scim.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +27,7 @@ public class OsiamUserServiceTest {
     public WireMockRule wireMockRule = new WireMockRule(); // No-args constructor defaults to port 8080
 
     final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-
+    final private static String endpoint = "http://localhost:8080/osiam-server/";
     private UUID searchedUUID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -40,7 +36,7 @@ public class OsiamUserServiceTest {
 
     @Before
     public void setUp() {
-        service = ServiceBuilder.buildUserService(URI.create("http://localhost:8080/osiam-server/"), "irrelvevant", URI.create("http://localhost:5000"), "irrelevant");
+        service = new OsiamUserService.Builder(endpoint).build();
         tokenProvider = new AccessTokenMockProvider("/valid_accesstoken.json");
 
     }
@@ -124,7 +120,7 @@ public class OsiamUserServiceTest {
         assertEquals(uuid.toString(), result.getId());
     }
 
-    private void then_returned_user_values(UUID uuid) throws IOException {
+    private void then_returned_user_values(UUID uuid) throws Exception {
 
         User expectedUser = get_expected_user();
         User actualUser = service.getUserByUUID(uuid, accessToken);
@@ -201,10 +197,10 @@ public class OsiamUserServiceTest {
         assertEquals(expected.getHonorificSuffix(), actual.getHonorificSuffix());
     }
 
-    private User get_expected_user() throws JsonParseException, JsonMappingException, IOException {
+    private User get_expected_user() throws Exception {
         Reader reader = null;
         StringBuilder jsonUser = null;
-        User expectedUser = null;
+        User expectedUser;
         try {
             reader = new FileReader("src/test/resources/__files/" + userUuidString + ".json");
             jsonUser = new StringBuilder();
