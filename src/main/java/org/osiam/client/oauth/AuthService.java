@@ -1,7 +1,10 @@
 package org.osiam.client.oauth;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -54,7 +57,7 @@ public class AuthService {
         return response;
     }
 
-    public AccessToken retrieveAccessToken() throws IOException {
+    public AccessToken retrieveAccessToken() {
         HttpResponse response = perform();
         int status = response.getStatusLine().getStatusCode();
 
@@ -73,9 +76,15 @@ public class AuthService {
                 throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint + ")");
         }
 
-        InputStream content = response.getEntity().getContent();
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, AccessToken.class);
+        final AccessToken accessToken;
+        try {
+            InputStream content = response.getEntity().getContent();
+            ObjectMapper mapper = new ObjectMapper();
+            accessToken = mapper.readValue(content, AccessToken.class);
+        } catch (IOException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token: IOException", e);
+        }
+        return accessToken;
     }
 
 
