@@ -25,7 +25,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@Ignore("The Mocking went bust")
 public class OsiamUserServiceTest {
 
     @Rule
