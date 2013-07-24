@@ -1,10 +1,7 @@
 package org.osiam.client.oauth;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -24,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.http.HttpStatus.*;
 
 public class AuthService {
 
@@ -60,9 +59,9 @@ public class AuthService {
         int status = response.getStatusLine().getStatusCode();
 
         switch (status) {
-            case 400:
+            case SC_BAD_REQUEST:
                 throw new UnauthorizedException("You are not authorized to retrieve an access token directly. Please make sure that you have the correct grants.");
-            case 401:
+            case SC_UNAUTHORIZED:
                 StringBuilder errorMessage = new StringBuilder("You are not authorized to directly retrieve a access token.");
                 if (response.toString().contains(clientId + " not found")) {
                     errorMessage.append(" Unknown client-id");
@@ -70,7 +69,7 @@ public class AuthService {
                     errorMessage.append(" Invalid client secret");
                 }
                 throw new UnauthorizedException(errorMessage.toString());
-            case 404:
+            case SC_NOT_FOUND:
                 throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint + ")");
         }
 
