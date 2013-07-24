@@ -8,10 +8,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import java.util.Date;
 
 /**
- * This class holds the information about an access token.
- * The access token is used to get access to a OSIAM server and to get and
- * manipulate users and groups.
- * An instance of this class is created by the AuthService.
+ * This class holds information about an access token. An  access token is granted by the OSIAM server
+ * and allows access to restricted resources.
  */
 public class AccessToken {
 
@@ -30,7 +28,7 @@ public class AccessToken {
     private long retrievedOn = new Date().getTime();
 
     /**
-     * Retrieve the string value of the AccessToken that is used to authenticate against the provider.
+     * Retrieve the string value of the access token used to authenticate against the provider.
      *
      * @return The access token string
      */

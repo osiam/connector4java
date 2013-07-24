@@ -27,6 +27,10 @@ import java.util.Map;
 
 import static org.apache.http.HttpStatus.*;
 
+/**
+ * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
+ * {@link AuthService.Builder} to construct one.
+ */
 public class AuthService {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
@@ -42,6 +46,11 @@ public class AuthService {
         endpoint = builder.endpoint;
     }
 
+    /**
+     * Provide the {@link URI} this AuthService uses to authenticate.
+     *
+     * @return The URI used by this AuthService
+     */
     public URI getUri() {
         return post.getURI();
     }
@@ -57,6 +66,15 @@ public class AuthService {
         return response;
     }
 
+    /**
+     * Provide an {@link AccessToken} for the given parameters of this service.
+     *
+     * @return a valid AccessToken
+     * @throws ConnectionInitializationException
+     *                               If the Service is unable to connect to the configured OAuth2 service.
+     * @throws UnauthorizedException If the configured credentials for this service are not permitted
+     *                               to retrieve an {@link AccessToken}
+     */
     public AccessToken retrieveAccessToken() {
         HttpResponse response = perform();
         int status = response.getStatusLine().getStatusCode();
@@ -88,6 +106,9 @@ public class AuthService {
     }
 
 
+    /**
+     * The Builder class is used to construct instances of the {@link AuthService}.
+     */
     public static class Builder {
 
         private String clientId;
@@ -100,11 +121,24 @@ public class AuthService {
         private String endpoint;
         private HttpEntity body;
 
+        /**
+         * Set up the Builder for the construction of  an {@link AuthService} instance for the OAuth2 service at
+         * the given endpoint
+         *
+         * @param endpoint The URL at which the OAuth2 service lives.
+         */
         public Builder(String endpoint) {
             requestParameters.put("scope", DEFAULT_SCOPE);
             this.endpoint = endpoint;
         }
 
+        /**
+         * Use the given {@link GrantType} to for the request. At this point only the grant type 'password' is supported.
+         *
+         * @param grantType of the requested AuthCode
+         * @return The builder itself
+         * @throws UnsupportedOperationException If the GrantType is anything else than GrantType.PASSWORD
+         */
         public Builder withGrantType(GrantType grantType) {
             if (!grantType.equals(GrantType.PASSWORD)) {
                 throw new UnsupportedOperationException(grantType.getUrlParam() + " grant type not supported at this time");
@@ -113,27 +147,58 @@ public class AuthService {
             return this;
         }
 
+        /**
+         * Add a ClientId to the OAuth2 request
+         *
+         * @param clientId The client-Id
+         * @return The builder itself
+         */
         public Builder withClientId(String clientId) {
             this.clientId = clientId;
             return this;
         }
 
-
+        /**
+         * Add a clientSecret to the OAuth2 request
+         *
+         * @param clientSecret The client secret
+         * @return The builder itself
+         */
         public Builder withClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
             return this;
         }
 
+        /**
+         * Add the given username to the OAuth2 request
+         *
+         * @param username The username
+         * @return The builder itself
+         */
         public Builder withUsername(String username) {
             requestParameters.put("username", username);
             return this;
         }
 
+        /**
+         * Add the given password to the OAuth2 request
+         *
+         * @param password The password
+         * @return The builder itself
+         */
         public Builder withPassword(String password) {
             requestParameters.put("password", password);
             return this;
         }
 
+        /**
+         * Construct the {@link AuthService} with the parameters passed to this builder.
+         *
+         * @return An AuthService configured accordingly.
+         * @throws ConnectionInitializationException
+         *          If either the provided client credentials (clientId/clientSecret)
+         *          or, if the requested grant type is 'password', the user credentials (userName/password) are incomplete.
+         */
         public AuthService build() {
             if (clientId == null || clientSecret == null) {
                 throw new ConnectionInitializationException("The provided client credentials are incomplete.");

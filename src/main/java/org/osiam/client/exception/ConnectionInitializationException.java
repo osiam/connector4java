@@ -1,7 +1,7 @@
 package org.osiam.client.exception;
 
 /**
- * will be thrown if the connection to the given OSIAM server could not be opened
+ * This exception is thrown, if a connection to the OSIAM service can not be created.
  *
  */
 public class ConnectionInitializationException extends RuntimeException {
