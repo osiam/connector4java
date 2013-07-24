@@ -3,7 +3,6 @@ package org.osiam.client.oauth;
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.AccessTokenMockProvider;
-import org.osiam.client.oauth.AccessToken;
 
 import java.io.IOException;
 
