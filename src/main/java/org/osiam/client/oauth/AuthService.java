@@ -60,7 +60,7 @@ public class AuthService {
 
         switch (status) {
             case SC_BAD_REQUEST:
-                throw new UnauthorizedException("You are not authorized to retrieve an access token directly. Please make sure that you have the correct grants.");
+                throw new ConnectionInitializationException("Unable to create Connection. Please make sure that you have the correct grants.");
             case SC_UNAUTHORIZED:
                 StringBuilder errorMessage = new StringBuilder("You are not authorized to directly retrieve a access token.");
                 if (response.toString().contains(clientId + " not found")) {
