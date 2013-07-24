@@ -5,6 +5,7 @@ If you are interested top use the OSIAM connector4java please watch us.
 #OSIAM Connector for Java
 
 This repository contains the OSIAM Connector for Java.
+Together with OSIAM it provides a easy to use oauth2 SCIM based user login for Java
 
 OSIAM gives you the possibility to have a easy oauth2 standard login of users.
 It is also possible to asign Users to Groups with different roles.
