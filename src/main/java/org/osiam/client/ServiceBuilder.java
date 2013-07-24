@@ -10,6 +10,8 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
+
+import org.apache.http.HttpStatus;
 import org.osiam.client.exception.ConnectionInitializationException;
 
 import javax.ws.rs.core.MediaType;
@@ -36,10 +38,10 @@ public class ServiceBuilder {
     public static OsiamUserService buildUserService(URI endpoint, String clientId, URI redirectURL, String clientSecret) {
         final WebResource userWebResource;
         try {
-            userWebResource = createWebResource(new URI(endpoint.toString() + "/User/"));
+            userWebResource = createWebResource(new URI(endpoint.toString() + "/Users/"));
             ClientResponse res = userWebResource.get(ClientResponse.class);
             int status = res.getStatus();
-            if (status == 404) {
+            if (status == HttpStatus. SC_NOT_FOUND) {
             //    throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint.toString() + ")");
             }
         } catch (ClientHandlerException | URISyntaxException e) {

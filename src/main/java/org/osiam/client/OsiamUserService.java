@@ -6,6 +6,8 @@ package org.osiam.client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+
+import org.apache.http.HttpStatus;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -50,9 +52,9 @@ public class OsiamUserService {
                     header("Authorization", "Bearer " + accessToken.getToken()).get(User.class);
         } catch (UniformInterfaceException e) {
             switch (e.getResponse().getStatus()) {
-                case 401:
+                case HttpStatus.SC_UNAUTHORIZED:
                     throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
-                case 404:
+                case HttpStatus.SC_NOT_FOUND:
                     throw new NoResultException("No User with given UUID " + id);
                 default:
                     throw e;
