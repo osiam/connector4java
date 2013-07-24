@@ -1,4 +1,4 @@
-package org.osiam.client;
+package integration.org.osiam.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -15,6 +15,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.osiam.client.OsiamUserService;
+import org.osiam.client.ServiceBuilder;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AuthService;
