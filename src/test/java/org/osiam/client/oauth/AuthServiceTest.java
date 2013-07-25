@@ -1,12 +1,11 @@
 package org.osiam.client.oauth;
 
-import org.junit.Test;
-import org.osiam.client.exception.UnauthorizedException;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class AuthServiceTest {
 

@@ -24,10 +24,7 @@ public class GrantTypeTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateTestData() {
         return Arrays.asList(new Object[][]{
-                {GrantType.AUTHORIZATION_CODE, "authorization_code"},
-                {GrantType.CLIENT_CREDENTIALS, "client_credentials"},
-                {GrantType.PASSWORD, "password"},
-                {GrantType.REFRESH_TOKEN, "refresh-token"}
+                {GrantType.PASSWORD, "password"}
         });
     }
 

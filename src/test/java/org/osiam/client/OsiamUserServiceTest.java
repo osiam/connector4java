@@ -66,19 +66,31 @@ public class OsiamUserServiceTest {
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void invalid_access_token() throws Exception {
-        given_invalid_access_token();
-        given_non_existent_user_UUID();
-        when_invalid_accesstoken_is_looked_up();
+    public void expired_access_token() throws Exception {
+        given_expired_access_token();
+        given_existing_user_UUID();
+        when_expired_accesstoken_is_looked_up();
         service.getUserByUUID(searchedUUID, accessToken);
     }
 
+    @Test(expected = UnauthorizedException.class)
+    public void invalid_access_token() throws Exception {
+        given_invalid_access_token();
+        given_existing_user_UUID();
+        when_invalid_accesstoken_is_looked_up();
+        service.getUserByUUID(searchedUUID, accessToken);
+    }
+    
     private void given_valid_access_token() throws IOException {
         this.accessToken = tokenProvider.given_a_valid_access_token();
     }
 
-    private void given_invalid_access_token() throws Exception {
+    private void given_expired_access_token() throws Exception {
         this.accessToken = tokenProvider.given_an_expired_access_token();
+    }
+    
+    private void given_invalid_access_token() throws Exception {
+        this.accessToken = tokenProvider.given_an_invalid_access_token();
     }
 
     private void given_existing_user_UUID() {
@@ -95,6 +107,12 @@ public class OsiamUserServiceTest {
                         .withStatus(404)));
     }
 
+    private void when_expired_accesstoken_is_looked_up() {
+        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(401)));
+    }
+    
     private void when_invalid_accesstoken_is_looked_up() {
         stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
                 .willReturn(aResponse()
