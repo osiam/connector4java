@@ -6,6 +6,7 @@ package org.osiam.client.oauth;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * This class holds information about an access token. An  access token is granted by the OSIAM server
@@ -80,13 +81,32 @@ public class AccessToken {
     public String toString() {
         StringBuilder returnToken = new StringBuilder();
 
-        returnToken.append("AccessToken [").
-                append("access_token = ").append(token).
+        returnToken.append("[access_token = ").append(token).
                 append(", token_type = ").append(type).
                 append(", scope = ").append(scope).
                 append(", expired = ").append(isExpired()).
                 append("]");
 
         return returnToken.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AccessToken that = (AccessToken) o;
+
+        if (expiresIn != that.expiresIn) return false;
+        if (!refreshToken.equals(that.refreshToken)) return false;
+        if (!scope.equals(that.scope)) return false;
+        if (!token.equals(that.token)) return false;
+        if (!type.equals(that.type)) return false;
+        return this.isExpired() == that.isExpired();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token, type, expiresIn, scope, refreshToken, this.isExpired());
     }
 }

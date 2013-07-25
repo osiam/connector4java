@@ -1,5 +1,7 @@
 package org.osiam.client.oauth;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.AccessTokenMockProvider;
@@ -33,6 +35,22 @@ public class AccessTokenTest {
     public void expired_access_token_is_recognized_correctly() throws Exception {
         given_an_expired_access_token();
         assertTrue(accessToken.isExpired());
+    }
+
+    @Test
+    public void toString_behaves_as_expected() throws IOException {
+        given_a_valid_access_token();
+        System.out.println(accessToken.toString());
+        String builder = "[access_token = " + TOKEN + ", token_type = " + TOKEN_TYPE + ", scope = DELETE GET PATCH POST PUT" + ", expired = false]";
+        assertEquals(builder.toString(), accessToken.toString());
+    }
+
+    @Test
+    public void equalsContract() {
+        EqualsVerifier.forClass(AccessToken.class)
+                .usingGetClass()
+                .suppress(Warning.NULL_FIELDS, Warning.NONFINAL_FIELDS) // Neither Null nor modification is possible
+                .verify();
     }
 
     @Test(expected = NoSuchMethodError.class)
