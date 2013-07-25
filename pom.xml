@@ -34,7 +34,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
-	<clover.version>3.1.11</clover.version>
+        <clover.version>3.1.11</clover.version>
     </properties>
     <scm>
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
@@ -58,6 +58,18 @@
     </repositories>
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+                <version>${clover.version}</version>
+                <configuration>
+                    <generatePdf>true</generatePdf>
+                    <generateXml>true</generateXml>
+                    <generateJson>false</generateJson>
+                    <generateHtml>true</generateHtml>
+                    <jdk>${java.version}</jdk>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
