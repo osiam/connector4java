@@ -18,15 +18,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.http.HttpStatus.*;
 

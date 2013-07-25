@@ -38,7 +38,7 @@ public class OsiamUserServiceTest {
     @Before
     public void setUp() {
         service = new OsiamUserService.Builder(endpoint).build();
-        tokenProvider = new AccessTokenMockProvider("/valid_accesstoken.json");
+        tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
     }
 

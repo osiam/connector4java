@@ -19,7 +19,7 @@ public class AccessTokenTest {
 
     @Before
     public void setUp() {
-        tokenProvider = new AccessTokenMockProvider("/valid_accesstoken.json");
+        tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
     }
 
