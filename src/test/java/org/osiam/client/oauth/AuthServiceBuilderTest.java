@@ -4,10 +4,8 @@ import org.junit.Test;
 import org.osiam.client.exception.ConnectionInitializationException;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class AuthServiceBuilderTest {
@@ -15,7 +13,7 @@ public class AuthServiceBuilderTest {
     private static final String IRRELEVANT = "irrelevant";
 
     @Test
-    public void valid_parameters_produce_a_working_authservice() throws Exception {
+    public void valid_parameters_produces_a_working_authservice() throws Exception {
         AuthService as = new AuthService.Builder(IRRELEVANT).withGrantType(GrantType.PASSWORD)
                 .withClientId(IRRELEVANT)
                 .withClientSecret(IRRELEVANT)
