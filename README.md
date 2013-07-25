@@ -1,6 +1,8 @@
+For detailed information and documentation visit the [connector4java Wiki](https://github.com/osiam/connector4java/wiki).
+
 The OSIAM Connector for Java is under construction at the moment. 
 
-If you are interested top use the OSIAM connector4java please watch us.
+If you are interested top use the OSIAM connector4java please watch or even better join us.
 
 #Overview
 
@@ -40,8 +42,6 @@ It is
 
 The connector4java gives you the possibility to easy use OSIAM from a Java enviroment.
 It provides a easy to use API, a step by step documentation how to set up a testsystem and also provides different “ready to go” examples to be able to have a good understanding of OSIAM and the connector4java in a short time.
-
- For more information and documentation visit the [connector4java Wiki](https://github.com/osiam/connector4java/wiki).
 
 For more information on OSIAM have a look into the [OSIAM server repository's README.md](https://github.com/osiam/server/) or visit OSIAM's homepage at [www.osiam.org](https://www.osiam.org).
 

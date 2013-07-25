@@ -1,4 +1,7 @@
 package org.osiam.client.oauth;
+/*
+ * for licensing see in the license.txt
+ */
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;

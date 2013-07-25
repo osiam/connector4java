@@ -1,4 +1,7 @@
 package org.osiam.client.oauth;
+/*
+ * for licensing see in the license.txt
+ */
 
 /**
  * The Grant Type represents the type of Grant that the client expects from the service.

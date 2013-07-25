@@ -41,13 +41,13 @@ public class OsiamUserService {
      * this method retrieves a single User with the given id. If no user with the given id can be found an
      * {@link NoResultException} is thrown.
      *
-     * @param id          the uuid from the wanted user
-     * @param accessToken the access token from OSIAM for the actual session
-     * @return the user with the given id
-     * @throws UnauthorizedException if the request could not be authorized. For example the access-token is not valid anymore.
-     * @throws NoResultException     if no user with the given id can be found
+     * @param id          				the uuid from the wanted user
+     * @param accessToken 				the access token from OSIAM for the actual session
+     * @return 							the user with the given id
+     * @throws UnauthorizedException 	if the request could not be authorized. For example the access-token is not valid anymore.
+     * @throws NoResultException     	if no user with the given id can be found
      * @throws ConnectionInitializationException
-     *                               if no connection to the given OSIAM services could be initialized
+     *                                	if no connection to the given OSIAM services could be initialized
      */
     public User getUserByUUID(UUID id, AccessToken accessToken) {
         final User user;
@@ -121,8 +121,11 @@ public class OsiamUserService {
             return this;
         }
 
+        /**
+         * constructes a OsiamUserService with the given values
+         * @return a valid OsiamUserService
+         */
         public OsiamUserService build() {
-
             WebResource webResource;
             try {
                 webResource = WebResourceProducer.createWebResource(new URI(endpoint + "/Users/"));
