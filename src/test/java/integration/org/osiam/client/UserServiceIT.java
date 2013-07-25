@@ -1,16 +1,5 @@
 package integration.org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.OsiamUserService;
@@ -21,9 +10,18 @@ import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.resources.scim.User;
 
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
+
 public class UserServiceIT {
 
     private static final String VALID_USER_UUID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String INVALID_UUID = "ffffffff-934a-4358-86bc-fffffffffff";
 
     private AccessToken accessToken;
     private UUID uuidStandardUser;
@@ -36,7 +34,7 @@ public class UserServiceIT {
 
     @Before
     public void setUp() throws URISyntaxException {
-    	
+
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
                 withClientId(clientId).
                 withClientSecret(clientSecret).
@@ -103,26 +101,29 @@ public class UserServiceIT {
     }
 
     @Test(expected = NoResultException.class)
-    public void get_an_invalid_user() throws IOException {
+    public void get_an_invalid_user_raises_exception() throws Exception {
         given_a_valid_access_token();
         service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
     }
-    
-    @Test (expected = UnauthorizedException.class)
-    public void provide_a_invalid_access_token() throws Exception {
+
+    @Test(expected = UnauthorizedException.class)
+    public void provide_an_invalid_access_token_raises_exception() throws Exception {
         given_a_test_user_UUID();
-        given_a_valid_access_token();
-        
-        Field expiredInField = accessToken.getClass().getDeclaredField("token");
-        expiredInField.setAccessible(true);
-        expiredInField.set(accessToken, "996f6c11-934a-4358-86bc-d1ee5e64289d");
-        expiredInField.setAccessible(false);
-        
+        given_an_invalid_access_token();
+
         service.getUserByUUID(uuidStandardUser, accessToken);
         fail();
     }
-    
-    private void given_a_valid_access_token() throws IOException {
+
+    private void given_an_invalid_access_token() throws Exception {
+        accessToken = new AccessToken();
+        Field tokenField = accessToken.getClass().getDeclaredField("token");
+        tokenField.setAccessible(true);
+        tokenField.set(accessToken, INVALID_UUID);
+        tokenField.setAccessible(false);
+    }
+
+    private void given_a_valid_access_token() throws Exception {
         if (accessToken == null) {
 
             accessToken = authService.retrieveAccessToken();

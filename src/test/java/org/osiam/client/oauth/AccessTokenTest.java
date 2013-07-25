@@ -40,9 +40,8 @@ public class AccessTokenTest {
     @Test
     public void toString_behaves_as_expected() throws IOException {
         given_a_valid_access_token();
-        System.out.println(accessToken.toString());
         String builder = "[access_token = " + TOKEN + ", token_type = " + TOKEN_TYPE + ", scope = DELETE GET PATCH POST PUT" + ", expired = false]";
-        assertEquals(builder.toString(), accessToken.toString());
+        assertEquals(builder, accessToken.toString());
     }
 
     @Test
@@ -61,11 +60,11 @@ public class AccessTokenTest {
     }
 
     private void given_an_expired_access_token() throws Exception {
-        accessToken = tokenProvider.given_an_expired_access_token();
+        accessToken = tokenProvider.expired_access_token();
     }
 
     private void given_a_valid_access_token() throws IOException {
-        accessToken = tokenProvider.given_a_valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
 }

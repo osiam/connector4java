@@ -1,13 +1,17 @@
 package org.osiam.client.oauth;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.Rule;
 import org.junit.Test;
 
+import java.net.URI;
+
+import static org.junit.Assert.assertEquals;
+
 public class AuthServiceTest {
+
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(9090);
 
     private final static String ENDPOINT = "http://localhost:8080/osiam-server/";
     private final static String TOKEN_PATH = "/oauth/token";
@@ -20,15 +24,12 @@ public class AuthServiceTest {
     private AuthService service;
 
     @Test
-    public void service_uses_correct_URI() throws URISyntaxException {
+    public void service_uses_correct_URI() throws Exception {
         given_a_correctly_configured_auth_service();
-        System.out.println(service.getUri());
-        assertEquals(new URI(ENDPOINT + TOKEN_PATH), service.getUri() );
+        assertEquals(new URI(ENDPOINT + TOKEN_PATH), service.getUri());
     }
 
-
-
-    public void given_a_correctly_configured_auth_service(){
+    public void given_a_correctly_configured_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
                 .withGrantType(GrantType.PASSWORD)
                 .withClientId(VALID_CLIENT_ID)

@@ -9,6 +9,7 @@ import org.osiam.client.oauth.AccessToken;
 
 public class AccessTokenMockProvider {
 
+    private static final String INVALID_ACCESS_TOKEN = "99d116cb-2758-4e7c-9aca-4a115bc4f19e";
     private ObjectMapper mapper;
     private String path;
 
@@ -17,12 +18,12 @@ public class AccessTokenMockProvider {
         mapper = new ObjectMapper();
     }
 
-    public AccessToken given_a_valid_access_token() throws IOException {
+    public AccessToken valid_access_token() throws IOException {
         InputStream is = readFile(path);
         return mapper.readValue(is, AccessToken.class);
     }
 
-    public AccessToken given_an_expired_access_token() throws IOException, NoSuchFieldException, IllegalAccessException {
+    public AccessToken expired_access_token() throws IOException, NoSuchFieldException, IllegalAccessException {
         InputStream is = readFile(path);
         AccessToken accessToken = mapper.readValue(is, AccessToken.class);
         Field expiredInField = accessToken.getClass().getDeclaredField("expiresIn");
@@ -31,14 +32,14 @@ public class AccessTokenMockProvider {
         expiredInField.setAccessible(false);
         return accessToken;
     }
-    
-    public AccessToken given_an_invalid_access_token() throws IOException, NoSuchFieldException, IllegalAccessException {
+
+    public AccessToken invalid_access_token() throws IOException, NoSuchFieldException, IllegalAccessException {
         InputStream is = readFile(path);
         AccessToken accessToken = mapper.readValue(is, AccessToken.class);
-        Field expiredInField = accessToken.getClass().getDeclaredField("token");
-        expiredInField.setAccessible(true);
-        expiredInField.set(accessToken, "99d116cb-2758-4e7c-9aca-4a115bc4f19e");
-        expiredInField.setAccessible(false);
+        Field token = accessToken.getClass().getDeclaredField("token");
+        token.setAccessible(true);
+        token.set(accessToken, INVALID_ACCESS_TOKEN);
+        token.setAccessible(false);
         return accessToken;
     }
 

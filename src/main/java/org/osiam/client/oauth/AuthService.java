@@ -203,8 +203,8 @@ public class AuthService {
             if (clientId == null || clientSecret == null) {
                 throw new ConnectionInitializationException("The provided client credentials are incomplete.");
             }
-            if(grantType == null){
-            	throw new ConnectionInitializationException("The grant type is not set.");
+            if (grantType == null) {
+                throw new ConnectionInitializationException("The grant type is not set.");
             }
             if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) {
                 throw new ConnectionInitializationException("The grant type 'password' requires username and password");
