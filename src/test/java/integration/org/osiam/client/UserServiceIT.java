@@ -1,27 +1,25 @@
 package integration.org.osiam.client;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.osiam.client.OsiamUserService;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.AuthService;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.resources.scim.User;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.osiam.client.OsiamUserService;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.AuthService;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.resources.scim.User;
 
 public class UserServiceIT {
 
@@ -38,7 +36,7 @@ public class UserServiceIT {
 
     @Before
     public void setUp() throws URISyntaxException {
-
+    	
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
                 withClientId(clientId).
                 withClientSecret(clientSecret).
@@ -108,75 +106,6 @@ public class UserServiceIT {
     public void get_an_invalid_user() throws IOException {
         given_a_valid_access_token();
         service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    @Ignore
-    public void provideWrongAccessToken() {
-        given_a_test_user_UUID();
-        AccessToken wrongAccessToken = new AccessToken();
-        service.getUserByUUID(uuidStandardUser, wrongAccessToken);
-        fail("A Exception should be thrown");
-    }
-
-    @Test (expected = ConnectionInitializationException.class)
-    public void wrongAuthServiceSetupNoClientId() throws URISyntaxException {
-
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("marissa").
-                withPassword("koala");
-        authService = authBuilder.build();
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
-    
-    @Test (expected = ConnectionInitializationException.class)
-    public void wrongAuthServiceSetupNoClientSecret() throws URISyntaxException {
-
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("marissa").
-                withPassword("koala");
-        authService = authBuilder.build();
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
-    
-    @Test (expected = ConnectionInitializationException.class)
-    public void wrongAuthServiceSetupNoGrantType() throws URISyntaxException {
-
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withUsername("marissa").
-                withPassword("koala");
-        authService = authBuilder.build();
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
-    
-    @Test (expected = ConnectionInitializationException.class)
-    public void wrongAuthServiceSetupNoUserName() throws URISyntaxException {
-
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withPassword("koala");
-        authService = authBuilder.build();
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
-    
-    @Test (expected = ConnectionInitializationException.class)
-    public void wrongAuthServiceSetupNoUserPassword() throws URISyntaxException {
-
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("marissa");
-        authService = authBuilder.build();
-        service = new OsiamUserService.Builder(endpointAddress).build();
     }
     
     @Test (expected = UnauthorizedException.class)
