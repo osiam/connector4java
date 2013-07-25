@@ -129,7 +129,7 @@ public class AuthService {
          */
         public Builder(String endpoint) {
             requestParameters.put("scope", DEFAULT_SCOPE);
-            this.endpoint = endpoint;
+            this.endpoint = endpoint + "/oauth/token";
         }
 
         /**

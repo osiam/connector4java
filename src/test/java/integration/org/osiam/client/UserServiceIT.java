@@ -35,7 +35,7 @@ public class UserServiceIT {
     @Before
     public void setUp() throws URISyntaxException {
 
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress + "/oauth/token").
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
                 withClientId(clientId).withClientSecret(clientSecret).
                 withGrantType(GrantType.PASSWORD).
                 withUsername("marissa").
