@@ -48,7 +48,8 @@ public class AccessToken {
     }
 
     /**
-     * @return
+     * type of the access token
+     * @return the type of the access token
      */
     public String getType() {
         return type;
@@ -56,13 +57,16 @@ public class AccessToken {
 
     /**
      * The number of seconds this access token is valid from the time it was retrieved.
-     *
      * @return The number of seconds this access token is valid.
      */
     public int getExpiresIn() {
         return expiresIn;
     }
 
+    /**
+     * checks if the time the access token will be valid are over
+     * @return true if the access token is not valid anymore
+     */
     public boolean isExpired() {
         long now = new Date().getTime();
         return now > retrievedOn + expiresIn * 1000;
@@ -70,7 +74,6 @@ public class AccessToken {
 
     /**
      * Retrieve the possible Scopes of this AccessToken
-     *
      * @return The scopes as string
      */
     public String getScope() {

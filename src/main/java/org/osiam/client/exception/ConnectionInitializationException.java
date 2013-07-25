@@ -1,8 +1,10 @@
 package org.osiam.client.exception;
+/*
+ * for licensing see in the license.txt
+ */
 
 /**
  * This exception is thrown, if a connection to the OSIAM service can not be created.
- *
  */
 public class ConnectionInitializationException extends RuntimeException {
 
