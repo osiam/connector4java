@@ -1,9 +1,11 @@
 package integration.org.osiam.client;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osiam.client.OsiamUserService;
+import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
@@ -12,6 +14,8 @@ import org.osiam.client.oauth.GrantType;
 import org.osiam.resources.scim.User;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,7 +40,8 @@ public class UserServiceIT {
     public void setUp() throws URISyntaxException {
 
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).withClientSecret(clientSecret).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
                 withGrantType(GrantType.PASSWORD).
                 withUsername("marissa").
                 withPassword("koala");
@@ -114,6 +119,80 @@ public class UserServiceIT {
         fail("A Exception should be thrown");
     }
 
+    @Test (expected = ConnectionInitializationException.class)
+    public void wrongAuthServiceSetupNoClientId() throws URISyntaxException {
+
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientSecret(clientSecret).
+                withGrantType(GrantType.PASSWORD).
+                withUsername("marissa").
+                withPassword("koala");
+        authService = authBuilder.build();
+        service = new OsiamUserService.Builder(endpointAddress).build();
+    }
+    
+    @Test (expected = ConnectionInitializationException.class)
+    public void wrongAuthServiceSetupNoClientSecret() throws URISyntaxException {
+
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withGrantType(GrantType.PASSWORD).
+                withUsername("marissa").
+                withPassword("koala");
+        authService = authBuilder.build();
+        service = new OsiamUserService.Builder(endpointAddress).build();
+    }
+    
+    @Test (expected = ConnectionInitializationException.class)
+    public void wrongAuthServiceSetupNoGrantType() throws URISyntaxException {
+
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
+                withUsername("marissa").
+                withPassword("koala");
+        authService = authBuilder.build();
+        service = new OsiamUserService.Builder(endpointAddress).build();
+    }
+    
+    @Test (expected = ConnectionInitializationException.class)
+    public void wrongAuthServiceSetupNoUserName() throws URISyntaxException {
+
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
+                withGrantType(GrantType.PASSWORD).
+                withPassword("koala");
+        authService = authBuilder.build();
+        service = new OsiamUserService.Builder(endpointAddress).build();
+    }
+    
+    @Test (expected = ConnectionInitializationException.class)
+    public void wrongAuthServiceSetupNoUserPassword() throws URISyntaxException {
+
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
+                withGrantType(GrantType.PASSWORD).
+                withUsername("marissa");
+        authService = authBuilder.build();
+        service = new OsiamUserService.Builder(endpointAddress).build();
+    }
+    
+    @Test (expected = UnauthorizedException.class)
+    public void provide_a_invalid_access_token() throws Exception {
+        given_a_test_user_UUID();
+        given_a_valid_access_token();
+        
+        Field expiredInField = accessToken.getClass().getDeclaredField("token");
+        expiredInField.setAccessible(true);
+        expiredInField.set(accessToken, "996f6c11-934a-4358-86bc-d1ee5e64289d");
+        expiredInField.setAccessible(false);
+        
+        service.getUserByUUID(uuidStandardUser, accessToken);
+        fail();
+    }
+    
     private void given_a_valid_access_token() throws IOException {
         if (accessToken == null) {
 

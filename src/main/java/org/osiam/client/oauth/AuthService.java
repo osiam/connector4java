@@ -55,7 +55,7 @@ public class AuthService {
         return post.getURI();
     }
 
-    private HttpResponse perform() throws ConnectionInitializationException {
+    private HttpResponse performRequest() throws ConnectionInitializationException {
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;
         try {
@@ -76,7 +76,7 @@ public class AuthService {
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
-        HttpResponse response = perform();
+        HttpResponse response = performRequest();
         int status = response.getStatusLine().getStatusCode();
 
         switch (status) {
@@ -202,6 +202,9 @@ public class AuthService {
         public AuthService build() {
             if (clientId == null || clientSecret == null) {
                 throw new ConnectionInitializationException("The provided client credentials are incomplete.");
+            }
+            if(grantType == null){
+            	throw new ConnectionInitializationException("The grant type is not set.");
             }
             if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) {
                 throw new ConnectionInitializationException("The grant type 'password' requires username and password");
