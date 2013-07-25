@@ -24,10 +24,10 @@ import static org.junit.Assert.fail;
 public class OsiamUserServiceTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(); // No-args constructor defaults to port 8080
+    public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    final private static String endpoint = "http://localhost:8080/osiam-server/";
+    final private static String endpoint = "http://localhost:9090/osiam-server/";
     private UUID searchedUUID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
