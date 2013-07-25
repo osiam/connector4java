@@ -60,18 +60,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
-                <version>${clover.version}</version>
-                <configuration>
-                    <generatePdf>true</generatePdf>
-                    <generateXml>true</generateXml>
-                    <generateJson>false</generateJson>
-                    <generateHtml>true</generateHtml>
-                    <jdk>${java.version}</jdk>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
