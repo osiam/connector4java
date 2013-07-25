@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.apache.http.HttpStatus.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -43,86 +44,89 @@ public class OsiamUserServiceTest {
 
     @Test
     public void existing_user_is_returned() throws IOException {
-        given_existing_user_UUID();
-        given_valid_access_token();
+        given_an_existing_user_UUID();
+        given_a_valid_access_token();
         when_existing_uuid_is_looked_up();
         then_returned_user_has_uuid(searchedUUID);
     }
 
     @Test
     public void user_has_valid_values() throws Exception {
-        given_existing_user_UUID();
-        given_valid_access_token();
+        given_an_existing_user_UUID();
+        given_a_valid_access_token();
         when_existing_uuid_is_looked_up();
-        then_returned_user_values(searchedUUID);
+        then_returned_user_matches_expectations();
     }
 
     @Test(expected = NoResultException.class)
     public void user_does_not_exist() throws IOException {
-        given_valid_access_token();
-        given_non_existent_user_UUID();
+        given_a_valid_access_token();
+        given_a_non_existent_user_UUID();
         when_non_existent_uuid_is_looked_up();
         service.getUserByUUID(searchedUUID, accessToken);
+        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void expired_access_token() throws Exception {
-        given_expired_access_token();
-        given_existing_user_UUID();
-        when_expired_accesstoken_is_looked_up();
+        given_an_expired_access_token();
+        given_an_existing_user_UUID();
+        when_expired_access_token_is_used_for_lookup();
         service.getUserByUUID(searchedUUID, accessToken);
+        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void invalid_access_token() throws Exception {
-        given_invalid_access_token();
-        given_existing_user_UUID();
-        when_invalid_accesstoken_is_looked_up();
+        given_an_invalid_access_token();
+        given_an_existing_user_UUID();
+        when_invalid_access_token_is_used_for_lookup();
         service.getUserByUUID(searchedUUID, accessToken);
+        fail("Exception expected");
     }
 
-    private void given_valid_access_token() throws IOException {
+    private void given_a_valid_access_token() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
-    private void given_expired_access_token() throws Exception {
+    private void given_an_expired_access_token() throws Exception {
         this.accessToken = tokenProvider.expired_access_token();
     }
 
-    private void given_invalid_access_token() throws Exception {
+    private void given_an_invalid_access_token() throws Exception {
         this.accessToken = tokenProvider.invalid_access_token();
     }
 
-    private void given_existing_user_UUID() {
+    private void given_an_existing_user_UUID() {
         this.searchedUUID = UUID.fromString(userUuidString);
     }
 
-    private void given_non_existent_user_UUID() {
+    private void given_a_non_existent_user_UUID() {
         this.searchedUUID = UUID.fromString(userUuidString);
+    }
+
+    private void when_expired_access_token_is_used_for_lookup() {
+        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_UNAUTHORIZED)));
+    }
+
+    private void when_invalid_access_token_is_used_for_lookup() {
+        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_UNAUTHORIZED)));
     }
 
     private void when_non_existent_uuid_is_looked_up() {
         stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(404)));
-    }
-
-    private void when_expired_accesstoken_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
-                .willReturn(aResponse()
-                        .withStatus(401)));
-    }
-
-    private void when_invalid_accesstoken_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
-                .willReturn(aResponse()
-                        .withStatus(401)));
+                        .withStatus(SC_NOT_FOUND)));
     }
 
     private void when_existing_uuid_is_looked_up() {
         stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(200)
+                        .withStatus(SC_OK)
                         .withHeader("Content-Type", "application/json")
                         .withBodyFile(userUuidString + ".json")));
     }
@@ -138,10 +142,10 @@ public class OsiamUserServiceTest {
         assertEquals(uuid.toString(), result.getId());
     }
 
-    private void then_returned_user_values(UUID uuid) throws Exception {
+    private void then_returned_user_matches_expectations() throws Exception {
 
         User expectedUser = get_expected_user();
-        User actualUser = service.getUserByUUID(uuid, accessToken);
+        User actualUser = service.getUserByUUID(searchedUUID, accessToken);
         assertEqualsMetaData(expectedUser.getMeta(), actualUser.getMeta());
         assertEquals(expectedUser.getId(), actualUser.getId());
         assertEqualsAdressList(expectedUser.getAddresses(), actualUser.getAddresses());
