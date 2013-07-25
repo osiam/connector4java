@@ -34,6 +34,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+	<clover.version>3.1.11</clover.version>
     </properties>
     <scm>
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
@@ -63,6 +64,37 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                </configuration>
+            </plugin>
+
+            <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
+            <!-- If not given, gpg passphrase has to be provided interactively -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.4</version>
+              <executions>
+                  <execution>
+                      <id>sign-artifacts</id>
+                      <phase>verify</phase>
+                      <goals>
+                          <goal>sign</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+
+            <!-- Coverage reports for sonar -->
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+                <version>${clover.version}</version>
+                <configuration>
+                    <generatePdf>true</generatePdf>
+                    <generateXml>true</generateXml>
+                    <generateJson>false</generateJson>
+                    <generateHtml>true</generateHtml>
+                    <jdk>${java.version}</jdk>
                 </configuration>
             </plugin>
         </plugins>
