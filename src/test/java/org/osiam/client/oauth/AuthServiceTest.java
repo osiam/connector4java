@@ -1,19 +1,16 @@
 package org.osiam.client.oauth;
 
-import com.github.tomakehurst.wiremock.client.VerificationException;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpStatus;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.net.URI;
-import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class AuthServiceTest {
 
@@ -28,6 +25,7 @@ public class AuthServiceTest {
     private final static String VALID_USERNAME = "valid-username";
     private final static String VALID_PASSWORD = "valid-password";
     private final static String VALID_SCOPE = "GET POST PUT PATCH DELETE";
+    private final static String ACCESS_TOKEN_STRING = "c5d116cb-2758-4e7c-9aca-4a115bc4f19e";
 
     private AuthService service;
     private AccessToken accessToken;
@@ -43,7 +41,14 @@ public class AuthServiceTest {
     public void service_returns_valid_access_token() throws Exception {
         given_a_correctly_configured_auth_service();
         given_oauth_server_issues_access_token();
-        verify_access_token_is_requested_correctly();
+        verify_access_token_is_valid();
+
+    }
+
+    @Test
+    public void service_returns_expected_access_token(){
+        given_a_correctly_configured_auth_service();
+        given_oauth_server_issues_access_token();
 
     }
 
@@ -51,16 +56,8 @@ public class AuthServiceTest {
         stubFor(post(urlEqualTo("/osiam-server/" + TOKEN_PATH)).
                 willReturn(aResponse().withStatus(HttpStatus.SC_OK)
                         .withBodyFile("valid_accesstoken.json")));
-        accessToken = service.retrieveAccessToken();
     }
 
-    private void verify_access_token_is_requested_correctly() throws Exception {
-
-        verify(postRequestedFor(urlEqualTo("/osiam-server/" + TOKEN_PATH))
-                .withHeader("Authorization", equalTo("Bearer " + encodeClientCredentials(VALID_CLIENT_ID, VALID_CLIENT_SECRET)))
-        );
-
-    }
 
     private void given_a_correctly_configured_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
@@ -70,6 +67,15 @@ public class AuthServiceTest {
                 .withUsername(VALID_USERNAME)
                 .withPassword(VALID_PASSWORD)
                 .build();
+    }
+
+    private void verify_access_token_is_expected(){
+        accessToken = service.retrieveAccessToken();
+        assertEquals(ACCESS_TOKEN_STRING, accessToken.getToken());
+    }
+    private void verify_access_token_is_valid() throws Exception {
+        accessToken = service.retrieveAccessToken();
+        assertFalse(accessToken.isExpired());
     }
 
     private String encodeClientCredentials(String clientId, String clientSecret) throws Exception {
