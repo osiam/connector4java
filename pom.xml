@@ -30,6 +30,13 @@
     <artifactId>connector4java</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>OSIAM Connector 4 Java</name>
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,8 +46,24 @@
     </properties>
     <scm>
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
+        <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>osiam-repository</id>
+            <name>public evolvis release repository</name>
+            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>OSIAM-NG-SNAPSHOT-repository</id>
+            <name>public evolvis release repository</name>
+            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
+        </snapshotRepository>
+
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>osiam releases repo</id>
@@ -71,18 +94,18 @@
             <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
             <!-- If not given, gpg passphrase has to be provided interactively -->
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.4</version>
-              <executions>
-                  <execution>
-                      <id>sign-artifacts</id>
-                      <phase>verify</phase>
-                      <goals>
-                          <goal>sign</goal>
-                      </goals>
-                  </execution>
-              </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Coverage reports for sonar -->
@@ -97,6 +120,19 @@
                     <generateHtml>true</generateHtml>
                     <jdk>${java.version}</jdk>
                 </configuration>
+            </plugin>
+            <!-- Needed due to a problem with SSH -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.5</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>1.0-beta-7</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
