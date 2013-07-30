@@ -14,6 +14,7 @@ import org.osiam.resources.scim.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +41,11 @@ public class OsiamUserServiceTest {
         service = new OsiamUserService.Builder(endpoint).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
+    }
+
+    @Test
+    public void service_returns_correct_uri() throws Exception {
+        assertEquals(new URI(endpoint + "/Users/"), service.getUri());
     }
 
     @Test

@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
 import java.util.UUID;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -51,6 +52,10 @@ public class OsiamGroupServiceTest {
 
     }
 
+    @Test
+    public void service_returns_correct_uri() throws Exception {
+        assertEquals(new URI(endpoint + "/Groups/"), service.getUri());
+    }
     @Test
     public void existing_group_is_returned() throws IOException {
         given_an_existing_group_UUID();
