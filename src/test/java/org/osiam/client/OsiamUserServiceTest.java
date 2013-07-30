@@ -128,7 +128,7 @@ public class OsiamUserServiceTest {
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", "application/json")
-                        .withBodyFile(userUuidString + ".json")));
+                        .withBodyFile("user_" + userUuidString + ".json")));
     }
 
     private MappingBuilder when_uuid_is_looked_up(String uuidString, AccessToken accessToken) {
@@ -224,7 +224,7 @@ public class OsiamUserServiceTest {
         StringBuilder jsonUser = null;
         User expectedUser;
         try {
-            reader = new FileReader("src/test/resources/__files/" + userUuidString + ".json");
+            reader = new FileReader("src/test/resources/__files/user_" + userUuidString + ".json");
             jsonUser = new StringBuilder();
             for (int c; (c = reader.read()) != -1; )
                 jsonUser.append((char) c);

@@ -1,5 +1,15 @@
 package integration.org.osiam.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.OsiamUserService;
@@ -9,14 +19,6 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.resources.scim.User;
-
-import java.lang.reflect.Field;
-import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-
-import static org.junit.Assert.*;
 
 public class UserServiceIT {
 
@@ -42,6 +44,7 @@ public class UserServiceIT {
                 withUsername("marissa").
                 withPassword("koala");
         authService = authBuilder.build();
+        
         service = new OsiamUserService.Builder(endpointAddress).build();
     }
 

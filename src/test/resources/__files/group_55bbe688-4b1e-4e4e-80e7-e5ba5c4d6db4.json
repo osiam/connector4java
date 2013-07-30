@@ -1,0 +1,16 @@
+{
+     "schemas": ["urn:scim:schemas:core:1.0"],
+     "meta":{
+        "created":"2011-08-01T18:29:49.793Z",
+        "lastModified":"2011-08-01T18:29:49.793Z",
+        "location":"https://example.com/v1/Users/2819c223...",
+        "version":"W\/\"f250dd84f0671c3\""
+    	},
+     "id": "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4",
+     "displayName": "TestGroup01",
+     "members": [
+       {
+         "value": "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4"
+       }
+     ]
+   }
