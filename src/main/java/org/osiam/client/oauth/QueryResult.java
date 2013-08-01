@@ -11,7 +11,7 @@ public class QueryResult {
     private Integer totalResults;
     private Integer itemsPerPage;
     private Integer startIndex;
-    private Set<String> schemas;
+    private String schemas;
     private Set<Group> Resources;
 
     public Integer getTotalResults() {
@@ -26,7 +26,7 @@ public class QueryResult {
         return startIndex;
     }
 
-    public Set<String> getSchemas() {
+    public String getSchemas() {
         return schemas;
     }
 
