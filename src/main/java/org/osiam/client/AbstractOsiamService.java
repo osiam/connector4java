@@ -10,6 +10,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.QueryResult;
 
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
@@ -76,6 +77,24 @@ abstract class AbstractOsiamService<T> {
                     throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
                 case SC_NOT_FOUND:
                     throw new NoResultException("No " + typeName + " with given UUID " + id);
+                default:
+                    throw e;
+            }
+        } catch (ClientHandlerException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
+        }
+        return resource;
+    }
+    
+    protected QueryResult getAllResourceIds(AccessToken accessToken) {
+    	QueryResult resource;
+        try {
+        	resource = webResource.header("Authorization", "Bearer " + accessToken.getToken())
+        			.get(QueryResult.class);
+        } catch (UniformInterfaceException e) {
+            switch (e.getResponse().getStatus()) {
+                case SC_UNAUTHORIZED:
+                    throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
                 default:
                     throw e;
             }
