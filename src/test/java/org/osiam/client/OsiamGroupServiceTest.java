@@ -1,25 +1,10 @@
 package org.osiam.client;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URI;
-import java.util.UUID;
-
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
@@ -29,8 +14,15 @@ import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URI;
+import java.util.UUID;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.apache.http.HttpStatus.*;
+import static org.junit.Assert.*;
 
 public class OsiamGroupServiceTest {
 
@@ -56,10 +48,11 @@ public class OsiamGroupServiceTest {
     public void service_returns_correct_uri() throws Exception {
         assertEquals(new URI(endpoint + "/Groups/"), service.getUri());
     }
+
     @Test
     public void existing_group_is_returned() throws IOException {
         given_an_existing_group_UUID();
-        given_a_valid_access_token();
+        givenAValidAccessToken();
         when_existing_uuid_is_looked_up();
         then_returned_group_has_uuid(searchedUUID);
     }
@@ -67,14 +60,22 @@ public class OsiamGroupServiceTest {
     @Test
     public void group_has_valid_values() throws Exception {
         given_an_existing_group_UUID();
-        given_a_valid_access_token();
+        givenAValidAccessToken();
         when_existing_uuid_is_looked_up();
         then_returned_group_matches_expectations();
     }
 
+    @Test    @Ignore
+    public void list_of_groups_is_returned() throws Exception {
+        givenAValidAccessToken();
+        whenAllGroupsAreLookedUp();
+        service.getAllResourceIds(accessToken);
+
+    }
+
     @Test(expected = NoResultException.class)
     public void group_does_not_exist() throws IOException {
-        given_a_valid_access_token();
+        givenAValidAccessToken();
         given_a_non_existent_group_UUID();
         when_non_existent_uuid_is_looked_up();
         service.getGroupByUUID(searchedUUID, accessToken);
@@ -99,7 +100,7 @@ public class OsiamGroupServiceTest {
         fail("Exception expected");
     }
 
-    private void given_a_valid_access_token() throws IOException {
+    private void givenAValidAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
@@ -145,6 +146,20 @@ public class OsiamGroupServiceTest {
                         .withBodyFile("group_" + groupUuidString + ".json")));
     }
 
+    private void whenAllGroupsAreLookedUp(){
+        stubFor(whenGroupsAreLookedUp(accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("query_all_groups.json")));
+    }
+
+    private MappingBuilder whenGroupsAreLookedUp(AccessToken accessToken) {
+        return get(urlEqualTo("/osiam-server//Groups/"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
+    }
+
     private MappingBuilder when_uuid_is_looked_up(String uuidString, AccessToken accessToken) {
         return get(urlEqualTo("/osiam-server//Groups/" + uuidString))
                 .withHeader("Content-Type", equalTo("application/json"))
@@ -178,16 +193,16 @@ public class OsiamGroupServiceTest {
 
     private void assertEqualsMembers(Group expectedGroup, Group actualGroup) {
         for (MultiValuedAttribute actAttribute : actualGroup.getMembers()) {
-        	String uuid = actAttribute.getValue().toString();
-        	boolean found = false;
-        	for (MultiValuedAttribute expAttribute : expectedGroup.getMembers()) {
-				if(expAttribute.getValue().toString().equals(uuid)){
-					found = true;
-					break;
-				}
-			}
-			assertTrue(found);
-		}
+            String uuid = actAttribute.getValue().toString();
+            boolean found = false;
+            for (MultiValuedAttribute expAttribute : expectedGroup.getMembers()) {
+                if (expAttribute.getValue().toString().equals(uuid)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue(found);
+        }
     }
 
     private Group get_expected_group() throws Exception {

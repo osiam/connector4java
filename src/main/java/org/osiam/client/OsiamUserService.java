@@ -42,7 +42,7 @@ public class OsiamUserService extends AbstractOsiamService<User>{
      *                                	if no connection to the given OSIAM services could be initialized
      */
     public User getUserByUUID(UUID id, AccessToken accessToken) {
-        return getResourceByUUID(id, accessToken); 
+        return getResourceByUUID(id, accessToken);
     }
 
     /**
@@ -59,7 +59,7 @@ public class OsiamUserService extends AbstractOsiamService<User>{
 		public Builder(String endpoint) {
 			super(endpoint);
 		}
-		
+
         /**
          * constructs a OsiamUserService with the given values
          * @return a valid OsiamUserService

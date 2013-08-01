@@ -12,6 +12,7 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.QueryResult;
 
+import javax.ws.rs.core.MediaType;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -70,7 +71,8 @@ abstract class AbstractOsiamService<T> {
         T resource;
         try {
             resource = webResource.path(id.toString()).
-                    header("Authorization", "Bearer " + accessToken.getToken()).get(type);
+                    header("Authorization", "Bearer " + accessToken.getToken())
+                    .accept(MediaType.APPLICATION_JSON_TYPE).get(type);
         } catch (UniformInterfaceException e) {
             switch (e.getResponse().getStatus()) {
                 case SC_UNAUTHORIZED:
@@ -85,12 +87,13 @@ abstract class AbstractOsiamService<T> {
         }
         return resource;
     }
-    
-    protected QueryResult getAllResourceIds(AccessToken accessToken) {
-    	QueryResult resource;
+
+    public QueryResult getAllResourceIds(AccessToken accessToken) {
+        QueryResult resource;
         try {
-        	resource = webResource.header("Authorization", "Bearer " + accessToken.getToken())
-        			.get(QueryResult.class);
+            resource = webResource.header("Authorization", "Bearer " + accessToken.getToken())
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .get(QueryResult.class);
         } catch (UniformInterfaceException e) {
             switch (e.getResponse().getStatus()) {
                 case SC_UNAUTHORIZED:
