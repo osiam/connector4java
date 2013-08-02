@@ -13,7 +13,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.QueryResult;
+import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -35,7 +35,7 @@ public class OsiamGroupService extends AbstractOsiamService<Group>{
     private OsiamGroupService(WebResource groupWebResource) {
     	super(groupWebResource);
     }
-    
+
     /**
      * this method retrieves a single Group with the given id. If no group with the given id can be found an
      * {@link NoResultException} is thrown.
@@ -49,9 +49,9 @@ public class OsiamGroupService extends AbstractOsiamService<Group>{
      *                                	if no connection to the given OSIAM services could be initialized
      */
     public Group getGroupByUUID(UUID id, AccessToken accessToken) {
-    	return getResourceByUUID(id, accessToken); 
+    	return getResourceByUUID(id, accessToken);
     }
-    
+
     /**
      * this method retrieves a list of the first 100 groups. I also gives back the information about the total number of groups
      * saved in OSIAM
@@ -76,7 +76,7 @@ public class OsiamGroupService extends AbstractOsiamService<Group>{
         }
         return resource;
     }
-    
+
     /**
      * The Builder class is used to construct instances of the {@link OsiamGroupService}
      */
@@ -91,7 +91,7 @@ public class OsiamGroupService extends AbstractOsiamService<Group>{
         public Builder(String endpoint) {
         	super(endpoint);
         }
-        
+
         /**
          * constructs a OsiamGroupService with the given values
          * @return a valid OsiamGroupService

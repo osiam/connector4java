@@ -1,4 +1,4 @@
-package org.osiam.client.oauth;
+package org.osiam.client.query;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -15,7 +15,7 @@ public class QueryResult {
     private String schemas;
     @JsonProperty("Resources")
     private Set<Group> resources;
-    
+
     public Integer getTotalResults() {
         return totalResults;
     }

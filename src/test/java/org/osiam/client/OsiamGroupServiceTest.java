@@ -4,13 +4,12 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.QueryResult;
+import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
@@ -67,7 +66,7 @@ public class OsiamGroupServiceTest {
         then_returned_group_matches_expectations();
     }
 
-    @Test    
+    @Test
     public void list_of_groups_is_returned() throws Exception {
     	given_an_existing_group_UUID();
     	givenAValidAccessToken();
