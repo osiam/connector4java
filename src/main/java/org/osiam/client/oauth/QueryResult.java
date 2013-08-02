@@ -30,7 +30,7 @@ public class QueryResult {
         return schemas;
     }
 
-    public Set<Group> Resources() {
+    public Set<Group> getResources() {
         return Resources;
     }
 }

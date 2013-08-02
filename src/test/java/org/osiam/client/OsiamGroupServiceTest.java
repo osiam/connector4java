@@ -31,6 +31,7 @@ public class OsiamGroupServiceTest {
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final private static String groupUuidString = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     final private static String endpoint = "http://localhost:9090/osiam-server/";
     private UUID searchedUUID;
     private AccessToken accessToken;
@@ -67,12 +68,20 @@ public class OsiamGroupServiceTest {
     }
 
     @Test    
-    @Ignore
     public void list_of_groups_is_returned() throws Exception {
-        givenAValidAccessToken();
+    	given_an_existing_group_UUID();
+    	givenAValidAccessToken();
         whenAllGroupsAreLookedUp();
         QueryResult queryResult = service.getAllGroups(accessToken);
         assertEquals(new Integer(7), queryResult.getTotalResults());
+        for (Group actGroup : queryResult.getResources()) {
+			if(actGroup.getId().equals(groupUuidString)){
+				assertEquals(1, actGroup.getMembers().size());
+				for (MultiValuedAttribute actValue : actGroup.getMembers()) {
+					assertEquals(userUuidString, actValue.getValue().toString());
+				}
+			}
+		}
     }
 
     @Test(expected = NoResultException.class)
