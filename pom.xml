@@ -21,7 +21,8 @@
   ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
   ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.osiam</groupId>
@@ -62,22 +63,6 @@
 
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>osiam releases repo</id>
-            <url>https://maven-repo.evolvis.org/releases</url>
-        </repository>
-        <repository>
-            <id>osiam snapshots repo</id>
-            <url>https://maven-repo.evolvis.org/snapshots</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -87,23 +72,6 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin>
-
-            <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
-            <!-- If not given, gpg passphrase has to be provided interactively -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Coverage reports for sonar -->
@@ -187,4 +155,32 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
+                    <!-- If not given, gpg passphrase has to be provided interactively -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
