@@ -88,25 +88,6 @@ abstract class AbstractOsiamService<T> {
         return resource;
     }
 
-    public QueryResult getAllResourceIds(AccessToken accessToken) {
-        QueryResult resource;
-        try {
-            resource = webResource.header("Authorization", "Bearer " + accessToken.getToken())
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .get(QueryResult.class);
-        } catch (UniformInterfaceException e) {
-            switch (e.getResponse().getStatus()) {
-                case SC_UNAUTHORIZED:
-                    throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
-                default:
-                    throw e;
-            }
-        } catch (ClientHandlerException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
-        }
-        return resource;
-    }
-
     /**
      * The Builder class is used to prove a WebResource to build the needed Service
      *

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
@@ -65,12 +66,13 @@ public class OsiamGroupServiceTest {
         then_returned_group_matches_expectations();
     }
 
-    @Test    @Ignore
+    @Test    
+    @Ignore
     public void list_of_groups_is_returned() throws Exception {
         givenAValidAccessToken();
         whenAllGroupsAreLookedUp();
-        service.getAllResourceIds(accessToken);
-
+        QueryResult queryResult = service.getAllGroups(accessToken);
+        assertEquals(new Integer(7), queryResult.getTotalResults());
     }
 
     @Test(expected = NoResultException.class)
