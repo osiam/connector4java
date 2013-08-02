@@ -1,5 +1,6 @@
 package org.osiam.client.oauth;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.osiam.resources.scim.Group;
 
@@ -12,8 +13,9 @@ public class QueryResult {
     private Integer itemsPerPage;
     private Integer startIndex;
     private String schemas;
-    public Set<Group> Resources; //TODO can not be set if private. Now, not known why.
-
+    @JsonProperty("Resources")
+    private Set<Group> resources;
+    
     public Integer getTotalResults() {
         return totalResults;
     }
@@ -31,6 +33,6 @@ public class QueryResult {
     }
 
     public Set<Group> getResources() {
-        return Resources;
+        return resources;
     }
 }
