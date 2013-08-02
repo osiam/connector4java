@@ -12,7 +12,7 @@ public class QueryResult {
     private Integer itemsPerPage;
     private Integer startIndex;
     private String schemas;
-    private Set<Group> Resources;
+    public Set<Group> Resources; //TODO can not be set if private. Now, not known why.
 
     public Integer getTotalResults() {
         return totalResults;
