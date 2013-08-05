@@ -27,12 +27,6 @@ public class QueryResultTest {
         jsonString = FileUtils.readFileToString(new File(PATH));
         mapper = new ObjectMapper();
     }
-    /*
-    "itemsPerPage": 100,
-    "startIndex": 0,
-    "schemas": "urn:scim:schemas:core:1.0",
-    */
-
 
     @Test
     public void groups_query_result_can_be_deserialized() throws IOException {
@@ -65,6 +59,7 @@ public class QueryResultTest {
     }
 
     private void givenADeserializedGroupQueryResult() throws IOException {
-        result = mapper.readValue(jsonString, new TypeReference<QueryResult<Group>>() { });
+        result = mapper.readValue(jsonString, new TypeReference<QueryResult<Group>>() {
+        });
     }
 }
