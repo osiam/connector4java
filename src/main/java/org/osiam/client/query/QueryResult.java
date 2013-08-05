@@ -1,4 +1,7 @@
 package org.osiam.client.query;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;

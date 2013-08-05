@@ -1,12 +1,15 @@
 package org.osiam.client.oauth;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.net.URI;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import org.junit.Test;
 import org.osiam.client.exception.ConnectionInitializationException;
+
+import java.net.URI;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class AuthServiceBuilderTest {
 
@@ -38,7 +41,7 @@ public class AuthServiceBuilderTest {
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_username_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-        		.withClientId(IRRELEVANT)
+                .withClientId(IRRELEVANT)
                 .withClientSecret(IRRELEVANT)
                 .withGrantType(GrantType.PASSWORD)
                 .withPassword(IRRELEVANT).build();
@@ -48,7 +51,7 @@ public class AuthServiceBuilderTest {
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_password_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-        		.withClientId(IRRELEVANT)
+                .withClientId(IRRELEVANT)
                 .withClientSecret(IRRELEVANT)
                 .withGrantType(GrantType.PASSWORD)
                 .withUsername(IRRELEVANT).build();
@@ -63,14 +66,14 @@ public class AuthServiceBuilderTest {
                 .withGrantType(GrantType.PASSWORD).build();
         fail("We expected an exception");
     }
-    
+
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_missing_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-        		.withClientId(IRRELEVANT)
+                .withClientId(IRRELEVANT)
                 .withClientSecret(IRRELEVANT)
                 .withUsername(IRRELEVANT)
-        		.withPassword(IRRELEVANT).build();
+                .withPassword(IRRELEVANT).build();
         fail("We expected an exception");
     }
 }

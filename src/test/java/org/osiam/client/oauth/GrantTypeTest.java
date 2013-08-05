@@ -1,5 +1,7 @@
 package org.osiam.client.oauth;
-
+/*
+ * for licensing see the file license.txt.
+ */
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

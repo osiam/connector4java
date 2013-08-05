@@ -1,6 +1,6 @@
 package org.osiam.client.exception;
 /*
- * for licensing see in the license.txt
+ * for licensing see the file license.txt.
  */
 
 /**
@@ -8,9 +8,9 @@ package org.osiam.client.exception;
  */
 public class ConnectionInitializationException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ConnectionInitializationException(String message) {
+    public ConnectionInitializationException(String message) {
         super(message);
     }
 

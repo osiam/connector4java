@@ -1,4 +1,7 @@
 package org.osiam.client;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;

@@ -1,6 +1,6 @@
 package org.osiam.client;
 /*
- * for licensing see in the license.txt
+ * for licensing see the file license.txt.
  */
 
 import com.sun.jersey.api.client.Client;

@@ -1,6 +1,6 @@
 package org.osiam.client.oauth;
 /*
- * for licensing see in the license.txt
+ * for licensing see the file license.txt.
  */
 
 import org.apache.commons.codec.binary.Base64;
@@ -18,10 +18,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.http.HttpStatus.*;
 

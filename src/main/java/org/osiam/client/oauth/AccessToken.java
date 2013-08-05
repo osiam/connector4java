@@ -1,6 +1,6 @@
 package org.osiam.client.oauth;
 /*
- * for licensing see in the license.txt
+ * for licensing see the file license.txt.
  */
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -49,6 +49,7 @@ public class AccessToken {
 
     /**
      * type of the access token
+     *
      * @return the type of the access token
      */
     public String getType() {
@@ -57,6 +58,7 @@ public class AccessToken {
 
     /**
      * The number of seconds this access token is valid from the time it was retrieved.
+     *
      * @return The number of seconds this access token is valid.
      */
     public int getExpiresIn() {
@@ -65,6 +67,7 @@ public class AccessToken {
 
     /**
      * checks if the time the access token will be valid are over
+     *
      * @return true if the access token is not valid anymore
      */
     public boolean isExpired() {
@@ -74,6 +77,7 @@ public class AccessToken {
 
     /**
      * Retrieve the possible Scopes of this AccessToken
+     *
      * @return The scopes as string
      */
     public String getScope() {

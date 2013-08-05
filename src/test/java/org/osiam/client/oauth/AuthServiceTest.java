@@ -1,4 +1,7 @@
 package org.osiam.client.oauth;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.apache.commons.codec.binary.Base64;
@@ -46,7 +49,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void service_returns_expected_access_token(){
+    public void service_returns_expected_access_token() {
         given_a_correctly_configured_auth_service();
         given_oauth_server_issues_access_token();
 
@@ -69,10 +72,11 @@ public class AuthServiceTest {
                 .build();
     }
 
-    private void verify_access_token_is_expected(){
+    private void verify_access_token_is_expected() {
         accessToken = service.retrieveAccessToken();
         assertEquals(ACCESS_TOKEN_STRING, accessToken.getToken());
     }
+
     private void verify_access_token_is_valid() throws Exception {
         accessToken = service.retrieveAccessToken();
         assertFalse(accessToken.isExpired());

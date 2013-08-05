@@ -1,4 +1,7 @@
 package org.osiam.client.oauth;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
