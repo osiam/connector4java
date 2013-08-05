@@ -31,13 +31,13 @@ abstract class AbstractOsiamService<T> {
     private String typeName;
 
     /**
-     * The private constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
+     * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
      * to construct one.
      *
      * @param userWebResource a valid WebResource to connect to a given OSIAM server
      */
     @SuppressWarnings("unchecked")
-    AbstractOsiamService(WebResource userWebResource) {
+    protected AbstractOsiamService(WebResource userWebResource) {
         this.webResource = userWebResource;
         this.type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
