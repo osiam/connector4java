@@ -253,12 +253,8 @@ public class OsiamUserServiceTest {
         assertEquals("BarbaraJ.", singleUserResult.getDisplayName());
         assertEquals("de", singleUserResult.getLocale());
         assertEquals("Barbara", singleUserResult.getNickName());
-        assertEquals("de", singleUserResult.getPreferredLanguage());
-        assertEquals("http://babaraJ.com", singleUserResult.getProfileUrl());
-        assertEquals("UTC", singleUserResult.getTimezone());
         assertEquals("Dr.", singleUserResult.getTitle());
         assertEquals("bjensen", singleUserResult.getUserName());
-        assertEquals("user", singleUserResult.getUserType());
     }
 
     private void thenReturnedUserMatchesExpectations() throws Exception {
