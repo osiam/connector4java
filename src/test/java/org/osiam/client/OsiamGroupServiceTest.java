@@ -68,19 +68,19 @@ public class OsiamGroupServiceTest {
 
     @Test
     public void list_of_groups_is_returned() throws Exception {
-    	given_an_existing_group_UUID();
-    	givenAValidAccessToken();
+        given_an_existing_group_UUID();
+        givenAValidAccessToken();
         whenAllGroupsAreLookedUp();
-        QueryResult queryResult = service.getAllGroups(accessToken);
-        assertEquals(new Integer(7), queryResult.getTotalResults());
+        QueryResult<Group> queryResult = service.getAllGroups(accessToken);
+        assertEquals(7, queryResult.getTotalResults());
         for (Group actGroup : queryResult.getResources()) {
-			if(actGroup.getId().equals(groupUuidString)){
-				assertEquals(1, actGroup.getMembers().size());
-				for (MultiValuedAttribute actValue : actGroup.getMembers()) {
-					assertEquals(userUuidString, actValue.getValue().toString());
-				}
-			}
-		}
+            if (actGroup.getId().equals(groupUuidString)) {
+                assertEquals(1, actGroup.getMembers().size());
+                for (MultiValuedAttribute actValue : actGroup.getMembers()) {
+                    assertEquals(userUuidString, actValue.getValue().toString());
+                }
+            }
+        }
     }
 
     @Test(expected = NoResultException.class)
@@ -156,7 +156,7 @@ public class OsiamGroupServiceTest {
                         .withBodyFile("group_" + groupUuidString + ".json")));
     }
 
-    private void whenAllGroupsAreLookedUp(){
+    private void whenAllGroupsAreLookedUp() {
         stubFor(whenGroupsAreLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)

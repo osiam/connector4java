@@ -2,29 +2,30 @@ package org.osiam.client.query;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.CoreResource;
 
+import java.util.Collections;
 import java.util.Set;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class QueryResult {
+public class QueryResult<T extends CoreResource> {
 
-    private Integer totalResults;
-    private Integer itemsPerPage;
-    private Integer startIndex;
+    private int totalResults;
+    private int itemsPerPage;
+    private int startIndex;
     private String schemas;
     @JsonProperty("Resources")
-    private Set<Group> resources;
+    private Set<T> resources;
 
-    public Integer getTotalResults() {
+    public int getTotalResults() {
         return totalResults;
     }
 
-    public Integer getItemsPerPage() {
+    public int getItemsPerPage() {
         return itemsPerPage;
     }
 
-    public Integer getStartIndex() {
+    public int getStartIndex() {
         return startIndex;
     }
 
@@ -32,7 +33,7 @@ public class QueryResult {
         return schemas;
     }
 
-    public Set<Group> getResources() {
-        return resources;
+    public Set<T> getResources() {
+        return Collections.unmodifiableSet(resources);
     }
 }
