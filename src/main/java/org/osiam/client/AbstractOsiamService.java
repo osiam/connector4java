@@ -120,6 +120,34 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         return result;
     }
 
+    protected QueryResult<T> searchResourcesByQueryString(String queryString, AccessToken accessToken) {
+
+        final String queryResultAsString;
+        try {
+            queryResultAsString = webResource.queryParam("access_token", accessToken.getToken())
+                    .queryParam("filter", queryString)
+                    .accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+
+        } catch (UniformInterfaceException e) {
+            switch (e.getResponse().getStatus()) {
+                case SC_UNAUTHORIZED:
+                    throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                default:
+                    throw e;
+            }
+        } catch (ClientHandlerException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
+        }
+        final QueryResult<T> result;
+        JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(QueryResult.class, type);
+        try {
+            result = mapper.readValue(queryResultAsString, queryResultType);
+        } catch (IOException e) {
+            throw new ConnectionInitializationException("Unable to deserialize query result", e);
+        }
+        return result;
+    }
+
 
     /**
      * The Builder class is used to prove a WebResource to build the needed Service

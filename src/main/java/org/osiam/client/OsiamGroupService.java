@@ -57,6 +57,10 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
         return getAllResources(accessToken);
     }
 
+    public QueryResult<Group> searchGroupsByQueryString(String queryString, AccessToken accessToken) {
+        return searchResourcesByQueryString(queryString, accessToken);
+    }
+
     /**
      * The Builder class is used to construct instances of the {@link OsiamGroupService}
      */

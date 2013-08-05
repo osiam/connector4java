@@ -29,6 +29,7 @@ import static org.junit.Assert.*;
 
 public class OsiamGroupServiceTest {
 
+    private static final String URL_BASE = "/osiam-server//Groups/";
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
@@ -38,6 +39,7 @@ public class OsiamGroupServiceTest {
     final static private String endpoint = "http://localhost:9090/osiam-server/";
 
     final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
+    final static private String SIMPLE_QUERY_STRING = "displayName eq test_group01";
 
     private UUID SEARCHED_UUID;
 
@@ -84,6 +86,14 @@ public class OsiamGroupServiceTest {
         thenReturnedListOfAllGroupsIsAsExpected();
     }
 
+    @Test
+    public void search_for_single_group_is_successful() {
+        givenASingleGroupCanBeLookedUpByQuery();
+        whenSingleGroupIsSearchedByQueryString(SIMPLE_QUERY_STRING);
+        thenQueryWasValid();
+        thenReturnedListOfSearchedGroupsIsAsExpected();
+    }
+
     @Test(expected = NoResultException.class)
     public void group_does_not_exist() throws IOException {
         givenUUIDcanNotBeFound();
@@ -121,6 +131,10 @@ public class OsiamGroupServiceTest {
         queryResult = service.getAllGroups(accessToken);
     }
 
+    private void whenSingleGroupIsSearchedByQueryString(String queryString) {
+        queryResult = service.searchGroupsByQueryString(queryString, accessToken);
+    }
+
     private void givenExpiredAccessTokenIsUsedForLookup() {
         stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
                 .willReturn(aResponse()
@@ -139,6 +153,16 @@ public class OsiamGroupServiceTest {
                         .withStatus(SC_NOT_FOUND)));
     }
 
+    private void givenASingleGroupCanBeLookedUpByQuery() {
+        stubFor(get(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
+                + "&filter=displayName+eq+test_group01"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBodyFile("query_group_by_name.json")));
+    }
+
     private void givenUUIDcanBeFound() {
         stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
                 .willReturn(aResponse()
@@ -148,7 +172,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo("/osiam-server//Groups/"))
+        stubFor(get(urlEqualTo(URL_BASE))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
@@ -158,7 +182,7 @@ public class OsiamGroupServiceTest {
     }
 
     private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo("/osiam-server//Groups/" + uuidString))
+        return get(urlEqualTo(URL_BASE + uuidString))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
@@ -166,6 +190,18 @@ public class OsiamGroupServiceTest {
     private void thenReturnedGroupHasUUID(UUID uuid) {
         Group result = service.getGroupByUUID(uuid, accessToken);
         assertEquals(uuid.toString(), result.getId());
+    }
+
+    private void thenQueryWasValid() {
+        verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
+                + "&filter=displayName+eq+test_group01"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON)));
+    }
+
+    private void thenReturnedListOfSearchedGroupsIsAsExpected() {
+        assertEquals(1, queryResult.getTotalResults());
+        assertEquals(1, queryResult.getResources().size());
+        assertEquals("test_group01", queryResult.getResources().iterator().next().getDisplayName());
     }
 
     private void thenReturnedListOfAllGroupsIsAsExpected() {

@@ -33,13 +33,14 @@ import static org.junit.Assert.fail;
 
 public class OsiamUserServiceTest {
 
+    private static final String URL_BASE = "/osiam-server//Users/";
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
-    final private static String COUNTRY = "Germany";
-    final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    final private static String endpoint = "http://localhost:9090/osiam-server/";
-
+    final static private String COUNTRY = "Germany";
+    final static private String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    final static private String endpoint = "http://localhost:9090/osiam-server/";
+    final static private String SIMPLE_QUERY_STRING = "displayName eq BarbaraJ.";
     private UUID searchedUUID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -71,6 +72,8 @@ public class OsiamUserServiceTest {
         thenReturnedUserHasUUID(searchedUUID);
         thenMetaDataWasDeserializedCorrectly();
         thenAddressIsDeserializedCorrectly();
+        thenPhoneNumbersAreDeserializedCorrectly();
+        thenBasicValuesAreDeserializedCorrectly();
     }
 
     @Test
@@ -106,6 +109,19 @@ public class OsiamUserServiceTest {
         givenAllUsersAreLookedUpSuccessfully();
         whenAllUsersAreLookedUp();
         thenNumberOfReturnedUsersIs(1);
+    }
+
+    @Test
+    public void search_for_single_user_is_successful() {
+        givenASingleUserCanBeSearchedByQuery();
+        whenSingleUserIsSearchedByQueryString(SIMPLE_QUERY_STRING);
+        thenQueryWasValid();
+        thenNumberOfReturnedUsersIs(1);
+        thenReturnedListOfSearchedUsersIsAsExpected();
+    }
+
+    private void whenSingleUserIsSearchedByQueryString(String queryString) {
+        queryResult = service.searchUsersByQueryString(queryString, accessToken);
     }
 
     private void givenAnAccessToken() throws IOException {
@@ -151,13 +167,13 @@ public class OsiamUserServiceTest {
     }
 
     private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo("/osiam-server//Users/" + uuidString))
+        return get(urlEqualTo(URL_BASE + uuidString))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo("/osiam-server//Users/"))
+        stubFor(get(urlEqualTo(URL_BASE))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
@@ -166,12 +182,35 @@ public class OsiamUserServiceTest {
                         .withBodyFile("query_all_users.json")));
     }
 
+    private void givenASingleUserCanBeSearchedByQuery() {
+        stubFor(get(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
+                + "&filter=displayName+eq+BarbaraJ."))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBodyFile("query_user_by_name.json")));
+    }
+
     private void thenReturnedUserHasUUID(UUID uuid) {
         assertEquals(uuid.toString(), singleUserResult.getId());
     }
 
-    private void thenNumberOfReturnedUsersIs(int numerOfUsers) {
-        assertEquals(numerOfUsers, queryResult.getTotalResults());
+    private void thenQueryWasValid() {
+        verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
+                + "&filter=displayName+eq+BarbaraJ."))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON)));
+    }
+
+
+    private void thenReturnedListOfSearchedUsersIsAsExpected() {
+        assertEquals(1, queryResult.getTotalResults());
+        assertEquals("BarbaraJ.", queryResult.getResources().iterator().next().getDisplayName());
+    }
+
+    private void thenNumberOfReturnedUsersIs(int numberOfUsers) {
+        assertEquals(numberOfUsers, queryResult.getTotalResults());
+        assertEquals(numberOfUsers, queryResult.getResources().size());
     }
 
     private void thenMetaDataWasDeserializedCorrectly() throws ParseException {
@@ -197,6 +236,31 @@ public class OsiamUserServiceTest {
         assertEquals(COUNTRY, address.getLocality());
     }
 
+    public void thenPhoneNumbersAreDeserializedCorrectly() {
+
+        List<MultiValuedAttribute> phonenumbers = singleUserResult.getPhoneNumbers();
+        assertEquals(1, phonenumbers.size());
+        MultiValuedAttribute phonenumber = phonenumbers.get(0);
+
+        assertEquals("555-555-8377", phonenumber.getValue().toString());
+        assertEquals("work", phonenumber.getType());
+
+    }
+
+    public void thenBasicValuesAreDeserializedCorrectly() throws Exception {
+        assertEquals("bjensen", singleUserResult.getExternalId());
+        assertEquals(null, singleUserResult.isActive());
+        assertEquals("BarbaraJ.", singleUserResult.getDisplayName());
+        assertEquals("de", singleUserResult.getLocale());
+        assertEquals("Barbara", singleUserResult.getNickName());
+        assertEquals("de", singleUserResult.getPreferredLanguage());
+        assertEquals("http://babaraJ.com", singleUserResult.getProfileUrl());
+        assertEquals("UTC", singleUserResult.getTimezone());
+        assertEquals("Dr.", singleUserResult.getTitle());
+        assertEquals("bjensen", singleUserResult.getUserName());
+        assertEquals("user", singleUserResult.getUserType());
+    }
+
     private void thenReturnedUserMatchesExpectations() throws Exception {
 
         User expectedUser = get_expected_user();
@@ -208,7 +272,6 @@ public class OsiamUserServiceTest {
         assertEqualsName(expectedUser.getName(), singleUserResult.getName());
         assertEquals(expectedUser.getNickName(), singleUserResult.getNickName());
         assertEquals(expectedUser.getPassword(), singleUserResult.getPassword());
-        assertEqualsMultiValueList(expectedUser.getPhoneNumbers(), singleUserResult.getPhoneNumbers());
         assertEquals(expectedUser.getPhotos(), singleUserResult.getPhotos());
         assertEquals(expectedUser.getPreferredLanguage(), singleUserResult.getPreferredLanguage());
         assertEquals(expectedUser.getProfileUrl(), singleUserResult.getProfileUrl());

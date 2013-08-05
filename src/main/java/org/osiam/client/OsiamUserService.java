@@ -50,6 +50,11 @@ public class OsiamUserService extends AbstractOsiamService<User> {
         return super.getAllResources(accessToken);
     }
 
+
+    public QueryResult<User> searchUsersByQueryString(String queryString, AccessToken accessToken) {
+        return super.searchResourcesByQueryString(queryString, accessToken);
+    }
+
     /**
      * The Builder class is used to construct instances of the {@link OsiamUserService}
      */
