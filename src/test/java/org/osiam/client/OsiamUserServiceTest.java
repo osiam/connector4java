@@ -12,16 +12,21 @@ import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.*;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.apache.http.HttpStatus.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -31,19 +36,27 @@ public class OsiamUserServiceTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
+    final private static String COUNTRY = "Germany";
     final private static String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     final private static String endpoint = "http://localhost:9090/osiam-server/";
+
     private UUID searchedUUID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
 
+    private User singleUserResult;
+    private QueryResult<User> queryResult;
+
     OsiamUserService service;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         service = new OsiamUserService.Builder(endpoint).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
+        // use happy path for default
+        givenAnUserUUID();
+        givenAnAccessToken();
     }
 
     @Test
@@ -52,155 +65,158 @@ public class OsiamUserServiceTest {
     }
 
     @Test
-    public void existing_user_is_returned() throws IOException {
-        given_an_existing_user_UUID();
-        given_a_valid_access_token();
-        when_existing_uuid_is_looked_up();
-        then_returned_user_has_uuid(searchedUUID);
+    public void existing_user_is_returned() throws Exception {
+        givenUUIDcanBeFound();
+        whenUUIDisLookedUp();
+        thenReturnedUserHasUUID(searchedUUID);
+        thenMetaDataWasDeserializedCorrectly();
+        thenAddressIsDeserializedCorrectly();
     }
 
     @Test
     public void user_has_valid_values() throws Exception {
-        given_an_existing_user_UUID();
-        given_a_valid_access_token();
-        when_existing_uuid_is_looked_up();
-        then_returned_user_matches_expectations();
+        givenUUIDcanBeFound();
+        whenUUIDisLookedUp();
+        thenReturnedUserMatchesExpectations();
     }
 
     @Test(expected = NoResultException.class)
     public void user_does_not_exist() throws IOException {
-        given_a_valid_access_token();
-        given_a_non_existent_user_UUID();
-        when_non_existent_uuid_is_looked_up();
-        service.getUserByUUID(searchedUUID, accessToken);
+        givenUUIDcanNotBeFound();
+        whenUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void expired_access_token() throws Exception {
-        given_an_expired_access_token();
-        given_an_existing_user_UUID();
-        when_expired_access_token_is_used_for_lookup();
-        service.getUserByUUID(searchedUUID, accessToken);
+        givenExpiredAccessTokenIsUsedForLookup();
+        whenUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void invalid_access_token() throws Exception {
-        given_an_invalid_access_token();
-        given_an_existing_user_UUID();
-        when_invalid_access_token_is_used_for_lookup();
-        service.getUserByUUID(searchedUUID, accessToken);
+        givenInvalidAccessTokenIsUsedForLookup();
+        whenUUIDisLookedUp();
         fail("Exception expected");
     }
 
-    private void given_a_valid_access_token() throws IOException {
+    @Test
+    public void all_users_are_looked_up() {
+        givenAllUsersAreLookedUpSuccessfully();
+        whenAllUsersAreLookedUp();
+        thenNumberOfReturnedUsersIs(1);
+    }
+
+    private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
-    private void given_an_expired_access_token() throws Exception {
-        this.accessToken = tokenProvider.expired_access_token();
-    }
-
-    private void given_an_invalid_access_token() throws Exception {
-        this.accessToken = tokenProvider.invalid_access_token();
-    }
-
-    private void given_an_existing_user_UUID() {
+    private void givenAnUserUUID() {
         this.searchedUUID = UUID.fromString(userUuidString);
     }
 
-    private void given_a_non_existent_user_UUID() {
-        this.searchedUUID = UUID.fromString(userUuidString);
+    private void whenUUIDisLookedUp() {
+        singleUserResult = service.getUserByUUID(searchedUUID, accessToken);
     }
 
-    private void when_expired_access_token_is_used_for_lookup() {
-        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+    private void whenAllUsersAreLookedUp() {
+        queryResult = service.getAllUsers(accessToken);
+    }
+
+    private void givenExpiredAccessTokenIsUsedForLookup() {
+        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
-    private void when_invalid_access_token_is_used_for_lookup() {
-        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+    private void givenInvalidAccessTokenIsUsedForLookup() {
+        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
-    private void when_non_existent_uuid_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+    private void givenUUIDcanNotBeFound() {
+        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
 
-    private void when_existing_uuid_is_looked_up() {
-        stubFor(when_uuid_is_looked_up(userUuidString, accessToken)
+    private void givenUUIDcanBeFound() {
+        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader("Content-Type", APPLICATION_JSON)
                         .withBodyFile("user_" + userUuidString + ".json")));
     }
 
-    private MappingBuilder when_uuid_is_looked_up(String uuidString, AccessToken accessToken) {
+    private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
         return get(urlEqualTo("/osiam-server//Users/" + uuidString))
-                .withHeader("Content-Type", equalTo("application/json"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
-    private void then_returned_user_has_uuid(UUID uuid) {
-        User result = service.getUserByUUID(uuid, accessToken);
-        assertEquals(uuid.toString(), result.getId());
+    private void givenAllUsersAreLookedUpSuccessfully() {
+        stubFor(get(urlEqualTo("/osiam-server//Users/"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBodyFile("query_all_users.json")));
     }
 
-    private void then_returned_user_matches_expectations() throws Exception {
+    private void thenReturnedUserHasUUID(UUID uuid) {
+        assertEquals(uuid.toString(), singleUserResult.getId());
+    }
+
+    private void thenNumberOfReturnedUsersIs(int numerOfUsers) {
+        assertEquals(numerOfUsers, queryResult.getTotalResults());
+    }
+
+    private void thenMetaDataWasDeserializedCorrectly() throws ParseException {
+        Meta deserializedMeta = singleUserResult.getMeta();
+        Date expectedCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2011-08-01 20:29:49");
+
+        assertEquals(expectedCreated, deserializedMeta.getCreated());
+        assertEquals(expectedCreated, deserializedMeta.getLastModified());
+        assertEquals("https://example.com/v1/Users/2819c223...", deserializedMeta.getLocation());
+        assertEquals(null, deserializedMeta.getVersion());
+        assertEquals("User", deserializedMeta.getResourceType());
+    }
+
+    public void thenAddressIsDeserializedCorrectly() throws Exception {
+        List<Address> addresses = singleUserResult.getAddresses();
+        assertEquals(1, addresses.size());
+        Address address = addresses.get(0);
+
+        assertEquals("example street 42", address.getStreetAddress());
+        assertEquals("11111", address.getPostalCode());
+        assertEquals(COUNTRY, address.getCountry());
+        assertEquals(COUNTRY, address.getRegion());
+        assertEquals(COUNTRY, address.getLocality());
+    }
+
+    private void thenReturnedUserMatchesExpectations() throws Exception {
 
         User expectedUser = get_expected_user();
-        User actualUser = service.getUserByUUID(searchedUUID, accessToken);
-        assertEqualsMetaData(expectedUser.getMeta(), actualUser.getMeta());
-        assertEquals(expectedUser.getId(), actualUser.getId());
-        assertEqualsAdressList(expectedUser.getAddresses(), actualUser.getAddresses());
-        assertEquals(expectedUser.getDisplayName(), actualUser.getDisplayName());
-        assertEqualsMultiValueList(expectedUser.getEmails(), actualUser.getEmails());
-        assertEquals(expectedUser.getExternalId(), actualUser.getExternalId());
-        assertEquals(expectedUser.getLocale(), actualUser.getLocale());
-        assertEqualsName(expectedUser.getName(), actualUser.getName());
-        assertEquals(expectedUser.getNickName(), actualUser.getNickName());
-        assertEquals(expectedUser.getPassword(), actualUser.getPassword());
-        assertEqualsMultiValueList(expectedUser.getPhoneNumbers(), actualUser.getPhoneNumbers());
-        assertEquals(expectedUser.getPhotos(), actualUser.getPhotos());
-        assertEquals(expectedUser.getPreferredLanguage(), actualUser.getPreferredLanguage());
-        assertEquals(expectedUser.getProfileUrl(), actualUser.getProfileUrl());
-        assertEquals(expectedUser.getTimezone(), actualUser.getTimezone());
-        assertEquals(expectedUser.getTitle(), actualUser.getTitle());
-        assertEquals(expectedUser.getUserName(), actualUser.getUserName());
-        assertEquals(expectedUser.getUserType(), actualUser.getUserType());
-        assertEquals(expectedUser.isActive(), actualUser.isActive());
-    }
 
-    private void assertEqualsMetaData(Meta expected, Meta actual) {
-        assertEquals(expected.getResourceType(), actual.getResourceType());
-        assertEquals(expected.getCreated(), actual.getCreated());
-        assertEquals(expected.getLastModified(), actual.getLastModified());
-        assertEquals(expected.getLocation(), actual.getLocation());
-        assertEquals(expected.getVersion(), actual.getVersion());
-        assertEquals(expected.getAttributes(), actual.getAttributes());
-    }
-
-    private void assertEqualsAdressList(List<Address> expected, List<Address> actual) {
-        if (expected == null && actual == null) {
-            return;
-        }
-        if (expected.size() != actual.size()) {
-            fail("The expected List has not the same number of values like the actual list");
-        }
-        for (int count = 0; count < expected.size(); count++) {
-            Address expectedAttribute = expected.get(count);
-            Address actualAttribute = actual.get(count);
-            assertEquals(expectedAttribute.getCountry(), actualAttribute.getCountry());
-            assertEquals(expectedAttribute.getLocality(), actualAttribute.getLocality());
-            assertEquals(expectedAttribute.getPostalCode(), actualAttribute.getPostalCode());
-            assertEquals(expectedAttribute.getRegion(), actualAttribute.getRegion());
-            assertEquals(expectedAttribute.getStreetAddress(), actualAttribute.getStreetAddress());
-        }
+        assertEquals(expectedUser.getDisplayName(), singleUserResult.getDisplayName());
+        assertEqualsMultiValueList(expectedUser.getEmails(), singleUserResult.getEmails());
+        assertEquals(expectedUser.getExternalId(), singleUserResult.getExternalId());
+        assertEquals(expectedUser.getLocale(), singleUserResult.getLocale());
+        assertEqualsName(expectedUser.getName(), singleUserResult.getName());
+        assertEquals(expectedUser.getNickName(), singleUserResult.getNickName());
+        assertEquals(expectedUser.getPassword(), singleUserResult.getPassword());
+        assertEqualsMultiValueList(expectedUser.getPhoneNumbers(), singleUserResult.getPhoneNumbers());
+        assertEquals(expectedUser.getPhotos(), singleUserResult.getPhotos());
+        assertEquals(expectedUser.getPreferredLanguage(), singleUserResult.getPreferredLanguage());
+        assertEquals(expectedUser.getProfileUrl(), singleUserResult.getProfileUrl());
+        assertEquals(expectedUser.getTimezone(), singleUserResult.getTimezone());
+        assertEquals(expectedUser.getTitle(), singleUserResult.getTitle());
+        assertEquals(expectedUser.getUserName(), singleUserResult.getUserName());
+        assertEquals(expectedUser.getUserType(), singleUserResult.getUserType());
+        assertEquals(expectedUser.isActive(), singleUserResult.isActive());
     }
 
     private void assertEqualsMultiValueList(List<MultiValuedAttribute> expected, List<MultiValuedAttribute> actual) {

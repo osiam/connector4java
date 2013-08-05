@@ -14,9 +14,10 @@ import static org.junit.Assert.assertEquals;
 
 public class QueryResultTest {
 
-    final static private String PATH = "src/test/resources/__files/query_all_groups.json";
-    private static final int EXPECTED_NUMBER_OF_GROUPS = 7;
-    private String jsonString;
+    final static private String GROUP_PATH = "src/test/resources/__files/query_all_groups.json";
+
+    final static private int EXPECTED_NUMBER_OF_GROUPS = 7;
+    private String jsonGroupString;
 
     private ObjectMapper mapper;
 
@@ -24,7 +25,7 @@ public class QueryResultTest {
 
     @Before
     public void setUp() throws IOException {
-        jsonString = FileUtils.readFileToString(new File(PATH));
+        jsonGroupString = FileUtils.readFileToString(new File(GROUP_PATH));
         mapper = new ObjectMapper();
     }
 
@@ -59,7 +60,7 @@ public class QueryResultTest {
     }
 
     private void givenADeserializedGroupQueryResult() throws IOException {
-        result = mapper.readValue(jsonString, new TypeReference<QueryResult<Group>>() {
+        result = mapper.readValue(jsonGroupString, new TypeReference<QueryResult<Group>>() {
         });
     }
 }
