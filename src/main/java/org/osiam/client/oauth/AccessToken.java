@@ -72,7 +72,7 @@ public class AccessToken {
      */
     public boolean isExpired() {
         long now = new Date().getTime();
-        return now > retrievedOn + expiresIn * 1000;
+        return now > retrievedOn + (long) expiresIn * 1000;
     }
 
     /**
