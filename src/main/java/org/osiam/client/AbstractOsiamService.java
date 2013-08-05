@@ -6,12 +6,18 @@ package org.osiam.client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.JavaType;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryResult;
+import org.osiam.resources.scim.CoreResource;
 
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,11 +30,12 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
  * given OSIAM installation. For the construction of an instance please use the included {@link AbstractOsiamService.Builder}
  */
-abstract class AbstractOsiamService<T> {
+abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected WebResource webResource;
     private Class<T> type;
     private String typeName;
+    private ObjectMapper mapper = new ObjectMapper();
 
     /**
      * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
@@ -86,6 +93,33 @@ abstract class AbstractOsiamService<T> {
         }
         return resource;
     }
+
+    protected QueryResult<T> getAllResources(AccessToken accessToken) {
+        final String queryResult;
+        try {
+            queryResult = webResource.header("Authorization", "Bearer " + accessToken.getToken())
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .get(String.class);
+        } catch (UniformInterfaceException e) {
+            switch (e.getResponse().getStatus()) {
+                case SC_UNAUTHORIZED:
+                    throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                default:
+                    throw e;
+            }
+        } catch (ClientHandlerException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
+        }
+        final QueryResult<T> result;
+        JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(QueryResult.class, type);
+        try {
+            result = mapper.readValue(queryResult, queryResultType);
+        } catch (IOException e) {
+            throw new ConnectionInitializationException("Unable to deserialize query result", e);
+        }
+        return result;
+    }
+
 
     /**
      * The Builder class is used to prove a WebResource to build the needed Service
@@ -151,7 +185,7 @@ abstract class AbstractOsiamService<T> {
         /**
          * creates a WebResource to the needed endpoint
          *
-         * @return
+         * @return The webresource for the type of OSIAM-service
          */
         protected WebResource getWebResource() {
             WebResource webResource;

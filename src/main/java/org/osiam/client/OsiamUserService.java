@@ -8,6 +8,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.User;
 
 import java.util.UUID;
@@ -42,6 +43,11 @@ public class OsiamUserService extends AbstractOsiamService<User> {
      */
     public User getUserByUUID(UUID id, AccessToken accessToken) {
         return getResourceByUUID(id, accessToken);
+    }
+
+
+    public QueryResult<User> getAllUsers(AccessToken accessToken) {
+        return super.getAllResources(accessToken);
     }
 
     /**

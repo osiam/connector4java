@@ -3,11 +3,7 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -15,11 +11,7 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.util.UUID;
-
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 /**
  * OsiamGroupService provides all methods necessary to manipulate the Group-Entities registered in the
@@ -27,7 +19,6 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
  */
 public class OsiamGroupService extends AbstractOsiamService<Group> {
 
-    protected ObjectMapper mapper = new ObjectMapper();
 
     /**
      * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder}
@@ -63,29 +54,7 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
      * @return a QueryResult Containing a list of all groups
      */
     public QueryResult<Group> getAllGroups(AccessToken accessToken) {
-        final String queryResult;
-        try {
-            queryResult = webResource.header("Authorization", "Bearer " + accessToken.getToken())
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .get(String.class);
-        } catch (UniformInterfaceException e) {
-            switch (e.getResponse().getStatus()) {
-                case SC_UNAUTHORIZED:
-                    throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
-                default:
-                    throw e;
-            }
-        } catch (ClientHandlerException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
-        }
-        final QueryResult<Group> result;
-        try {
-            result = mapper.readValue(queryResult, new TypeReference<QueryResult<Group>>() {
-            });
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to deserialize query result");
-        }
-        return result;
+        return getAllResources(accessToken);
     }
 
     /**
