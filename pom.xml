@@ -64,6 +64,13 @@
 
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>osiam releases repo</id>
+            <url>https://maven-repo.evolvis.org/releases</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
