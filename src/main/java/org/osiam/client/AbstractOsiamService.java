@@ -76,7 +76,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         T resource;
         try {
-            resource = webResource.path(id.toString()).
+            resource = webResource.path("/" + id.toString()).
                     header("Authorization", "Bearer " + accessToken.getToken())
                     .accept(MediaType.APPLICATION_JSON_TYPE).get(type);
         } catch (UniformInterfaceException e) {
@@ -218,7 +218,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         protected WebResource getWebResource() {
             WebResource webResource;
             try {
-                webResource = WebResourceProducer.createWebResource(new URI(endpoint + "/" + typeName + "s/"));
+                webResource = WebResourceProducer.createWebResource(new URI(endpoint + "/" + typeName + "s"));
             } catch (URISyntaxException e) {
                 throw new ConnectionInitializationException("Unable to setup connection " + endpoint +
                         "is not a valid URI.", e);

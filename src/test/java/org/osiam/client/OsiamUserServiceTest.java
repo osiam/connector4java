@@ -33,7 +33,7 @@ import static org.junit.Assert.fail;
 
 public class OsiamUserServiceTest {
 
-    private static final String URL_BASE = "/osiam-server//Users/";
+    private static final String URL_BASE = "/osiam-server//Users";
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
@@ -63,7 +63,7 @@ public class OsiamUserServiceTest {
 
     @Test
     public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(endpoint + "/Users/"), service.getUri());
+        assertEquals(new URI(endpoint + "/Users"), service.getUri());
     }
 
     @Test
@@ -217,7 +217,7 @@ public class OsiamUserServiceTest {
     }
     
     private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE + uuidString))
+        return get(urlEqualTo(URL_BASE + "/" + uuidString))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
