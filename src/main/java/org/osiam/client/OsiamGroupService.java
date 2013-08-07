@@ -57,6 +57,14 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
         return getAllResources(accessToken);
     }
 
+    /**
+     * with this method it is possible to search for the exisitngs groups by a given search string (where statement)
+     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups-by-search-string">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups-by-search-string</a>
+     * @param queryString a string containing the needed search where statement
+     * @param accessToken the access token from OSIAM for the actual session
+     * @return a QueryResult Containing a list of all found groups
+     */
     public QueryResult<Group> searchGroupsByQueryString(String queryString, AccessToken accessToken) {
         return searchResourcesByQueryString(queryString, accessToken);
     }
