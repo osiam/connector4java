@@ -50,7 +50,14 @@ public class OsiamUserService extends AbstractOsiamService<User> {
         return super.getAllResources(accessToken);
     }
 
-
+    /**
+     * with this method it is possible to search for the exisitngs Users by a given search string (where statement)
+     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
+     * @param queryString a string containing the needed search where statement
+     * @param accessToken the access token from OSIAM for the actual session
+     * @return a QueryResult Containing a list of all found Users
+     */
     public QueryResult<User> searchUsersByQueryString(String queryString, AccessToken accessToken) {
         return super.searchResourcesByQueryString(queryString, accessToken);
     }
