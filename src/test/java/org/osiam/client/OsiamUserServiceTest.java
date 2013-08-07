@@ -39,6 +39,7 @@ public class OsiamUserServiceTest {
 
     final static private String COUNTRY = "Germany";
     final static private String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    final static private String INVALID_USER_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
     final static private String endpoint = "http://localhost:9090/osiam-server/";
     final static private String SIMPLE_QUERY_STRING = "displayName eq BarbaraJ.";
     private UUID searchedUUID;
@@ -82,6 +83,14 @@ public class OsiamUserServiceTest {
         whenUUIDisLookedUp();
         thenReturnedUserMatchesExpectations();
     }
+    
+    @Test
+    public void uuid_is_empty() throws Exception {
+    	givenUUIDisEmpty();
+    	whenAllUsersAreLookedUp();
+        thenNumberOfReturnedUsersIs(1);
+
+    }
 
     @Test(expected = NoResultException.class)
     public void user_does_not_exist() throws IOException {
@@ -101,6 +110,27 @@ public class OsiamUserServiceTest {
     public void invalid_access_token() throws Exception {
         givenInvalidAccessTokenIsUsedForLookup();
         whenUUIDisLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NoResultException.class)
+    public void invalid_UUID_search() throws IOException {
+    	givenUUIDisInvalid();
+    	whenUUIDisLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NoResultException.class)
+    public void invalid_UUID_is_star() throws IOException {
+    	givenUUIDisSpecial("*");
+    	whenUUIDisLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NoResultException.class)
+    public void invalid_UUID_is_dot() throws IOException {
+    	givenUUIDisSpecial(".");
+    	whenUUIDisLookedUp();
         fail("Exception expected");
     }
 
@@ -165,7 +195,27 @@ public class OsiamUserServiceTest {
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBodyFile("user_" + userUuidString + ".json")));
     }
-
+    
+    private void givenUUIDisEmpty() {
+        stubFor(givenUUIDisLookedUp("", accessToken)
+        		.willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBodyFile("query_all_users.json")));
+    }
+    
+    private void givenUUIDisInvalid() {
+        stubFor(givenUUIDisLookedUp(INVALID_USER_UUID_STRING, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_NOT_FOUND)));
+    }
+    
+    private void givenUUIDisSpecial(String wildcard) {
+        stubFor(givenUUIDisLookedUp(wildcard, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_CONFLICT)));
+    }
+    
     private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + uuidString))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON))

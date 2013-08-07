@@ -34,6 +34,7 @@ public class OsiamGroupServiceTest {
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final static private String GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    final static private String INVALID_GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
     final static private String USER_UUID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
     final static private String endpoint = "http://localhost:9090/osiam-server/";
@@ -93,6 +94,14 @@ public class OsiamGroupServiceTest {
         thenQueryWasValid();
         thenReturnedListOfSearchedGroupsIsAsExpected();
     }
+    
+    @Test
+    public void uuid_is_empty() throws Exception {
+    	givenUUIDisEmpty();
+    	whenAllGroupsAreLookedUp();
+    	thenReturnedListOfAllGroupsIsAsExpected();
+
+    }
 
     @Test(expected = NoResultException.class)
     public void group_does_not_exist() throws IOException {
@@ -100,7 +109,28 @@ public class OsiamGroupServiceTest {
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
-
+    
+    @Test(expected = NoResultException.class)
+    public void invalid_UUID_search() throws IOException {
+    	givenUUIDisInvalid();
+        whenSingleGroupIsLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NoResultException.class)
+    public void invalid_UUID_is_star() throws IOException {
+    	givenUUIDisSpecial("*");
+        whenSingleGroupIsLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NoResultException.class)
+    public void invalid_UUID_is_dot() throws IOException {
+    	givenUUIDisSpecial(".");
+        whenSingleGroupIsLookedUp();
+        fail("Exception expected");
+    }
+ 
     @Test(expected = UnauthorizedException.class)
     public void expired_access_token() throws Exception {
         givenExpiredAccessTokenIsUsedForLookup();
@@ -152,6 +182,20 @@ public class OsiamGroupServiceTest {
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
+    
+    private void givenUUIDisInvalid() {
+        stubFor(givenUUIDisLookedUp(INVALID_GROUP_UUID_STRING, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_NOT_FOUND)));
+    }
+    
+   
+    
+    private void givenUUIDisSpecial(String wildcard) {
+        stubFor(givenUUIDisLookedUp(wildcard, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_CONFLICT)));
+    }
 
     private void givenASingleGroupCanBeLookedUpByQuery() {
         stubFor(get(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
@@ -170,6 +214,15 @@ public class OsiamGroupServiceTest {
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBodyFile("group_" + GROUP_UUID_STRING + ".json")));
     }
+    
+    private void givenUUIDisEmpty() {
+        stubFor(givenUUIDisLookedUp("", accessToken)
+        		.willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBodyFile("query_all_groups.json")));
+    }
+ 
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE))
