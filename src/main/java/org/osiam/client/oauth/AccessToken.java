@@ -99,16 +99,16 @@ public class AccessToken {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
 
         AccessToken that = (AccessToken) o;
 
-        if (expiresIn != that.expiresIn) return false;
-        if (!refreshToken.equals(that.refreshToken)) return false;
-        if (!scope.equals(that.scope)) return false;
-        if (!token.equals(that.token)) return false;
-        if (!type.equals(that.type)) return false;
+        if (expiresIn != that.expiresIn) {return false;}
+        if (!refreshToken.equals(that.refreshToken)) {return false;}
+        if (!scope.equals(that.scope)) {return false;}
+        if (!token.equals(that.token)) {return false;}
+        if (!type.equals(that.type)) {return false;}
         return this.isExpired() == that.isExpired();
     }
 

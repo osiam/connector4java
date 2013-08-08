@@ -58,7 +58,7 @@ public class AuthService {
         return post.getURI();
     }
 
-    private HttpResponse performRequest() throws ConnectionInitializationException {
+    private HttpResponse performRequest() {
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;
         try {
@@ -117,7 +117,7 @@ public class AuthService {
         private String clientId;
         private String clientSecret;
         private GrantType grantType;
-        private final String DEFAULT_SCOPE = "GET POST PUT PATCH DELETE";
+        private final static String DEFAULT_SCOPE = "GET POST PUT PATCH DELETE";
         private Header[] headers;
 
         private Map<String, String> requestParameters = new HashMap<>();
