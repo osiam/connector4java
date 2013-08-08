@@ -8,6 +8,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.User;
 
@@ -58,8 +59,20 @@ public class OsiamUserService extends AbstractOsiamService<User> {
      * @param accessToken the access token from OSIAM for the actual session
      * @return a QueryResult Containing a list of all found Users
      */
-    public QueryResult<User> searchUsersByQueryString(String queryString, AccessToken accessToken) {
-        return super.searchResourcesByQueryString(queryString, accessToken);
+    public QueryResult<User> searchUsers(String queryString, AccessToken accessToken) {
+        return super.searchResources(queryString, accessToken);
+    }
+
+    /**
+     * with this method it is possible to search for the exisitngs Users by a given QueryBuilder
+     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
+     * @param queryBuilder containing the needed search where statement
+     * @param accessToken the access token from OSIAM for the actual session
+     * @return a QueryResult Containing a list of all found Users
+     */
+    public QueryResult<User> searchUsers(QueryBuilder queryBuilder, AccessToken accessToken) {
+        return super.searchResources(queryBuilder, accessToken);
     }
 
     /**

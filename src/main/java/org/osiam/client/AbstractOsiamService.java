@@ -13,6 +13,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.CoreResource;
 
@@ -129,7 +130,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         return result;
     }
 
-    protected QueryResult<T> searchResourcesByQueryString(String queryString, AccessToken accessToken) {
+    protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
 
         final String queryResultAsString;
         if(accessToken == null){
@@ -158,6 +159,17 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new ConnectionInitializationException("Unable to deserialize query result", e);
         }
         return result;
+    }
+
+    protected QueryResult<T> searchResources(QueryBuilder queryBuilder, AccessToken accessToken) {
+        if(queryBuilder == null){
+            throw new IllegalArgumentException("The given queryBuilder can't be null.");
+        }
+        String whereStatement = queryBuilder.build();
+        if(whereStatement.length() == 0){
+            throw new IllegalArgumentException("The given queryBuilder can't be empty.");
+        }
+        return searchResources(whereStatement, accessToken);
     }
 
 
