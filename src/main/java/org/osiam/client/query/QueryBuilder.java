@@ -171,7 +171,7 @@ public class QueryBuilder {
         }
 
         /**
-         * Add a condition the attribute filtered on should be greater than or equal to..
+         * Add a condition the attribute filtered on should be greater than or equal to.
          *
          * @param condition The condition to meet.
          * @return The QueryBuilder with this filter added.
@@ -191,7 +191,7 @@ public class QueryBuilder {
         }
 
         /**
-         * Add a condition the attribute filtered on should be less than or equal to..
+         * Add a condition the attribute filtered on should be less than or equal to.
          *
          * @param condition The condition to meet.
          * @return The QueryBuilder with this filter added.
