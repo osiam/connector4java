@@ -186,7 +186,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchGroupsByQueryString(queryString, accessToken);
+        queryResult = service.searchGroups(queryString, accessToken);
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {

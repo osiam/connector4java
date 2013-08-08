@@ -8,6 +8,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 
@@ -65,8 +66,20 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
      * @param accessToken the access token from OSIAM for the actual session
      * @return a QueryResult Containing a list of all found Groups
      */
-    public QueryResult<Group> searchGroupsByQueryString(String queryString, AccessToken accessToken) {
+    public QueryResult<Group> searchGroups(String queryString, AccessToken accessToken) {
         return searchResources(queryString, accessToken);
+    }
+
+    /**
+     * with this method it is possible to search for the exisitngs Groups by a given QueryBuilder
+     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
+     * @param queryBuilder containing the needed search where statement
+     * @param accessToken the access token from OSIAM for the actual session
+     * @return a QueryResult Containing a list of all found Groups
+     */
+    public QueryResult<Group> searchGroups(QueryBuilder queryBuilder, AccessToken accessToken) {
+        return searchResources(queryBuilder, accessToken);
     }
 
     /**
