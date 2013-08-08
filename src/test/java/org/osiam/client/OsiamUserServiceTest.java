@@ -175,7 +175,7 @@ public class OsiamUserServiceTest {
     }
 
     private void whenSingleUserIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchUsersByQueryString(queryString, accessToken);
+        queryResult = service.searchUsers(queryString, accessToken);
     }
 
     private void givenAnAccessToken() throws IOException {

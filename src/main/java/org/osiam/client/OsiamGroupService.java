@@ -66,7 +66,7 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
      * @return a QueryResult Containing a list of all found Groups
      */
     public QueryResult<Group> searchGroupsByQueryString(String queryString, AccessToken accessToken) {
-        return searchResourcesByQueryString(queryString, accessToken);
+        return searchResources(queryString, accessToken);
     }
 
     /**
