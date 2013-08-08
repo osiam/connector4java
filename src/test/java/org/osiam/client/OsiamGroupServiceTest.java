@@ -94,13 +94,37 @@ public class OsiamGroupServiceTest {
         thenQueryWasValid();
         thenReturnedListOfSearchedGroupsIsAsExpected();
     }
-    
-    @Test
-    public void uuid_is_empty() throws Exception {
-    	givenUUIDisEmpty();
-    	whenAllGroupsAreLookedUp();
-    	thenReturnedListOfAllGroupsIsAsExpected();
 
+    @Test(expected = IllegalArgumentException.class)
+    public void uuid_is_null_by_getting_single_user_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        SEARCHED_UUID = null;
+        whenSingleGroupIsLookedUp();
+        fail("Exception expected");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_getting_single_group_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenSingleGroupIsLookedUp();
+        fail("Exception expected");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_getting_all_group_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenAllGroupsAreLookedUp();
+        fail("Exception expected");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_searching_for_group_by_string_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenSingleGroupIsSearchedByQueryString("meta.version=3");
+        fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)

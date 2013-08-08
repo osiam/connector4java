@@ -84,12 +84,36 @@ public class OsiamUserServiceTest {
         thenReturnedUserMatchesExpectations();
     }
     
-    @Test
-    public void uuid_is_empty() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void uuid_is_null_by_getting_single_user_raises_exception() throws Exception {
     	givenUUIDisEmpty();
-    	whenAllUsersAreLookedUp();
-        thenNumberOfReturnedUsersIs(1);
+        searchedUUID = null;
+        whenUUIDisLookedUp();
+        fail("Exception expected");
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenUUIDisLookedUp();
+        fail("Exception expected");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_getting_all_group_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenAllUsersAreLookedUp();
+        fail("Exception expected");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_searching_for_group_by_string_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenSingleUserIsSearchedByQueryString("meta.version=3");
+        fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)

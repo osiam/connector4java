@@ -75,6 +75,12 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      */
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         T resource;
+        if(id == null){
+            throw new IllegalArgumentException("The given id can't be null.");
+        }
+        if(accessToken == null){
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
         try {
             resource = webResource.path("/" + id.toString()).
                     header("Authorization", "Bearer " + accessToken.getToken())
@@ -96,6 +102,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected QueryResult<T> getAllResources(AccessToken accessToken) {
         final String queryResult;
+        if(accessToken == null){
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
         try {
             queryResult = webResource.header("Authorization", "Bearer " + accessToken.getToken())
                     .accept(MediaType.APPLICATION_JSON_TYPE)
@@ -123,6 +132,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected QueryResult<T> searchResourcesByQueryString(String queryString, AccessToken accessToken) {
 
         final String queryResultAsString;
+        if(accessToken == null){
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
         try {
             queryResultAsString = webResource.queryParam("access_token", accessToken.getToken())
                     .queryParam("filter", queryString)
