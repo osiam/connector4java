@@ -2,7 +2,7 @@ package org.osiam.client.query;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.osiam.client.exception.QueryBuilderInitializationException;
+import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.resources.scim.User;
 
 import static org.junit.Assert.assertEquals;
@@ -110,12 +110,12 @@ public class QueryBuilderTest {
         buildStringMeetsExpectation(DEFAULT_ATTR + " le " + IRRELEVANT);
     }
 
-    @Test(expected = QueryBuilderInitializationException.class)
+    @Test(expected = InvalidAttributeException.class)
     public void exception_raised_when_attr_is_not_valid() {
         queryBuilder.query(IRRELEVANT);
     }
 
-    @Test(expected = QueryBuilderInitializationException.class)
+    @Test(expected = InvalidAttributeException.class)
     public void exception_raised_when_nested_attr_is_not_valid() {
         queryBuilder.query(INVALID_EMAIL_ATTR);
     }

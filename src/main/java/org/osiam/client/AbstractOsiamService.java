@@ -63,7 +63,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     /**
-     * this method retrieves a Ressource of the given Type with the given id. If no Entry with the given id can be found an
+     * this method retrieves a Ressource of the given Type with the given id. If no Entry with the given id can be found, an
      * {@link NoResultException} is thrown.
      *
      * @param id          the uuid from the wanted ressource
@@ -76,10 +76,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      */
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         T resource;
-        if(id == null){
+        if (id == null) {
             throw new IllegalArgumentException("The given id can't be null.");
         }
-        if(accessToken == null){
+        if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
         try {
@@ -103,7 +103,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected QueryResult<T> getAllResources(AccessToken accessToken) {
         final String queryResult;
-        if(accessToken == null){
+        if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
         try {
@@ -133,7 +133,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
 
         final String queryResultAsString;
-        if(accessToken == null){
+        if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
         try {
@@ -162,11 +162,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> searchResources(QueryBuilder queryBuilder, AccessToken accessToken) {
-        if(queryBuilder == null){
+        if (queryBuilder == null) {
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
         String whereStatement = queryBuilder.build();
-        if(whereStatement.length() == 0){
+        if (whereStatement.length() == 0) {
             throw new IllegalArgumentException("The given queryBuilder can't be empty.");
         }
         return searchResources(whereStatement, accessToken);
