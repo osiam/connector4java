@@ -1,34 +1,33 @@
 package org.osiam.client.query;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import org.osiam.client.exception.QueryBuilderInitializationException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+/**
+ *
+ */
 public class QueryBuilder {
 
 
-    Class type;
+    Class clazz;
     StringBuilder builder;
 
-    public QueryBuilder() {
+    public QueryBuilder(Class clazz) {
         builder = new StringBuilder();
-    }
-
-    public QueryBuilder forClass(Class clazz) {
-        this.type = clazz;
-        return this;
+        this.clazz = clazz;
     }
 
     public Filter query(final String attributeName) {
-        if (!isTypeSet()) {
-            throw new QueryBuilderInitializationException("The Type for the query has not been set.");
-        }
         if (!(isAttributeValid(attributeName))) {
             throw new QueryBuilderInitializationException("Querying for this attribute is not supported");
         }
 
-        builder.append(attributeName.toLowerCase());
+        builder.append(attributeName);
         return new Filter(this);
     }
 
@@ -46,12 +45,7 @@ public class QueryBuilder {
         return builder.toString();
     }
 
-    private boolean isTypeSet() {
-        return type != null;
-    }
-
     private boolean isAttributeValid(String attribute, Class clazz) {
-        attribute = attribute.toLowerCase();
         String compositeField = "";
         if (attribute.contains(".")) {
             compositeField = attribute.substring(attribute.indexOf('.') + 1);
@@ -74,8 +68,8 @@ public class QueryBuilder {
         return false;
     }
 
-    public boolean isAttributeValid(String attribute) {
-        return isAttributeValid(attribute, type);
+    private boolean isAttributeValid(String attribute) {
+        return isAttributeValid(attribute, clazz);
     }
 
 
@@ -93,7 +87,7 @@ public class QueryBuilder {
             return qb;
         }
 
-        public QueryBuilder equals(String condition) {
+        public QueryBuilder equalTo(String condition) {
             return addFilter(" eq ", condition);
         }
 
