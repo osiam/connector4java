@@ -82,8 +82,8 @@ public class QueryBuilderTest {
 
     @Test
     public void filter_present_is_added_to_query() {
-        queryBuilder.query(DEFAULT_ATTR).present(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " pr " + IRRELEVANT);
+        queryBuilder.query(DEFAULT_ATTR).present();
+        buildStringMeetsExpectation(DEFAULT_ATTR + " pr ");
     }
 
     @Test
