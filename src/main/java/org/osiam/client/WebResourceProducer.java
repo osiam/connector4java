@@ -18,6 +18,8 @@ import java.net.URI;
  */
 class WebResourceProducer {
 
+    private WebResourceProducer(){    }
+
     static WebResource createWebResource(URI path) {
         ClientConfig config = new DefaultClientConfig();
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
