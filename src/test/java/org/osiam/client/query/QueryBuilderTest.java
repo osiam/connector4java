@@ -25,25 +25,25 @@ public class QueryBuilderTest {
     @Test
     public void nested_email_attribute_is_added_to_query() {
         queryBuilder.query(VALID_EMAIL_ATTR);
-        buildStringMeetsExpectation(VALID_EMAIL_ATTR);
+        builtStringMeetsExpectation(VALID_EMAIL_ATTR);
     }
 
     @Test
     public void nested_name_attribute_is_added_to_query() {
         queryBuilder.query(VALID_NAME_ATTR);
-        buildStringMeetsExpectation(VALID_NAME_ATTR);
+        builtStringMeetsExpectation(VALID_NAME_ATTR);
     }
 
     @Test
     public void nested_meta_attribute_is_added_to_query() {
         queryBuilder.query(VALID_META_ATTR);
-        buildStringMeetsExpectation(VALID_META_ATTR);
+        builtStringMeetsExpectation(VALID_META_ATTR);
     }
 
     @Test
     public void flat_attribute_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR);
-        buildStringMeetsExpectation(DEFAULT_ATTR);
+        builtStringMeetsExpectation(DEFAULT_ATTR);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class QueryBuilderTest {
         queryBuilder.query(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " and " + DEFAULT_ATTR + " co " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " and " + DEFAULT_ATTR + " co " + IRRELEVANT);
     }
 
     @Test
@@ -59,55 +59,55 @@ public class QueryBuilderTest {
         queryBuilder.query(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .or(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " or " + DEFAULT_ATTR + " co " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " or " + DEFAULT_ATTR + " co " + IRRELEVANT);
     }
 
     @Test
     public void filter_contains_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT);
     }
 
     @Test
     public void filter_equals_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).equalTo(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " eq " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " eq " + IRRELEVANT);
     }
 
     @Test
     public void filter_startsWith_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).startsWith(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " sw " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " sw " + IRRELEVANT);
     }
 
     @Test
     public void filter_present_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).present();
-        buildStringMeetsExpectation(DEFAULT_ATTR + " pr ");
+        builtStringMeetsExpectation(DEFAULT_ATTR + " pr ");
     }
 
     @Test
     public void filter_greater_than_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).greaterThan(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " gt " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " gt " + IRRELEVANT);
     }
 
     @Test
     public void filter_greater_equals_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).greaterEquals(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " ge " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " ge " + IRRELEVANT);
     }
 
     @Test
     public void filter_less_than_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).lessThan(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " lt " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " lt " + IRRELEVANT);
     }
 
     @Test
     public void filter_less_equals_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).lessEquals(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " le " + IRRELEVANT);
+        builtStringMeetsExpectation(DEFAULT_ATTR + " le " + IRRELEVANT);
     }
 
     @Test(expected = InvalidAttributeException.class)
@@ -120,34 +120,7 @@ public class QueryBuilderTest {
         queryBuilder.query(INVALID_EMAIL_ATTR);
     }
 
-    @Test
-    public void sort_order_ascending() {
-        queryBuilder.sortOrderAscending();
-        buildStringMeetsExpectation("&sortOrder=ascending");
-    }
-
-    @Test
-    public void sort_order_descending() {
-        queryBuilder.sortOrderDescending();
-        buildStringMeetsExpectation("&sortOrder=descending");
-    }
-
-    @Test
-    public void query_and_sort_order_ascending() {
-        queryBuilder.query(DEFAULT_ATTR)
-                .contains(IRRELEVANT)
-                .and(DEFAULT_ATTR).contains(IRRELEVANT)
-                .sortOrderAscending();
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " and " + DEFAULT_ATTR + " co " + IRRELEVANT + "&sortOrder=ascending");
-    }
-
-    @Test
-    public void two_times_set_sort_order_descending() {
-        queryBuilder.sortOrderAscending().sortOrderDescending();
-        buildStringMeetsExpectation("&sortOrder=descending");
-    }
-
-    private void buildStringMeetsExpectation(String buildString) {
+    private void builtStringMeetsExpectation(String buildString) {
         assertEquals(buildString, queryBuilder.build());
     }
 }
