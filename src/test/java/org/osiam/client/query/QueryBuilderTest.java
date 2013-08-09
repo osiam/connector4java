@@ -120,6 +120,33 @@ public class QueryBuilderTest {
         queryBuilder.query(INVALID_EMAIL_ATTR);
     }
 
+    @Test
+    public void sort_order_ascending() {
+        queryBuilder.sortOrderAscending();
+        buildStringMeetsExpectation("&sortOrder=ascending");
+    }
+
+    @Test
+    public void sort_order_descending() {
+        queryBuilder.sortOrderDescending();
+        buildStringMeetsExpectation("&sortOrder=descending");
+    }
+
+    @Test
+    public void query_and_sort_order_ascending() {
+        queryBuilder.query(DEFAULT_ATTR)
+                .contains(IRRELEVANT)
+                .and(DEFAULT_ATTR).contains(IRRELEVANT)
+                .sortOrderAscending();
+        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " and " + DEFAULT_ATTR + " co " + IRRELEVANT + "&sortOrder=ascending");
+    }
+
+    @Test
+    public void two_times_set_sort_order_descending() {
+        queryBuilder.sortOrderAscending().sortOrderDescending();
+        buildStringMeetsExpectation("&sortOrder=descending");
+    }
+
     private void buildStringMeetsExpectation(String buildString) {
         assertEquals(buildString, queryBuilder.build());
     }

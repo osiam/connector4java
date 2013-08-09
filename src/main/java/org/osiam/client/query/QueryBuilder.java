@@ -14,8 +14,9 @@ import java.lang.reflect.Modifier;
 public class QueryBuilder {
 
 
-    Class clazz;
-    StringBuilder builder;
+    private Class clazz;
+    private StringBuilder builder;
+    private String sortOrder = "";
 
     /**
      * The Constructor of the QueryBuilder
@@ -68,12 +69,30 @@ public class QueryBuilder {
     }
 
     /**
+     * Add an sortOrder=ascending to the query
+     * @return The QueryBuilder with this sort oder added.
+     */
+    public QueryBuilder sortOrderAscending() {
+        sortOrder = "&sortOrder=ascending";
+        return this;
+    }
+
+    /**
+     * Add an sortOrder=descending to the query
+     * @return The QueryBuilder with this sort oder added.
+     */
+    public QueryBuilder sortOrderDescending() {
+        sortOrder = "&sortOrder=descending";
+        return this;
+    }
+
+    /**
      * Build the query String to use against OSIAM.
      *
      * @return The query as a String
      */
     public String build() {
-        return builder.toString();
+        return builder.toString() + sortOrder;
     }
 
     private boolean isAttributeValid(String attribute, Class clazz) {
