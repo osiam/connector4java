@@ -7,7 +7,7 @@ import org.osiam.resources.scim.User;
 
 import static org.junit.Assert.assertEquals;
 
-public class QueryBuilderTest {
+public class UserQueryBuilderTest {
 
     private static final String DEFAULT_ATTR = "name";
     private static final String VALID_META_ATTR = "meta.created";
