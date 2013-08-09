@@ -135,8 +135,13 @@ public class QueryBuilder {
         }
 
         private QueryBuilder addFilter(String filter, String condition) {
-            qb.builder.append(filter).
-                    append(condition);
+            qb.builder.append(filter);
+
+            if(condition != null && condition.length() > 0){
+                qb.builder.append("\"").
+                    append(condition).
+                    append("\"");
+            }
             return qb;
         }
 

@@ -51,7 +51,7 @@ public class QueryBuilderTest {
         queryBuilder.query(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " and " + DEFAULT_ATTR + " co " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
     }
 
     @Test
@@ -59,25 +59,25 @@ public class QueryBuilderTest {
         queryBuilder.query(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .or(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " or " + DEFAULT_ATTR + " co " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
     }
 
     @Test
     public void filter_contains_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
     }
 
     @Test
     public void filter_equals_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).equalTo(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " eq " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " eq \"" + IRRELEVANT + "\"");
     }
 
     @Test
     public void filter_startsWith_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).startsWith(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " sw " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " sw \"" + IRRELEVANT + "\"");
     }
 
     @Test
@@ -89,25 +89,25 @@ public class QueryBuilderTest {
     @Test
     public void filter_greater_than_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).greaterThan(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " gt " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " gt \"" + IRRELEVANT + "\"");
     }
 
     @Test
     public void filter_greater_equals_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).greaterEquals(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " ge " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " ge \"" + IRRELEVANT + "\"");
     }
 
     @Test
     public void filter_less_than_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).lessThan(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " lt " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " lt \"" + IRRELEVANT + "\"");
     }
 
     @Test
     public void filter_less_equals_is_added_to_query() {
         queryBuilder.query(DEFAULT_ATTR).lessEquals(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " le " + IRRELEVANT);
+        buildStringMeetsExpectation(DEFAULT_ATTR + " le \"" + IRRELEVANT + "\"");
     }
 
     @Test(expected = InvalidAttributeException.class)
@@ -138,7 +138,7 @@ public class QueryBuilderTest {
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT)
                 .sortOrderAscending();
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co " + IRRELEVANT + " and " + DEFAULT_ATTR + " co " + IRRELEVANT + "&sortOrder=ascending");
+        buildStringMeetsExpectation(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"&sortOrder=ascending");
     }
 
     @Test
