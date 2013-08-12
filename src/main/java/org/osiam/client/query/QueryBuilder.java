@@ -70,6 +70,7 @@ public class QueryBuilder {
 
     /**
      * Add an sortOrder=ascending to the query
+     *
      * @return The QueryBuilder with this sort oder added.
      */
     public QueryBuilder sortOrderAscending() {
@@ -79,6 +80,7 @@ public class QueryBuilder {
 
     /**
      * Add an sortOrder=descending to the query
+     *
      * @return The QueryBuilder with this sort oder added.
      */
     public QueryBuilder sortOrderDescending() {
@@ -87,12 +89,12 @@ public class QueryBuilder {
     }
 
     /**
-     * Build the query String to use against OSIAM.
+     * Build the query to use against OSIAM.
      *
-     * @return The query as a String
+     * @return The constructed query
      */
-    public String build() {
-        return builder.toString() + sortOrder;
+    public Query build() {
+        return new Query(builder.toString() + sortOrder);
     }
 
     private boolean isAttributeValid(String attribute, Class clazz) {
@@ -137,10 +139,10 @@ public class QueryBuilder {
         private QueryBuilder addFilter(String filter, String condition) {
             qb.builder.append(filter);
 
-            if(condition != null && condition.length() > 0){
+            if (condition != null && condition.length() > 0) {
                 qb.builder.append("\"").
-                    append(condition).
-                    append("\"");
+                        append(condition).
+                        append("\"");
             }
             return qb;
         }
