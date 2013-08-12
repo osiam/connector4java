@@ -17,6 +17,8 @@ public class QueryBuilder {
     private Class clazz;
     private StringBuilder builder;
     private String sortOrder = "";
+    private String startIndex = "";
+    private String countPerPage = "";
 
     /**
      * The Constructor of the QueryBuilder
@@ -87,12 +89,30 @@ public class QueryBuilder {
     }
 
     /**
+     * Add the start Index from where on the list will be returned to the query
+     * @return The QueryBuilder with this start Index added.
+     */
+    public QueryBuilder startIndex(int startIndex) {
+        this.startIndex = "&startIndex=" + startIndex;
+        return this;
+    }
+
+    /**
+     * Add the number of wanted results per page to the query
+     * @return The QueryBuilder with this count per page added.
+     */
+    public QueryBuilder countPerPage(int count) {
+        countPerPage = "&count=" + count;
+        return this;
+    }
+
+    /**
      * Build the query String to use against OSIAM.
      *
      * @return The query as a String
      */
     public String build() {
-        return builder.toString() + sortOrder;
+        return builder.toString() + sortOrder + countPerPage + startIndex;
     }
 
     private boolean isAttributeValid(String attribute, Class clazz) {

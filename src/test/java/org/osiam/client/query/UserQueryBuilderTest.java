@@ -15,6 +15,8 @@ public class UserQueryBuilderTest {
     private static final String VALID_EMAIL_ATTR = "emails.value";
     private static final String INVALID_EMAIL_ATTR = "emails.false";
     private static final String IRRELEVANT = "irrelevant";
+    private static final int START_INDEX = 5;
+    private static final int COUNT_PER_PAGE = 7;
     private QueryBuilder queryBuilder;
 
     @Before
@@ -145,6 +147,32 @@ public class UserQueryBuilderTest {
     public void two_times_set_sort_order_descending() {
         queryBuilder.sortOrderAscending().sortOrderDescending();
         buildStringMeetsExpectation("&sortOrder=descending");
+    }
+
+    @Test
+    public void start_index_added() {
+        queryBuilder.startIndex(START_INDEX);
+        buildStringMeetsExpectation("&startIndex=" + START_INDEX);
+    }
+
+    @Test
+    public void count_per_page_added() {
+        queryBuilder.countPerPage(COUNT_PER_PAGE);
+        buildStringMeetsExpectation("&count=" + COUNT_PER_PAGE);
+    }
+
+    @Test
+    public void start_index_and_count_added_to_complete_query(){
+        queryBuilder.query(DEFAULT_ATTR)
+                .contains(IRRELEVANT)
+                .and(DEFAULT_ATTR).contains(IRRELEVANT)
+                .startIndex(START_INDEX)
+                .countPerPage(COUNT_PER_PAGE)
+                .sortOrderAscending();
+        String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR
+                + " co \"" + IRRELEVANT + "\"&sortOrder=ascending&count=" + COUNT_PER_PAGE
+                + "&startIndex=" + START_INDEX;
+        buildStringMeetsExpectation(exceptedQuery);
     }
 
     private void buildStringMeetsExpectation(String buildString) {
