@@ -8,6 +8,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.User;
@@ -67,12 +68,12 @@ public class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * Search for existing Users by the given {@link QueryBuilder}.
      *
-     * @param queryBuilder containing the query to execute.
-     * @param accessToken  the OSIAM access token from for the current session
+     * @param query       containing the query to execute.
+     * @param accessToken the OSIAM access token from for the current session
      * @return a QueryResult Containing a list of all found Users
      */
-    public QueryResult<User> searchUsers(QueryBuilder queryBuilder, AccessToken accessToken) {
-        return super.searchResources(queryBuilder, accessToken);
+    public QueryResult<User> searchUsers(Query query, AccessToken accessToken) {
+        return super.searchResources(query, accessToken);
     }
 
     /**
