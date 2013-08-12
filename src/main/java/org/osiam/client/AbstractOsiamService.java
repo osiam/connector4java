@@ -64,16 +64,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     /**
-     * this method retrieves a Ressource of the given Type with the given id. If no Entry with the given id can be found, an
+     * Retrieve the Resource of the given Type with the given id. If no resource with the given id can be found, an
      * {@link NoResultException} is thrown.
      *
-     * @param id          the uuid from the wanted ressource
+     * @param id          the uuid from the wanted resource
      * @param accessToken the access token from OSIAM for the actual session
-     * @return the given type with the given id
-     * @throws UnauthorizedException if the request could not be authorized. For example the access-token is not valid anymore.
+     * @return The resource of the given type with the given id
+     * @throws UnauthorizedException if the request could not be authorized.
      * @throws NoResultException     if no user with the given id can be found
      * @throws ConnectionInitializationException
-     *                               if no connection to the given OSIAM services could be initialized
+     *                               if the connection to the given OSIAM service could be initialized
      */
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         T resource;

@@ -38,7 +38,7 @@ public class QueryBuilder {
      * @return A {@link QueryBuilder.Filter} to specify the filtering criteria
      * @throws InvalidAttributeException if the given attribute is not valid for a query
      */
-    public Filter query(final String attributeName) {
+    public Filter query(String attributeName) {
         if (!(isAttributeValid(attributeName))) {
             throw new InvalidAttributeException("Querying for this attribute is not supported");
         }
@@ -74,6 +74,7 @@ public class QueryBuilder {
     /**
      * Adds the given {@link SortOrder} to the query
      *
+     * @param sortOrder The order in which to sort the result
      * @return The QueryBuilder with this sort oder added.
      */
     public QueryBuilder withSortOrder(SortOrder sortOrder) {
@@ -84,6 +85,7 @@ public class QueryBuilder {
     /**
      * Add the start Index from where on the list will be returned to the query
      *
+     * @param startIndex The position to use as the first entry in the result.
      * @return The QueryBuilder with this start Index added.
      */
     public QueryBuilder startIndex(int startIndex) {
@@ -94,6 +96,7 @@ public class QueryBuilder {
     /**
      * Add the number of wanted results per page to the query
      *
+     * @param count The number of items displayed per page.
      * @return The QueryBuilder with this count per page added.
      */
     public QueryBuilder countPerPage(int count) {

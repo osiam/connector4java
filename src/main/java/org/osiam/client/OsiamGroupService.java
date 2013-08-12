@@ -15,8 +15,8 @@ import org.osiam.resources.scim.Group;
 import java.util.UUID;
 
 /**
- * OsiamGroupService provides all methods necessary to manipulate the {@link Group} entities registered in the
- * given OSIAM installation. For the construction of an instance please use the included {@link OsiamGroupService.Builder}
+ * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
+ * given OSIAM installation. For the construction of an instance please use the {@link OsiamGroupService.Builder}
  */
 public class OsiamGroupService extends AbstractOsiamService<Group> {
 
@@ -32,26 +32,26 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
     }
 
     /**
-     * this method retrieves a single Group with the given id. If no group with the given id can be found an
+     * Retrieve a single Group with the given id. If no group with the given id can be found a
      * {@link NoResultException} is thrown.
      *
-     * @param id          the uuid from the wanted group
-     * @param accessToken the access token from OSIAM for the actual session
-     * @return the group with the given id
-     * @throws UnauthorizedException if the request could not be authorized. For example the access-token is not valid anymore.
-     * @throws NoResultException     if no group with the given id can be found
+     * @param id          the uuid of the wanted group
+     * @param accessToken the access token from OSIAM for the current session.
+     * @return the group with the given id.
+     * @throws UnauthorizedException if the request could not be authorized.
+     * @throws NoResultException     if no group with the given id can be found.
      * @throws ConnectionInitializationException
-     *                               if no connection to the given OSIAM services could be initialized
+     *                               if no connection to the given OSIAM service could be initialized
      */
     public Group getGroupByUUID(UUID id, AccessToken accessToken) {
         return getResourceByUUID(id, accessToken);
     }
 
     /**
-     * this method retrieves a list of the first 100 groups. I also gives back the information about the total number of groups
-     * saved in OSIAM
+     * Retrieve a list of the of all {@link Group} resources saved in the OSIAM service. If there are more than 100
+     * only the first 100 are returned, The returned QueryResult contains Information about the total number of entries.
      *
-     * @param accessToken the access token from OSIAM for the actual session
+     * @param accessToken the OSIAM access token for the current session
      * @return a QueryResult Containing a list of all groups
      */
     public QueryResult<Group> getAllGroups(AccessToken accessToken) {
@@ -59,12 +59,12 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
     }
 
     /**
-     * with this method it is possible to search for the exisitngs Groups by a given search string (where statement)
-     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
+     * Search for existing groups by a given search string. For more detailed information about the possible logical
+     * operators and usable fields please have a look into the wiki.
      *
      * @param queryString a string containing the needed search where statement
-     * @param accessToken the access token from OSIAM for the actual session
-     * @return a QueryResult Containing a list of all found Groups
+     * @param accessToken the OSIAM access token from for the current session
+     * @return a QueryResult containing a list of all found Groups
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
     public QueryResult<Group> searchGroups(String queryString, AccessToken accessToken) {
@@ -72,25 +72,23 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
     }
 
     /**
-     * with this method it is possible to search for the exisitngs Groups by a given QueryBuilder
-     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
+     * Search for existing groups by a given @{link Query}.
      *
      * @param queryBuilder containing the needed search where statement
-     * @param accessToken  the access token from OSIAM for the actual session
-     * @return a QueryResult Containing a list of all found Groups
-     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
+     * @param accessToken  the OSIAM access token from for the current session
+     * @return a QueryResult containing a list of all found Groups
      */
     public QueryResult<Group> searchGroups(QueryBuilder queryBuilder, AccessToken accessToken) {
         return searchResources(queryBuilder, accessToken);
     }
 
     /**
-     * The Builder class is used to construct instances of the {@link OsiamGroupService}
+     * The Builder is used to construct instances of the {@link OsiamGroupService}
      */
     public static class Builder extends AbstractOsiamService.Builder<Group> {
 
         /**
-         * Set up the Builder for the construction of  an {@link OsiamGroupService} instance for the OAuth2 service at
+         * Set up the Builder for the construction of  an {@link OsiamGroupService} instance for the OSIAM service at
          * the given endpoint
          *
          * @param endpoint The URL at which the OSIAM server lives.

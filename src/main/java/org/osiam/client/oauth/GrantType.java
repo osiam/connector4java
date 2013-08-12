@@ -5,7 +5,7 @@ package org.osiam.client.oauth;
 
 /**
  * The Grant Type represents the type of Grant that the client expects from the service.
- * At this point the following grant types are supported.
+ * At this point the following grant types are supported:
  * <ul>
  * <li>PASSWORD</li>
  * </ul>

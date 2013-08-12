@@ -15,7 +15,7 @@ import org.osiam.resources.scim.User;
 import java.util.UUID;
 
 /**
- * OsiamUserService provides all methods necessary to manipulate the User-Entities registered in the
+ * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the
  * given OSIAM installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
  */
 public class OsiamUserService extends AbstractOsiamService<User> {
@@ -31,13 +31,13 @@ public class OsiamUserService extends AbstractOsiamService<User> {
     }
 
     /**
-     * this method retrieves a single User with the given id. If no user with the given id can be found an
-     * {@link NoResultException} is thrown.
+     * Retrieve a single User with the given id. If no user for the given id can be found a {@link NoResultException}
+     * is thrown.
      *
-     * @param id          the uuid from the wanted user
-     * @param accessToken the access token from OSIAM for the actual session
+     * @param id          the uuid of the wanted user
+     * @param accessToken the OSIAM access token from for the current session
      * @return the user with the given id
-     * @throws UnauthorizedException if the request could not be authorized. For example the access-token is not valid anymore.
+     * @throws UnauthorizedException if the request could not be authorized.
      * @throws NoResultException     if no user with the given id can be found
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
@@ -52,23 +52,23 @@ public class OsiamUserService extends AbstractOsiamService<User> {
     }
 
     /**
-     * with this method it is possible to search for the exisitngs Users by a given search string (where statement)
-     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
-     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
-     * @param queryString a string containing the needed search where statement
-     * @param accessToken the access token from OSIAM for the actual session
+     * Search for the existing Users by a given search string. For more detailed information about the possible
+     * logical operators and usable fields please have a look into the wiki.
+     *
+     * @param queryString The string with the query that should be passed to the OSIAM service
+     * @param accessToken the OSIAM access token from for the current session
      * @return a QueryResult Containing a list of all found Users
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
      */
     public QueryResult<User> searchUsers(String queryString, AccessToken accessToken) {
         return super.searchResources(queryString, accessToken);
     }
 
     /**
-     * with this method it is possible to search for the exisitngs Users by a given QueryBuilder
-     * For more detailed information about the possible logical operators and usable fields please have a look into the wikie
-     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
-     * @param queryBuilder containing the needed search where statement
-     * @param accessToken the access token from OSIAM for the actual session
+     * Search for existing Users by the given {@link QueryBuilder}.
+     *
+     * @param queryBuilder containing the query to execute.
+     * @param accessToken  the OSIAM access token from for the current session
      * @return a QueryResult Containing a list of all found Users
      */
     public QueryResult<User> searchUsers(QueryBuilder queryBuilder, AccessToken accessToken) {
@@ -81,7 +81,7 @@ public class OsiamUserService extends AbstractOsiamService<User> {
     public static class Builder extends AbstractOsiamService.Builder<User> {
 
         /**
-         * Set up the Builder for the construction of  an {@link OsiamUserService} instance for the OAuth2 service at
+         * Set up the Builder for the construction of  an {@link OsiamUserService} instance for the OSIAM service at
          * the given endpoint
          *
          * @param endpoint The URL at which the OSIAM server lives.
@@ -91,7 +91,7 @@ public class OsiamUserService extends AbstractOsiamService<User> {
         }
 
         /**
-         * constructs a OsiamUserService with the given values
+         * constructs an OsiamUserService with the given values
          *
          * @return a valid OsiamUserService
          */

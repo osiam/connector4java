@@ -6,6 +6,9 @@ package org.osiam.client.query;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class represents a query as it is run against the OSIAM service.
+ */
 public class Query {
     static final private int DEFAULT_COUNT = 100;
     static final private int DEFAULT_INDEX = 0;

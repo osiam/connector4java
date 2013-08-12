@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * This class holds information about an access token. An  access token is granted by the OSIAM server
+ * Objects of this type  represent an access token. Access tokens are granted by the OSIAM server
  * and allows access to restricted resources.
  */
 public class AccessToken {
@@ -40,7 +40,7 @@ public class AccessToken {
     /**
      * Refreshing of tokens is not yet implemented in OSIAM
      *
-     * @return
+     * @return Nothing at this point.
      * @throws NoSuchMethodError
      */
     public String getRefreshToken() {
