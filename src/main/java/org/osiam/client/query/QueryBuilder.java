@@ -13,12 +13,13 @@ import java.lang.reflect.Modifier;
  */
 public class QueryBuilder {
 
-
+    static final private int DEFAULT_START_INDEX = 0;
+    static final private int DEFAULT_COUNT_PER_PAGE = 100;
     private Class clazz;
     private StringBuilder builder;
-    private String sortOrder = "";
-    private String startIndex = "";
-    private String countPerPage = "";
+    private SortOrder sortOrder;
+    private int startIndex = DEFAULT_START_INDEX;
+    private int countPerPage = DEFAULT_COUNT_PER_PAGE;
 
     /**
      * The Constructor of the QueryBuilder
@@ -71,38 +72,32 @@ public class QueryBuilder {
     }
 
     /**
-     * Add an sortOrder=ascending to the query
+     * Adds the given {@link SortOrder} to the query
+     *
      * @return The QueryBuilder with this sort oder added.
      */
-    public QueryBuilder sortOrderAscending() {
-        sortOrder = "&sortOrder=ascending";
-        return this;
-    }
-
-    /**
-     * Add an sortOrder=descending to the query
-     * @return The QueryBuilder with this sort oder added.
-     */
-    public QueryBuilder sortOrderDescending() {
-        sortOrder = "&sortOrder=descending";
+    public QueryBuilder withSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
         return this;
     }
 
     /**
      * Add the start Index from where on the list will be returned to the query
+     *
      * @return The QueryBuilder with this start Index added.
      */
     public QueryBuilder startIndex(int startIndex) {
-        this.startIndex = "&startIndex=" + startIndex;
+        this.startIndex = startIndex;
         return this;
     }
 
     /**
      * Add the number of wanted results per page to the query
+     *
      * @return The QueryBuilder with this count per page added.
      */
     public QueryBuilder countPerPage(int count) {
-        countPerPage = "&count=" + count;
+        this.countPerPage = count;
         return this;
     }
 
@@ -112,7 +107,20 @@ public class QueryBuilder {
      * @return The query as a String
      */
     public Query build() {
-       return new Query(builder.toString() + sortOrder + countPerPage + startIndex);
+        if (sortOrder != null) {
+            builder.append("&")
+                    .append(sortOrder);
+
+        }
+        if (countPerPage != DEFAULT_COUNT_PER_PAGE) {
+            builder.append("&count=")
+                    .append(countPerPage);
+        }
+        if (startIndex != DEFAULT_START_INDEX) {
+            builder.append("&startIndex=")
+                    .append(startIndex);
+        }
+        return new Query(builder.toString());
     }
 
     private boolean isAttributeValid(String attribute, Class clazz) {
@@ -157,10 +165,10 @@ public class QueryBuilder {
         private QueryBuilder addFilter(String filter, String condition) {
             qb.builder.append(filter);
 
-            if(condition != null && condition.length() > 0){
+            if (condition != null && condition.length() > 0) {
                 qb.builder.append("\"").
-                    append(condition).
-                    append("\"");
+                        append(condition).
+                        append("\"");
             }
             return qb;
         }

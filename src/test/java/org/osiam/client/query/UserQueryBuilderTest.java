@@ -124,13 +124,13 @@ public class UserQueryBuilderTest {
 
     @Test
     public void sort_order_ascending() {
-        queryBuilder.sortOrderAscending();
+        queryBuilder.withSortOrder(SortOrder.ASCENDING);
         buildStringMeetsExpectation("&sortOrder=ascending");
     }
 
     @Test
     public void sort_order_descending() {
-        queryBuilder.sortOrderDescending();
+        queryBuilder.withSortOrder(SortOrder.DESCENDING);
         buildStringMeetsExpectation("&sortOrder=descending");
     }
 
@@ -139,13 +139,13 @@ public class UserQueryBuilderTest {
         queryBuilder.query(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT)
-                .sortOrderAscending();
+                .withSortOrder(SortOrder.ASCENDING);
         buildStringMeetsExpectation(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"&sortOrder=ascending");
     }
 
     @Test
     public void two_times_set_sort_order_descending() {
-        queryBuilder.sortOrderAscending().sortOrderDescending();
+        queryBuilder.withSortOrder(SortOrder.ASCENDING).withSortOrder(SortOrder.DESCENDING);
         buildStringMeetsExpectation("&sortOrder=descending");
     }
 
@@ -162,13 +162,13 @@ public class UserQueryBuilderTest {
     }
 
     @Test
-    public void start_index_and_count_added_to_complete_query(){
+    public void start_index_and_count_added_to_complete_query() {
         queryBuilder.query(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT)
                 .startIndex(START_INDEX)
                 .countPerPage(COUNT_PER_PAGE)
-                .sortOrderAscending();
+                .withSortOrder(SortOrder.ASCENDING);
         String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR
                 + " co \"" + IRRELEVANT + "\"&sortOrder=ascending&count=" + COUNT_PER_PAGE
                 + "&startIndex=" + START_INDEX;
