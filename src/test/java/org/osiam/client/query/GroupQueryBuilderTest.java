@@ -39,6 +39,7 @@ public class GroupQueryBuilderTest {
     }
 
     private void buildStringMeetsExpectation(String buildString) {
-        assertEquals(buildString, queryBuilder.build());
+        Query expectedQuery = new Query(buildString);
+        assertEquals(expectedQuery, queryBuilder.build());
     }
 }

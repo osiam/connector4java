@@ -111,8 +111,8 @@ public class QueryBuilder {
      *
      * @return The query as a String
      */
-    public String build() {
-        return builder.toString() + sortOrder + countPerPage + startIndex;
+    public Query build() {
+       return new Query(builder.toString() + sortOrder + countPerPage + startIndex);
     }
 
     private boolean isAttributeValid(String attribute, Class clazz) {

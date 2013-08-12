@@ -13,6 +13,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.CoreResource;
@@ -165,11 +166,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         if (queryBuilder == null) {
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
-        String whereStatement = queryBuilder.build();
-        if (whereStatement.length() == 0) {
-            throw new IllegalArgumentException("The given queryBuilder can't be empty.");
-        }
-        return searchResources(whereStatement, accessToken);
+        Query whereStatement = queryBuilder.build();
+        return searchResources(whereStatement.toString(), accessToken);
     }
 
 
