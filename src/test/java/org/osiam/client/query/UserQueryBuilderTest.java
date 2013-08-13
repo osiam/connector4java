@@ -1,6 +1,7 @@
 package org.osiam.client.query;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.resources.scim.User;
@@ -172,6 +173,30 @@ public class UserQueryBuilderTest {
         String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR
                 + " co \"" + IRRELEVANT + "\"&sortOrder=ascending&count=" + COUNT_PER_PAGE
                 + "&startIndex=" + START_INDEX;
+        buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test
+    public void inner_and_sql_added(){
+        QueryBuilder innerBuilder = new QueryBuilder(User.class);
+        innerBuilder.query(DEFAULT_ATTR).equalTo(IRRELEVANT);
+
+        queryBuilder.query(DEFAULT_ATTR).contains(IRRELEVANT).and(innerBuilder).startIndex(START_INDEX);
+
+        String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and (" + DEFAULT_ATTR
+                + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
+        buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test
+    public void inner_or_sql_added(){
+        QueryBuilder innerBuilder = new QueryBuilder(User.class);
+        innerBuilder.query(DEFAULT_ATTR).equalTo(IRRELEVANT);
+
+        queryBuilder.query(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX);
+
+        String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
+                + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }
 

@@ -60,6 +60,16 @@ public class QueryBuilder {
     }
 
     /**
+     * Adds the query of the given QueryBuilder into ( and ) to the filter
+     * @param innerQuery the inner filter
+     * @return The QueryBuilder with the inner filter added.
+     */
+    public QueryBuilder and(QueryBuilder innerQuery){
+        builder.append(" and (").append(innerQuery.build().toString()).append(")");
+        return this;
+    }
+
+    /**
      * Add an 'logical or' operation to the filter with another attribute to filter on.
      *
      * @param attributeName The name of the attribute to filter the or clause on.
@@ -69,6 +79,16 @@ public class QueryBuilder {
     public Filter or(String attributeName) {
         builder.append(" or ");
         return query(attributeName);
+    }
+
+    /**
+     * Adds the query of the given QueryBuilder into ( and ) to the filter
+     * @param innerQuery the inner filter
+     * @return The QueryBuilder with the inner filter added.
+     */
+    public QueryBuilder or(QueryBuilder innerQuery){
+        builder.append(" or (").append(innerQuery.build().toString()).append(")");
+        return this;
     }
 
     /**
