@@ -16,7 +16,7 @@ public class QueryBuilder {
     static final private int DEFAULT_START_INDEX = 0;
     static final private int DEFAULT_COUNT_PER_PAGE = 100;
     private Class clazz;
-    private StringBuilder builder;
+    private StringBuilder filter;
     private SortOrder sortOrder;
     private int startIndex = DEFAULT_START_INDEX;
     private int countPerPage = DEFAULT_COUNT_PER_PAGE;
@@ -27,7 +27,7 @@ public class QueryBuilder {
      * @param clazz The class of Resources to query for.
      */
     public QueryBuilder(Class clazz) {
-        builder = new StringBuilder();
+        filter = new StringBuilder();
         this.clazz = clazz;
     }
 
@@ -38,13 +38,8 @@ public class QueryBuilder {
      * @return A {@link QueryBuilder.Filter} to specify the filtering criteria
      * @throws InvalidAttributeException if the given attribute is not valid for a query
      */
-    public Filter query(String attributeName) {
-        if (!(isAttributeValid(attributeName))) {
-            throw new InvalidAttributeException("Querying for this attribute is not supported");
-        }
-
-        builder.append(attributeName);
-        return new Filter(this);
+    public Filter filter(String attributeName) {
+        return query(attributeName);
     }
 
     /**
@@ -55,7 +50,7 @@ public class QueryBuilder {
      * @throws InvalidAttributeException if the given attribute is not valid for a query
      */
     public Filter and(String attributeName) {
-        builder.append(" and ");
+        filter.append(" and ");
         return query(attributeName);
     }
 
@@ -67,8 +62,17 @@ public class QueryBuilder {
      * @throws InvalidAttributeException if the given attribute is not valid for a query
      */
     public Filter or(String attributeName) {
-        builder.append(" or ");
+        filter.append(" or ");
         return query(attributeName);
+    }
+
+    private Filter query(String attributeName) {
+        if (!(isAttributeValid(attributeName))) {
+            throw new InvalidAttributeException("Querying for this attribute is not supported");
+        }
+
+        filter.append(attributeName);
+        return new Filter(this);
     }
 
     /**
@@ -110,20 +114,35 @@ public class QueryBuilder {
      * @return The query as a String
      */
     public Query build() {
+        StringBuilder builder = new StringBuilder();
+        if (filter.length() != 0) {
+            ensureQueryParamIsSeparated(builder);
+            builder.append("filter=")
+                    .append(filter);
+        }
+
         if (sortOrder != null) {
-            builder.append("&sortOrder=")
-                    .append(sortOrder);
+            ensureQueryParamIsSeparated(builder);
+            builder.append(sortOrder);
 
         }
         if (countPerPage != DEFAULT_COUNT_PER_PAGE) {
-            builder.append("&count=")
+            ensureQueryParamIsSeparated(builder);
+            builder.append("count=")
                     .append(countPerPage);
         }
         if (startIndex != DEFAULT_START_INDEX) {
-            builder.append("&startIndex=")
+            ensureQueryParamIsSeparated(builder);
+            builder.append("startIndex=")
                     .append(startIndex);
         }
         return new Query(builder.toString());
+    }
+
+    private void ensureQueryParamIsSeparated(StringBuilder builder) {
+        if (builder.length() != 0) {
+            builder.append("&");
+        }
     }
 
     private boolean isAttributeValid(String attribute, Class clazz) {
@@ -166,10 +185,10 @@ public class QueryBuilder {
         }
 
         private QueryBuilder addFilter(String filter, String condition) {
-            qb.builder.append(filter);
+            qb.filter.append(filter);
 
             if (condition != null && condition.length() > 0) {
-                qb.builder.append("\"").
+                qb.filter.append("\"").
                         append(condition).
                         append("\"");
             }
