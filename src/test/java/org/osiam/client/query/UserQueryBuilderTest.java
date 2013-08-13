@@ -180,11 +180,11 @@ public class UserQueryBuilderTest {
     @Test
     public void inner_and_sql_added(){
         QueryBuilder innerBuilder = new QueryBuilder(User.class);
-        innerBuilder.query(DEFAULT_ATTR).equalTo(IRRELEVANT);
+        innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
-        queryBuilder.query(DEFAULT_ATTR).contains(IRRELEVANT).and(innerBuilder).startIndex(START_INDEX);
+        queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).and(innerBuilder).startIndex(START_INDEX);
 
-        String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and (" + DEFAULT_ATTR
+        String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and (" + DEFAULT_ATTR
                 + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }
@@ -192,11 +192,11 @@ public class UserQueryBuilderTest {
     @Test
     public void inner_or_sql_added(){
         QueryBuilder innerBuilder = new QueryBuilder(User.class);
-        innerBuilder.query(DEFAULT_ATTR).equalTo(IRRELEVANT);
+        innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
-        queryBuilder.query(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX);
+        queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX);
 
-        String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
+        String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
                 + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }

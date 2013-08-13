@@ -56,11 +56,11 @@ public class QueryBuilder {
 
     /**
      * Adds the query of the given QueryBuilder into ( and ) to the filter
-     * @param innerQuery the inner filter
+     * @param innerFilter the inner filter
      * @return The QueryBuilder with the inner filter added.
      */
-    public QueryBuilder and(QueryBuilder innerQuery){
-        builder.append(" and (").append(innerQuery.build().toString()).append(")");
+    public QueryBuilder and(QueryBuilder innerFilter){
+        filter.append(" and (").append(innerFilter.build().toString().replaceFirst("filter=", "")).append(")");
         return this;
     }
 
@@ -87,11 +87,11 @@ public class QueryBuilder {
 
     /**
      * Adds the query of the given QueryBuilder into ( and ) to the filter
-     * @param innerQuery the inner filter
+     * @param innerFilter the inner filter
      * @return The QueryBuilder with the inner filter added.
      */
-    public QueryBuilder or(QueryBuilder innerQuery){
-        builder.append(" or (").append(innerQuery.build().toString()).append(")");
+    public QueryBuilder or(QueryBuilder innerFilter){
+        filter.append(" or (").append(innerFilter.build().toString().replaceFirst("filter=", "")).append(")");
         return this;
     }
 
@@ -143,7 +143,8 @@ public class QueryBuilder {
 
         if (sortOrder != null) {
             ensureQueryParamIsSeparated(builder);
-            builder.append(sortOrder);
+            builder.append("sortOrder=")
+                    .append(sortOrder);
 
         }
         if (countPerPage != DEFAULT_COUNT_PER_PAGE) {
