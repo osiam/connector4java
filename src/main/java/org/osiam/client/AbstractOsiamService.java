@@ -14,7 +14,6 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.CoreResource;
 
@@ -137,10 +136,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
+        WebResource queryResource = webResource.queryParam("access_token", accessToken.getToken());
         try {
-            queryResultAsString = webResource.queryParam("access_token", accessToken.getToken())
-                    .queryParam("filter", queryString)
-                    .accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+            String[] queryParams = queryString.split("&");
+            for (String queryParam : queryParams) {
+                String[] kv = queryParam.split("=");
+                queryResource = queryResource.queryParam(kv[0], kv[1]);
+            }
+            queryResultAsString = queryResource.accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
 
         } catch (UniformInterfaceException e) {
             switch (e.getResponse().getStatus()) {
@@ -162,12 +165,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         return result;
     }
 
-    protected QueryResult<T> searchResources(QueryBuilder queryBuilder, AccessToken accessToken) {
-        if (queryBuilder == null) {
+    protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {
+        if (query == null) {
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
-        Query whereStatement = queryBuilder.build();
-        return searchResources(whereStatement.toString(), accessToken);
+        return searchResources(query.toString(), accessToken);
     }
 
 

@@ -7,11 +7,11 @@ public enum SortOrder {
     /**
      * Order result ascending
      */
-    ASCENDING("ascending"),
+    ASCENDING("sortOrder=ascending"),
     /**
      * Order result descending
      */
-    DESCENDING("descending");
+    DESCENDING("sortOrder=descending");
 
     private String sortOrder;
 

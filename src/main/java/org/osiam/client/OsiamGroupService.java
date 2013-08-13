@@ -8,7 +8,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.QueryBuilder;
+import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 
@@ -74,12 +74,12 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
     /**
      * Search for existing groups by a given @{link Query}.
      *
-     * @param queryBuilder containing the needed search where statement
-     * @param accessToken  the OSIAM access token from for the current session
+     * @param query       containing the needed search where statement
+     * @param accessToken the OSIAM access token from for the current session
      * @return a QueryResult containing a list of all found Groups
      */
-    public QueryResult<Group> searchGroups(QueryBuilder queryBuilder, AccessToken accessToken) {
-        return searchResources(queryBuilder, accessToken);
+    public QueryResult<Group> searchGroups(Query query, AccessToken accessToken) {
+        return searchResources(query, accessToken);
     }
 
     /**

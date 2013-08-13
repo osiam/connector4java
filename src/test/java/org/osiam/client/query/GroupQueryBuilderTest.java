@@ -21,21 +21,21 @@ public class GroupQueryBuilderTest {
 
     @Test
     public void flat_attribute_is_added_to_query() {
-        queryBuilder.query(DEFAULT_ATTR);
-        buildStringMeetsExpectation(DEFAULT_ATTR);
+        queryBuilder.filter(DEFAULT_ATTR);
+        buildStringMeetsExpectation("filter=" + DEFAULT_ATTR);
     }
 
     @Test
     public void and_attribute_is_added_correctly() {
-        queryBuilder.query(DEFAULT_ATTR)
+        queryBuilder.filter(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation("filter=" + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
     }
 
     @Test(expected = InvalidAttributeException.class)
     public void exception_raised_when_attr_is_not_valid() {
-        queryBuilder.query(IRRELEVANT);
+        queryBuilder.filter(IRRELEVANT);
     }
 
     private void buildStringMeetsExpectation(String buildString) {
