@@ -166,6 +166,10 @@ public class QueryBuilder {
         }
     }
 
+    private boolean isAttributeValid(String attribute) {
+        return isAttributeValid(attribute, clazz);
+    }
+
     private boolean isAttributeValid(String attribute, Class clazz) {
         String compositeField = "";
         if (attribute.contains(".")) {
@@ -187,10 +191,6 @@ public class QueryBuilder {
             }
         }
         return false;
-    }
-
-    private boolean isAttributeValid(String attribute) {
-        return isAttributeValid(attribute, clazz);
     }
 
     /**
