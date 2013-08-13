@@ -111,7 +111,7 @@ public class QueryBuilder {
      */
     public Query build() {
         if (sortOrder != null) {
-            builder.append("&")
+            builder.append("&sortOrder=")
                     .append(sortOrder);
 
         }
