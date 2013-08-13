@@ -197,7 +197,7 @@ public class QueryBuilder {
      * A Filter is used to produce filter criteria for the query. At this point the conditions are mere strings.
      * This is going to change.
      */
-    public class Filter {
+    public final class Filter {
 
         private QueryBuilder qb;
 
