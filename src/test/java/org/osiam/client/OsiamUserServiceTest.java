@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.*;
 
@@ -47,6 +49,7 @@ public class OsiamUserServiceTest {
     private AccessTokenMockProvider tokenProvider;
 
     private User singleUserResult;
+    private Query query;
     private QueryResult<User> queryResult;
 
     OsiamUserService service;
@@ -69,7 +72,7 @@ public class OsiamUserServiceTest {
     @Test
     public void existing_user_is_returned() throws Exception {
         givenUUIDcanBeFound();
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         thenReturnedUserHasUUID(searchedUUID);
         thenMetaDataWasDeserializedCorrectly();
         thenAddressIsDeserializedCorrectly();
@@ -80,15 +83,15 @@ public class OsiamUserServiceTest {
     @Test
     public void user_has_valid_values() throws Exception {
         givenUUIDcanBeFound();
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         thenReturnedUserMatchesExpectations();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void uuid_is_null_by_getting_single_user_raises_exception() throws Exception {
-    	givenUUIDisEmpty();
+        givenUUIDisEmpty();
         searchedUUID = null;
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
@@ -96,7 +99,7 @@ public class OsiamUserServiceTest {
     public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenUUIDisEmpty();
         accessToken = null;
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
@@ -112,49 +115,49 @@ public class OsiamUserServiceTest {
     public void accessToken_is_null_by_searching_for_group_by_string_raises_exception() throws Exception {
         givenUUIDisEmpty();
         accessToken = null;
-        whenSingleUserIsSearchedByQueryString("meta.version=3");
+        whenSearchIsUsedByString("meta.version=3");
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
     public void user_does_not_exist() throws IOException {
         givenUUIDcanNotBeFound();
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void expired_access_token() throws Exception {
         givenExpiredAccessTokenIsUsedForLookup();
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void invalid_access_token() throws Exception {
         givenInvalidAccessTokenIsUsedForLookup();
-        whenUUIDisLookedUp();
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
     public void invalid_UUID_search() throws IOException {
-    	givenUUIDisInvalid();
-    	whenUUIDisLookedUp();
+        givenUUIDisInvalid();
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
     public void invalid_UUID_is_star() throws IOException {
-    	givenUUIDisSpecial("*");
-    	whenUUIDisLookedUp();
+        givenUUIDisSpecial("*");
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
     public void invalid_UUID_is_dot() throws IOException {
-    	givenUUIDisSpecial(".");
-    	whenUUIDisLookedUp();
+        givenUUIDisSpecial(".");
+        whenSingleUUIDisLookedUp();
         fail("Exception expected");
     }
 
@@ -168,14 +171,22 @@ public class OsiamUserServiceTest {
     @Test
     public void search_for_single_user_is_successful() {
         givenASingleUserCanBeSearchedByQuery();
-        whenSingleUserIsSearchedByQueryString(SIMPLE_QUERY_STRING);
+        whenSearchIsUsedByString(SIMPLE_QUERY_STRING);
         thenQueryWasValid();
         thenNumberOfReturnedUsersIs(1);
         thenReturnedListOfSearchedUsersIsAsExpected();
     }
 
-    private void whenSingleUserIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchUsers(queryString, accessToken);
+    @Test
+    public void query_string_is_split_correctly() {
+
+        givenAQueryContainingDifficultCharacters();
+        givenAUserCanBeSearchedByQuery();
+
+        whenSearchIsUsedByQuery();
+
+        thenQueryStringIsSplitCorrectly();
+
     }
 
     private void givenAnAccessToken() throws IOException {
@@ -186,12 +197,17 @@ public class OsiamUserServiceTest {
         this.searchedUUID = UUID.fromString(userUuidString);
     }
 
-    private void whenUUIDisLookedUp() {
-        singleUserResult = service.getUserByUUID(searchedUUID, accessToken);
+    private void givenAQueryContainingDifficultCharacters() {
+        query = new QueryBuilder(User.class).filter("name.formatted").contains("Schulz & Schulz Industries").build();
     }
 
-    private void whenAllUsersAreLookedUp() {
-        queryResult = service.getAllUsers(accessToken);
+    private void givenAUserCanBeSearchedByQuery() {
+        stubFor(get(urlMatching(URL_BASE + "\\?access_token=.+"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBodyFile("query_user_by_name.json")));
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
@@ -222,7 +238,7 @@ public class OsiamUserServiceTest {
 
     private void givenUUIDisEmpty() {
         stubFor(givenUUIDisLookedUp("", accessToken)
-        		.willReturn(aResponse()
+                .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
@@ -264,6 +280,28 @@ public class OsiamUserServiceTest {
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBodyFile("query_user_by_name.json")));
+    }
+
+    private void whenSingleUUIDisLookedUp() {
+        singleUserResult = service.getUserByUUID(searchedUUID, accessToken);
+    }
+
+    private void whenAllUsersAreLookedUp() {
+        queryResult = service.getAllUsers(accessToken);
+    }
+
+    private void whenSearchIsUsedByQuery() {
+        queryResult = service.searchUsers(query, accessToken);
+    }
+
+    private void whenSearchIsUsedByString(String queryString) {
+        queryResult = service.searchUsers(queryString, accessToken);
+    }
+
+    private void thenQueryStringIsSplitCorrectly() {
+        verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
+                + "&filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON)));
     }
 
     private void thenReturnedUserHasUUID(UUID uuid) {
