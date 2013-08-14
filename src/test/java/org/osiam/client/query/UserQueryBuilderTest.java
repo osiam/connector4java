@@ -3,7 +3,6 @@ package org.osiam.client.query;
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.resources.scim.User;
 
 import static org.junit.Assert.assertEquals;
@@ -20,11 +19,11 @@ public class UserQueryBuilderTest {
     private static final int START_INDEX = 5;
     private static final int COUNT_PER_PAGE = 7;
     private static final String FILTER = "filter=";
-    private QueryBuilder queryBuilder;
+    private Query.Builder queryBuilder;
 
     @Before
     public void setUp() {
-        queryBuilder = new QueryBuilder(User.class);
+        queryBuilder = new Query.Builder(User.class);
     }
 
     @Test
@@ -180,7 +179,7 @@ public class UserQueryBuilderTest {
 
     @Test
     public void inner_and_sql_added() {
-        QueryBuilder innerBuilder = new QueryBuilder(User.class);
+        Query.Builder innerBuilder = new Query.Builder(User.class);
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).and(innerBuilder).startIndex(START_INDEX);
@@ -192,7 +191,7 @@ public class UserQueryBuilderTest {
 
     @Test
     public void inner_or_sql_added() {
-        QueryBuilder innerBuilder = new QueryBuilder(User.class);
+        Query.Builder innerBuilder = new Query.Builder(User.class);
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX);
@@ -211,7 +210,7 @@ public class UserQueryBuilderTest {
 
     @Test
     public void complet_query_with_all_attributes(){
-        QueryBuilder innerBuilder = new QueryBuilder(User.class);
+        Query.Builder innerBuilder = new Query.Builder(User.class);
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX)

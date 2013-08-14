@@ -12,11 +12,11 @@ public class GroupQueryBuilderTest {
 
     private static final String DEFAULT_ATTR = "displayName";
     private static final String IRRELEVANT = "irrelevant";
-    private QueryBuilder queryBuilder;
+    private Query.Builder queryBuilder;
 
     @Before
     public void setUp() {
-        queryBuilder = new QueryBuilder(Group.class);
+        queryBuilder = new Query.Builder(Group.class);
     }
 
     @Test

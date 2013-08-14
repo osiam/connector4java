@@ -9,7 +9,6 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.User;
 
