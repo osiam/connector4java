@@ -82,8 +82,8 @@ public class QueryBuilder {
     /**
      * Adds the query of the given QueryBuilder into ( and ) to the filter
      *
-     * @param innerFilter the inner filter
-     * @return The QueryBuilder with the inner filter added.
+     * @param innerFilter the filter in parentheses
+     * @return The QueryBuilder with the filter in parentheses added.
      */
     public QueryBuilder or(QueryBuilder innerFilter) {
         filter.append(" or (").append(innerFilter.filter).append(")");
@@ -124,27 +124,28 @@ public class QueryBuilder {
     }
 
     /**
-     * Add one or more attribute names to the sortBy statement. You can add all your wanted sortBy paramters in one call,
-     * or call this method several times
-     * @param attributeName one or more sort attributes
+     * Add one or more attribute names to the sortBy statement.
+     *
+     * @param attributeName one or more attributes to sort the query by
      * @return The QueryBuilder with sortBy added.
      */
     public QueryBuilder sortBy(String... attributeName) {
-        for(String actAttributeName : attributeName){
-             addSingleSortBy(actAttributeName);
+        for (String actAttributeName : attributeName) {
+            addSingleSortBy(actAttributeName);
         }
         return this;
     }
 
-    private void addSingleSortBy(String attributeName){
+    private void addSingleSortBy(String attributeName) {
         if (!(isAttributeValid(attributeName))) {
             throw new InvalidAttributeException("Sorting for this attribute is not supported");
         }
-        if(sortBy.length() > 0){
+        if (sortBy.length() > 0) {
             sortBy.append(", ");
         }
         sortBy.append(attributeName);
     }
+
     /**
      * Build the query String to use against OSIAM.
      *

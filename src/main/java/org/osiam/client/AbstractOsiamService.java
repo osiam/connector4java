@@ -138,7 +138,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
         WebResource queryResource = webResource.queryParam("access_token", accessToken.getToken());
         try {
-            String[] queryParams = queryString.split("\".*?\".+&");//                 ($string =~ /(".*?"|\S+)/g);
+            String[] queryParams = queryString.split("\".*?\".+&");
             for (String queryParam : queryParams) {
                 String[] kv = queryParam.split("=");
                 queryResource = queryResource.queryParam(kv[0], kv[1]);
