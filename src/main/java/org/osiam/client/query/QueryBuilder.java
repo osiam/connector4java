@@ -56,11 +56,12 @@ public class QueryBuilder {
 
     /**
      * Adds the query of the given QueryBuilder into ( and ) to the filter
+     *
      * @param innerFilter the inner filter
      * @return The QueryBuilder with the inner filter added.
      */
-    public QueryBuilder and(QueryBuilder innerFilter){
-        filter.append(" and (").append(innerFilter.build().toString().replaceFirst("filter=", "")).append(")");
+    public QueryBuilder and(QueryBuilder innerFilter) {
+        filter.append(" and (").append(innerFilter.filter).append(")");
         return this;
     }
 
@@ -76,22 +77,14 @@ public class QueryBuilder {
         return query(attributeName);
     }
 
-    private Filter query(String attributeName) {
-        if (!(isAttributeValid(attributeName))) {
-            throw new InvalidAttributeException("Querying for this attribute is not supported");
-        }
-
-        filter.append(attributeName);
-        return new Filter(this);
-    }
-
     /**
      * Adds the query of the given QueryBuilder into ( and ) to the filter
+     *
      * @param innerFilter the inner filter
      * @return The QueryBuilder with the inner filter added.
      */
-    public QueryBuilder or(QueryBuilder innerFilter){
-        filter.append(" or (").append(innerFilter.build().toString().replaceFirst("filter=", "")).append(")");
+    public QueryBuilder or(QueryBuilder innerFilter) {
+        filter.append(" or (").append(innerFilter.filter).append(")");
         return this;
     }
 
@@ -164,6 +157,15 @@ public class QueryBuilder {
         if (builder.length() != 0) {
             builder.append("&");
         }
+    }
+
+    private Filter query(String attributeName) {
+        if (!(isAttributeValid(attributeName))) {
+            throw new InvalidAttributeException("Querying for this attribute is not supported");
+        }
+
+        filter.append(attributeName);
+        return new Filter(this);
     }
 
     private boolean isAttributeValid(String attribute) {

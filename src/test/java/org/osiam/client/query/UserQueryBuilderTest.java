@@ -1,7 +1,6 @@
 package org.osiam.client.query;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.resources.scim.User;
@@ -178,7 +177,7 @@ public class UserQueryBuilderTest {
     }
 
     @Test
-    public void inner_and_sql_added(){
+    public void inner_and_sql_added() {
         QueryBuilder innerBuilder = new QueryBuilder(User.class);
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
@@ -190,7 +189,7 @@ public class UserQueryBuilderTest {
     }
 
     @Test
-    public void inner_or_sql_added(){
+    public void inner_or_sql_added() {
         QueryBuilder innerBuilder = new QueryBuilder(User.class);
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
