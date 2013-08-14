@@ -93,6 +93,7 @@
                     <generateJson>false</generateJson>
                     <generateHtml>true</generateHtml>
                     <jdk>${java.version}</jdk>
+                    <historyDir>${user.home}/history/${project.artifact}</historyDir>
                 </configuration>
             </plugin>
             <!-- Needed due to a problem with SSH -->
