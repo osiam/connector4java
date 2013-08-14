@@ -3,9 +3,11 @@ package org.osiam.client.query;
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.resources.scim.User;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UserQueryBuilderTest {
 
@@ -198,6 +200,65 @@ public class UserQueryBuilderTest {
         String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
                 + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test
+    public void one_sort_by_value_added(){
+        queryBuilder.sortBy(DEFAULT_ATTR);
+        String exceptedQuery = "sortBy=" + DEFAULT_ATTR;
+        buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test
+    public void two_sort_by_value_added(){
+        queryBuilder.sortBy(DEFAULT_ATTR, VALID_META_ATTR);
+        String exceptedQuery = "sortBy=" + DEFAULT_ATTR + ", " + VALID_META_ATTR;
+        buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test
+    public void two_sort_by_value_added_02(){
+        queryBuilder.sortBy(DEFAULT_ATTR).sortBy(VALID_META_ATTR);
+        String exceptedQuery = "sortBy=" + DEFAULT_ATTR + ", " + VALID_META_ATTR;
+        buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test
+    public void complet_query_with_all_attributes(){
+        QueryBuilder innerBuilder = new QueryBuilder(User.class);
+        innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
+
+        queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX)
+                .countPerPage(COUNT_PER_PAGE).sortBy(DEFAULT_ATTR);
+
+        String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
+                + " eq \"" + IRRELEVANT + "\")&sortBy=" + DEFAULT_ATTR + "&count="
+                + COUNT_PER_PAGE + "&startIndex=" + START_INDEX;
+        buildStringMeetsExpectation(exceptedQuery);
+    }
+
+    @Test (expected = InvalidAttributeException.class)
+    public void invalid_attribut_to_sort_by_added(){
+        queryBuilder.sortBy(IRRELEVANT);
+        fail("Exception excpected");
+    }
+
+    @Test (expected = InvalidAttributeException.class)
+    public void invalid_attribut_to_filter_added(){
+        queryBuilder.filter(IRRELEVANT);
+        fail("Exception excpected");
+    }
+
+    @Test (expected = InvalidAttributeException.class)
+    public void invalid_attribut_to_and_added(){
+        queryBuilder.and(IRRELEVANT);
+        fail("Exception excpected");
+    }
+
+    @Test (expected = InvalidAttributeException.class)
+    public void invalid_attribut_to_or_added(){
+        queryBuilder.or(IRRELEVANT);
+        fail("Exception excpected");
     }
 
     private void buildStringMeetsExpectation(String buildString) {
