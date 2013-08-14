@@ -65,7 +65,7 @@ public class OsiamUserService extends AbstractOsiamService<User> {
     }
 
     /**
-     * Search for existing Users by the given {@link QueryBuilder}.
+     * Search for existing Users by the given {@link Query}.
      *
      * @param query       containing the query to execute.
      * @param accessToken the OSIAM access token from for the current session
