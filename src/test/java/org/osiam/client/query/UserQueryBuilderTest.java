@@ -210,20 +210,6 @@ public class UserQueryBuilderTest {
     }
 
     @Test
-    public void two_sort_by_value_added(){
-        queryBuilder.sortBy(DEFAULT_ATTR, VALID_META_ATTR);
-        String exceptedQuery = "sortBy=" + DEFAULT_ATTR + ", " + VALID_META_ATTR;
-        buildStringMeetsExpectation(exceptedQuery);
-    }
-
-    @Test
-    public void two_sort_by_value_added_02(){
-        queryBuilder.sortBy(DEFAULT_ATTR).sortBy(VALID_META_ATTR);
-        String exceptedQuery = "sortBy=" + DEFAULT_ATTR + ", " + VALID_META_ATTR;
-        buildStringMeetsExpectation(exceptedQuery);
-    }
-
-    @Test
     public void complet_query_with_all_attributes(){
         QueryBuilder innerBuilder = new QueryBuilder(User.class);
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);

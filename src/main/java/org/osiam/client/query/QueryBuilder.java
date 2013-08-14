@@ -17,7 +17,7 @@ public class QueryBuilder {
     static final private int DEFAULT_COUNT_PER_PAGE = 100;
     private Class clazz;
     private StringBuilder filter;
-    private StringBuilder sortBy;
+    private String sortBy;
     private SortOrder sortOrder;
     private int startIndex = DEFAULT_START_INDEX;
     private int countPerPage = DEFAULT_COUNT_PER_PAGE;
@@ -29,7 +29,6 @@ public class QueryBuilder {
      */
     public QueryBuilder(Class clazz) {
         filter = new StringBuilder();
-        sortBy = new StringBuilder();
         this.clazz = clazz;
     }
 
@@ -124,26 +123,17 @@ public class QueryBuilder {
     }
 
     /**
-     * Add one or more attribute names to the sortBy statement.
+     * Add the wanted attribute names to the sortBy statement.
      *
-     * @param attributeName one or more attributes to sort the query by
+     * @param attributeName attributes to sort by the query
      * @return The QueryBuilder with sortBy added.
      */
-    public QueryBuilder sortBy(String... attributeName) {
-        for (String actAttributeName : attributeName) {
-            addSingleSortBy(actAttributeName);
-        }
-        return this;
-    }
-
-    private void addSingleSortBy(String attributeName) {
+    public QueryBuilder sortBy(String attributeName) {
         if (!(isAttributeValid(attributeName))) {
             throw new InvalidAttributeException("Sorting for this attribute is not supported");
         }
-        if (sortBy.length() > 0) {
-            sortBy.append(", ");
-        }
-        sortBy.append(attributeName);
+        sortBy = attributeName;
+        return this;
     }
 
     /**
@@ -158,7 +148,7 @@ public class QueryBuilder {
             builder.append("filter=")
                     .append(filter);
         }
-        if (sortBy.length() != 0) {
+        if (sortBy != null) {
             ensureQueryParamIsSeparated(builder);
             builder.append("sortBy=")
                     .append(sortBy);
