@@ -214,11 +214,11 @@ public class UserQueryBuilderTest {
         innerBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
 
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX)
-                .countPerPage(COUNT_PER_PAGE).sortBy(DEFAULT_ATTR);
+                .countPerPage(COUNT_PER_PAGE).sortBy(DEFAULT_ATTR).withSortOrder(SortOrder.ASCENDING);
 
         String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
-                + " eq \"" + IRRELEVANT + "\")&sortBy=" + DEFAULT_ATTR + "&count="
-                + COUNT_PER_PAGE + "&startIndex=" + START_INDEX;
+                + " eq \"" + IRRELEVANT + "\")&sortBy=" + DEFAULT_ATTR + "&sortOrder=" + SortOrder.ASCENDING.toString()
+                + "&count=" + COUNT_PER_PAGE + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }
 
