@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
@@ -178,14 +179,20 @@ public class OsiamUserServiceTest {
 
     @Test
     public void query_string_is_split_correctly() {
-
         givenAQueryContainingDifficultCharacters();
         givenAUserCanBeSearchedByQuery();
-
         whenSearchIsUsedByQuery();
-
         thenQueryStringIsSplitCorrectly();
 
+    }
+
+    @Test
+    @Ignore
+    public void sort_order_is_split_correctly(){
+        givenAQueryContainingDifficultCharactersAndSortBy();
+        givenAUserCanBeSearchedByQuery();
+        whenSearchIsUsedByQuery();
+        thenSortedQueryStringIsSplitCorrectly();
     }
 
     private void givenAnAccessToken() throws IOException {
@@ -198,6 +205,10 @@ public class OsiamUserServiceTest {
 
     private void givenAQueryContainingDifficultCharacters() {
         query = new Query.Builder(User.class).filter("name.formatted").contains("Schulz & Schulz Industries").build();
+    }
+
+    private void givenAQueryContainingDifficultCharactersAndSortBy() {
+        query = new Query.Builder(User.class).filter("name.formatted").contains("Schulz & Schulz Industries").sortBy("userName").build();
     }
 
     private void givenAUserCanBeSearchedByQuery() {
@@ -300,6 +311,12 @@ public class OsiamUserServiceTest {
     private void thenQueryStringIsSplitCorrectly() {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
                 + "&filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
+                .withHeader("Content-Type", equalTo(APPLICATION_JSON)));
+    }
+
+    private void thenSortedQueryStringIsSplitCorrectly() {
+        verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
+                + "&filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
                 .withHeader("Content-Type", equalTo(APPLICATION_JSON)));
     }
 
