@@ -3,17 +3,6 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
@@ -28,6 +17,15 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.CoreResource;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+
+import static org.apache.http.HttpStatus.*;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
@@ -48,7 +46,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      */
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(HttpGet userWebResource) {
-	mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
         webResource = userWebResource;
         type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
@@ -102,7 +100,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_NOT_FOUND:
                         throw new NoResultException("No " + typeName + " with given UUID " + id);
                     default:
-                	throw new ConnectionInitializationException("Unable to setup connection");
+                        throw new ConnectionInitializationException("Unable to setup connection");
                 }
             }
 
@@ -111,55 +109,17 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             resource = mapper.readValue(content, type);
 
             return resource;
-        } catch (IOException|URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
             throw new RuntimeException("This should not happen!");
-	}
+        }
     }
 
+
     protected QueryResult<T> getAllResources(AccessToken accessToken) {
-        final InputStream queryResult;
-
-        if (accessToken == null) {
-            throw new IllegalArgumentException("The given accessToken can't be null.");
-        }
-
-        try {
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-            HttpGet realWebresource = (HttpGet) webResource.clone();
-            realWebresource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-            HttpResponse response = httpclient.execute(realWebresource);
-            int httpStatus = response.getStatusLine().getStatusCode();
-
-            if (httpStatus != SC_OK) {
-                switch (httpStatus) {
-                    case SC_UNAUTHORIZED:
-                        throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
-                    default:
-                	throw new ConnectionInitializationException("Unable to setup connection");
-                }
-            }
-
-            queryResult = response.getEntity().getContent();
-
-            final QueryResult<T> result;
-            JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(QueryResult.class, type);
-
-            try {
-        	result = mapper.readValue(queryResult, queryResultType);
-            } catch (IOException e) {
-        	throw new ConnectionInitializationException("Unable to deserialize query result", e);
-            }
-            return result;
-
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
-        } catch (CloneNotSupportedException ignore) {
-            // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!");
-	}
+        return searchResources("", accessToken);
     }
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
@@ -173,7 +133,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             HttpGet realWebResource = (HttpGet) webResource.clone();
             realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-            realWebResource.setURI(new URI(webResource.getURI() + "?" + queryString));
+            realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString)));
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -182,7 +142,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
                     default:
-                	throw new ConnectionInitializationException("Unable to setup connection");
+                        throw new ConnectionInitializationException("Unable to setup connection");
                 }
             }
 
@@ -192,18 +152,18 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(QueryResult.class, type);
 
             try {
-        	result = mapper.readValue(queryResult, queryResultType);
+                result = mapper.readValue(queryResult, queryResultType);
             } catch (IOException e) {
-        	throw new ConnectionInitializationException("Unable to deserialize query result", e);
+                throw new ConnectionInitializationException("Unable to deserialize query result", e);
             }
             return result;
 
-        } catch (IOException|URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
             throw new RuntimeException("This should not happen!");
-	}
+        }
 
     }
 
@@ -284,8 +244,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         protected HttpGet getWebResource() {
             HttpGet webResource;
             try {
-        	webResource = new HttpGet(new URI(endpoint + "/" + typeName + "s"));
-        	webResource.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+                webResource = new HttpGet(new URI(endpoint + "/" + typeName + "s"));
+                webResource.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
             } catch (URISyntaxException e) {
                 throw new ConnectionInitializationException("Unable to setup connection " + endpoint +
                         "is not a valid URI.", e);
