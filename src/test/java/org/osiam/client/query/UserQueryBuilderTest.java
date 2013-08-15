@@ -1,12 +1,17 @@
 package org.osiam.client.query;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.resources.scim.User;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import com.google.common.base.Charsets;
 
 public class UserQueryBuilderTest {
 
@@ -55,63 +60,65 @@ public class UserQueryBuilderTest {
         queryBuilder.filter(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
+        
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\""));
     }
+
 
     @Test
     public void or_attribute_is_added_correctly() {
         queryBuilder.filter(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .or(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_contains_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_equals_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).equalTo(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " eq \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " eq \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_startsWith_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).startsWith(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " sw \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " sw \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_present_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).present();
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " pr ");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " pr "));
     }
 
     @Test
     public void filter_greater_than_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).greaterThan(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " gt \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " gt \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_greater_equals_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).greaterEquals(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " ge \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " ge \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_less_than_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).lessThan(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " lt \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " lt \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_less_equals_is_added_to_query() {
         queryBuilder.filter(DEFAULT_ATTR).lessEquals(IRRELEVANT);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " le \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " le \"" + IRRELEVANT + "\""));
     }
 
     @Test(expected = InvalidAttributeException.class)
@@ -142,7 +149,7 @@ public class UserQueryBuilderTest {
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT)
                 .withSortOrder(SortOrder.ASCENDING);
-        buildStringMeetsExpectation(FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"&sortOrder=ascending");
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"") + "&sortOrder=ascending");
     }
 
     @Test
@@ -171,8 +178,8 @@ public class UserQueryBuilderTest {
                 .startIndex(START_INDEX)
                 .countPerPage(COUNT_PER_PAGE)
                 .withSortOrder(SortOrder.ASCENDING);
-        String exceptedQuery = DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR
-                + " co \"" + IRRELEVANT + "\"&sortOrder=ascending&count=" + COUNT_PER_PAGE
+        String exceptedQuery = encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR
+                + " co \"" + IRRELEVANT + "\"") + "&sortOrder=ascending&count=" + COUNT_PER_PAGE
                 + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(FILTER + exceptedQuery);
     }
@@ -184,8 +191,8 @@ public class UserQueryBuilderTest {
 
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).and(innerBuilder).startIndex(START_INDEX);
 
-        String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and (" + DEFAULT_ATTR
-                + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
+        String exceptedQuery = FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and (" + DEFAULT_ATTR
+                + " eq \"" + IRRELEVANT + "\")") + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }
 
@@ -196,8 +203,8 @@ public class UserQueryBuilderTest {
 
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX);
 
-        String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
-                + " eq \"" + IRRELEVANT + "\")&startIndex=" + START_INDEX;
+        String exceptedQuery = FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
+                + " eq \"" + IRRELEVANT + "\")") + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }
 
@@ -216,8 +223,8 @@ public class UserQueryBuilderTest {
         queryBuilder.filter(DEFAULT_ATTR).contains(IRRELEVANT).or(innerBuilder).startIndex(START_INDEX)
                 .countPerPage(COUNT_PER_PAGE).sortBy(DEFAULT_ATTR).withSortOrder(SortOrder.ASCENDING);
 
-        String exceptedQuery = FILTER + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
-                + " eq \"" + IRRELEVANT + "\")&sortBy=" + DEFAULT_ATTR + "&sortOrder=" + SortOrder.ASCENDING.toString()
+        String exceptedQuery = FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
+                + " eq \"" + IRRELEVANT + "\")") + "&sortBy=" + DEFAULT_ATTR + "&sortOrder=" + SortOrder.ASCENDING.toString()
                 + "&count=" + COUNT_PER_PAGE + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
     }
@@ -248,6 +255,20 @@ public class UserQueryBuilderTest {
 
     private void buildStringMeetsExpectation(String buildString) {
         Query expectedQuery = new Query(buildString);
-        assertEquals(expectedQuery, queryBuilder.build());
+        try {
+	    assertEquals(expectedQuery, queryBuilder.build());
+	} catch (UnsupportedEncodingException e) {
+	    fail("Filter contains non UTF-8 characters");
+	}
+    }
+    
+    private String encodeExpectedString(String string) {
+	try {
+	    return URLEncoder.encode(string, Charsets.UTF_8.name());
+	} catch (UnsupportedEncodingException e) {
+	    fail("Filter contains non UTF-8 characters");
+	}
+	
+	return "";
     }
 }

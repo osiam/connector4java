@@ -5,8 +5,12 @@ package org.osiam.client.query;
 
 import org.osiam.client.exception.InvalidAttributeException;
 
+import com.google.common.base.Charsets;
+
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,7 +125,8 @@ public class Query {
 
         private static final int DEFAULT_START_INDEX = 0;
         private static final int DEFAULT_COUNT_PER_PAGE = 100;
-        private Class clazz;
+        @SuppressWarnings("rawtypes")
+	private Class clazz;
         private StringBuilder filter;
         private String sortBy;
         private SortOrder sortOrder;
@@ -133,7 +138,7 @@ public class Query {
          *
          * @param clazz The class of Resources to query for.
          */
-        public Builder(Class clazz) {
+        public Builder(@SuppressWarnings("rawtypes") Class clazz) {
             filter = new StringBuilder();
             this.clazz = clazz;
         }
@@ -247,12 +252,12 @@ public class Query {
          *
          * @return The query as a String
          */
-        public Query build() {
+        public Query build() throws UnsupportedEncodingException  {
             StringBuilder builder = new StringBuilder();
             if (filter.length() != 0) {
                 ensureQueryParamIsSeparated(builder);
                 builder.append("filter=")
-                        .append(filter);
+                	.append(URLEncoder.encode(filter.toString(), Charsets.UTF_8.name()));
             }
             if (sortBy != null) {
                 ensureQueryParamIsSeparated(builder);
