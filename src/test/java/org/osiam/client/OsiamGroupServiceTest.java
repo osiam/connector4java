@@ -3,9 +3,29 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
+
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,17 +36,8 @@ import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MultiValuedAttribute;
 
-import java.io.IOException;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.apache.http.HttpStatus.*;
-import static org.junit.Assert.*;
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamGroupServiceTest {
 
@@ -40,8 +51,8 @@ public class OsiamGroupServiceTest {
 
     private static final String endpoint = "http://localhost:9090/osiam-server/";
 
-    private static final int NUMBER_OF_EXPECTED_GROUPS = 7;
-    private static final String SIMPLE_QUERY_STRING = "filter=displayName eq test_group01";
+    final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
+    final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+test_group01";
 
     private UUID SEARCHED_UUID;
 
@@ -222,12 +233,11 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenASingleGroupCanBeLookedUpByQuery() {
-        stubFor(get(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
-                + "&filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+        stubFor(get(urlEqualTo(URL_BASE + "?filter=displayName+eq+test_group01"))
+                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_group_by_name.json")));
     }
 
@@ -235,7 +245,7 @@ public class OsiamGroupServiceTest {
         stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("group_" + GROUP_UUID_STRING + ".json")));
     }
 
@@ -243,24 +253,24 @@ public class OsiamGroupServiceTest {
         stubFor(givenUUIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_all_groups.json")));
     }
 
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE))
-                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_all_groups.json")));
     }
 
     private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + uuidString))
-                .withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -270,9 +280,8 @@ public class OsiamGroupServiceTest {
     }
 
     private void thenQueryWasValid() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
-                + "&filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(APPLICATION_JSON)));
+        verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=displayName+eq+test_group01"))
+                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
     private void thenReturnedListOfSearchedGroupsIsAsExpected() {

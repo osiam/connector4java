@@ -3,7 +3,7 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import com.sun.jersey.api.client.WebResource;
+import org.apache.http.client.methods.HttpGet;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -27,7 +27,7 @@ public class OsiamGroupService extends AbstractOsiamService<Group> {
      *
      * @param groupWebResource a valid WebResource to connect to a given OSIAM server
      */
-    private OsiamGroupService(WebResource groupWebResource) {
+    private OsiamGroupService(HttpGet groupWebResource) {
         super(groupWebResource);
     }
 
