@@ -4,6 +4,7 @@ package org.osiam.client;
  */
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -37,7 +38,7 @@ public class OsiamUserServiceTest {
 
     private static final String URL_BASE = "/osiam-server//Users";
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
+    public WireMockClassRule wireMockRule = new WireMockClassRule(9090); // No-args constructor defaults to port 8080
 
     final static private String COUNTRY = "Germany";
     final static private String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
