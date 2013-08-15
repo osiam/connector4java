@@ -3,9 +3,8 @@ package org.osiam.client.query;
  * for licensing see the file license.txt.
  */
 
+import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
-
-import com.google.common.base.Charsets;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
