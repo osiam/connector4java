@@ -34,14 +34,14 @@ public class OsiamGroupServiceTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
-    final static private String GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    final static private String INVALID_GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
-    final static private String USER_UUID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String INVALID_GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
+    private static final String USER_UUID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
-    final static private String endpoint = "http://localhost:9090/osiam-server/";
+    private static final String endpoint = "http://localhost:9090/osiam-server/";
 
-    final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
-    final static private String SIMPLE_QUERY_STRING = "filter=displayName eq test_group01";
+    private static final int NUMBER_OF_EXPECTED_GROUPS = 7;
+    private static final String SIMPLE_QUERY_STRING = "filter=displayName eq test_group01";
 
     private UUID SEARCHED_UUID;
 

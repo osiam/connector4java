@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 public class AccessToken {
 
+    private static final int MILLIS = 1000;
     @JsonProperty("access_token")
     private String token;
     @JsonProperty("token_type")
@@ -72,7 +73,7 @@ public class AccessToken {
      */
     public boolean isExpired() {
         long now = new Date().getTime();
-        return now > retrievedOn + (long) expiresIn * 1000;
+        return now > retrievedOn + (long) expiresIn * MILLIS;
     }
 
     /**

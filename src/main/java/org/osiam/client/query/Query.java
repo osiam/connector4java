@@ -14,10 +14,11 @@ import java.util.regex.Pattern;
  * This class represents a query as it is run against the OSIAM service.
  */
 public class Query {
-    static final private int DEFAULT_COUNT = 100;
-    static final private int DEFAULT_INDEX = 0;
-    static final private Pattern INDEX_PATTERN = Pattern.compile("startIndex=(\\d+)&?");
-    static final private Pattern COUNT_PATTERN = Pattern.compile("count=(\\d+)&?");
+    private static final int DEFAULT_COUNT = 100;
+    private static final int DEFAULT_INDEX = 0;
+    private static final Pattern INDEX_PATTERN = Pattern.compile("startIndex=(\\d+)&?");
+    private static final Pattern COUNT_PATTERN = Pattern.compile("count=(\\d+)&?");
+
     final private String queryString;
 
     private Matcher indexMatcher;
@@ -118,8 +119,8 @@ public class Query {
      */
     public static final class Builder {
 
-        static final private int DEFAULT_START_INDEX = 0;
-        static final private int DEFAULT_COUNT_PER_PAGE = 100;
+        private static final int DEFAULT_START_INDEX = 0;
+        private static final int DEFAULT_COUNT_PER_PAGE = 100;
         private Class clazz;
         private StringBuilder filter;
         private String sortBy;
