@@ -117,8 +117,9 @@ public class AuthService {
         private String clientId;
         private String clientSecret;
         private GrantType grantType;
-        private final static String DEFAULT_SCOPE = "GET POST PUT PATCH DELETE";
         private Header[] headers;
+
+        private static final String DEFAULT_SCOPE = "GET POST PUT PATCH DELETE";
 
         private Map<String, String> requestParameters = new HashMap<>();
         private String endpoint;

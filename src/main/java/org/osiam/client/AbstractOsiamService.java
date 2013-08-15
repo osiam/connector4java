@@ -4,6 +4,7 @@ package org.osiam.client;
  */
 
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 import java.io.IOException;
@@ -78,14 +79,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      */
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         final T resource;
-        
+
         if (id == null) {
             throw new IllegalArgumentException("The given id can't be null.");
         }
         if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
-        
+
         try {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             HttpGet realWebresource = (HttpGet) webResource.clone();
@@ -93,8 +94,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             realWebresource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
-            
-            if (httpStatus != 200) {
+
+            if (httpStatus != SC_OK) {
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
@@ -104,11 +105,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 	throw new ConnectionInitializationException("Unable to setup connection");
                 }
             }
-            
+
             InputStream content = response.getEntity().getContent();
-            
+
             resource = mapper.readValue(content, type);
-            
+
             return resource;
         } catch (IOException|URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
@@ -120,19 +121,19 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected QueryResult<T> getAllResources(AccessToken accessToken) {
         final InputStream queryResult;
-        
+
         if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
-        
+
         try {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             HttpGet realWebresource = (HttpGet) webResource.clone();
             realWebresource.addHeader("Authorization", "Bearer " + accessToken.getToken());
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
-            
-            if (httpStatus != 200) {
+
+            if (httpStatus != SC_OK) {
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
@@ -140,19 +141,19 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 	throw new ConnectionInitializationException("Unable to setup connection");
                 }
             }
-            
+
             queryResult = response.getEntity().getContent();
-            
+
             final QueryResult<T> result;
             JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(QueryResult.class, type);
-            
+
             try {
         	result = mapper.readValue(queryResult, queryResultType);
             } catch (IOException e) {
         	throw new ConnectionInitializationException("Unable to deserialize query result", e);
             }
             return result;
-            
+
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
         } catch (CloneNotSupportedException ignore) {
@@ -163,11 +164,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
         final InputStream queryResult;
-        
+
         if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
-        
+
         try {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             HttpGet realWebResource = (HttpGet) webResource.clone();
@@ -175,8 +176,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             realWebResource.setURI(new URI(webResource.getURI() + "?" + queryString));
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
-            
-            if (httpStatus != 200) {
+
+            if (httpStatus != SC_OK) {
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
@@ -184,26 +185,26 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 	throw new ConnectionInitializationException("Unable to setup connection");
                 }
             }
-            
+
             queryResult = response.getEntity().getContent();
-            
+
             final QueryResult<T> result;
             JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(QueryResult.class, type);
-            
+
             try {
         	result = mapper.readValue(queryResult, queryResultType);
             } catch (IOException e) {
         	throw new ConnectionInitializationException("Unable to deserialize query result", e);
             }
             return result;
-            
+
         } catch (IOException|URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
             throw new RuntimeException("This should not happen!");
 	}
-        
+
     }
 
     protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {

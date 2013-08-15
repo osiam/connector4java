@@ -22,7 +22,7 @@ public class Query {
     private static final Pattern INDEX_PATTERN = Pattern.compile("startIndex=(\\d+)&?");
     private static final Pattern COUNT_PATTERN = Pattern.compile("count=(\\d+)&?");
 
-    final private String queryString;
+    private final String queryString;
 
     private Matcher indexMatcher;
     private Matcher countMatcher;
