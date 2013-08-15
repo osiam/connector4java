@@ -1,12 +1,18 @@
 package org.osiam.client.query;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.resources.scim.Group;
 
+import com.google.common.base.Charsets;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class GroupQueryBuilderTest {
 
@@ -26,11 +32,11 @@ public class GroupQueryBuilderTest {
     }
 
     @Test
-    public void and_attribute_is_added_correctly() {
+    public void and_attribute_is_added_correctly() throws UnsupportedEncodingException {
         queryBuilder.filter(DEFAULT_ATTR)
                 .contains(IRRELEVANT)
                 .and(DEFAULT_ATTR).contains(IRRELEVANT);
-        buildStringMeetsExpectation("filter=" + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"");
+        buildStringMeetsExpectation("filter=" + URLEncoder.encode(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"", Charsets.UTF_8.name()));
     }
 
     @Test(expected = InvalidAttributeException.class)
@@ -40,6 +46,10 @@ public class GroupQueryBuilderTest {
 
     private void buildStringMeetsExpectation(String buildString) {
         Query expectedQuery = new Query(buildString);
-        assertEquals(expectedQuery, queryBuilder.build());
+        try {
+	    assertEquals(expectedQuery, queryBuilder.build());
+	} catch (UnsupportedEncodingException e) {
+	    fail("Filter contains non UTF-8 characters");
+	}
     }
 }
