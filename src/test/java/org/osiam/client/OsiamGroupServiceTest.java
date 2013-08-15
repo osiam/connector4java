@@ -5,6 +5,7 @@ package org.osiam.client;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class OsiamGroupServiceTest {
 
     private static final String URL_BASE = "/osiam-server//Groups";
     @Rule
-    public WireMockClassRule wireMockRule = new WireMockClassRule(9090); // No-args constructor defaults to port 8080
+    public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final static private String GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     final static private String INVALID_GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
