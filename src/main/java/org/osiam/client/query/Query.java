@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  */
 public class Query {
     private static final int DEFAULT_COUNT = 100;
+    // FIXME DEFAULT_INDEX should be 1 to comply to the Scim spec, but OSIAM server still depends on 0
     private static final int DEFAULT_INDEX = 0;
     private static final Pattern INDEX_PATTERN = Pattern.compile("startIndex=(\\d+)&?");
     private static final Pattern COUNT_PATTERN = Pattern.compile("count=(\\d+)&?");
@@ -78,7 +79,7 @@ public class Query {
      */
     public Query previousPage() {
         int newIndex = getStartIndex() - getCount();
-        if (newIndex < 0) {
+        if (newIndex < DEFAULT_INDEX) {
             throw new IllegalStateException("Negative startIndex is not possible.");
         }
         String prevIndex = "startIndex=" + newIndex;
@@ -122,6 +123,7 @@ public class Query {
      */
     public static final class Builder {
 
+	// FIXME DEFAULT_START_INDEX should be 1 to comply to the Scim spec, but OSIAM server still depends on 0
         private static final int DEFAULT_START_INDEX = 0;
         private static final int DEFAULT_COUNT_PER_PAGE = 100;
         @SuppressWarnings("rawtypes")
