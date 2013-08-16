@@ -79,11 +79,12 @@ public class Query {
      */
     public Query previousPage() {
         int newIndex = getStartIndex() - getCount();
+        
         if (newIndex < DEFAULT_INDEX) {
             throw new IllegalStateException("Negative startIndex is not possible.");
         }
-        String prevIndex = "startIndex=" + newIndex;
-        return new Query(indexMatcher.replaceFirst("" + prevIndex));
+        
+        return new Query(indexMatcher.replaceFirst("startIndex=" + newIndex));
     }
 
 
