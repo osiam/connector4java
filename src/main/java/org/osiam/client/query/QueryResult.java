@@ -8,7 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.osiam.resources.scim.CoreResource;
 
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class QueryResult<T extends CoreResource> {
@@ -18,7 +18,7 @@ public class QueryResult<T extends CoreResource> {
     private int startIndex;
     private String schemas;
     @JsonProperty("Resources")
-    private Set<T> resources;
+    private List<T> resources;
 
     public int getTotalResults() {
         return totalResults;
@@ -36,7 +36,7 @@ public class QueryResult<T extends CoreResource> {
         return schemas;
     }
 
-    public Set<T> getResources() {
-        return Collections.unmodifiableSet(resources);
+    public List<T> getResources() {
+        return Collections.unmodifiableList(resources);
     }
 }
