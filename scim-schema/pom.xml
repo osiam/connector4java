@@ -186,22 +186,6 @@
               </executions>
             </plugin>
 
-            <!-- Needed to publish releases to sonatype staging repo -->
-            <!-- which leads to maven central -->
-            <!-- Note: In order for this to work you need to have the -->
-            <!-- appropriate server tag in your .m2/settings.xml -->
-            <!-- with your username/password for the sonatype jira -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.4.4</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>sonatype-nexus-staging</serverId>
-                    <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
-                </configuration>
-            </plugin>
-
             <!-- Needed due to a problem with SSH -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -304,4 +288,52 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>snapshot-build</id>
+            <build>
+                <plugins>
+                    <!-- Needed to publish releases to sonatype staging repo -->
+                    <!-- which leads to maven central -->
+                    <!-- Note: In order for this to work you need to have the -->
+                    <!-- appropriate server tag in your .m2/settings.xml -->
+                    <!-- with your username/password for the sonatype jira -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.4.4</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype-nexus-snapshots</serverId>
+                            <nexusUrl>https://oss.sonatype.org/content/repositories/snapshots/</nexusUrl>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release-build</id>
+            <build>
+                <plugins>
+                    <!-- Needed to publish releases to sonatype staging repo -->
+                    <!-- which leads to maven central -->
+                    <!-- Note: In order for this to work you need to have the -->
+                    <!-- appropriate server tag in your .m2/settings.xml -->
+                    <!-- with your username/password for the sonatype jira -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.4.4</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
