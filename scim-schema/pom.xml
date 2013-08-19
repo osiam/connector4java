@@ -291,7 +291,10 @@
 
     <profiles>
         <profile>
-            <id>snapshot-build</id>
+            <id>snapshot</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <!-- Needed to publish releases to sonatype staging repo -->
@@ -313,7 +316,11 @@
             </build>
         </profile>
         <profile>
-            <id>release-build</id>
+            <!-- invoke as mvn -P release,!snapshot release:prepare release:perform -->
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <!-- Needed to publish releases to sonatype staging repo -->
