@@ -73,6 +73,7 @@ public class OsiamGroupServiceTest {
         givenAnAccessToken();
     }
 
+    
     @Test
     public void service_returns_correct_uri() throws Exception {
         assertEquals(new URI(endpoint + "/Groups"), service.getUri());
