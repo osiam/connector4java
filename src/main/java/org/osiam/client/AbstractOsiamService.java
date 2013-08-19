@@ -7,6 +7,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -86,10 +88,12 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
+            // TODO: httpClient as instance member
             DefaultHttpClient httpclient = new DefaultHttpClient();
-            HttpGet realWebresource = (HttpGet) webResource.clone();
-            realWebresource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            
+            HttpGet realWebresource = createRealWebResource(accessToken);
             realWebresource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
+            
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -105,8 +109,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             }
 
             InputStream content = response.getEntity().getContent();
-
-            resource = mapper.readValue(content, type);
+            resource = mapSingleResourceResponse(content);
 
             return resource;
         } catch (IOException | URISyntaxException e) {
@@ -116,7 +119,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new RuntimeException("This should not happen!");
         }
     }
-
 
     protected QueryResult<T> getAllResources(AccessToken accessToken) {
         return searchResources("", accessToken);
@@ -130,10 +132,12 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
+            // TODO: httpClient as instance member
             DefaultHttpClient httpclient = new DefaultHttpClient();
-            HttpGet realWebResource = (HttpGet) webResource.clone();
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            
+            HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString)));
+            
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -167,6 +171,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     }
 
+
     protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {
         if (query == null) {
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
@@ -174,6 +179,15 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         return searchResources(query.toString(), accessToken);
     }
 
+    protected T mapSingleResourceResponse(InputStream content) throws JsonParseException, JsonMappingException, IOException {
+	return mapper.readValue(content, type);
+    }
+
+    protected HttpGet createRealWebResource(AccessToken accessToken) throws CloneNotSupportedException {
+	HttpGet realWebResource = (HttpGet) webResource.clone();
+	realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+	return realWebResource;
+    }
 
     /**
      * The Builder class is used to prove a WebResource to build the needed Service
