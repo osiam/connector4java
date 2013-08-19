@@ -206,7 +206,6 @@ public class OsiamUserServiceTest {
     }
 
     @Test
-    @Ignore
     public void sort_order_is_split_correctly() throws UnsupportedEncodingException{
         givenAQueryContainingDifficultCharactersAndSortBy();
         givenAUserCanBeSearchedByQuery();
@@ -332,8 +331,7 @@ public class OsiamUserServiceTest {
     }
 
     private void thenSortedQueryStringIsSplitCorrectly() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE + "?access_token=" + accessToken.getToken()
-                + "&filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
+        verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
