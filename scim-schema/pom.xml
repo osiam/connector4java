@@ -186,19 +186,6 @@
               </executions>
             </plugin>
 
-            <!-- Needed due to a problem with SSH -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.5</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-ssh</artifactId>
-                        <version>1.0-beta-7</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
             <!-- Configure the compiler plugin for Groovy -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -290,10 +277,34 @@
     </build>
 
     <profiles>
+        <!-- publish snapshots to master repository on evolvis.org -->
+        <profile>
+            <id>evolvis-snapshot</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Needed due to a problem with SSH -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.5</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-ssh</artifactId>
+                                <version>1.0-beta-7</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+        </profile>
+        <!-- publish snapshots to snapshot repository on oss.sonatype.org -->
         <profile>
             <id>snapshot</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -315,11 +326,15 @@
                 </plugins>
             </build>
         </profile>
+        <!-- publish releases to maven central via staging area on oss.sonatype.org -->
         <profile>
-            <!-- invoke as mvn -P release,!snapshot release:prepare release:perform -->
+            <!-- invoke as mvn -P release,!evolvis-snapshot release:prepare release:perform -->
             <id>release</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>release.properties</exists>
+                </file>
             </activation>
             <build>
                 <plugins>
