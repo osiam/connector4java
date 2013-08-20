@@ -134,6 +134,23 @@
                 </configuration>
             </plugin>
 
+            <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
+            <!-- If not given, gpg passphrase has to be provided interactively -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.4</version>
+              <executions>
+                  <execution>
+                      <id>sign-artifacts</id>
+                      <phase>verify</phase>
+                      <goals>
+                          <goal>sign</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+
             <!-- Configure the compiler plugin for Groovy -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
