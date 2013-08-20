@@ -224,6 +224,16 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <!-- During release:perform, enable the "release" profile -->
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+
             <!-- Build Helper: will add Groovy sources to path -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -318,9 +328,6 @@
             <id>release</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
-                <file>
-                    <exists>release.properties</exists>
-                </file>
             </activation>
             <build>
                 <plugins>
