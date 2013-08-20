@@ -26,6 +26,12 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- refer to sonatype parent pom for publishment to maven central -->
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
     <groupId>org.osiam</groupId>
     <artifactId>scim-schema</artifactId>
@@ -65,20 +71,6 @@
             <organization>OSIAM</organization>
         </developer>
     </developers>
-
-    <distributionManagement>
-        <repository>
-            <id>osiam-repository</id>
-            <name>public evolvis release repository</name>
-            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>OSIAM-NG-SNAPSHOT-repository</id>
-            <name>public evolvis release repository</name>
-            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
-        </snapshotRepository>
-
-    </distributionManagement>
 
     <dependencies>
         <!-- JSON -->
@@ -126,50 +118,20 @@
     </dependencies>
     <build>
         <plugins>
+            <!-- Needed to publish releases to sonatype staging repo -->
+            <!-- which leads to maven central -->
+            <!-- Note: In order for this to work you need to have the -->
+            <!-- appropriate server tag in your .m2/settings.xml -->
+            <!-- with your username/password for the sonatype jira -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <inherited>true</inherited>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
-            <!-- If not given, gpg passphrase has to be provided interactively -->
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.4</version>
-              <executions>
-                  <execution>
-                      <id>sign-artifacts</id>
-                      <phase>verify</phase>
-                      <goals>
-                          <goal>sign</goal>
-                      </goals>
-                  </execution>
-              </executions>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.4.4</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>sonatype-nexus-staging</serverId>
+                    <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
+                </configuration>
             </plugin>
 
             <!-- Configure the compiler plugin for Groovy -->
@@ -230,7 +192,7 @@
                 <version>2.4.1</version>
                 <configuration>
                     <!-- During release:perform, enable the "release" profile -->
-                    <releaseProfiles>release</releaseProfiles>
+                    <releaseProfiles>sonatype-oss-release</releaseProfiles>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
@@ -285,85 +247,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <!-- publish snapshots to master repository on evolvis.org -->
-        <profile>
-            <id>evolvis-snapshot</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <!-- Needed due to a problem with SSH -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.5</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-ssh</artifactId>
-                                <version>1.0-beta-7</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- publish snapshots to snapshot repository on oss.sonatype.org -->
-        <profile>
-            <id>snapshot</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <!-- Needed to publish releases to sonatype staging repo -->
-                    <!-- which leads to maven central -->
-                    <!-- Note: In order for this to work you need to have the -->
-                    <!-- appropriate server tag in your .m2/settings.xml -->
-                    <!-- with your username/password for the sonatype jira -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.4.4</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>sonatype-nexus-snapshots</serverId>
-                            <nexusUrl>https://oss.sonatype.org/content/repositories/snapshots/</nexusUrl>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- publish releases to maven central via staging area on oss.sonatype.org -->
-        <profile>
-            <!-- invoke as mvn -P release,!evolvis-snapshot release:prepare release:perform -->
-            <id>release</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <!-- Needed to publish releases to sonatype staging repo -->
-                    <!-- which leads to maven central -->
-                    <!-- Note: In order for this to work you need to have the -->
-                    <!-- appropriate server tag in your .m2/settings.xml -->
-                    <!-- with your username/password for the sonatype jira -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.4.4</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>sonatype-nexus-staging</serverId>
-                            <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>
