@@ -3,6 +3,17 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
@@ -19,15 +30,6 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.CoreResource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
-
-import static org.apache.http.HttpStatus.*;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
@@ -91,10 +93,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             // TODO: httpClient as instance member
             DefaultHttpClient httpclient = new DefaultHttpClient();
             
-            HttpGet realWebresource = createRealWebResource(accessToken);
-            realWebresource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
+            HttpGet realWebResource = createRealWebResource(accessToken);
+            realWebResource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
             
-            HttpResponse response = httpclient.execute(realWebresource);
+            HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
             if (httpStatus != SC_OK) {
@@ -114,9 +116,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             return resource;
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
-        } catch (CloneNotSupportedException ignore) {
-            // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!");
         }
     }
 
@@ -164,13 +163,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
-        } catch (CloneNotSupportedException ignore) {
-            // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!");
         }
 
     }
-
 
     protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {
         if (query == null) {
@@ -183,10 +178,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 	return mapper.readValue(content, type);
     }
 
-    protected HttpGet createRealWebResource(AccessToken accessToken) throws CloneNotSupportedException {
-	HttpGet realWebResource = (HttpGet) webResource.clone();
-	realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-	return realWebResource;
+    protected HttpGet createRealWebResource(AccessToken accessToken) {
+        HttpGet realWebResource;
+        try {
+            realWebResource = (HttpGet) webResource.clone();
+            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            return realWebResource;
+        } catch (CloneNotSupportedException ignore) {
+            // safe to ignore - HttpGet implements Cloneable!
+            throw new RuntimeException("This should not happen!");
+        }
     }
 
     /**

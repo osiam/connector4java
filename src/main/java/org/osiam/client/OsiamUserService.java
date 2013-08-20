@@ -98,9 +98,6 @@ public class OsiamUserService extends AbstractOsiamService<User> {
             return user;
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
-        } catch (CloneNotSupportedException ignore) {
-            // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!");
         }
     }
 
