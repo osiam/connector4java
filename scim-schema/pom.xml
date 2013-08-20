@@ -72,6 +72,12 @@
             <name>public evolvis release repository</name>
             <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
         </repository>
+        <repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+
         <snapshotRepository>
             <id>OSIAM-NG-SNAPSHOT-repository</id>
             <name>public evolvis release repository</name>
