@@ -299,6 +299,7 @@
                         </dependencies>
                     </plugin>
                 </plugins>
+            </build>
         </profile>
         <!-- publish snapshots to snapshot repository on oss.sonatype.org -->
         <profile>
