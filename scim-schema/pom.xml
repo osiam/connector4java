@@ -76,24 +76,6 @@
 
     </distributionManagement>
 
-
-    <repositories>
-        <repository>
-            <id>osiam releases repo</id>
-            <url>https://maven-repo.evolvis.org/releases</url>
-        </repository>
-        <repository>
-            <id>osiam snapshots repo</id>
-            <url>https://maven-repo.evolvis.org/snapshots</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!-- JSON -->
         <dependency>
