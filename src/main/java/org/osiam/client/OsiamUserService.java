@@ -3,7 +3,13 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -12,6 +18,10 @@ import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.User;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 /**
@@ -46,6 +56,50 @@ public class OsiamUserService extends AbstractOsiamService<User> {
         return getResourceByUUID(id, accessToken);
     }
 
+    /**
+     * Retrieve the User with the who holds the given access token.
+     * @param accessToken
+     * @return the OSIAM access token from for the current session
+     * @throws UnauthorizedException if the request could not be authorized.
+     * @throws ConnectionInitializationException
+     *                               if no connection to the given OSIAM services could be initialized
+     */
+    public User getMe(AccessToken accessToken) {
+	final User user;
+
+        if (accessToken == null) {
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
+
+        try {
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+            
+            HttpGet realWebresource = createRealWebResource(accessToken);
+            realWebresource.setURI(new URI(webResource.getURI() + "/me"));
+            
+            HttpResponse response = httpclient.execute(realWebresource);
+            int httpStatus = response.getStatusLine().getStatusCode();
+
+            // TODO: what errors do we expect?
+            if (httpStatus != SC_OK) {
+                switch (httpStatus) {
+                    case SC_UNAUTHORIZED:
+                        throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                    case SC_NOT_FOUND:
+                        throw new NoResultException("???");
+                    default:
+                        throw new ConnectionInitializationException("Unable to setup connection");
+                }
+            }
+
+            InputStream content = response.getEntity().getContent();
+            user = mapSingleResourceResponse(content);
+
+            return user;
+        } catch (IOException | URISyntaxException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
+        }
+    }
 
     public QueryResult<User> getAllUsers(AccessToken accessToken) {
         return super.getAllResources(accessToken);

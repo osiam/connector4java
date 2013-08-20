@@ -33,7 +33,6 @@ import java.util.UUID;
 import org.apache.http.entity.ContentType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
@@ -104,7 +103,7 @@ public class OsiamUserServiceTest {
         whenSingleUUIDisLookedUp();
         thenReturnedUserMatchesExpectations();
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void uuid_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenUUIDisEmpty();
@@ -212,6 +211,46 @@ public class OsiamUserServiceTest {
         whenSearchIsUsedByQuery();
         thenSortedQueryStringIsSplitCorrectly();
     }
+    
+    @Test
+    public void me_user_is_returned() throws Exception {
+        givenAccessTokenForMeIsValid();
+        whenMeIsLookedUp();
+        thenReturnedUserHasUUID(searchedUUID);
+        thenMetaDataWasDeserializedCorrectly();
+        thenAddressIsDeserializedCorrectly();
+        thenPhoneNumbersAreDeserializedCorrectly();
+        thenBasicValuesAreDeserializedCorrectly();
+    }
+    
+    @Test
+    public void me_user_has_valid_values() throws Exception {
+        givenAccessTokenForMeIsValid();
+        whenMeIsLookedUp();
+        thenReturnedUserMatchesExpectations();
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void accessToken_is_null_by_getting_me_user_raises_exception() throws Exception {
+        givenUUIDisEmpty();
+        accessToken = null;
+        whenMeIsLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = UnauthorizedException.class)
+    public void invalid_access_token_by_getting_me_user_raises_exception() throws Exception {
+        givenAccessTokenForMeIsInvalid();
+        whenMeIsLookedUp();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = UnauthorizedException.class)
+    public void expired_access_token_by_getting_me_user_raises_exception() throws Exception {
+        givenAccessTokenForMeHasExpired();
+        whenMeIsLookedUp();
+        fail("Exception expected");
+    }
 
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
@@ -284,6 +323,26 @@ public class OsiamUserServiceTest {
                         .withStatus(SC_CONFLICT)));
     }
 
+    private void givenAccessTokenForMeIsValid() {
+        stubFor(givenMeIsLookedUp(accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withBodyFile("user_" + userUuidString + ".json")));
+    }
+
+    private void givenAccessTokenForMeIsInvalid() {
+        stubFor(givenMeIsLookedUp(accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_UNAUTHORIZED)));
+    }
+
+    private void givenAccessTokenForMeHasExpired() {
+        stubFor(givenMeIsLookedUp(accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_UNAUTHORIZED)));
+    }
+
     private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + uuidString))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
@@ -308,9 +367,19 @@ public class OsiamUserServiceTest {
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_user_by_name.json")));
     }
+    
+    private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
+        return get(urlEqualTo(URL_BASE + "/me"))
+                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
+    }
 
     private void whenSingleUUIDisLookedUp() {
         singleUserResult = service.getUserByUUID(searchedUUID, accessToken);
+    }
+    
+    private void whenMeIsLookedUp() {
+        singleUserResult = service.getMe(accessToken);
     }
 
     private void whenAllUsersAreLookedUp() {
