@@ -3,10 +3,10 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.util.Date;
 import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Objects of this type  represent an access token. Access tokens are granted by the OSIAM server
@@ -100,16 +100,32 @@ public class AccessToken {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {return true;}
-        if (o == null || getClass() != o.getClass()) {return false;}
+        if (this == o) {  // NOSONAR - stmt in if is correct
+            return true;
+        }
+        
+        if (o == null || getClass() != o.getClass()) {  // NOSONAR - stmt in if is correct
+            return false;
+        }
 
         AccessToken that = (AccessToken) o;
 
-        if (expiresIn != that.expiresIn) {return false;}
-        if (!refreshToken.equals(that.refreshToken)) {return false;}
-        if (!scope.equals(that.scope)) {return false;}
-        if (!token.equals(that.token)) {return false;}
-        if (!type.equals(that.type)) {return false;}
+        if (expiresIn != that.expiresIn) { // NOSONAR - stmt in if is correct
+            return false;
+        }
+        if (!refreshToken.equals(that.refreshToken)) { // NOSONAR - stmt in if is correct
+            return false;
+        }
+        if (!scope.equals(that.scope)) { // NOSONAR - stmt in if is correct
+            return false;
+        }
+        if (!token.equals(that.token)) { // NOSONAR - stmt in if is correct
+            return false;
+        }
+        if (!type.equals(that.type)) { // NOSONAR - stmt in if is correct
+            return false;
+        }
+        
         return this.isExpired() == that.isExpired();
     }
 

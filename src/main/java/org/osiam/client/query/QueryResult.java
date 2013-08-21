@@ -3,12 +3,12 @@ package org.osiam.client.query;
  * for licensing see the file license.txt.
  */
 
+import java.util.Collections;
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.osiam.resources.scim.CoreResource;
-
-import java.util.Collections;
-import java.util.List;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class QueryResult<T extends CoreResource> {

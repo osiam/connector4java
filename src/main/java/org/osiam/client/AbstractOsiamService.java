@@ -18,8 +18,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -37,7 +35,7 @@ import org.osiam.resources.scim.CoreResource;
  */
 abstract class AbstractOsiamService<T extends CoreResource> {
 
-    protected HttpGet webResource;
+    private HttpGet webResource;
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
@@ -82,10 +80,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         final T resource;
 
-        if (id == null) {
+        if (id == null) { // NOSONAR - stmt in if is correct
             throw new IllegalArgumentException("The given id can't be null.");
         }
-        if (accessToken == null) {
+        
+        if (accessToken == null) { // NOSONAR - stmt in if is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -99,7 +98,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) {
+            if (httpStatus != SC_OK) { // NOSONAR - stmt in if is correct
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
@@ -126,7 +125,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
         final InputStream queryResult;
 
-        if (accessToken == null) {
+        if (accessToken == null) { // NOSONAR - stmt in if is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -135,12 +134,12 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             
             HttpGet realWebResource = createRealWebResource(accessToken);
-            realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString)));
+            realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - stmt in if is correct
             
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) {
+            if (httpStatus != SC_OK) { // NOSONAR - stmt in if is correct
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
@@ -168,13 +167,13 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {
-        if (query == null) {
+        if (query == null) { // NOSONAR - stmt in if is correct
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
         return searchResources(query.toString(), accessToken);
     }
 
-    protected T mapSingleResourceResponse(InputStream content) throws JsonParseException, JsonMappingException, IOException {
+    protected T mapSingleResourceResponse(InputStream content) throws IOException {
 	return mapper.readValue(content, type);
     }
 
@@ -186,7 +185,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             return realWebResource;
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!");
+            throw new RuntimeException("This should not happen!"); // NOSONAR - this exception will never be thrown
         }
     }
 
@@ -197,9 +196,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      */
     protected static class Builder<T> {
         private String endpoint;
-        private String clientId;
-        private String clientSecret;
-        private String redirectUri;
+        //NOTE: Not needed for Service
+        //private String clientId;
+        //private String clientSecret;
+        //private String redirectUri;
         private Class<T> type;
         private String typeName;
 
@@ -218,38 +218,44 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             typeName = type.getSimpleName();
         }
 
-        /**
+        // NOTE: Not needed for Service
+        /* *
          * Add a ClientId to the service
-         *
+         * 
          * @param clientId The client-Id
+         * 
          * @return The builder itself
          */
-        public Builder<T> withClientId(String clientId) {
+        /*public Builder<T> withClientId(String clientId) {
             this.clientId = clientId;
             return this;
-        }
+        }*/
 
-        /**
+        // NOTE: Not needed for Service
+        /* *
          * Add a clientSecret to the service
-         *
+         * 
          * @param clientSecret The client secret
+         * 
          * @return The builder itself
          */
-        public Builder<T> withClientSecret(String clientSecret) {
+        /*public Builder<T> withClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
             return this;
-        }
+        }*/
 
-        /**
+        // NOTE: Not needed for Service
+        /* *
          * add a redirectURI to the service
-         *
+         * 
          * @param redirectUri The redirectUri
+         * 
          * @return The Builder itself
          */
-        public Builder<T> withRedirectUri(String redirectUri) {
+        /*public Builder<T> withRedirectUri(String redirectUri) {
             this.redirectUri = redirectUri;
             return this;
-        }
+        }*/
 
         /**
          * creates a WebResource to the needed endpoint

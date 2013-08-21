@@ -3,6 +3,20 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -18,23 +32,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.http.HttpStatus.*;
-
 /**
  * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
  * {@link AuthService.Builder} to construct one.
  */
-public class AuthService {
+public final class AuthService { // NOSONAR - Builder constructs instances of this class
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private final HttpPost post;
@@ -87,7 +89,7 @@ public class AuthService {
                 throw new ConnectionInitializationException("Unable to create Connection. Please make sure that you have the correct grants.");
             case SC_UNAUTHORIZED:
                 StringBuilder errorMessage = new StringBuilder("You are not authorized to directly retrieve a access token.");
-                if (response.toString().contains(clientId + " not found")) {
+                if (response.toString().contains(clientId + " not found")) { // NOSONAR - stmt in if is correct
                     errorMessage.append(" Unknown client-id");
                 } else {
                     errorMessage.append(" Invalid client secret");
@@ -144,7 +146,7 @@ public class AuthService {
          * @throws UnsupportedOperationException If the GrantType is anything else than GrantType.PASSWORD
          */
         public Builder withGrantType(GrantType grantType) {
-            if (!grantType.equals(GrantType.PASSWORD)) {
+            if (!grantType.equals(GrantType.PASSWORD)) { // NOSONAR - stmt in if is correct
                 throw new UnsupportedOperationException(grantType.getUrlParam() + " grant type not supported at this time");
             }
             this.grantType = grantType;
@@ -204,13 +206,13 @@ public class AuthService {
          *          or, if the requested grant type is 'password', the user credentials (userName/password) are incomplete.
          */
         public AuthService build() {
-            if (clientId == null || clientSecret == null) {
+            if (clientId == null || clientSecret == null) { // NOSONAR - stmt in if is correct
                 throw new ConnectionInitializationException("The provided client credentials are incomplete.");
             }
-            if (grantType == null) {
+            if (grantType == null) { // NOSONAR - stmt in if is correct
                 throw new ConnectionInitializationException("The grant type is not set.");
             }
-            if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) {
+            if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) { // NOSONAR - stmt in if is correct
                 throw new ConnectionInitializationException("The grant type 'password' requires username and password");
             }
             requestParameters.put("grant_type", grantType.getUrlParam());
