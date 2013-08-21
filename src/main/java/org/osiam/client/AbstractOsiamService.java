@@ -80,11 +80,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
         final T resource;
 
-        if (id == null) { // NOSONAR - stmt in if is correct
+        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");
         }
         
-        if (accessToken == null) { // NOSONAR - stmt in if is correct
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -98,14 +98,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - stmt in if is correct
+            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
                     case SC_NOT_FOUND:
                         throw new NoResultException("No " + typeName + " with given UUID " + id);
                     default:
-                        throw new ConnectionInitializationException("Unable to setup connection"); // NOSONAR - literal duplication is ok, isn't it?
+                        throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
                 }
             }
 
@@ -125,7 +125,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
         final InputStream queryResult;
 
-        if (accessToken == null) { // NOSONAR - stmt in if is correct
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -134,17 +134,17 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             
             HttpGet realWebResource = createRealWebResource(accessToken);
-            realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - stmt in if is correct
+            realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - false-positive from clover; if-expression is correct
             
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - stmt in if is correct
+            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
                     default:
-                        throw new ConnectionInitializationException("Unable to setup connection");
+                        throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
                 }
             }
 
@@ -167,7 +167,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {
-        if (query == null) { // NOSONAR - stmt in if is correct
+        if (query == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
         return searchResources(query.toString(), accessToken);
