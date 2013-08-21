@@ -17,63 +17,63 @@ public class AuthServiceBuilderTest {
 
     @Test
     public void valid_parameters_produce_a_working_authservice() throws Exception {
-        AuthService as = new AuthService.Builder(IRRELEVANT).withGrantType(GrantType.PASSWORD)
-                .withClientId(IRRELEVANT)
-                .withClientSecret(IRRELEVANT)
-                .withUsername(IRRELEVANT)
-                .withPassword(IRRELEVANT)
+        AuthService as = new AuthService.Builder(IRRELEVANT).grantType(GrantType.PASSWORD)
+                .clientId(IRRELEVANT)
+                .clientSecret(IRRELEVANT)
+                .username(IRRELEVANT)
+                .password(IRRELEVANT)
                 .build();
         assertEquals(new URI(IRRELEVANT + "/oauth/token"), as.getUri());
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void missing_client_secret_raises_exception() {
-        new AuthService.Builder(IRRELEVANT).withClientId(IRRELEVANT).build();
+        new AuthService.Builder(IRRELEVANT).clientId(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void missing_client_ID_raises_exception() {
-        new AuthService.Builder(IRRELEVANT).withClientSecret(IRRELEVANT).build();
+        new AuthService.Builder(IRRELEVANT).clientSecret(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_username_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .withClientId(IRRELEVANT)
-                .withClientSecret(IRRELEVANT)
-                .withGrantType(GrantType.PASSWORD)
-                .withPassword(IRRELEVANT).build();
+                .clientId(IRRELEVANT)
+                .clientSecret(IRRELEVANT)
+                .grantType(GrantType.PASSWORD)
+                .password(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_password_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .withClientId(IRRELEVANT)
-                .withClientSecret(IRRELEVANT)
-                .withGrantType(GrantType.PASSWORD)
-                .withUsername(IRRELEVANT).build();
+                .clientId(IRRELEVANT)
+                .clientSecret(IRRELEVANT)
+                .grantType(GrantType.PASSWORD)
+                .username(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_credentials_raise_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .withClientId(IRRELEVANT)
-                .withClientSecret(IRRELEVANT)
-                .withGrantType(GrantType.PASSWORD).build();
+                .clientId(IRRELEVANT)
+                .clientSecret(IRRELEVANT)
+                .grantType(GrantType.PASSWORD).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_missing_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .withClientId(IRRELEVANT)
-                .withClientSecret(IRRELEVANT)
-                .withUsername(IRRELEVANT)
-                .withPassword(IRRELEVANT).build();
+                .clientId(IRRELEVANT)
+                .clientSecret(IRRELEVANT)
+                .username(IRRELEVANT)
+                .password(IRRELEVANT).build();
         fail("We expected an exception");
     }
 }

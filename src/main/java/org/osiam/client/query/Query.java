@@ -175,7 +175,7 @@ public class Query {
          * @param sortOrder The order in which to sort the result
          * @return The Builder with this sort oder added.
          */
-        public Builder withSortOrder(SortOrder sortOrder) {
+        public Builder sortOrder(SortOrder sortOrder) {
             this.sortOrder = sortOrder;
             return this;
         }

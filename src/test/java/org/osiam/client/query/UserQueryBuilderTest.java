@@ -153,13 +153,13 @@ public class UserQueryBuilderTest {
 
     @Test
     public void sort_order_ascending() {
-        queryBuilder.withSortOrder(SortOrder.ASCENDING);
+        queryBuilder.sortOrder(SortOrder.ASCENDING);
         buildStringMeetsExpectation("sortOrder=ascending");
     }
 
     @Test
     public void sort_order_descending() {
-        queryBuilder.withSortOrder(SortOrder.DESCENDING);
+        queryBuilder.sortOrder(SortOrder.DESCENDING);
         buildStringMeetsExpectation("sortOrder=descending");
     }
 
@@ -167,13 +167,13 @@ public class UserQueryBuilderTest {
     public void query_and_sort_order_ascending() {
         filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.filter(filter)
-                .withSortOrder(SortOrder.ASCENDING);
+                .sortOrder(SortOrder.ASCENDING);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"") + "&sortOrder=ascending");
     }
 
     @Test
     public void two_times_set_sort_order_descending() {
-        queryBuilder.withSortOrder(SortOrder.ASCENDING).withSortOrder(SortOrder.DESCENDING);
+        queryBuilder.sortOrder(SortOrder.ASCENDING).sortOrder(SortOrder.DESCENDING);
         buildStringMeetsExpectation("sortOrder=descending");
     }
 
@@ -195,7 +195,7 @@ public class UserQueryBuilderTest {
         queryBuilder.filter(filter)
                 .startIndex(START_INDEX)
                 .countPerPage(COUNT_PER_PAGE)
-                .withSortOrder(SortOrder.ASCENDING);
+                .sortOrder(SortOrder.ASCENDING);
         String exceptedQuery = encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR
                 + " co \"" + IRRELEVANT + "\"") + "&sortOrder=ascending&count=" + COUNT_PER_PAGE
                 + "&startIndex=" + START_INDEX;
@@ -242,7 +242,7 @@ public class UserQueryBuilderTest {
 
         filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).or(innerFilter);
         queryBuilder.filter(filter).startIndex(START_INDEX)
-                .countPerPage(COUNT_PER_PAGE).sortBy(DEFAULT_ATTR).withSortOrder(SortOrder.ASCENDING);
+                .countPerPage(COUNT_PER_PAGE).sortBy(DEFAULT_ATTR).sortOrder(SortOrder.ASCENDING);
 
         String exceptedQuery = FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
                 + " eq \"" + IRRELEVANT + "\")") + "&sortBy=" + DEFAULT_ATTR + "&sortOrder=" + SortOrder.ASCENDING.toString()
