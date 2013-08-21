@@ -3,22 +3,19 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import java.util.UUID;
+
 import org.apache.http.client.methods.HttpGet;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 
-import java.util.UUID;
-
 /**
  * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
  * given OSIAM installation. For the construction of an instance please use the {@link OsiamGroupService.Builder}
  */
-public class OsiamGroupService extends AbstractOsiamService<Group> {
+public final class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of this class
 
 
     /**

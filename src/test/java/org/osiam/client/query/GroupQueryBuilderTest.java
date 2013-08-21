@@ -1,6 +1,9 @@
 package org.osiam.client.query;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -13,9 +16,6 @@ import org.osiam.resources.scim.Group;
 
 import com.google.common.base.Charsets;
 import org.osiam.resources.scim.User;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class GroupQueryBuilderTest {
 

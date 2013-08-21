@@ -3,10 +3,6 @@ package org.osiam.client.query;
  * for licensing see the file license.txt.
  */
 
-import org.apache.commons.io.Charsets;
-import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.query.metamodel.Attribute;
-import org.osiam.client.query.metamodel.Comparision;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -14,6 +10,12 @@ import java.lang.reflect.Modifier;
 import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.Charsets;
+import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.query.metamodel.Attribute;
+import org.osiam.client.query.metamodel.Comparision;
+import org.osiam.resources.scim.CoreResource;
 
 /**
  * This class represents a query as it is run against the OSIAM service.
@@ -43,7 +45,7 @@ public class Query {
      * @return The number of Items this Query is configured for.
      */
     public int getCount() {
-        if (queryStringContainsCount()) {
+        if (queryStringContainsCount()) { // NOSONAR - stmt in if is correct
             return Integer.parseInt(countMatcher.group(1));
         }
         return DEFAULT_COUNT;
@@ -55,7 +57,7 @@ public class Query {
      * @return The startIndex of this query.
      */
     public int getStartIndex() {
-        if (queryStringContainsIndex()) {
+        if (queryStringContainsIndex()) { // NOSONAR - stmt in if is correct
             return Integer.parseInt(indexMatcher.group(1));
         }
         return DEFAULT_INDEX;
@@ -68,7 +70,7 @@ public class Query {
      */
     public Query nextPage() {
         String nextIndex = "startIndex=" + (getCount() + getStartIndex());
-        if (queryStringContainsIndex()) {
+        if (queryStringContainsIndex()) { // NOSONAR - stmt in if is correct
             return new Query(indexMatcher.replaceFirst(nextIndex));
         }
         return new Query(queryString + "&" + nextIndex);
@@ -82,7 +84,7 @@ public class Query {
     public Query previousPage() {
         int newIndex = getStartIndex() - getCount();
         
-        if (newIndex < DEFAULT_INDEX) {
+        if (newIndex < DEFAULT_INDEX) { // NOSONAR - stmt in if is correct
             throw new IllegalStateException("Negative startIndex is not possible.");
         }
         
@@ -92,8 +94,13 @@ public class Query {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
+        if (this == other) { // NOSONAR - stmt in if is correct
+            return true;
+        }
+        
+        if (other == null || getClass() != other.getClass()) { // NOSONAR - stmt in if is correct
+            return false;
+        }
 
         Query query = (Query) other;
 
@@ -129,8 +136,7 @@ public class Query {
 	// FIXME DEFAULT_START_INDEX should be 1 to comply to the Scim spec, but OSIAM server still depends on 0
         private static final int DEFAULT_START_INDEX = 0;
         private static final int DEFAULT_COUNT_PER_PAGE = 100;
-        @SuppressWarnings("rawtypes")
-	    private Class clazz;
+        private Class<? extends CoreResource> clazz;
         private String filter;
         private String sortBy;
         private SortOrder sortOrder;
@@ -142,7 +148,7 @@ public class Query {
          *
          * @param clazz The class of Resources to query for.
          */
-        public Builder(@SuppressWarnings("rawtypes") Class clazz) {
+        public Builder(Class<? extends CoreResource> clazz) {
             this.clazz = clazz;
         }
 
@@ -203,7 +209,7 @@ public class Query {
          * @return The Builder with sortBy added.
          */
         public Builder sortBy(Attribute attribute) {
-            if (!(isAttributeValid(attribute.toString()))) {
+            if (!(isAttributeValid(attribute.toString()))) {// NOSONAR - stmt in if is correct
                 throw new InvalidAttributeException("Sorting for this attribute is not supported");
             }
             sortBy = attribute.toString();
@@ -217,7 +223,7 @@ public class Query {
          */
         public Query build()  {
             StringBuilder builder = new StringBuilder();
-            if (filter != null) {
+            if (filter != null) {// NOSONAR - stmt in if is correct
                 try{
                 ensureQueryParamIsSeparated(builder);
                 builder.append("filter=")
@@ -226,23 +232,23 @@ public class Query {
                     throw new RuntimeException(e);
                 }
             }
-            if (sortBy != null) {
+            if (sortBy != null) { // NOSONAR - stmt in if is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("sortBy=")
                         .append(sortBy);
             }
-            if (sortOrder != null) {
+            if (sortOrder != null) { // NOSONAR - stmt in if is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("sortOrder=")
                         .append(sortOrder);
 
             }
-            if (countPerPage != DEFAULT_COUNT_PER_PAGE) {
+            if (countPerPage != DEFAULT_COUNT_PER_PAGE) { // NOSONAR - stmt in if is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("count=")
                         .append(countPerPage);
             }
-            if (startIndex != DEFAULT_START_INDEX) {
+            if (startIndex != DEFAULT_START_INDEX) { // NOSONAR - stmt in if is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("startIndex=")
                         .append(startIndex);
@@ -251,7 +257,7 @@ public class Query {
         }
 
         private void ensureQueryParamIsSeparated(StringBuilder builder) {
-            if (builder.length() != 0) {
+            if (builder.length() != 0) { // NOSONAR - stmt in if is correct
                 builder.append("&");
             }
         }
@@ -262,21 +268,21 @@ public class Query {
 
         private static boolean isAttributeValid(String attribute, Class clazz) {
             String compositeField = "";
-            if (attribute.contains(".")) {
+            if (attribute.contains(".")) { // NOSONAR - stmt in if is correct
                 compositeField = attribute.substring(attribute.indexOf('.') + 1);
             }
-            if (attribute.startsWith("meta.")) {
+            if (attribute.startsWith("meta.")) { // NOSONAR - stmt in if is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Meta.class);
             }
-            if (attribute.startsWith("emails.")) {
+            if (attribute.startsWith("emails.")) { // NOSONAR - stmt in if is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.MultiValuedAttribute.class);
             }
-            if (attribute.startsWith("name.")) {
+            if (attribute.startsWith("name.")) { // NOSONAR - stmt in if is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);
             }
 
             for (Field field : clazz.getDeclaredFields()) {
-                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) {
+                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) { // NOSONAR - stmt in if is correct
                     return true;
                 }
             }
@@ -353,15 +359,6 @@ public class Query {
             return this;
         }
 
-        private Filter query(Comparision comparision) {
-            if (!(isAttributeValid(comparision))) {
-                throw new InvalidAttributeException("Querying for this attribute is not supported");
-            }
-
-            filterBuilder.append(comparision.toString());
-            return this;
-        }
-
         private boolean isAttributeValid(Comparision comparision) {
             String attribute = comparision.toString().substring(0, comparision.toString().indexOf(" "));
             return Builder.isAttributeValid(attribute, clazz);
@@ -369,6 +366,15 @@ public class Query {
 
         public String toString(){
             return filterBuilder.toString();
+        }
+
+        private Filter query(Comparision comparision) {
+            if (!(isAttributeValid(comparision))) {
+                throw new InvalidAttributeException("Querying for this attribute is not supported");
+            }
+
+            filterBuilder.append(comparision.toString());
+            return this;
         }
     }
 }

@@ -7,6 +7,12 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -18,17 +24,11 @@ import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.User;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
-
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the
  * given OSIAM installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
  */
-public class OsiamUserService extends AbstractOsiamService<User> {
+public final class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder constructs instances of this class
 
     /**
      * The private constructor for the OSIAMUserService. Please use the {@link OsiamUserService.Builder}
@@ -67,7 +67,7 @@ public class OsiamUserService extends AbstractOsiamService<User> {
     public User getMe(AccessToken accessToken) {
 	final User user;
 
-        if (accessToken == null) {
+        if (accessToken == null) { // NOSONAR - stmt in if is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -75,13 +75,13 @@ public class OsiamUserService extends AbstractOsiamService<User> {
             DefaultHttpClient httpclient = new DefaultHttpClient();
             
             HttpGet realWebresource = createRealWebResource(accessToken);
-            realWebresource.setURI(new URI(webResource.getURI() + "/me"));
+            realWebresource.setURI(new URI(getUri() + "/me"));
             
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
             // TODO: what errors do we expect?
-            if (httpStatus != SC_OK) {
+            if (httpStatus != SC_OK) { // NOSONAR - stmt in if is correct
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
@@ -107,7 +107,8 @@ public class OsiamUserService extends AbstractOsiamService<User> {
 
     /**
      * Search for the existing Users by a given search string. For more detailed information about the possible
-     * logical operators and usable fields please have a look into the wiki.
+     * logical operators and usable fields please have a look into the wiki.<p>
+     * <b>Note:</b> The query string should be URL encoded!
      *
      * @param queryString The string with the query that should be passed to the OSIAM service
      * @param accessToken the OSIAM access token from for the current session
