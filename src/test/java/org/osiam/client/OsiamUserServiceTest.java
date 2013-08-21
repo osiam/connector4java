@@ -40,6 +40,7 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
@@ -196,7 +197,6 @@ public class OsiamUserServiceTest {
 
     @Test
     public void query_string_is_split_correctly() throws UnsupportedEncodingException {
-
         givenAQueryContainingDifficultCharacters();
         givenAUserCanBeSearchedByQuery();
         whenSearchIsUsedByQuery();
@@ -261,11 +261,13 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {
-        query = new Query.Builder(User.class).filter("name.formatted").contains("Schulz & Schulz Industries").sortBy("userName").build();
+        Query.Filter filter = new Query.Filter(User.class).startsWith(User_.name.formatted.contains("Schulz & Schulz Industries"));
+        query = new Query.Builder(User.class).filter(filter).sortBy(User_.userName).build();
     }
 
     private void givenAQueryContainingDifficultCharacters() throws UnsupportedEncodingException {
-        query = new Query.Builder(User.class).filter("name.formatted").contains("Schulz & Schulz Industries").build();
+        Query.Filter filter = new Query.Filter(User.class).startsWith(User_.name.formatted.contains("Schulz & Schulz Industries"));
+        query = new Query.Builder(User.class).filter(filter).build();
     }
 
     private void givenAUserCanBeSearchedByQuery() {

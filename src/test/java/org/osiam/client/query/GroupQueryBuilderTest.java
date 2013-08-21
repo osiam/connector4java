@@ -7,49 +7,45 @@ import java.net.URLEncoder;
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.query.metamodel.Group_;
+import org.osiam.client.query.metamodel.StringAttribute;
 import org.osiam.resources.scim.Group;
 
 import com.google.common.base.Charsets;
+import org.osiam.resources.scim.User;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class GroupQueryBuilderTest {
 
-    private static final String DEFAULT_ATTR = "displayName";
+    private static final StringAttribute DEFAULT_ATTR = Group_.displayName;
     private static final String IRRELEVANT = "irrelevant";
     private Query.Builder queryBuilder;
+    private Query.Filter filter;
 
     @Before
     public void setUp() {
         queryBuilder = new Query.Builder(Group.class);
+        filter = new Query.Filter(User.class);
     }
 
     @Test
     public void flat_attribute_is_added_to_query() {
-        queryBuilder.filter(DEFAULT_ATTR);
-        buildStringMeetsExpectation("filter=" + DEFAULT_ATTR);
+        filter = filter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        queryBuilder.filter(filter);
+        buildStringMeetsExpectation("filter=" + DEFAULT_ATTR + "+eq+%22" + IRRELEVANT + "%22");
     }
 
     @Test
     public void and_attribute_is_added_correctly() throws UnsupportedEncodingException {
-        queryBuilder.filter(DEFAULT_ATTR)
-                .contains(IRRELEVANT)
-                .and(DEFAULT_ATTR).contains(IRRELEVANT);
+        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
+        queryBuilder.filter(filter);
         buildStringMeetsExpectation("filter=" + URLEncoder.encode(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"", Charsets.UTF_8.name()));
-    }
-
-    @Test(expected = InvalidAttributeException.class)
-    public void exception_raised_when_attr_is_not_valid() {
-        queryBuilder.filter(IRRELEVANT);
     }
 
     private void buildStringMeetsExpectation(String buildString) {
         Query expectedQuery = new Query(buildString);
-        try {
 	    assertEquals(expectedQuery, queryBuilder.build());
-	} catch (UnsupportedEncodingException e) {
-	    fail("Filter contains non UTF-8 characters");
-	}
     }
 }
