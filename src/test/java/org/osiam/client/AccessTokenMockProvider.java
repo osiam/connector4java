@@ -3,12 +3,12 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.osiam.client.oauth.AccessToken;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.osiam.client.oauth.AccessToken;
 
 public class AccessTokenMockProvider {
 

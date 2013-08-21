@@ -3,32 +3,35 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.apache.commons.codec.binary.Base64;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import java.net.URI;
+
 import org.apache.http.HttpStatus;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.net.URI;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 
 public class AuthServiceTest {
 
     @Rule
     public WireMockClassRule wireMockRule = new WireMockClassRule(9090);
 
-    private final static String CHARSET = "UTF-8";
+    //private final static String CHARSET = "UTF-8";
     private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
     private final static String TOKEN_PATH = "/oauth/token";
     private final static String VALID_CLIENT_ID = "valid-client";
     private final static String VALID_CLIENT_SECRET = "valid_secret";
     private final static String VALID_USERNAME = "valid-username";
     private final static String VALID_PASSWORD = "valid-password";
-    private final static String VALID_SCOPE = "GET POST PUT PATCH DELETE";
-    private final static String ACCESS_TOKEN_STRING = "c5d116cb-2758-4e7c-9aca-4a115bc4f19e";
+    //private final static String VALID_SCOPE = "GET POST PUT PATCH DELETE";
+    //private final static String ACCESS_TOKEN_STRING = "c5d116cb-2758-4e7c-9aca-4a115bc4f19e";
 
     private AuthService service;
     private AccessToken accessToken;
@@ -72,19 +75,19 @@ public class AuthServiceTest {
                 .build();
     }
 
-    private void verify_access_token_is_expected() {
+    /*private void verify_access_token_is_expected() {
         accessToken = service.retrieveAccessToken();
         assertEquals(ACCESS_TOKEN_STRING, accessToken.getToken());
-    }
+    }*/
 
     private void verify_access_token_is_valid() throws Exception {
         accessToken = service.retrieveAccessToken();
         assertFalse(accessToken.isExpired());
     }
 
-    private String encodeClientCredentials(String clientId, String clientSecret) throws Exception {
+    /*private String encodeClientCredentials(String clientId, String clientSecret) throws Exception {
         String clientCredentials = clientId + ":" + clientSecret;
         String encoded = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
         return encoded;
-    }
+    }*/
 }

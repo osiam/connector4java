@@ -3,13 +3,13 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
-import org.junit.Test;
-import org.osiam.client.exception.ConnectionInitializationException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.osiam.client.exception.ConnectionInitializationException;
 
 public class AuthServiceBuilderTest {
 
