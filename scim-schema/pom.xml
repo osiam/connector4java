@@ -128,6 +128,15 @@
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.4.4</version>
                 <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <serverId>sonatype-nexus-staging</serverId>
                     <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
@@ -229,6 +238,9 @@
                         <version>1.0-beta-7</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
 
             <!-- Build Helper: will add Groovy sources to path -->
