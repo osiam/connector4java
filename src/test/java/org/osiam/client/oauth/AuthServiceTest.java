@@ -67,11 +67,11 @@ public class AuthServiceTest {
 
     private void given_a_correctly_configured_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
-                .withGrantType(GrantType.PASSWORD)
-                .withClientId(VALID_CLIENT_ID)
-                .withClientSecret(VALID_CLIENT_SECRET)
-                .withUsername(VALID_USERNAME)
-                .withPassword(VALID_PASSWORD)
+                .grantType(GrantType.PASSWORD)
+                .clientId(VALID_CLIENT_ID)
+                .clientSecret(VALID_CLIENT_SECRET)
+                .username(VALID_USERNAME)
+                .password(VALID_PASSWORD)
                 .build();
     }
 
