@@ -1,11 +1,10 @@
 package org.osiam.client.query.metamodel;
+/*
+ * for licensing see the file license.txt.
+ */
 
 /**
- * Created with IntelliJ IDEA.
- * User: dmoeb
- * Date: 15.08.13
- * Time: 16:20
- * To change this template use File | Settings | File Templates.
+ * single Group or User Attribute
  */
 public abstract class Attribute {
 

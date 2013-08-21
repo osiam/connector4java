@@ -1,5 +1,11 @@
 package org.osiam.client.query.metamodel;
+/*
+* for licensing see the file license.txt.
+*/
 
+/**
+ * all fields from a Group
+ */
 public abstract class Group_ {
 
     private Group_(){}

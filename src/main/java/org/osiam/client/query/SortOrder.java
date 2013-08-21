@@ -1,4 +1,7 @@
 package org.osiam.client.query;
+/*
+* for licensing see the file license.txt.
+*/
 
 /**
  * This enum represents the way in which the result of a query should be ordered.

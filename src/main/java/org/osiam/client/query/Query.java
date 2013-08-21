@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
-import org.osiam.client.query.metamodel.Comparision;
+import org.osiam.client.query.metamodel.Comparison;
 import org.osiam.resources.scim.CoreResource;
 
 /**
@@ -155,15 +155,20 @@ public class Query {
         /**
          * Add a filter on the given Attribute.
          *
-         * @param filter The name of the attribute to filter on.
-         * @return A {@link Filter} to specify the filtering criteria
-         * @throws org.osiam.client.exception.InvalidAttributeException if the given attribute is not valid for a query
+         * @param filter The filter of the attributes to filter on.
+         * @return The Builder with this filter added.
          */
         public Builder filter(Filter filter) {
             this.filter = filter.toString();
             return this;
         }
 
+        /**
+         * Add a filter on the given Attribute.
+         *
+         * @param filter The filter of the attributes to filter on.
+         * @return The Builder with this filter added.
+         */
         public Builder filter(String filter) {
             this.filter = filter;
             return this;
@@ -173,7 +178,7 @@ public class Query {
          * Adds the given {@link SortOrder} to the query
          *
          * @param sortOrder The order in which to sort the result
-         * @return The Builder with this sort oder added.
+         * @return The Builder with this sort order added.
          */
         public Builder sortOrder(SortOrder sortOrder) {
             this.sortOrder = sortOrder;
@@ -291,8 +296,7 @@ public class Query {
     }
 
     /**
-     * A Filter is used to produce filter criteria for the query. At this point the conditions are mere strings.
-     * This is going to change.
+     * A Filter is used to produce filter criteria for the query.
      */
     public static final class Filter {
 
@@ -300,29 +304,34 @@ public class Query {
         private StringBuilder filterBuilder;
 
         /**
-         * The Constructor of the FilterBuilder
+         * The Constructor of the Filter
          *
-         * @param clazz The class of Resources to query for.
+         * @param clazz The class of Resources to filter for.
          */
         public Filter(Class clazz) {
             filterBuilder = new StringBuilder();
             this.clazz = clazz;
-
-
-        }public Filter startsWith(Comparision comparision) {
-            return query(comparision);
         }
 
         /**
-         * Add an 'logical and' operation to the comparision with another attribute to comparision on.
+         * First Comparison that has to be added to a new Filter
+         * @param comparison comparison to be added to the empty filter
+         * @return The Filter with the Comparison added.
+         */
+        public Filter startsWith(Comparison comparison) {
+            return query(comparison);
+        }
+
+        /**
+         * Add an 'logical and' operation to the comparison with another attribute to comparison on.
          *
-         * @param comparision The name of the attribute to comparision the and clause on.
-         * @return A {@link org.osiam.client.query.metamodel.Comparision} to specify the filtering criteria
+         * @param comparison The name of the attribute to comparison the and clause on.
+         * @return A {@link org.osiam.client.query.metamodel.Comparison} to specify the filtering criteria
          * @throws org.osiam.client.exception.InvalidAttributeException if the given attribute is not valid for a query
          */
-        public Filter and(Comparision comparision) {
+        public Filter and(Comparison comparison) {
             filterBuilder.append(" and ");
-            return query(comparision);
+            return query(comparison);
         }
 
         /**
@@ -337,15 +346,15 @@ public class Query {
         }
 
         /**
-         * Add an 'logical or' operation to the comparision with another attribute to comparision on.
+         * Add an 'logical or' operation to the comparison with another attribute to comparison on.
          *
-         * @param comparision The name of the attribute to comparision the and clause on.
-         * @return A {@link org.osiam.client.query.metamodel.Comparision} to specify the filtering criteria
+         * @param comparison The name of the attribute to comparison the and clause on.
+         * @return A {@link org.osiam.client.query.metamodel.Comparison} to specify the filtering criteria
          * @throws org.osiam.client.exception.InvalidAttributeException if the given attribute is not valid for a query
          */
-        public Filter or(Comparision comparision) {
+        public Filter or(Comparison comparison) {
             filterBuilder.append(" or ");
-            return query(comparision);
+            return query(comparison);
         }
 
         /**
@@ -359,21 +368,25 @@ public class Query {
             return this;
         }
 
-        private boolean isAttributeValid(Comparision comparision) {
-            String attribute = comparision.toString().substring(0, comparision.toString().indexOf(" "));
+        private boolean isAttributeValid(Comparison comparison) {
+            String attribute = comparison.toString().substring(0, comparison.toString().indexOf(" "));
             return Builder.isAttributeValid(attribute, clazz);
         }
 
+        /**
+         * provides all appended Comparisions as String
+         * @return the build together filter
+         */
         public String toString(){
             return filterBuilder.toString();
         }
 
-        private Filter query(Comparision comparision) {
-            if (!(isAttributeValid(comparision))) {
+        private Filter query(Comparison comparison) {
+            if (!(isAttributeValid(comparison))) {
                 throw new InvalidAttributeException("Querying for this attribute is not supported");
             }
 
-            filterBuilder.append(comparision.toString());
+            filterBuilder.append(comparison.toString());
             return this;
         }
     }

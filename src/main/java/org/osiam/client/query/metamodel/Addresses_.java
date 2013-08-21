@@ -1,6 +1,11 @@
 package org.osiam.client.query.metamodel;
+/*
+* for licensing see the file license.txt.
+*/
 
-
+/**
+ * address attribute from User
+ */
 public abstract class Addresses_ {
 
     private Addresses_(){}

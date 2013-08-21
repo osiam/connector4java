@@ -1,5 +1,11 @@
 package org.osiam.client.query.metamodel;
+/*
+* for licensing see the file license.txt.
+*/
 
+/**
+ * all email atttributes from a User
+ */
  public abstract class Emails_ {
 
     private Emails_(){}

@@ -1,6 +1,11 @@
 package org.osiam.client.query.metamodel;
+/*
+* for licensing see the file license.txt.
+*/
 
-
+/**
+ * all atttributes from a User
+ */
 public abstract class User_ {
 
     private User_(){}
