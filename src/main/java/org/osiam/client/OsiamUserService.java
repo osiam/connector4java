@@ -107,7 +107,8 @@ public class OsiamUserService extends AbstractOsiamService<User> {
 
     /**
      * Search for the existing Users by a given search string. For more detailed information about the possible
-     * logical operators and usable fields please have a look into the wiki.
+     * logical operators and usable fields please have a look into the wiki.<p>
+     * <b>Note:</b> The query string should be URL encoded!
      *
      * @param queryString The string with the query that should be passed to the OSIAM service
      * @param accessToken the OSIAM access token from for the current session
