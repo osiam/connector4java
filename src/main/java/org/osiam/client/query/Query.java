@@ -45,7 +45,7 @@ public class Query {
      * @return The number of Items this Query is configured for.
      */
     public int getCount() {
-        if (queryStringContainsCount()) { // NOSONAR - stmt in if is correct
+        if (queryStringContainsCount()) { // NOSONAR - false-positive from clover; if-expression is correct
             return Integer.parseInt(countMatcher.group(1));
         }
         return DEFAULT_COUNT;
@@ -57,7 +57,7 @@ public class Query {
      * @return The startIndex of this query.
      */
     public int getStartIndex() {
-        if (queryStringContainsIndex()) { // NOSONAR - stmt in if is correct
+        if (queryStringContainsIndex()) { // NOSONAR - false-positive from clover; if-expression is correct
             return Integer.parseInt(indexMatcher.group(1));
         }
         return DEFAULT_INDEX;
@@ -70,7 +70,7 @@ public class Query {
      */
     public Query nextPage() {
         String nextIndex = "startIndex=" + (getCount() + getStartIndex());
-        if (queryStringContainsIndex()) { // NOSONAR - stmt in if is correct
+        if (queryStringContainsIndex()) { // NOSONAR - false-positive from clover; if-expression is correct
             return new Query(indexMatcher.replaceFirst(nextIndex));
         }
         return new Query(queryString + "&" + nextIndex);
@@ -84,7 +84,7 @@ public class Query {
     public Query previousPage() {
         int newIndex = getStartIndex() - getCount();
         
-        if (newIndex < DEFAULT_INDEX) { // NOSONAR - stmt in if is correct
+        if (newIndex < DEFAULT_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalStateException("Negative startIndex is not possible.");
         }
         
@@ -94,11 +94,11 @@ public class Query {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other) { // NOSONAR - stmt in if is correct
+        if (this == other) { // NOSONAR - false-positive from clover; if-expression is correct
             return true;
         }
         
-        if (other == null || getClass() != other.getClass()) { // NOSONAR - stmt in if is correct
+        if (other == null || getClass() != other.getClass()) { // NOSONAR - false-positive from clover; if-expression is correct
             return false;
         }
 
@@ -209,7 +209,7 @@ public class Query {
          * @return The Builder with sortBy added.
          */
         public Builder sortBy(Attribute attribute) {
-            if (!(isAttributeValid(attribute.toString()))) {// NOSONAR - stmt in if is correct
+            if (!(isAttributeValid(attribute.toString()))) {// NOSONAR - false-positive from clover; if-expression is correct
                 throw new InvalidAttributeException("Sorting for this attribute is not supported");
             }
             sortBy = attribute.toString();
@@ -223,7 +223,7 @@ public class Query {
          */
         public Query build()  {
             StringBuilder builder = new StringBuilder();
-            if (filter != null) {// NOSONAR - stmt in if is correct
+            if (filter != null) {// NOSONAR - false-positive from clover; if-expression is correct
                 try{
                 ensureQueryParamIsSeparated(builder);
                 builder.append("filter=")
@@ -232,23 +232,23 @@ public class Query {
                     throw new RuntimeException(e);
                 }
             }
-            if (sortBy != null) { // NOSONAR - stmt in if is correct
+            if (sortBy != null) { // NOSONAR - false-positive from clover; if-expression is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("sortBy=")
                         .append(sortBy);
             }
-            if (sortOrder != null) { // NOSONAR - stmt in if is correct
+            if (sortOrder != null) { // NOSONAR - false-positive from clover; if-expression is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("sortOrder=")
                         .append(sortOrder);
 
             }
-            if (countPerPage != DEFAULT_COUNT_PER_PAGE) { // NOSONAR - stmt in if is correct
+            if (countPerPage != DEFAULT_COUNT_PER_PAGE) { // NOSONAR - false-positive from clover; if-expression is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("count=")
                         .append(countPerPage);
             }
-            if (startIndex != DEFAULT_START_INDEX) { // NOSONAR - stmt in if is correct
+            if (startIndex != DEFAULT_START_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("startIndex=")
                         .append(startIndex);
@@ -257,7 +257,7 @@ public class Query {
         }
 
         private void ensureQueryParamIsSeparated(StringBuilder builder) {
-            if (builder.length() != 0) { // NOSONAR - stmt in if is correct
+            if (builder.length() != 0) { // NOSONAR - false-positive from clover; if-expression is correct
                 builder.append("&");
             }
         }
@@ -268,21 +268,21 @@ public class Query {
 
         private static boolean isAttributeValid(String attribute, Class clazz) {
             String compositeField = "";
-            if (attribute.contains(".")) { // NOSONAR - stmt in if is correct
+            if (attribute.contains(".")) { // NOSONAR - false-positive from clover; if-expression is correct
                 compositeField = attribute.substring(attribute.indexOf('.') + 1);
             }
-            if (attribute.startsWith("meta.")) { // NOSONAR - stmt in if is correct
+            if (attribute.startsWith("meta.")) { // NOSONAR - false-positive from clover; if-expression is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Meta.class);
             }
-            if (attribute.startsWith("emails.")) { // NOSONAR - stmt in if is correct
+            if (attribute.startsWith("emails.")) { // NOSONAR - false-positive from clover; if-expression is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.MultiValuedAttribute.class);
             }
-            if (attribute.startsWith("name.")) { // NOSONAR - stmt in if is correct
+            if (attribute.startsWith("name.")) { // NOSONAR - false-positive from clover; if-expression is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);
             }
 
             for (Field field : clazz.getDeclaredFields()) {
-                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) { // NOSONAR - stmt in if is correct
+                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) { // NOSONAR - false-positive from clover; if-expression is correct
                     return true;
                 }
             }
