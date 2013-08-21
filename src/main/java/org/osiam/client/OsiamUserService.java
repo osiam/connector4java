@@ -67,7 +67,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     public User getMe(AccessToken accessToken) {
 	final User user;
 
-        if (accessToken == null) { // NOSONAR - stmt in if is correct
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -80,15 +80,14 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            // TODO: what errors do we expect?
-            if (httpStatus != SC_OK) { // NOSONAR - stmt in if is correct
+            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
                         throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
                     case SC_NOT_FOUND:
-                        throw new NoResultException("???");
+                        throw new NoResultException("No User could be found, who holds the supplied access token");
                     default:
-                        throw new ConnectionInitializationException("Unable to setup connection");
+                        throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
                 }
             }
 

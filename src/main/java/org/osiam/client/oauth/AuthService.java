@@ -3,6 +3,7 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
@@ -84,19 +85,25 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         HttpResponse response = performRequest();
         int status = response.getStatusLine().getStatusCode();
 
-        switch (status) {
-            case SC_BAD_REQUEST:
-                throw new ConnectionInitializationException("Unable to create Connection. Please make sure that you have the correct grants.");
-            case SC_UNAUTHORIZED:
-                StringBuilder errorMessage = new StringBuilder("You are not authorized to directly retrieve a access token.");
-                if (response.toString().contains(clientId + " not found")) { // NOSONAR - stmt in if is correct
-                    errorMessage.append(" Unknown client-id");
-                } else {
-                    errorMessage.append(" Invalid client secret");
-                }
-                throw new UnauthorizedException(errorMessage.toString());
-            case SC_NOT_FOUND:
-                throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint + ")");
+        if (status != SC_OK) {
+            switch (status) {
+                case SC_BAD_REQUEST:
+                    throw new ConnectionInitializationException(
+                            "Unable to create Connection. Please make sure that you have the correct grants.");
+                case SC_UNAUTHORIZED:
+                    StringBuilder errorMessage = new StringBuilder(
+                            "You are not authorized to directly retrieve a access token.");
+                    if (response.toString().contains(clientId + " not found")) { // NOSONAR - false-positive from clover; if-expression is correct
+                        errorMessage.append(" Unknown client-id");
+                    } else {
+                        errorMessage.append(" Invalid client secret");
+                    }
+                    throw new UnauthorizedException(errorMessage.toString());
+                case SC_NOT_FOUND:
+                    throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint + ")");
+                default:
+                    throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", status));
+            }
         }
 
         final AccessToken accessToken;
@@ -146,7 +153,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @throws UnsupportedOperationException If the GrantType is anything else than GrantType.PASSWORD
          */
         public Builder grantType(GrantType grantType) {
-            if (!grantType.equals(GrantType.PASSWORD)) { // NOSONAR - stmt in if is correct
+            if (!grantType.equals(GrantType.PASSWORD)) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new UnsupportedOperationException(grantType.getUrlParam() + " grant type not supported at this time");
             }
             this.grantType = grantType;
@@ -206,13 +213,13 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          *          or, if the requested grant type is 'password', the user credentials (userName/password) are incomplete.
          */
         public AuthService build() {
-            if (clientId == null || clientSecret == null) { // NOSONAR - stmt in if is correct
+            if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new ConnectionInitializationException("The provided client credentials are incomplete.");
             }
-            if (grantType == null) { // NOSONAR - stmt in if is correct
+            if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new ConnectionInitializationException("The grant type is not set.");
             }
-            if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) { // NOSONAR - stmt in if is correct
+            if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new ConnectionInitializationException("The grant type 'password' requires username and password");
             }
             requestParameters.put("grant_type", grantType.getUrlParam());
