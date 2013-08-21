@@ -325,7 +325,7 @@ public class Query {
             }
 
             for (Field field : clazz.getDeclaredFields()) {
-                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) {
+                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) { // NOSONAR - stmt in if is correct
                     return true;
                 }
             }

@@ -6,9 +6,6 @@ package org.osiam.client;
 import java.util.UUID;
 
 import org.apache.http.client.methods.HttpGet;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
