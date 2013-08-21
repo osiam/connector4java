@@ -105,7 +105,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_NOT_FOUND:
                         throw new NoResultException("No " + typeName + " with given UUID " + id);
                     default:
-                        throw new ConnectionInitializationException("Unable to setup connection");
+                        throw new ConnectionInitializationException("Unable to setup connection"); // NOSONAR - literal duplication is ok, isn't it?
                 }
             }
 
@@ -196,10 +196,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      */
     protected static class Builder<T> {
         private String endpoint;
-        //NOTE: Not needed for Service
-        //private String clientId;
-        //private String clientSecret;
-        //private String redirectUri;
         private Class<T> type;
         private String typeName;
 
@@ -217,45 +213,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                             .getActualTypeArguments()[0];
             typeName = type.getSimpleName();
         }
-
-        // NOTE: Not needed for Service
-        /* *
-         * Add a ClientId to the service
-         * 
-         * @param clientId The client-Id
-         * 
-         * @return The builder itself
-         */
-        /*public Builder<T> withClientId(String clientId) {
-            this.clientId = clientId;
-            return this;
-        }*/
-
-        // NOTE: Not needed for Service
-        /* *
-         * Add a clientSecret to the service
-         * 
-         * @param clientSecret The client secret
-         * 
-         * @return The builder itself
-         */
-        /*public Builder<T> withClientSecret(String clientSecret) {
-            this.clientSecret = clientSecret;
-            return this;
-        }*/
-
-        // NOTE: Not needed for Service
-        /* *
-         * add a redirectURI to the service
-         * 
-         * @param redirectUri The redirectUri
-         * 
-         * @return The Builder itself
-         */
-        /*public Builder<T> withRedirectUri(String redirectUri) {
-            this.redirectUri = redirectUri;
-            return this;
-        }*/
 
         /**
          * creates a WebResource to the needed endpoint
