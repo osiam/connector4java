@@ -3,15 +3,19 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Before;
-import org.junit.Test;
-import org.osiam.client.AccessTokenMockProvider;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.osiam.client.AccessTokenMockProvider;
 
 public class AccessTokenTest {
 
