@@ -3,9 +3,9 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
-import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 import java.io.IOException;
