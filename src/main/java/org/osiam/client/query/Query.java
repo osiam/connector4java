@@ -271,7 +271,7 @@ public class Query {
             return isAttributeValid(attribute, clazz);
         }
 
-        private static boolean isAttributeValid(String attribute, Class clazz) {
+        private static boolean isAttributeValid(String attribute, Class<?> clazz) {
             String compositeField = "";
             if (attribute.contains(".")) { // NOSONAR - false-positive from clover; if-expression is correct
                 compositeField = attribute.substring(attribute.indexOf('.') + 1);
@@ -300,7 +300,7 @@ public class Query {
      */
     public static final class Filter {
 
-        private Class clazz;
+        private Class<?> clazz;
         private StringBuilder filterBuilder;
 
         /**
@@ -308,7 +308,7 @@ public class Query {
          *
          * @param clazz The class of Resources to filter for.
          */
-        public Filter(Class clazz) {
+        public Filter(Class<?> clazz) {
             filterBuilder = new StringBuilder();
             this.clazz = clazz;
         }
