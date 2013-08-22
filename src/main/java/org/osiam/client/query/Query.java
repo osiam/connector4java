@@ -319,7 +319,19 @@ public class Query {
          * @return The Filter with the Comparison added.
          */
         public Filter startsWith(Comparison comparison) {
+            ensureStarthWithHasNotBeenCalled();
             return query(comparison);
+        }
+
+        /**
+         * First Comparison that has to be added to a new Filter
+         * @param filter innerFilter to be added to the main filter
+         * @return The Filter with the inner Filter added.
+         */
+        public Filter startsWith(Filter filter) {
+            ensureStarthWithHasNotBeenCalled();
+            filterBuilder.append(" (").append(filter.toString()).append(")");
+            return this;
         }
 
         /**
@@ -330,6 +342,7 @@ public class Query {
          * @throws org.osiam.client.exception.InvalidAttributeException if the given attribute is not valid for a query
          */
         public Filter and(Comparison comparison) {
+            ensureStarthWithHasBeenCalledFirst();
             filterBuilder.append(" and ");
             return query(comparison);
         }
@@ -341,6 +354,7 @@ public class Query {
          * @return The Builder with the inner filter added.
          */
         public Filter and(Filter innerFilter) {
+            ensureStarthWithHasBeenCalledFirst();
             filterBuilder.append(" and (").append(innerFilter.toString()).append(")");
             return this;
         }
@@ -353,6 +367,7 @@ public class Query {
          * @throws org.osiam.client.exception.InvalidAttributeException if the given attribute is not valid for a query
          */
         public Filter or(Comparison comparison) {
+            ensureStarthWithHasBeenCalledFirst();
             filterBuilder.append(" or ");
             return query(comparison);
         }
@@ -364,6 +379,7 @@ public class Query {
          * @return The Builder with the inner filter added.
          */
         public Filter or(Filter innerFilter) {
+            ensureStarthWithHasBeenCalledFirst();
             filterBuilder.append(" or (").append(innerFilter.toString()).append(")");
             return this;
         }
@@ -388,6 +404,18 @@ public class Query {
 
             filterBuilder.append(comparison.toString());
             return this;
+        }
+
+        private void ensureStarthWithHasBeenCalledFirst(){
+            if(filterBuilder.length() == 0){
+                throw new IllegalStateException("Method starthWith has to be called first");
+            }
+        }
+
+        private void ensureStarthWithHasNotBeenCalled(){
+            if(filterBuilder.length() != 0){
+                throw new IllegalStateException("Method starthWith can only be called once");
+            }
         }
     }
 }

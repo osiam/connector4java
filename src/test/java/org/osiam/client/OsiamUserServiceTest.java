@@ -212,6 +212,37 @@ public class OsiamUserServiceTest {
         thenSortedQueryStringIsSplitCorrectly();
     }
 
+    @Test  (expected = IllegalStateException.class)
+    public void wrong_filter_call_and_with_Comparison_raises_exception(){
+        new Query.Filter(User.class).and(User_.userName.contains(""));
+    }
+
+    @Test  (expected = IllegalStateException.class)
+    public void wrong_filter_call_and_with_Filter_raises_exception(){
+        new Query.Filter(User.class).and(new Query.Filter(User.class).startsWith(User_.userName.contains("")));
+    }
+
+    @Test  (expected = IllegalStateException.class)
+    public void wrong_filter_call_or_with_Comparison_raises_exception(){
+        new Query.Filter(User.class).or(User_.userName.contains(""));
+    }
+
+    @Test  (expected = IllegalStateException.class)
+    public void wrong_filter_call_or_with_Filter_raises_exception(){
+        new Query.Filter(User.class).or(new Query.Filter(User.class).startsWith(User_.userName.contains("")));
+    }
+
+    @Test  (expected = IllegalStateException.class)
+    public void method_startWith_called_two_time_with_Comparison_raises_exception(){
+        new Query.Filter(User.class).startsWith(User_.userName.contains("")).startsWith(User_.userName.contains(""));
+    }
+
+    @Test  (expected = IllegalStateException.class)
+    public void method_startWith_called_two_time_with_Filter_raises_exception(){
+        Query.Filter innerFilter = new Query.Filter(User.class).startsWith(User_.userName.contains(""));
+        new Query.Filter(User.class).startsWith(innerFilter).startsWith(innerFilter);
+    }
+
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
