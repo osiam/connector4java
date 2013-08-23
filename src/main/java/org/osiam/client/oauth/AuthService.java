@@ -85,7 +85,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         HttpResponse response = performRequest();
         int status = response.getStatusLine().getStatusCode();
 
-        if (status != SC_OK) {
+        if (status != SC_OK) {  // NOSONAR - false-positive from clover; if-expression is correct
             switch (status) {
                 case SC_BAD_REQUEST:
                     throw new ConnectionInitializationException(

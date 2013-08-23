@@ -234,7 +234,7 @@ public class Query {
                 builder.append("filter=")
                 	.append(URLEncoder.encode(filter, Charsets.UTF_8.name()));
                 }catch(UnsupportedEncodingException e)    {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(e);  // NOSONAR - The UnsupportedEncodingException will in real time "never" happen and if yes a runtime exception will catch the problem
                 }
             }
             if (sortBy != null) { // NOSONAR - false-positive from clover; if-expression is correct
@@ -398,7 +398,7 @@ public class Query {
         }
 
         private Filter query(Comparison comparison) {
-            if (!(isAttributeValid(comparison))) {
+            if (!(isAttributeValid(comparison))) {  // NOSONAR - false-positive from clover; if-expression is correct
                 throw new InvalidAttributeException("Querying for this attribute is not supported");
             }
 
@@ -407,13 +407,13 @@ public class Query {
         }
 
         private void ensureStarthWithHasBeenCalledFirst(){
-            if(filterBuilder.length() == 0){
+            if(filterBuilder.length() == 0){    // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalStateException("Method starthWith has to be called first");
             }
         }
 
         private void ensureStarthWithHasNotBeenCalled(){
-            if(filterBuilder.length() != 0){
+            if(filterBuilder.length() != 0){   // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalStateException("Method starthWith can only be called once");
             }
         }

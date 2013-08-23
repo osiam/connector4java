@@ -12,11 +12,7 @@ import java.util.Date;
  */
 public class DateAttribute extends Attribute{
 
-    private static DateFormat df;
-
-    static {
-        df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    }
+    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     DateAttribute(String value){
         this.value = value;
