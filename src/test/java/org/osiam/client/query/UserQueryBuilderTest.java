@@ -274,6 +274,56 @@ public class UserQueryBuilderTest {
         fail("Exception excpected");
     }
 
+    @Test
+    public void attribute_email_type_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.emails.type.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_email_value_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.emails.value.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_meta_created_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.meta.created.equalTo(DATE));
+    }
+
+    @Test
+    public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.meta.lastModified.equalTo(DATE));
+    }
+
+    @Test
+    public void attribute_meta_location_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.meta.location.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_meta_resource_type_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.meta.resourceType.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_meta_version_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.meta.version.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_name_formatted_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.name.formatted.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_name_fanily_name_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.name.familyName.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_name_given_name_is_correct_reconised_over_reflection(){
+        filter.startsWith(User_.name.givenName.equalTo(IRRELEVANT));
+    }
+
     private void buildStringMeetsExpectation(String buildString) {
         Query expectedQuery = new Query(buildString);
 	    assertEquals(expectedQuery, queryBuilder.build());

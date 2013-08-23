@@ -5,11 +5,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.omg.CORBA.DATA_CONVERSION;
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.client.query.metamodel.StringAttribute;
+import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.User;
 
@@ -40,6 +43,31 @@ public class GroupQueryBuilderTest {
         filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.filter(filter);
         buildStringMeetsExpectation("filter=" + URLEncoder.encode(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"", Charsets.UTF_8.name()));
+    }
+
+    @Test
+    public void attribute_meta_created_is_correct_reconised_over_reflection(){
+        filter.startsWith(Group_.meta.created.equalTo(new Date()));
+    }
+
+    @Test
+    public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
+        filter.startsWith(Group_.meta.lastModified.equalTo(new Date()));
+    }
+
+    @Test
+    public void attribute_meta_location_is_correct_reconised_over_reflection(){
+        filter.startsWith(Group_.meta.location.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_meta_resource_type_is_correct_reconised_over_reflection(){
+        filter.startsWith(Group_.meta.resourceType.equalTo(IRRELEVANT));
+    }
+
+    @Test
+    public void attribute_meta_version_is_correct_reconised_over_reflection(){
+        filter.startsWith(Group_.meta.version.equalTo(IRRELEVANT));
     }
 
     private void buildStringMeetsExpectation(String buildString) {

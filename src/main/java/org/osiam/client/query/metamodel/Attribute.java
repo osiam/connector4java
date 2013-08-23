@@ -8,7 +8,7 @@ package org.osiam.client.query.metamodel;
  */
 public abstract class Attribute {
 
-    protected String value = "";
+    protected String value = "";   // NOSONAR - false-positive from clover; visibility can't be private
 
     Attribute(){}
 
