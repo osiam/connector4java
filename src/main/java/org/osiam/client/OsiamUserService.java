@@ -100,6 +100,11 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         }
     }
 
+    /**
+     * Retrieves all existing Users
+     * @param accessToken
+     * @return a QueryResult Containing a list of all Users
+     */
     public QueryResult<User> getAllUsers(AccessToken accessToken) {
         return super.getAllResources(accessToken);
     }
