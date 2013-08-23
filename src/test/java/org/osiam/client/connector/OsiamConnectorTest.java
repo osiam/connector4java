@@ -122,7 +122,6 @@ public class OsiamConnectorTest {
         givenAUserCanBeSearchedByQuery();
         whenSearchIsUsedByQuery();
         thenQueryStringIsSplitCorrectly();
-
     }
 
     @Test
