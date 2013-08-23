@@ -10,6 +10,6 @@ package org.osiam.client.query.metamodel;
 
     private Photos_(){}
 
-    public static final StringAttribute value = new StringAttribute("photos.value");
-    public static final StringAttribute type = new StringAttribute("photos.type");
+    public static final StringAttribute value = new StringAttribute("photos.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    public static final StringAttribute type = new StringAttribute("photos.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 }

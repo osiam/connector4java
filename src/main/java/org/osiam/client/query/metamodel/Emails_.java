@@ -10,6 +10,6 @@ package org.osiam.client.query.metamodel;
 
     private Emails_(){}
 
-    public static final StringAttribute value = new StringAttribute("emails.value");
-    public static final StringAttribute type = new StringAttribute("emails.type");
+    public static final StringAttribute value = new StringAttribute("emails.value");     // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    public static final StringAttribute type = new StringAttribute("emails.type");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 }

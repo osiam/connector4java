@@ -10,6 +10,6 @@ package org.osiam.client.query.metamodel;
 
     private UserGroups_(){}
 
-    public static final StringAttribute value = new StringAttribute("groups.value");
-    public static final StringAttribute type = new StringAttribute("groups.type");
+    public static final StringAttribute value = new StringAttribute("groups.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    public static final StringAttribute type = new StringAttribute("groups.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 }

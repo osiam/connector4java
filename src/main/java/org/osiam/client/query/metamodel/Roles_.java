@@ -10,6 +10,6 @@ package org.osiam.client.query.metamodel;
 
     private Roles_(){}
 
-    public static final StringAttribute value = new StringAttribute("roles.value");
-    public static final StringAttribute type = new StringAttribute("roles.type");
+    public static final StringAttribute value = new StringAttribute("roles.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    public static final StringAttribute type = new StringAttribute("roles.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 }

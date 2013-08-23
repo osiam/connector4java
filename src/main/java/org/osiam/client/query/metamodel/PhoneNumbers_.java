@@ -10,6 +10,6 @@ package org.osiam.client.query.metamodel;
 
     private  PhoneNumbers_(){}
 
-    public static final StringAttribute value = new StringAttribute("phoneNumbers.value");
-    public static final StringAttribute type = new StringAttribute("phoneNumbers.type");
+    public static final StringAttribute value = new StringAttribute("phoneNumbers.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    public static final StringAttribute type = new StringAttribute("phoneNumbers.type"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 }
