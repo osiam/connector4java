@@ -12,7 +12,6 @@ import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.User;
 
-import java.net.URI;
 import java.util.UUID;
 /**
  * OsiamConnector provides access to the OAuth2 service used to authorize requests
@@ -213,6 +212,16 @@ public class OsiamConnector {
      */
     public User createUser(User user , AccessToken accessToken) {
         return userService().createUser(user, accessToken);
+    }
+
+    /**
+     * saves the given {@link Group} to the OSIAM DB.
+     * @param group group to be saved
+     * @param accessToken the OSIAM access token from for the current session
+     * @return the same group Object like the given but with filled metadata and a new valid uuid
+     */
+    public Group createGroup(Group group , AccessToken accessToken) {
+        return groupService().createGroup(group, accessToken);
     }
 
     /**

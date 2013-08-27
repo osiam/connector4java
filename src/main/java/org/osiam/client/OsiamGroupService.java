@@ -80,6 +80,15 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
     }
 
     /**
+     * saves the given {@link Group} to the OSIAM DB.
+     * @param group group to be saved
+     * @param accessToken the OSIAM access token from for the current session
+     * @return the same group Object like the given but with filled metadata and a new valid uuid
+     */
+    public Group createGroup(Group group, AccessToken accessToken) {
+        return createResource(group , accessToken);
+    }
+    /**
      * The Builder is used to construct instances of the {@link OsiamGroupService}
      */
     public static class Builder extends AbstractOsiamService.Builder<Group> {

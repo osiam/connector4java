@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import junit.framework.Assert;
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
@@ -179,6 +180,20 @@ public class OsiamGroupServiceTest {
         givenInvalidAccessTokenIsUsedForLookup();
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void create_null_group_raises_exception(){
+        Group newGroup = null;
+        service.createGroup(newGroup, accessToken);
+        Assert.fail("Exception excpected");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void create_group_with_null_accestoken_raises_exception(){
+        Group newGroup = new Group.Builder().build();
+        service.createGroup(newGroup, null);
+        Assert.fail("Exception excpected");
     }
 
     private void givenAnAccessToken() throws IOException {
