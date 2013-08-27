@@ -134,6 +134,13 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         return super.searchResources(query, accessToken);
     }
 
+    public void deleteUserByUUID(UUID id, AccessToken accessToken) {
+        deleteResourceByUUID(id, accessToken);
+    }
+
+    public User createUser(User user , AccessToken accessToken) {
+        return createResource(user , accessToken);
+    }
     /**
      * The Builder class is used to construct instances of the {@link OsiamUserService}
      */

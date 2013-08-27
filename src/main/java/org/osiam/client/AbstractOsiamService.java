@@ -3,9 +3,25 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.JavaType;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryResult;
+import org.osiam.resources.scim.CoreResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,20 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
-import org.osiam.resources.scim.CoreResource;
+import static org.apache.http.HttpStatus.*;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
@@ -57,7 +60,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     /**
-     * Provide the {@link URI} this Service uses for queries.
+     * Provide the {@link java.net.URI} this Service uses for queries.
      *
      * @return The URI used by this Service
      */
@@ -67,14 +70,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     /**
      * Retrieve the Resource of the given Type with the given id. If no resource with the given id can be found, an
-     * {@link NoResultException} is thrown.
+     * {@link org.osiam.client.exception.NoResultException} is thrown.
      *
      * @param id          the uuid from the wanted resource
      * @param accessToken the access token from OSIAM for the actual session
      * @return The resource of the given type with the given id
-     * @throws UnauthorizedException if the request could not be authorized.
-     * @throws NoResultException     if no user with the given id can be found
-     * @throws ConnectionInitializationException
+     * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
+     * @throws org.osiam.client.exception.NoResultException     if no user with the given id can be found
+     * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could be initialized
      */
     protected T getResourceByUUID(UUID id, AccessToken accessToken) {
@@ -83,7 +86,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");
         }
-        
+
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
@@ -91,10 +94,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         try {
             // TODO: httpClient as instance member
             DefaultHttpClient httpclient = new DefaultHttpClient();
-            
+
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
-            
+
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -132,10 +135,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         try {
             // TODO: httpClient as instance member
             DefaultHttpClient httpclient = new DefaultHttpClient();
-            
+
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - false-positive from clover; if-expression is correct
-            
+
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -186,6 +189,96 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
             throw new RuntimeException("This should not happen!"); // NOSONAR - this exception will never be thrown
+        }
+    }
+
+    protected void deleteResourceByUUID(UUID id, AccessToken accessToken) {
+
+        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given id can't be null.");
+        }
+
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
+
+        try {
+            // TODO: httpClient as instance member
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+
+            URI uri = new URI(webResource.getURI() + "/" + id.toString());
+
+            HttpDelete realWebResource = new HttpDelete(uri);
+            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+
+            HttpResponse response = httpclient.execute(realWebResource);
+            int httpStatus = response.getStatusLine().getStatusCode();
+
+            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+                switch (httpStatus) {
+                    case SC_UNAUTHORIZED:
+                        throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                    case SC_NOT_FOUND:
+                        throw new NoResultException("No " + typeName + " with given UUID " + id);
+                    case  SC_CONFLICT:
+                        throw new ConflictException("Unable to save: " + response.getStatusLine().getReasonPhrase());
+                    default:
+                        throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                }
+            }
+
+        } catch (IOException | URISyntaxException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
+        }
+    }
+
+    protected T createResource(T resource , AccessToken accessToken) {
+        final T returnResource;
+
+        if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given resource can't be null.");
+        }
+
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
+
+        try {
+            // TODO: httpClient as instance member
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+
+            HttpPost realWebResource = new HttpPost(webResource.getURI());
+            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+
+            ObjectMapper mapper = new ObjectMapper(  );
+
+            mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+
+            String userAsString = mapper.writeValueAsString( resource );
+
+            realWebResource.setEntity(new StringEntity(userAsString,
+                    ContentType.create("application/json")));
+
+            HttpResponse response = httpclient.execute(realWebResource);
+            int httpStatus = response.getStatusLine().getStatusCode();
+
+            if (httpStatus != SC_CREATED) { // NOSONAR - false-positive from clover; if-expression is correct
+                switch (httpStatus) {
+                    case SC_UNAUTHORIZED:
+                        throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                    case  SC_CONFLICT:
+                        throw new ConflictException("Unable to save: " + response.getStatusLine().getReasonPhrase());
+                    default:
+                        throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                }
+            }
+
+            InputStream content = response.getEntity().getContent();
+            returnResource = mapSingleResourceResponse(content);
+
+            return returnResource;
+        } catch (IOException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e);
         }
     }
 

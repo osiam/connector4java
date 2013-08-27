@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import junit.framework.Assert;
 import org.apache.http.entity.ContentType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -241,6 +242,20 @@ public class OsiamUserServiceTest {
     public void method_startWith_called_two_time_with_Filter_raises_exception(){
         Query.Filter innerFilter = new Query.Filter(User.class).startsWith(User_.userName.contains(""));
         new Query.Filter(User.class).startsWith(innerFilter).startsWith(innerFilter);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void create_null_user_raises_exception(){
+        User newUser = null;
+        service.createUser(newUser, accessToken);
+        Assert.fail("Exception excpected");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void create_user_with_null_accestoken_raises_exception(){
+        User newUser = new User.Builder("cuwna").build();
+        service.createUser(newUser, null);
+        Assert.fail("Exception excpected");
     }
 
     private void givenAnAccessToken() throws IOException {
