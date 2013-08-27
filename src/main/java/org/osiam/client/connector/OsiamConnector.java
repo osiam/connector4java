@@ -223,6 +223,14 @@ public class OsiamConnector {
     public Group createGroup(Group group , AccessToken accessToken) {
         return groupService().createGroup(group, accessToken);
     }
+    
+    public void deleteGroup(UUID id, AccessToken accessToken) {
+    	groupService().deleteGroup(id, accessToken);
+    }
+    
+    public void deleteUserByUUID(UUID id, AccessToken accessToken) {
+    	userService().deleteUser(id, accessToken);
+    }
 
     /**
      * The Builder class is used to construct instances of the {@link OsiamConnector}.

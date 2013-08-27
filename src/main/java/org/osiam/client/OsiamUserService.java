@@ -134,7 +134,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         return super.searchResources(query, accessToken);
     }
 
-    public void deleteUserByUUID(UUID id, AccessToken accessToken) {
+    public void deleteUser(UUID id, AccessToken accessToken) {
         deleteResourceByUUID(id, accessToken);
     }
 

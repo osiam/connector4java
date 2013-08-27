@@ -79,6 +79,10 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
         return searchResources(query, accessToken);
     }
 
+    public void deleteGroup(UUID id, AccessToken accessToken) {
+    	deleteResourceByUUID(id, accessToken);
+    }
+    
     /**
      * saves the given {@link Group} to the OSIAM DB.
      * @param group group to be saved
