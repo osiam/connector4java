@@ -224,10 +224,19 @@ public class OsiamConnector {
         return groupService().createGroup(group, accessToken);
     }
     
+    /**
+     * delete the given {@link User} at the OSIAM DB.
+     * @param uuid id to be delete
+     * @param accessToken the OSIAM access token from for the current session
+     */
     public void deleteGroup(UUID id, AccessToken accessToken) {
     	groupService().deleteGroup(id, accessToken);
     }
-    
+    /**
+     * delete the given {@link Group} at the OSIAM DB.
+     * @param uuid id to be delete
+     * @param accessToken the OSIAM access token from for the current session
+     */
     public void deleteUserByUUID(UUID id, AccessToken accessToken) {
     	userService().deleteUser(id, accessToken);
     }

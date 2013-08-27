@@ -134,6 +134,11 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         return super.searchResources(query, accessToken);
     }
 
+    /**
+     * delete the given {@link User} at the OSIAM DB.
+     * @param uuid id to be delete
+     * @param accessToken the OSIAM access token from for the current session
+     */
     public void deleteUser(UUID id, AccessToken accessToken) {
         deleteResourceByUUID(id, accessToken);
     }

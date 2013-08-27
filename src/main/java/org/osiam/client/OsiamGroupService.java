@@ -78,7 +78,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
     public QueryResult<Group> searchGroups(Query query, AccessToken accessToken) {
         return searchResources(query, accessToken);
     }
-
+    /**
+     * delete the given {@link Group} at the OSIAM DB.
+     * @param uuid id to be delete
+     * @param accessToken the OSIAM access token from for the current session
+     */
     public void deleteGroup(UUID id, AccessToken accessToken) {
     	deleteResourceByUUID(id, accessToken);
     }
