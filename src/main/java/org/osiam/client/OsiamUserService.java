@@ -138,6 +138,12 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         deleteResourceByUUID(id, accessToken);
     }
 
+    /**
+     * saves the given {@link User} to the OSIAM DB.
+     * @param user user to be saved
+     * @param accessToken the OSIAM access token from for the current session
+     * @return the same user Object like the given but with filled metadata and a new valid uuid
+     */
     public User createUser(User user , AccessToken accessToken) {
         return createResource(user , accessToken);
     }

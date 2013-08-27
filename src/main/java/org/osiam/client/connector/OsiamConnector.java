@@ -206,6 +206,16 @@ public class OsiamConnector {
     }
 
     /**
+     * saves the given {@link User} to the OSIAM DB.
+     * @param user user to be saved
+     * @param accessToken the OSIAM access token from for the current session
+     * @return the same user Object like the given but with filled metadata and a new valid uuid
+     */
+    public User createUser(User user , AccessToken accessToken) {
+        return userService().createUser(user, accessToken);
+    }
+
+    /**
      * The Builder class is used to construct instances of the {@link OsiamConnector}.
      */
     public static class Builder  {
