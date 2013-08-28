@@ -196,6 +196,20 @@ public class OsiamGroupServiceTest {
         Assert.fail("Exception excpected");
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_null_group_raises_exception(){
+        UUID groupUUID = null;
+        service.deleteGroup(groupUUID, accessToken);
+        Assert.fail("Exception excpected");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_group_with_null_accestoken_raises_exception(){
+        UUID uuid = UUID.randomUUID();
+        service.deleteGroup(uuid, null);
+        Assert.fail("Exception excpected");
+    }
+
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }

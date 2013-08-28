@@ -258,6 +258,20 @@ public class OsiamUserServiceTest {
         Assert.fail("Exception excpected");
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_null_user_raises_exception(){
+        UUID userUUID = null;
+        service.deleteUser(userUUID, accessToken);
+        Assert.fail("Exception excpected");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_user_with_null_accestoken_raises_exception(){
+        UUID uuid = UUID.randomUUID();
+        service.deleteUser(uuid, null);
+        Assert.fail("Exception excpected");
+    }
+
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
