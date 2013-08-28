@@ -289,7 +289,7 @@ public class OsiamConnectorTest {
     }
 
     private void givenAQueryContainingDifficultCharacters() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class).startsWith(User_.name.formatted.contains("Schulz & Schulz Industries"));
+        Query.Filter filter = new Query.Filter(User.class, User_.name.formatted.contains("Schulz & Schulz Industries"));
         query = new Query.Builder(User.class).setFilter(filter).build();
     }
 

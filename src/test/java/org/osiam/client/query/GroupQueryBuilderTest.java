@@ -28,46 +28,45 @@ public class GroupQueryBuilderTest {
     @Before
     public void setUp() {
         queryBuilder = new Query.Builder(Group.class);
-        filter = new Query.Filter(User.class);
     }
 
     @Test
     public void flat_attribute_is_added_to_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.equalTo(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation("filter=" + DEFAULT_ATTR + "+eq+%22" + IRRELEVANT + "%22");
     }
 
     @Test
     public void and_attribute_is_added_correctly() throws UnsupportedEncodingException {
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation("filter=" + URLEncoder.encode(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"", Charsets.UTF_8.name()));
     }
 
     @Test
     public void attribute_meta_created_is_correct_reconised_over_reflection(){
-        filter.startsWith(Group_.meta.created.equalTo(new Date()));
+        new Query.Filter(User.class, Group_.meta.created.equalTo(new Date()));
     }
 
     @Test
     public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
-        filter.startsWith(Group_.meta.lastModified.equalTo(new Date()));
+        new Query.Filter(User.class, Group_.meta.lastModified.equalTo(new Date()));
     }
 
     @Test
     public void attribute_meta_location_is_correct_reconised_over_reflection(){
-        filter.startsWith(Group_.meta.location.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, Group_.meta.location.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_resource_type_is_correct_reconised_over_reflection(){
-        filter.startsWith(Group_.meta.resourceType.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, Group_.meta.resourceType.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_version_is_correct_reconised_over_reflection(){
-        filter.startsWith(Group_.meta.version.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, Group_.meta.version.equalTo(IRRELEVANT));
     }
 
     private void buildStringMeetsExpectation(String buildString) {

@@ -40,42 +40,41 @@ public class UserQueryBuilderTest {
     @Before
     public void setUp() throws UnsupportedEncodingException {
         queryBuilder = new Query.Builder(User.class);
-        filter = new Query.Filter(User.class);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         DATE_STR = df.format(DATE);
     }
 
     @Test
     public void nested_email_attribute_is_added_to_query() {
-        filter = filter.startsWith(VALID_EMAIL_ATTR.equalTo(IRRELEVANT));
+        filter = new Query.Filter(User.class, VALID_EMAIL_ATTR.equalTo(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_EMAIL_ATTR + " eq \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void nested_name_attribute_is_added_to_query() {
-        filter = filter.startsWith(VALID_NAME_ATTR.equalTo(IRRELEVANT));
+        filter = new Query.Filter(User.class, VALID_NAME_ATTR.equalTo(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_NAME_ATTR + " eq \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void nested_meta_attribute_is_added_to_query() {
-        filter = filter.startsWith(VALID_META_ATTR.greaterThan(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterThan(DATE));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " gt \"" + DATE_STR + "\""));
     }
 
     @Test
     public void flat_attribute_is_added_to_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.equalTo(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " eq \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void and_attribute_is_added_correctly() {
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.setFilter(filter);
         
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\""));
@@ -84,70 +83,70 @@ public class UserQueryBuilderTest {
 
     @Test
     public void or_attribute_is_added_correctly() {
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).or(DEFAULT_ATTR.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).or(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_contains_is_added_to_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_equals_is_added_to_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.equalTo(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " eq \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_startsWith_is_added_to_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.startsWith(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.startsWith(IRRELEVANT));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " sw \"" + IRRELEVANT + "\""));
     }
 
     @Test
     public void filter_present_is_added_to_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.present());
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.present());
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " pr "));
     }
 
     @Test
     public void filter_greater_than_is_added_to_query() {
-        filter = filter.startsWith(VALID_META_ATTR.greaterThan(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterThan(DATE));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " gt \"" + DATE_STR + "\""));
     }
 
     @Test
     public void filter_greater_equals_is_added_to_query() {
-        filter = filter.startsWith(VALID_META_ATTR.greaterEquals(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterEquals(DATE));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " ge \"" + DATE_STR + "\""));
     }
 
     @Test
     public void filter_less_than_is_added_to_query() {
-        filter = filter.startsWith(VALID_META_ATTR.lessThan(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.lessThan(DATE));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " lt \"" + DATE_STR + "\""));
     }
 
     @Test
     public void filter_less_equals_is_added_to_query() {
-        filter = filter.startsWith(VALID_META_ATTR.lessEquals(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.lessEquals(DATE));
         queryBuilder.setFilter(filter);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " le \"" + DATE_STR + "\""));
     }
 
     @Test(expected = InvalidAttributeException.class)
     public void exception_raised_when_nested_attr_is_not_valid() {
-        filter = filter.startsWith(IRRELEVANT_FIELD.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, IRRELEVANT_FIELD.contains(IRRELEVANT));
         queryBuilder.setFilter(filter);
     }
 
@@ -165,7 +164,7 @@ public class UserQueryBuilderTest {
 
     @Test
     public void query_and_sort_order_ascending() {
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.setFilter(filter)
                 .setSortOrder(SortOrder.ASCENDING);
         buildStringMeetsExpectation(FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"") + "&sortOrder=ascending");
@@ -191,7 +190,7 @@ public class UserQueryBuilderTest {
 
     @Test
     public void start_index_and_count_added_to_complete_query() {
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
         queryBuilder.setFilter(filter)
                 .setStartIndex(START_INDEX)
                 .setCountPerPage(COUNT_PER_PAGE)
@@ -204,10 +203,9 @@ public class UserQueryBuilderTest {
 
     @Test
     public void inner_and_sql_added() {
-        Query.Filter innerFilter = new Query.Filter(User.class);
-        innerFilter = innerFilter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        Query.Filter innerFilter = new Query.Filter(User.class, DEFAULT_ATTR.equalTo(IRRELEVANT));
 
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(innerFilter);
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(innerFilter);
         queryBuilder.setFilter(filter).setStartIndex(START_INDEX);
 
         String exceptedQuery = FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and (" + DEFAULT_ATTR
@@ -217,10 +215,9 @@ public class UserQueryBuilderTest {
 
     @Test
     public void inner_or_sql_added() {
-        Query.Filter innerFilter = new Query.Filter(User.class);
-        innerFilter = innerFilter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        Query.Filter innerFilter = new Query.Filter(User.class, DEFAULT_ATTR.equalTo(IRRELEVANT));
 
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).or(innerFilter);
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).or(innerFilter);
         queryBuilder.setFilter(filter).setStartIndex(START_INDEX);
 
         String exceptedQuery = FILTER + encodeExpectedString(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" or (" + DEFAULT_ATTR
@@ -237,10 +234,9 @@ public class UserQueryBuilderTest {
 
     @Test
     public void complet_query_with_all_attributes(){
-        Query.Filter innerFilter = new Query.Filter(User.class);
-        innerFilter = innerFilter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
+        Query.Filter innerFilter = new Query.Filter(User.class, DEFAULT_ATTR.equalTo(IRRELEVANT));
 
-        filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).or(innerFilter);
+        filter = new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).or(innerFilter);
         queryBuilder.setFilter(filter).setStartIndex(START_INDEX)
                 .setCountPerPage(COUNT_PER_PAGE).setSortBy(DEFAULT_ATTR).setSortOrder(SortOrder.ASCENDING);
 
@@ -258,70 +254,70 @@ public class UserQueryBuilderTest {
 
     @Test (expected = InvalidAttributeException.class)
     public void invalid_attribut_to_filter_added(){
-        filter.startsWith(IRRELEVANT_FIELD.contains(IRRELEVANT));
+        new Query.Filter(User.class, IRRELEVANT_FIELD.contains(IRRELEVANT));
         fail("Exception excpected");
     }
 
     @Test (expected = InvalidAttributeException.class)
     public void invalid_attribut_to_and_added(){
-        filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(IRRELEVANT_FIELD.contains(IRRELEVANT));
+        new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(IRRELEVANT_FIELD.contains(IRRELEVANT));
         fail("Exception excpected");
     }
 
     @Test (expected = InvalidAttributeException.class)
     public void invalid_attribut_to_or_added(){
-        filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).or(IRRELEVANT_FIELD.contains(IRRELEVANT));
+        new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).or(IRRELEVANT_FIELD.contains(IRRELEVANT));
         fail("Exception excpected");
     }
 
     @Test
     public void attribute_email_type_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.emails.type.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.emails.type.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_email_value_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.emails.value.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.emails.value.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_created_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.meta.created.equalTo(DATE));
+        new Query.Filter(User.class, User_.meta.created.equalTo(DATE));
     }
 
     @Test
     public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.meta.lastModified.equalTo(DATE));
+        new Query.Filter(User.class, User_.meta.lastModified.equalTo(DATE));
     }
 
     @Test
     public void attribute_meta_location_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.meta.location.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.meta.location.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_resource_type_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.meta.resourceType.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.meta.resourceType.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_version_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.meta.version.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.meta.version.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_name_formatted_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.name.formatted.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.name.formatted.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_name_fanily_name_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.name.familyName.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.name.familyName.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_name_given_name_is_correct_reconised_over_reflection(){
-        filter.startsWith(User_.name.givenName.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.name.givenName.equalTo(IRRELEVANT));
     }
 
     private void buildStringMeetsExpectation(String buildString) {

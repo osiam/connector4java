@@ -213,37 +213,6 @@ public class OsiamUserServiceTest {
         thenSortedQueryStringIsSplitCorrectly();
     }
 
-    @Test  (expected = IllegalStateException.class)
-    public void wrong_filter_call_and_with_Comparison_raises_exception(){
-        new Query.Filter(User.class).and(User_.userName.contains(""));
-    }
-
-    @Test  (expected = IllegalStateException.class)
-    public void wrong_filter_call_and_with_Filter_raises_exception(){
-        new Query.Filter(User.class).and(new Query.Filter(User.class).startsWith(User_.userName.contains("")));
-    }
-
-    @Test  (expected = IllegalStateException.class)
-    public void wrong_filter_call_or_with_Comparison_raises_exception(){
-        new Query.Filter(User.class).or(User_.userName.contains(""));
-    }
-
-    @Test  (expected = IllegalStateException.class)
-    public void wrong_filter_call_or_with_Filter_raises_exception(){
-        new Query.Filter(User.class).or(new Query.Filter(User.class).startsWith(User_.userName.contains("")));
-    }
-
-    @Test  (expected = IllegalStateException.class)
-    public void method_startWith_called_two_time_with_Comparison_raises_exception(){
-        new Query.Filter(User.class).startsWith(User_.userName.contains("")).startsWith(User_.userName.contains(""));
-    }
-
-    @Test  (expected = IllegalStateException.class)
-    public void method_startWith_called_two_time_with_Filter_raises_exception(){
-        Query.Filter innerFilter = new Query.Filter(User.class).startsWith(User_.userName.contains(""));
-        new Query.Filter(User.class).startsWith(innerFilter).startsWith(innerFilter);
-    }
-
     @Test (expected = IllegalArgumentException.class)
     public void create_null_user_raises_exception(){
         User newUser = null;
@@ -281,12 +250,12 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class).startsWith(User_.name.formatted.contains("Schulz & Schulz Industries"));
+        Query.Filter filter = new Query.Filter(User.class, User_.name.formatted.contains("Schulz & Schulz Industries"));
         query = new Query.Builder(User.class).setFilter(filter).setSortBy(User_.userName).build();
     }
 
     private void givenAQueryContainingDifficultCharacters() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class).startsWith(User_.name.formatted.contains("Schulz & Schulz Industries"));
+        Query.Filter filter = new Query.Filter(User.class, User_.name.formatted.contains("Schulz & Schulz Industries"));
         query = new Query.Builder(User.class).setFilter(filter).build();
     }
 
