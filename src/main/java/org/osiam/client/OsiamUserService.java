@@ -81,13 +81,17 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             int httpStatus = response.getStatusLine().getStatusCode();
 
             if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+                String errorMessage;
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
-                        throw new UnauthorizedException("You are not authorized to access OSIAM. Please make sure your access token is valid");
+                        errorMessage = getErrorMessage(response, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                        throw new UnauthorizedException(errorMessage);
                     case SC_NOT_FOUND:
-                        throw new NoResultException("No User could be found, who holds the supplied access token");
+                        errorMessage = getErrorMessage(response, "No User could be found, who holds the supplied access token");
+                        throw new NoResultException(errorMessage);
                     default:
-                        throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                        errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                        throw new ConnectionInitializationException(errorMessage);
                 }
             }
 
