@@ -74,11 +74,11 @@ public class OsiamConnectorTest {
 
     @Before
     public void setUp() throws Exception {
-        oConnector = new OsiamConnector.Builder(endpoint).grantType(GrantType.PASSWORD)
-                .clientId(IRRELEVANT)
-                .clientSecret(IRRELEVANT)
-                .username(IRRELEVANT)
-                .password(IRRELEVANT)
+        oConnector = new OsiamConnector.Builder(endpoint).setGrantType(GrantType.PASSWORD)
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setUsername(IRRELEVANT)
+                .setPassword(IRRELEVANT)
                 .build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
@@ -290,7 +290,7 @@ public class OsiamConnectorTest {
 
     private void givenAQueryContainingDifficultCharacters() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class).startsWith(User_.name.formatted.contains("Schulz & Schulz Industries"));
-        query = new Query.Builder(User.class).filter(filter).build();
+        query = new Query.Builder(User.class).setFilter(filter).build();
     }
 
     private void givenAUserCanBeSearchedByQuery() {
@@ -461,11 +461,11 @@ public class OsiamConnectorTest {
 
     private void given_a_correctly_configured_auth_service() {
         oConnector = new OsiamConnector.Builder(endpoint)
-                .grantType(GrantType.PASSWORD)
-                .clientId(VALID_CLIENT_ID)
-                .clientSecret(VALID_CLIENT_SECRET)
-                .username(VALID_USERNAME)
-                .password(VALID_PASSWORD)
+                .setGrantType(GrantType.PASSWORD)
+                .setClientId(VALID_CLIENT_ID)
+                .setClientSecret(VALID_CLIENT_SECRET)
+                .setUsername(VALID_USERNAME)
+                .setPassword(VALID_PASSWORD)
                 .build();
     }
 

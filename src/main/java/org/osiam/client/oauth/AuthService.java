@@ -143,7 +143,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @return The builder itself
          * @throws UnsupportedOperationException If the GrantType is anything else than GrantType.PASSWORD
          */
-        public Builder grantType(GrantType grantType) {
+        public Builder setGrantType(GrantType grantType) {
             if (!grantType.equals(GrantType.PASSWORD)) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new UnsupportedOperationException(grantType.getUrlParam() + " grant type not supported at this time");
             }
@@ -157,7 +157,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @param clientId The client-Id
          * @return The builder itself
          */
-        public Builder clientId(String clientId) {
+        public Builder setClientId(String clientId) {
             this.clientId = clientId;
             return this;
         }
@@ -168,7 +168,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @param clientSecret The client secret
          * @return The builder itself
          */
-        public Builder clientSecret(String clientSecret) {
+        public Builder setClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
             return this;
         }
@@ -179,7 +179,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @param username The username
          * @return The builder itself
          */
-        public Builder username(String username) {
+        public Builder setUsername(String username) {
             requestParameters.put("username", username);
             return this;
         }
@@ -190,7 +190,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @param password The password
          * @return The builder itself
          */
-        public Builder password(String password) {
+        public Builder setPassword(String password) {
             requestParameters.put("password", password);
             return this;
         }

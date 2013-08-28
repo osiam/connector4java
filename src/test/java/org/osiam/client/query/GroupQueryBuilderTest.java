@@ -34,14 +34,14 @@ public class GroupQueryBuilderTest {
     @Test
     public void flat_attribute_is_added_to_query() {
         filter = filter.startsWith(DEFAULT_ATTR.equalTo(IRRELEVANT));
-        queryBuilder.filter(filter);
+        queryBuilder.setFilter(filter);
         buildStringMeetsExpectation("filter=" + DEFAULT_ATTR + "+eq+%22" + IRRELEVANT + "%22");
     }
 
     @Test
     public void and_attribute_is_added_correctly() throws UnsupportedEncodingException {
         filter = filter.startsWith(DEFAULT_ATTR.contains(IRRELEVANT)).and(DEFAULT_ATTR.contains(IRRELEVANT));
-        queryBuilder.filter(filter);
+        queryBuilder.setFilter(filter);
         buildStringMeetsExpectation("filter=" + URLEncoder.encode(DEFAULT_ATTR + " co \"" + IRRELEVANT + "\" and " + DEFAULT_ATTR + " co \"" + IRRELEVANT + "\"", Charsets.UTF_8.name()));
     }
 

@@ -158,7 +158,7 @@ public class Query {
          * @param filter The filter of the attributes to filter on.
          * @return The Builder with this filter added.
          */
-        public Builder filter(Filter filter) {
+        public Builder setFilter(Filter filter) {
             this.filter = filter.toString();
             return this;
         }
@@ -169,7 +169,7 @@ public class Query {
          * @param filter The filter of the attributes to filter on.
          * @return The Builder with this filter added.
          */
-        public Builder filter(String filter) {
+        public Builder setFilter(String filter) {
             this.filter = filter;
             return this;
         }
@@ -180,7 +180,7 @@ public class Query {
          * @param sortOrder The order in which to sort the result
          * @return The Builder with this sort order added.
          */
-        public Builder sortOrder(SortOrder sortOrder) {
+        public Builder setSortOrder(SortOrder sortOrder) {
             this.sortOrder = sortOrder;
             return this;
         }
@@ -191,7 +191,7 @@ public class Query {
          * @param startIndex The position to use as the first entry in the result.
          * @return The Builder with this start Index added.
          */
-        public Builder startIndex(int startIndex) {
+        public Builder setStartIndex(int startIndex) {
             this.startIndex = startIndex;
             return this;
         }
@@ -202,7 +202,7 @@ public class Query {
          * @param count The number of items displayed per page.
          * @return The Builder with this count per page added.
          */
-        public Builder countPerPage(int count) {
+        public Builder setCountPerPage(int count) {
             this.countPerPage = count;
             return this;
         }
@@ -213,7 +213,7 @@ public class Query {
          * @param attribute attributes to sort by the query
          * @return The Builder with sortBy added.
          */
-        public Builder sortBy(Attribute attribute) {
+        public Builder setSortBy(Attribute attribute) {
             if (!(isAttributeValid(attribute.toString()))) {// NOSONAR - false-positive from clover; if-expression is correct
                 throw new InvalidAttributeException("Sorting for this attribute is not supported");
             }

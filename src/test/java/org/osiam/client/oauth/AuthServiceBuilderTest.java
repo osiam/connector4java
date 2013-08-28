@@ -17,52 +17,52 @@ public class AuthServiceBuilderTest {
 
     @Test(expected = ConnectionInitializationException.class)
     public void missing_client_secret_raises_exception() {
-        new AuthService.Builder(IRRELEVANT).clientId(IRRELEVANT).build();
+        new AuthService.Builder(IRRELEVANT).setClientId(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void missing_client_ID_raises_exception() {
-        new AuthService.Builder(IRRELEVANT).clientSecret(IRRELEVANT).build();
+        new AuthService.Builder(IRRELEVANT).setClientSecret(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_username_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .clientId(IRRELEVANT)
-                .clientSecret(IRRELEVANT)
-                .grantType(GrantType.PASSWORD)
-                .password(IRRELEVANT).build();
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setGrantType(GrantType.PASSWORD)
+                .setPassword(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_password_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .clientId(IRRELEVANT)
-                .clientSecret(IRRELEVANT)
-                .grantType(GrantType.PASSWORD)
-                .username(IRRELEVANT).build();
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setGrantType(GrantType.PASSWORD)
+                .setUsername(IRRELEVANT).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_password_missing_credentials_raise_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .clientId(IRRELEVANT)
-                .clientSecret(IRRELEVANT)
-                .grantType(GrantType.PASSWORD).build();
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setGrantType(GrantType.PASSWORD).build();
         fail("We expected an exception");
     }
 
     @Test(expected = ConnectionInitializationException.class)
     public void when_grant_type_is_missing_raises_exception() {
         new AuthService.Builder(IRRELEVANT)
-                .clientId(IRRELEVANT)
-                .clientSecret(IRRELEVANT)
-                .username(IRRELEVANT)
-                .password(IRRELEVANT).build();
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setUsername(IRRELEVANT)
+                .setPassword(IRRELEVANT).build();
         fail("We expected an exception");
     }
 }

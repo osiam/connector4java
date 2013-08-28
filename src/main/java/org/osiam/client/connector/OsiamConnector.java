@@ -45,19 +45,19 @@ public class OsiamConnector {
     		AuthService.Builder builder = new AuthService.Builder(endpoint);
     		
     		if(clientId != null){
-    			builder = builder.clientId(clientId);
+    			builder = builder.setClientId(clientId);
     		}
     		if(clientSecret != null){
-    			builder = builder.clientSecret(clientSecret);
+    			builder = builder.setClientSecret(clientSecret);
     		}
     		if(grantType != null){
-    			builder = builder.grantType(grantType);
+    			builder = builder.setGrantType(grantType);
     		}
     		if(password != null){
-    			builder = builder.password(password);
+    			builder = builder.setPassword(password);
     		}
     		if(username != null){
-    			builder = builder.username(username);
+    			builder = builder.setUsername(username);
     		}
     		authService = builder.build();
     	}
@@ -270,7 +270,7 @@ public class OsiamConnector {
          * @return The builder itself
          * @throws UnsupportedOperationException At build time if the GrantType is anything else than GrantType.PASSWORD
          */
-        public Builder grantType(GrantType grantType) {
+        public Builder setGrantType(GrantType grantType) {
             this.grantType = grantType;
             return this;
         }
@@ -281,7 +281,7 @@ public class OsiamConnector {
          * @param clientId The client-Id
          * @return The builder itself
          */
-        public Builder clientId(String clientId) {
+        public Builder setClientId(String clientId) {
             this.clientId = clientId;
             return this;
         }
@@ -292,7 +292,7 @@ public class OsiamConnector {
          * @param clientSecret The client secret
          * @return The builder itself
          */
-        public Builder clientSecret(String clientSecret) {
+        public Builder setClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
             return this;
         }
@@ -303,7 +303,7 @@ public class OsiamConnector {
          * @param username The username
          * @return The builder itself
          */
-        public Builder username(String username) {
+        public Builder setUsername(String username) {
             this.username = username;
             return this;
         }
@@ -314,7 +314,7 @@ public class OsiamConnector {
          * @param password The password
          * @return The builder itself
          */
-        public Builder password(String password) {
+        public Builder setPassword(String password) {
             this.password = password;
             return this;
         }

@@ -103,31 +103,31 @@ public class AuthServiceTest {
 
     private void given_a_wrong_configured_auth_service_with_wrong_endpoint() {
         service = new AuthService.Builder(WRONG_ENDPOINT)
-                .grantType(GrantType.PASSWORD)
-                .clientId(VALID_CLIENT_ID)
-                .clientSecret(VALID_CLIENT_SECRET)
-                .username(VALID_USERNAME)
-                .password(VALID_PASSWORD)
+                .setGrantType(GrantType.PASSWORD)
+                .setClientId(VALID_CLIENT_ID)
+                .setClientSecret(VALID_CLIENT_SECRET)
+                .setUsername(VALID_USERNAME)
+                .setPassword(VALID_PASSWORD)
                 .build();
     }
     
     private void given_a_wrong_configured_auth_service_with_invalid_client_credentials() {
         service = new AuthService.Builder(ENDPOINT)
-                .grantType(GrantType.PASSWORD)
-                .clientId(INVALID_CLIENT_ID)
-                .clientSecret(INVALID_CLIENT_SECRET)
-                .username(VALID_USERNAME)
-                .password(VALID_PASSWORD)
+                .setGrantType(GrantType.PASSWORD)
+                .setClientId(INVALID_CLIENT_ID)
+                .setClientSecret(INVALID_CLIENT_SECRET)
+                .setUsername(VALID_USERNAME)
+                .setPassword(VALID_PASSWORD)
                 .build();
     }
     
     private void given_a_correctly_configured_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
-                .grantType(GrantType.PASSWORD)
-                .clientId(VALID_CLIENT_ID)
-                .clientSecret(VALID_CLIENT_SECRET)
-                .username(VALID_USERNAME)
-                .password(VALID_PASSWORD)
+                .setGrantType(GrantType.PASSWORD)
+                .setClientId(VALID_CLIENT_ID)
+                .setClientSecret(VALID_CLIENT_SECRET)
+                .setUsername(VALID_USERNAME)
+                .setPassword(VALID_PASSWORD)
                 .build();
     }
 
