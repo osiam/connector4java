@@ -79,7 +79,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could be initialized
      */
-    protected T getResourceByUUID(UUID id, AccessToken accessToken) {
+    protected T getResource(UUID id, AccessToken accessToken) {
         final T resource;
 
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
@@ -210,7 +210,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
     }
 
-    protected void deleteResourceByUUID(UUID id, AccessToken accessToken) {
+    protected void deleteResource(UUID id, AccessToken accessToken) {
 
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");

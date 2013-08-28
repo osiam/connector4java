@@ -219,7 +219,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void whenSingleGroupIsLookedUp() {
-        singleGroupResult = service.getGroupByUUID(SEARCHED_UUID, accessToken);
+        singleGroupResult = service.getGroup(SEARCHED_UUID, accessToken);
     }
 
     private void whenAllGroupsAreLookedUp() {
@@ -304,7 +304,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void thenReturnedGroupHasUUID(UUID uuid) {
-        Group result = service.getGroupByUUID(uuid, accessToken);
+        Group result = service.getGroup(uuid, accessToken);
         assertEquals(uuid.toString(), result.getId());
     }
 

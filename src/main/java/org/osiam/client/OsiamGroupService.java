@@ -40,8 +40,8 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM service could be initialized
      */
-    public Group getGroupByUUID(UUID id, AccessToken accessToken) {
-        return getResourceByUUID(id, accessToken);
+    public Group getGroup(UUID id, AccessToken accessToken) {
+        return getResource(id, accessToken);
     }
 
     /**
@@ -84,7 +84,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param accessToken the OSIAM access token from for the current session
      */
     public void deleteGroup(UUID id, AccessToken accessToken) {
-    	deleteResourceByUUID(id, accessToken);
+    	deleteResource(id, accessToken);
     }
     
     /**

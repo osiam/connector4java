@@ -10,7 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.AccessTokenMockProvider;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
@@ -90,7 +89,7 @@ public class OsiamConnectorTest {
     }
 
     @Test
-    public void getUserByUUID_is_transferred_correctly() throws Exception {
+    public void getUser_is_transferred_correctly() throws Exception {
         givenUserUUIDcanBeFound();
         whenSingleUUIDisLookedUp();
         thenReturnedUserHasUUID(searchedUserUUID);
@@ -132,7 +131,7 @@ public class OsiamConnectorTest {
     }
 
     @Test
-    public void getGroupByUUID_is_transferred_correctly() throws IOException {
+    public void getGroup_is_transferred_correctly() throws IOException {
         givenGroupUUIDcanBeFound();
         whenSingleGroupIsLookedUp();
         thenReturnedGroupHasUUID(SEARCHED_GROUP_UUID);
@@ -190,7 +189,7 @@ public class OsiamConnectorTest {
     }
 
     private void whenSingleUUIDisLookedUp() {
-        singleUserResult = oConnector.getUserByUUID(searchedUserUUID, accessToken);
+        singleUserResult = oConnector.getUser(searchedUserUUID, accessToken);
     }
 
     private void thenReturnedUserHasUUID(UUID uuid) {
@@ -397,7 +396,7 @@ public class OsiamConnectorTest {
     }
 
     private void whenSingleGroupIsLookedUp() {
-        singleGroupResult = oConnector.getGroupByUUID(SEARCHED_GROUP_UUID, accessToken);
+        singleGroupResult = oConnector.getGroup(SEARCHED_GROUP_UUID, accessToken);
     }
 
     private void givenAGroupUUID() {
@@ -405,7 +404,7 @@ public class OsiamConnectorTest {
     }
 
     private void thenReturnedGroupHasUUID(UUID uuid) {
-        Group result = oConnector.getGroupByUUID(uuid, accessToken);
+        Group result = oConnector.getGroup(uuid, accessToken);
         assertEquals(uuid.toString(), result.getId());
     }
 

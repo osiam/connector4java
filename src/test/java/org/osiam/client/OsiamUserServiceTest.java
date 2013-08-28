@@ -371,7 +371,7 @@ public class OsiamUserServiceTest {
     }
 
     private void whenSingleUUIDisLookedUp() {
-        singleUserResult = service.getUserByUUID(searchedUUID, accessToken);
+        singleUserResult = service.getUser(searchedUUID, accessToken);
     }
 
     private void whenAllUsersAreLookedUp() {

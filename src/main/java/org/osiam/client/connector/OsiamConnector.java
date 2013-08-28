@@ -90,8 +90,8 @@ public class OsiamConnector {
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
      */
-    public User getUserByUUID(UUID id, AccessToken accessToken) {
-        return userService().getUserByUUID(id, accessToken);
+    public User getUser(UUID id, AccessToken accessToken) {
+        return userService().getUser(id, accessToken);
     }
 
     /**
@@ -152,8 +152,8 @@ public class OsiamConnector {
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM service could be initialized
      */
-    public Group getGroupByUUID(UUID id, AccessToken accessToken) {
-        return groupService().getGroupByUUID(id, accessToken);
+    public Group getGroup(UUID id, AccessToken accessToken) {
+        return groupService().getGroup(id, accessToken);
     }
 
     /**
@@ -237,7 +237,7 @@ public class OsiamConnector {
      * @param uuid id to be delete
      * @param accessToken the OSIAM access token from for the current session
      */
-    public void deleteUserByUUID(UUID id, AccessToken accessToken) {
+    public void deleteUser(UUID id, AccessToken accessToken) {
     	userService().deleteUser(id, accessToken);
     }
 

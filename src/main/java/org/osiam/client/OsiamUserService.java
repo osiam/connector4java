@@ -52,8 +52,8 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
      */
-    public User getUserByUUID(UUID id, AccessToken accessToken) {
-        return getResourceByUUID(id, accessToken);
+    public User getUser(UUID id, AccessToken accessToken) {
+        return getResource(id, accessToken);
     }
 
     /**
@@ -144,7 +144,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @param accessToken the OSIAM access token from for the current session
      */
     public void deleteUser(UUID id, AccessToken accessToken) {
-        deleteResourceByUUID(id, accessToken);
+        deleteResource(id, accessToken);
     }
 
     /**
