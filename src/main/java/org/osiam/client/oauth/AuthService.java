@@ -52,15 +52,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         endpoint = builder.endpoint;
     }
 
-    /**
-     * Provide the {@link URI} this AuthService uses to authenticate.
-     *
-     * @return The URI used by this AuthService
-     */
-    public URI getUri() {
-        return post.getURI();
-    }
-
     private HttpResponse performRequest() {
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;

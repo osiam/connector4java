@@ -15,17 +15,6 @@ public class AuthServiceBuilderTest {
 
     private static final String IRRELEVANT = "irrelevant";
 
-    @Test
-    public void valid_parameters_produce_a_working_authservice() throws Exception {
-        AuthService as = new AuthService.Builder(IRRELEVANT).grantType(GrantType.PASSWORD)
-                .clientId(IRRELEVANT)
-                .clientSecret(IRRELEVANT)
-                .username(IRRELEVANT)
-                .password(IRRELEVANT)
-                .build();
-        assertEquals(new URI(IRRELEVANT + "/oauth/token"), as.getUri());
-    }
-
     @Test(expected = ConnectionInitializationException.class)
     public void missing_client_secret_raises_exception() {
         new AuthService.Builder(IRRELEVANT).clientId(IRRELEVANT).build();

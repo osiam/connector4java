@@ -42,16 +42,6 @@ public class AuthServiceTest {
     private AccessToken accessToken;
 
     @Test
-    public void service_uses_correct_URI() throws Exception {
-        given_a_correctly_configured_auth_service();
-
-        // no when here
-        
-        then_uri_is_expected_one();
-    }
-
-
-    @Test
     public void service_returns_valid_access_token() throws Exception {
         given_a_correctly_configured_auth_service();
         given_oauth_server_issues_access_token();
@@ -169,11 +159,7 @@ public class AuthServiceTest {
     private void when_token_is_requested() {
         accessToken = service.retrieveAccessToken();
     }
-    
-    private void then_uri_is_expected_one() throws URISyntaxException {
-        assertEquals(new URI(ENDPOINT + TOKEN_PATH), service.getUri());
-    }
-    
+
     private void then_exception_has_to_be_thrown() {
         fail("Exception expected");
     }
