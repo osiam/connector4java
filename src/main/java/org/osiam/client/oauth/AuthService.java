@@ -11,7 +11,6 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;

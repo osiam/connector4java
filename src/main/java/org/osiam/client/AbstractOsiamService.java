@@ -3,7 +3,6 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -23,7 +22,6 @@ import org.osiam.resources.scim.CoreResource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -87,7 +85,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null.");
+            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; simple if, it's ok if message occurs several times
         }
 
         try {
@@ -104,13 +102,13 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 String errorMessage;
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
-                        errorMessage = getErrorMessage(response, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                        errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given UUID " + id);
                         throw new NoResultException(errorMessage);
                     default:
-                        errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                        errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
                 }
             }
@@ -120,7 +118,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
             return resource;
         } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
+            throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
     }
 
@@ -132,7 +130,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         final InputStream queryResult;
 
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null.");
+            throw new IllegalArgumentException("The given accessToken can't be null.");  // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
 
         try {
@@ -149,10 +147,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 String errorMessage;
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
-                        errorMessage = getErrorMessage(response, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                        errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     default:
-                        errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                        errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
                 }
             }
@@ -170,7 +168,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             return result;
 
         } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
+            throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
 
     }
@@ -186,13 +184,22 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 	    return mapper.readValue(content, type);
     }
 
+    protected String getErrorMessageUnauthorized(HttpResponse httpResponse) throws IOException {
+        return getErrorMessage(httpResponse, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+    }
+
+    protected String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) throws IOException {
+        return getErrorMessage(httpResponse, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+    }
+
+
     protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) throws IOException {
         InputStream content = httpResponse.getEntity().getContent();
         String errorMessage;
         try{
             OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
             errorMessage = error.getDescription();
-        } catch (Exception e){
+        } catch (Exception e){    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
         }
         return errorMessage;
@@ -217,7 +224,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null.");
+            throw new IllegalArgumentException("The given accessToken can't be null.");  // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
 
         try {
@@ -236,7 +243,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 String errorMessage;
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
-                        errorMessage = getErrorMessage(response, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                        errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given UUID " + id);
@@ -245,13 +252,13 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "Unable to save: " + response.getStatusLine().getReasonPhrase());
                         throw new ConflictException(errorMessage);
                     default:
-                        errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                        errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
                 }
             }
 
         } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
+            throw new ConnectionInitializationException("Unable to setup connection", e);  // NOSONAR - its ok to have this message several times
         }
     }
 
@@ -263,7 +270,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null.");
+            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
 
         try {
@@ -273,7 +280,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpPost realWebResource = new HttpPost(webResource.getURI());
             realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
 
-            ObjectMapper mapper = new ObjectMapper(  );
+            ObjectMapper mapper = new ObjectMapper();
 
             mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
 
@@ -289,13 +296,13 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 String errorMessage;
                 switch (httpStatus) {
                     case SC_UNAUTHORIZED:
-                        errorMessage = getErrorMessage(response, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                        errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case  SC_CONFLICT:
                         errorMessage = getErrorMessage(response, "Unable to save");
                         throw new ConflictException(errorMessage);
                     default:
-                        errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                        errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
                 }
             }
@@ -305,7 +312,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
             return returnResource;
         } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
+            throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
     }
 
