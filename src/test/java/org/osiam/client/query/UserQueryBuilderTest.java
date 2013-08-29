@@ -22,13 +22,13 @@ import com.google.common.base.Charsets;
 
 public class UserQueryBuilderTest {
 
-    private static final StringAttribute DEFAULT_ATTR = User_.name.givenName;
-    private static final DateAttribute VALID_META_ATTR = User_.meta.created;
-    private static final StringAttribute VALID_NAME_ATTR = User_.name.givenName;
-    private static final StringAttribute VALID_EMAIL_ATTR = User_.emails.value;
+    private static final StringAttribute DEFAULT_ATTR = User_.Name.givenName;
+    private static final DateAttribute VALID_META_ATTR = User_.Meta.created;
+    private static final StringAttribute VALID_NAME_ATTR = User_.Name.givenName;
+    private static final StringAttribute VALID_EMAIL_ATTR = User_.Emails.value;
     //private static final String INVALID_EMAIL_ATTR = "emails.false";
     private static final String IRRELEVANT = "irrelevant";
-    private static final StringAttribute IRRELEVANT_FIELD = Group_.members.value;
+    private static final StringAttribute IRRELEVANT_FIELD = Group_.Members.value;
     private static final int START_INDEX = 5;
     private static final int COUNT_PER_PAGE = 7;
     private static final String FILTER = "filter=";
@@ -272,52 +272,52 @@ public class UserQueryBuilderTest {
 
     @Test
     public void attribute_email_type_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.emails.type.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Emails.type.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_email_value_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.emails.value.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Emails.value.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_created_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.meta.created.equalTo(DATE));
+        new Query.Filter(User.class, User_.Meta.created.equalTo(DATE));
     }
 
     @Test
     public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.meta.lastModified.equalTo(DATE));
+        new Query.Filter(User.class, User_.Meta.lastModified.equalTo(DATE));
     }
 
     @Test
     public void attribute_meta_location_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.meta.location.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Meta.location.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_resource_type_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.meta.resourceType.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Meta.resourceType.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_version_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.meta.version.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Meta.version.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_name_formatted_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.name.formatted.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Name.formatted.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_name_fanily_name_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.name.familyName.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Name.familyName.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_name_given_name_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.name.givenName.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, User_.Name.givenName.equalTo(IRRELEVANT));
     }
 
     private void buildStringMeetsExpectation(String buildString) {

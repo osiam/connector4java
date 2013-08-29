@@ -46,27 +46,27 @@ public class GroupQueryBuilderTest {
 
     @Test
     public void attribute_meta_created_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.meta.created.equalTo(new Date()));
+        new Query.Filter(User.class, Group_.Meta.created.equalTo(new Date()));
     }
 
     @Test
     public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.meta.lastModified.equalTo(new Date()));
+        new Query.Filter(User.class, Group_.Meta.lastModified.equalTo(new Date()));
     }
 
     @Test
     public void attribute_meta_location_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.meta.location.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, Group_.Meta.location.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_resource_type_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.meta.resourceType.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, Group_.Meta.resourceType.equalTo(IRRELEVANT));
     }
 
     @Test
     public void attribute_meta_version_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.meta.version.equalTo(IRRELEVANT));
+        new Query.Filter(User.class, Group_.Meta.version.equalTo(IRRELEVANT));
     }
 
     private void buildStringMeetsExpectation(String buildString) {

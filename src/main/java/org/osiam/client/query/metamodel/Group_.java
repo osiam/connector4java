@@ -10,8 +10,25 @@ public abstract class Group_ {
 
     private Group_(){}
 
-    public static volatile Meta_ meta;  // NOSONAR - false-positive from clover; visibility can't be private
     public static final StringAttribute id = new StringAttribute("id");    // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     public static final StringAttribute displayName = new StringAttribute("displayName");      // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
-    public static volatile Members_ members;      // NOSONAR - false-positive from clover; visibility can't be private
+    public static final StringAttribute externalId = new StringAttribute("externalId");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+
+    /**
+     * all meta atttributes from a User
+     */
+    public static abstract class Meta {
+        public static final StringAttribute resourceType = new StringAttribute("meta.resourceType");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final DateAttribute created = new DateAttribute("meta.created");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final DateAttribute lastModified = new DateAttribute("meta.lastModified"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute location = new StringAttribute("meta.location");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute version = new StringAttribute("meta.version");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    }
+
+    /**
+     * all Member atttributes from a Group
+     */
+    public static abstract class Members {
+        public static final StringAttribute value = new StringAttribute("members.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+    }
 }
