@@ -140,8 +140,6 @@
                 <configuration>
                     <serverId>sonatype-nexus-staging</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!-- explicit matching using the staging profile id -->
-                    <stagingProfileId>1b8463a718c1c8</stagingProfileId>
                 </configuration>
             </plugin>
 
