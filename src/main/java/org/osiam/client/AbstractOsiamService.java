@@ -6,6 +6,7 @@ package org.osiam.client;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -314,6 +315,63 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
+    }
+
+    protected T updateResource(UUID id, T resource , AccessToken accessToken){
+        final T returnResource;
+          try      {
+        if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given resource can't be null.");
+        }
+
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
+        }
+
+        try {
+            // TODO: httpClient as instance member
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+
+            HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id.toString());
+            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+
+            String userAsString = mapper.writeValueAsString(resource);
+
+            realWebResource.setEntity(new StringEntity(userAsString,
+                    ContentType.create("application/json")));
+
+            HttpResponse response = httpclient.execute(realWebResource);
+            int httpStatus = response.getStatusLine().getStatusCode();
+
+            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+                String errorMessage;
+                switch (httpStatus) {
+                    case SC_UNAUTHORIZED:
+                        errorMessage = getErrorMessageUnauthorized(response);
+                        throw new UnauthorizedException(errorMessage);
+                    case  SC_BAD_REQUEST:
+                        errorMessage = getErrorMessage(response, "Unable to update");
+                        throw new ConflictException(errorMessage);
+                    default:
+                        errorMessage = getErrorMessageDefault(response, httpStatus);
+                        throw new ConnectionInitializationException(errorMessage);
+                }
+            }
+
+            InputStream content = response.getEntity().getContent();
+            returnResource = mapSingleResourceResponse(content);
+
+            return returnResource;
+        } catch (IOException e) {
+            throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }
+    }      catch (Exception e){
+              throw  new RuntimeException("FEHLER::: " + e.getMessage());
+          }
     }
 
     /**

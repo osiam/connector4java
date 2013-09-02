@@ -10,6 +10,7 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.User;
 
 /**
  * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
@@ -96,6 +97,20 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
     public Group createGroup(Group group, AccessToken accessToken) {
         return createResource(group , accessToken);
     }
+
+    /**
+     * update the group of the given id with the values given in the Group Object.
+     * For more detailed information how to set new field. Update Fields or to delete Fields please look in the wiki
+     * @param id
+     * @param updateGroup
+     * @param accessToken
+     * @return
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
+     */
+    public Group updateGroup(UUID id, Group updateGroup, AccessToken accessToken){
+        return updateResource(id, updateGroup, accessToken);
+    }
+
     /**
      * The Builder is used to construct instances of the {@link OsiamGroupService}
      */

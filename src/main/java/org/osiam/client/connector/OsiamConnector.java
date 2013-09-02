@@ -242,6 +242,32 @@ public class OsiamConnector {
     }
 
     /**
+     * update the user of the given id with the values given in the User Object.
+     * For more detailed information how to set new field. Update Fields or to delete Fields please look in the wiki
+     * @param id
+     * @param updateUser
+     * @param accessToken
+     * @return
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
+     */
+    public User updateUser(UUID id, User updateUser , AccessToken accessToken){
+        return userService.updateUser(id, updateUser, accessToken);
+    }
+
+    /**
+     * update the group of the given id with the values given in the Group Object.
+     * For more detailed information how to set new field. Update Fields or to delete Fields please look in the wiki
+     * @param id
+     * @param updateGroup
+     * @param accessToken
+     * @return
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
+     */
+    public Group updateGroup(UUID id, Group updateGroup , AccessToken accessToken){
+        return groupService.updateGroup(id, updateGroup, accessToken);
+    }
+
+    /**
      * The Builder class is used to construct instances of the {@link OsiamConnector}.
      */
     public static class Builder  {
