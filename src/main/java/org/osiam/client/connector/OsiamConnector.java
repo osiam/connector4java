@@ -9,6 +9,7 @@ import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.User;
 
@@ -250,7 +251,7 @@ public class OsiamConnector {
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
      */
-    public User updateUser(UUID id, User updateUser , AccessToken accessToken){
+    public User updateUser(UUID id, UpdateUser updateUser , AccessToken accessToken){
         return userService.updateUser(id, updateUser, accessToken);
     }
 

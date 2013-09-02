@@ -22,6 +22,7 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.User;
 
 /**
@@ -166,8 +167,8 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
      */
-    public User updateUser(UUID id, User updateUser , AccessToken accessToken){
-        return updateResource(id, updateUser, accessToken);
+    public User updateUser(UUID id, UpdateUser updateUser , AccessToken accessToken){
+        return updateResource(id, updateUser.getUserToUpdate(), accessToken);
     }
     /**
      * The Builder class is used to construct instances of the {@link OsiamUserService}

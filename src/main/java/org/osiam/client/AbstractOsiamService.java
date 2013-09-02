@@ -328,6 +328,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
 
+        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The id can't be null.");
+        }
+
         try {
             // TODO: httpClient as instance member
             DefaultHttpClient httpclient = new DefaultHttpClient();
