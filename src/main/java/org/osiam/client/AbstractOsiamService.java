@@ -203,6 +203,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } catch (Exception e){    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
         }
+        if(errorMessage == null){
+            errorMessage = defaultErrorMessage;
+        }
         return errorMessage;
     }
 
@@ -319,7 +322,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected T updateResource(UUID id, T resource , AccessToken accessToken){
         final T returnResource;
-          try      {
+
         if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given resource can't be null.");
         }
@@ -358,7 +361,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case  SC_BAD_REQUEST:
-                        errorMessage = getErrorMessage(response, "Unable to update");
+                        errorMessage = getErrorMessage(response, "Wrong Resource. Unable to update");
+                        throw new ConflictException(errorMessage);
+                    case  SC_CONFLICT:
+                        errorMessage = getErrorMessage(response, "Resource with Conflicts. Unable to update");
                         throw new ConflictException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -373,9 +379,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
-    }      catch (Exception e){
-              throw  new RuntimeException("FEHLER::: " + e.getMessage());
-          }
     }
 
     /**
