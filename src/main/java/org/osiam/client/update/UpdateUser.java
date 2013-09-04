@@ -63,11 +63,11 @@ public class UpdateUser{
             updateUser = new User.Builder(userName);
         }
        
-        //start address
+//start address
         /**
          * adds a new address to the existing addresses of a existing user
          * @param address the new address
-         * @return
+         * @return The builder itself
          */
         public Builder addAddress(Address address){
             addresses.add(address);
@@ -77,7 +77,7 @@ public class UpdateUser{
         /**
          * deletes the given address from the list of existing addresses of a exisitng user
          * @param address address to be deleted
-         * @return
+         * @return The builder itself
          */
         public Builder deleteAddress(Address address){
         /*    Address deleteAddress = new Address.Builder()
@@ -103,7 +103,7 @@ public class UpdateUser{
         
         /**
          * deletes all existing addresses of the a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteAddresses(){
         	deleteFields.add("addresses");
@@ -111,10 +111,10 @@ public class UpdateUser{
         }
         //end address
         
-        //start Nickname
+//start Nickname
         /**
          * deletes the nickName of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteNickName(){
             deleteFields.add(User_.nickName.toString());
@@ -124,7 +124,7 @@ public class UpdateUser{
         /**
          * updates the nickName of a existing user
          * @param nickName the new nickName
-         * @return
+         * @return The builder itself
          */
         public Builder updateNickName(String nickName){
             updateUser.setNickName(nickName);
@@ -132,10 +132,10 @@ public class UpdateUser{
         }
         //end Nickname
         
-        //start ExternalID
+//start ExternalID
         /**
          * delete the external Id of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteExternalId(){
             deleteFields.add(User_.externalId.toString());
@@ -145,7 +145,7 @@ public class UpdateUser{
         /**
          * updates the external id of a existing user
          * @param externalID new external id
-         * @return
+         * @return The builder itself
          */
         public Builder updateExternalId(String externalID){
             updateUser.setExternalId(externalID);
@@ -153,27 +153,32 @@ public class UpdateUser{
         }
         //end ExternalID
         
-        //start local
+//start local
         /**
          * delete the local value of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteLocal(){
             deleteFields.add(User_.locale.toString());
             return this;
         }
 
+        /**
+         * updates the local of a existing user
+         * @param locale new local
+         * @return The builder itself
+         */
         public Builder updateLocal(String locale){
             updateUser.setLocale(locale);
             return this;
         }
         //end local
         
-        //start password
+//start password
         /**
          * updates the password of a existing user
          * @param password new password
-         * @return
+         * @return The builder itself
          */
         public Builder updatePassword(String password){
             updateUser.setPassword(password);
@@ -181,10 +186,10 @@ public class UpdateUser{
         }
         //end password
         
-        //start preferredLanguage
+//start preferredLanguage
         /**
          * delete the preferred Language of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deletePreferredLanguage(){
             deleteFields.add(User_.preferredLanguage.toString());
@@ -194,7 +199,7 @@ public class UpdateUser{
         /**
          * updates the preferred language of a existing user
          * @param preferredLanguage new preferred language
-         * @return
+         * @return The builder itself
          */
         public Builder updatePreferredLanguage(String preferredLanguage){
             updateUser.setPreferredLanguage(preferredLanguage);
@@ -202,10 +207,10 @@ public class UpdateUser{
         }
         //end preferredLanguage
         
-        //start ProfileUrl
+//start ProfileUrl
         /**
          * deletes the profil Url of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteProfileUrl(){
             deleteFields.add(User_.profileUrl.toString());
@@ -215,7 +220,7 @@ public class UpdateUser{
         /**
          * updates the profil URL of a existing user
          * @param profileUrl new profilUrl
-         * @return
+         * @return The builder itself
          */
         public Builder updateProfileUrl(String profileUrl){
             updateUser.setProfileUrl(profileUrl);
@@ -223,10 +228,10 @@ public class UpdateUser{
         }
         //end ProfileUrl
         
-        //start timezone
+//start timezone
         /**
          * deletes the timezone of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteTimezone(){
             deleteFields.add(User_.timezone.toString());
@@ -236,7 +241,7 @@ public class UpdateUser{
         /**
          * updates the timezone of a existing user
          * @param timezone new timeZone
-         * @return
+         * @return The builder itself
          */
         public Builder updateTimezone(String timezone){
             updateUser.setTimezone(timezone);
@@ -244,10 +249,10 @@ public class UpdateUser{
         }
         //end timezone
         
-        //start title
+//start title
         /**
          * deletes the title of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteTitle(){
             deleteFields.add(User_.title.toString());
@@ -257,7 +262,7 @@ public class UpdateUser{
         /**
          * updates the title of a existing user
          * @param title new tile
-         * @return
+         * @return The builder itself
          */
         public Builder updateTitle(String title){
             updateUser.setTitle(title);
@@ -265,10 +270,10 @@ public class UpdateUser{
         }
         //end title
         
-        //start name
+//start name
         /**
          * deletes the name of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteName(){
             deleteFields.add("name");
@@ -278,7 +283,7 @@ public class UpdateUser{
         /**
          * updates the name of a existing user
          * @param name new Name
-         * @return
+         * @return The builder itself
          */
         public Builder updateName(Name name){
             updateUser.setName(name);
@@ -286,10 +291,10 @@ public class UpdateUser{
         }
         //end name
         
-        //start UserType
+//start UserType
         /**
          * deletes the user type of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteUserType(){
             deleteFields.add(User_.userType.toString());
@@ -299,7 +304,7 @@ public class UpdateUser{
         /**
          * updates the user type of a existing user
          * @param userType new user type
-         * @return
+         * @return The builder itself
          */
         public Builder updateUserType(String userType){
             updateUser.setUserType(userType);
@@ -307,10 +312,10 @@ public class UpdateUser{
         }
         //end UserType
         
-        //start DisplayName
+//start DisplayName
         /**
          * deletes the display name of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteDisplayName(){
             deleteFields.add(User_.displayName.toString());
@@ -320,7 +325,7 @@ public class UpdateUser{
         /**
          * updates the display name of a existing user
          * @param displayName new display name
-         * @return
+         * @return The builder itself
          */
         public Builder updateDisplayName(String displayName){
             updateUser.setDisplayName(displayName);
@@ -328,16 +333,21 @@ public class UpdateUser{
         }
         //end DisplayName
         
-        //start email
+//start email
         /**
          * deletes all emails of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteEmails(){
             deleteFields.add("emails");
             return this;
         }
         
+        /**
+         * deletes the given email of a existing user
+         * @param email to be deleted
+         * @return The builder itself
+         */
         public Builder deleteEmail(String email){
             MultiValuedAttribute delteEmail = new MultiValuedAttribute.Builder()
                     .setValue(email)
@@ -349,29 +359,39 @@ public class UpdateUser{
         /**
          * updates a email of a existing user
          * @param email updated email
-         * @return
+         * @return The builder itself
          */
         public Builder updateEmail(MultiValuedAttribute email){
             emails.add(email);
             return this;
         }
 
+        /**
+         * adds a new emil to the existing ones of a existing user
+         * @param email new email
+         * @return The builder itself
+         */
         public Builder addEmail(MultiValuedAttribute email){
             emails.add(email);
             return this;
         }
         //end email
         
-      //start certificates
+//start certificates
         /**
          * deletes all X509Certificates of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteX509Certificates(){
             deleteFields.add("x509Certificates");
             return this;
         }
         
+        /**
+         * deletes the given certificate of a existing user
+         * @param certificate to be deleted
+         * @return The builder itself
+         */
         public Builder deleteX509Certificate(String certificate){
             MultiValuedAttribute delteCertificates = new MultiValuedAttribute.Builder()
                     .setValue(certificate)
@@ -383,29 +403,39 @@ public class UpdateUser{
         /**
          * updates an Certificate of a existing user
          * @param certificate updated certificate
-         * @return
+         * @return The builder itself
          */
         public Builder updateX509Certificate(MultiValuedAttribute certificate){
         	certificates.add(certificate);
             return this;
         }
 
+        /**
+         * adds a new certificate to the existing ones of a existing user
+         * @param certificate new certificate
+         * @return The builder itself
+         */
         public Builder addX509Certificate(MultiValuedAttribute certificate){
         	certificates.add(certificate);
             return this;
         }
         //end certificates
         
-      //start roles
+//start roles
         /**
          * deletes all roles of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteRoles(){
             deleteFields.add("roles");
             return this;
         }
         
+        /**
+         * deletes the given role of a existing user
+         * @param role to be deleted
+         * @return The builder itself
+         */
         public Builder deleteRole(String role){
             MultiValuedAttribute delteRole = new MultiValuedAttribute.Builder()
                     .setValue(role)
@@ -417,29 +447,39 @@ public class UpdateUser{
         /**
          * updates an role of a existing user
          * @param role updated role
-         * @return
+         * @return The builder itself
          */
         public Builder updateRole(MultiValuedAttribute role){
             roles.add(role);
             return this;
         }
 
+        /**
+         * adds a new role to the existing ones of a existing user
+         * @param role new role
+         * @return The builder itself
+         */
         public Builder addRole(MultiValuedAttribute role){
             roles.add(role);
             return this;
         }
         //end roles
         
-      //start ims
+//start ims
         /**
          * deletes all ims of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteIms(){
             deleteFields.add("ims");
             return this;
         }
         
+        /**
+         * deletes the ims of a existing user
+         * @param ims to be deleted
+         * @return The builder itself
+         */
         public Builder deleteIms(String ims){
             MultiValuedAttribute delteIms = new MultiValuedAttribute.Builder()
                     .setValue(ims)
@@ -451,20 +491,30 @@ public class UpdateUser{
         /**
          * updates an ims of a existing user
          * @param ims updated ims
-         * @return
+         * @return The builder itself
          */
         public Builder updateIms(MultiValuedAttribute ims){
             this.ims.add(ims);
             return this;
         }
 
+        /**
+         * adds a new ims to the existing ones of a existing user
+         * @param ims new ims
+         * @return The builder itself
+         */
         public Builder addIms(MultiValuedAttribute ims){
             this.ims.add(ims);
             return this;
         }
         //end ims
         
-        //start phonenumbers
+//start phonenumbers
+        /**
+         * adds a new phoneNumber to the existing ones of a existing user
+         * @param phoneNumber new phoneNumber 
+         * @return The builder itself
+         */
         public Builder addPhoneNumber(MultiValuedAttribute phoneNumber){
             phoneNumbers.add(phoneNumber);
             return this;
@@ -473,13 +523,18 @@ public class UpdateUser{
         /**
          * updates an phonenumber of a existing user
          * @param phoneNumber updated phonenumber
-         * @return
+         * @return The builder itself
          */
         public Builder updatePhoneNumber(MultiValuedAttribute phoneNumber){
         	phoneNumbers.add(phoneNumber);
             return this;
         }
         
+        /**
+         * deletes the phonenumber of a existing user 
+         * @param phoneNumber to be deleted
+         * @return The builder itself
+         */
         public Builder deletePhoneNumber(String phoneNumber){
             MultiValuedAttribute deltePhoneNumber = new MultiValuedAttribute.Builder()
                     .setValue(phoneNumber)
@@ -489,7 +544,7 @@ public class UpdateUser{
         }
         /**
          * deletes all phonenumbers of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deletePhoneNumbers(){
             deleteFields.add("phonenumbers");
@@ -497,17 +552,32 @@ public class UpdateUser{
         }
         //end phonenumbers
         
-      //start photos
+//start photos
+        /**
+         * adds a new photo to the existing ones of a existing user
+         * @param photo new photo
+         * @return The builder itself
+         */
         public Builder addPhotos(MultiValuedAttribute photo){
             photos.add(photo);
             return this;
         }
         
+        /**
+         * updates an photo of a existing user
+         * @param photo updated photo
+         * @return The builder itself
+         */
         public Builder updatePhoto(MultiValuedAttribute photo){
         	photos.add(photo);
             return this;
         }
         
+        /**
+         * deletes the photo of a existing user
+         * @param photoUri
+         * @return The builder itself
+         */
         public Builder deletePhoto(String photoUri){
             MultiValuedAttribute deltePhoto = new MultiValuedAttribute.Builder()
                     .setValue(photoUri)
@@ -517,7 +587,7 @@ public class UpdateUser{
         }
         /**
          * deletes all photos of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deletePhotos(){
             deleteFields.add("photos");
@@ -525,16 +595,21 @@ public class UpdateUser{
         }
         //end photos
         
-      //start entitlement
+//start entitlement
         /**
          * deletes all entitlements of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteEntitlements(){
             deleteFields.add("entitlements");
             return this;
         }
                 
+        /**
+         * deletes the entitlement of a existing user
+         * @param entitlement to be deleted
+         * @return The builder itself
+         */
         public Builder deleteEntitlement(String entitlement){
             MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
                     .setValue(entitlement)
@@ -546,29 +621,39 @@ public class UpdateUser{
         /**
          * updates an entitlement of a existing user
          * @param entitlement updated entitlement
-         * @return
+         * @return The builder itself
          */
         public Builder updateEntitlement(MultiValuedAttribute entitlement){
         	entitlements.add(entitlement);
             return this;
         }
 
+        /**
+         * adds a new entitlement to the existing ones of a existing user
+         * @param entitlement new entitlement
+         * @return The builder itself
+         */
         public Builder addEntitlement(MultiValuedAttribute entitlement){
         	entitlements.add(entitlement);
             return this;
         }
         //end entitlement
         
-        //start group
+//start group
         /**
          * deletes all group memberships of a existing user
-         * @return
+         * @return The builder itself
          */
         public Builder deleteGroups(){
             deleteFields.add("groups");
             return this;
         }
         
+        /**
+         * removes the membership of the given group of a existing user
+         * @param groupId membership to be removed
+         * @return The builder itself
+         */
         public Builder deleteGroup(UUID groupId){
             MultiValuedAttribute delteGroup = new MultiValuedAttribute.Builder()
                     .setValue(groupId.toString())
@@ -577,6 +662,11 @@ public class UpdateUser{
             return this;
         }
 
+        /**
+         * adds a new membership to a group to the existing ones of a existing user
+         * @param groupId new membership
+         * @return The builder itself
+         */
         public Builder addGroup(UUID groupId){
             MultiValuedAttribute newGroup = new MultiValuedAttribute.Builder()
             .setValue(groupId.toString())
@@ -585,17 +675,22 @@ public class UpdateUser{
             return this;
         }
         
+        /**
+         * updates an group of a existing user
+         * @param group updated group
+         * @return The builder itself
+         */
         public Builder updateGroup(MultiValuedAttribute group){
         	groups.add(group);
             return this;
         }
         //end group
 
-        //start active
+//start active
         /**
          * sets the activ status of a existing User to the given value
          * @param activ new activ status
-         * @return
+         * @return The builder itself
          */
         public Builder setActive(boolean active){
         	updateUser.setActive(active);
