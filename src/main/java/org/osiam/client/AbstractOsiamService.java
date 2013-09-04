@@ -41,8 +41,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private ObjectMapper mapper;
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
-    private static DefaultHttpClient httpclient;
-    private static ContentType CONTENT_TYPE;
+    private DefaultHttpClient httpclient;
+    private ContentType contentType;
 
     /**
      * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
@@ -53,7 +53,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(HttpGet userWebResource) {
         mapper = new ObjectMapper();
-        CONTENT_TYPE = ContentType.create("application/json");
+        contentType = ContentType.create("application/json");
         webResource = userWebResource;
         type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
@@ -267,7 +267,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
             String userAsString = mapper.writeValueAsString(resource);
 
-            realWebResource.setEntity(new StringEntity(userAsString, CONTENT_TYPE));
+            realWebResource.setEntity(new StringEntity(userAsString, contentType));
 
             httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
@@ -314,7 +314,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
             String userAsString = mapper.writeValueAsString(resource);
 
-            realWebResource.setEntity(new StringEntity(userAsString, CONTENT_TYPE));
+            realWebResource.setEntity(new StringEntity(userAsString, contentType));
 
             httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
