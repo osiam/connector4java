@@ -270,7 +270,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         final T returnResource;
 
         if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given resource can't be null.");
+            throw new IllegalArgumentException("The given " + typeName + " can't be null.");
         }
 
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
@@ -324,7 +324,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         final T returnResource;
 
         if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given resource can't be null.");
+            throw new IllegalArgumentException("The given " + typeName + " can't be null.");
         }
 
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
@@ -361,10 +361,13 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case  SC_BAD_REQUEST:
-                        errorMessage = getErrorMessage(response, "Wrong Resource. Unable to update");
+                        errorMessage = getErrorMessage(response, "Wrong " + typeName + ". Unable to update");
                         throw new ConflictException(errorMessage);
                     case  SC_CONFLICT:
-                        errorMessage = getErrorMessage(response, "Resource with Conflicts. Unable to update");
+                        errorMessage = getErrorMessage(response, typeName + " with Conflicts. Unable to update");
+                        throw new ConflictException(errorMessage);
+                    case  SC_NOT_FOUND:
+                        errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id + " could be found to be updated.");
                         throw new ConflictException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
