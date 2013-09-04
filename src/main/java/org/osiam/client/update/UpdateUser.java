@@ -5,6 +5,7 @@ import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
 
 import java.util.*;
@@ -174,6 +175,18 @@ public class UpdateUser{
         }
         //end title
         
+        //start name
+        public Builder deleteName(){
+            deleteFields.add("name");
+            return this;
+        }
+
+        public Builder updateName(Name name){
+            updateUser.setName(name);
+            return this;
+        }
+        //end name
+        
         //start UserType
         public Builder deleteUserType(){
             deleteFields.add(User_.userType.toString());
@@ -225,7 +238,7 @@ public class UpdateUser{
         
       //start certificates
         public Builder deleteX509Certificates(){
-            deleteFields.add("certificates");
+            deleteFields.add("x509Certificates");
             return this;
         }
         
