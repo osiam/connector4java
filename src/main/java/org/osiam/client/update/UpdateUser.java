@@ -1,6 +1,8 @@
 package org.osiam.client.update;
+/*
+ * for licensing see the file license.txt.
+ */
 
-import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
@@ -10,6 +12,9 @@ import org.osiam.resources.scim.User;
 
 import java.util.*;
 
+/**
+ * Class to create a UpdateUser Object to update a existing User
+ */
 public class UpdateUser{
 
     private User user;
@@ -17,10 +22,18 @@ public class UpdateUser{
         user = builder.updateUser.build();
     }
 
+    /**
+     * the Scim conform User to be used to update a existing User
+     * @return User to update
+     */
     public User getUserToUpdate(){
         return user;
     }
 
+    /**
+     * The Builder is used to construct instances of the {@link UpdateUser}
+     *
+     */
     public static class Builder{
 
         User.Builder updateUser = null;
@@ -35,27 +48,37 @@ public class UpdateUser{
         List<MultiValuedAttribute> roles = new ArrayList<>();
         List<MultiValuedAttribute> certificates = new ArrayList<>();
 
+        /**
+         * to be used if no userName has to be updated
+         */
         public Builder(){
             updateUser = new User.Builder();
         }
 
+        /**
+         * to be used if the userName has to be updated
+         * @param userName new userName of a existing User
+         */
         public Builder(String userName){
             updateUser = new User.Builder(userName);
         }
-
-        //start active
-        public Builder setActiv(boolean activ){
-        	updateUser.setActive(activ);
-            return this;
-        }
-        //end activ
-        
+       
         //start address
+        /**
+         * adds a new address to the existing addresses of a existing user
+         * @param address the new address
+         * @return
+         */
         public Builder addAddress(Address address){
             addresses.add(address);
             return this;
         }
         
+        /**
+         * deletes the given address from the list of existing addresses of a exisitng user
+         * @param address address to be deleted
+         * @return
+         */
         public Builder deleteAddress(Address address){
         /*    Address deleteAddress = new Address.Builder()
             		.setCountry(address.getCountry())
@@ -78,6 +101,10 @@ public class UpdateUser{
             return this;
         }
         
+        /**
+         * deletes all existing addresses of the a existing user
+         * @return
+         */
         public Builder deleteAddresses(){
         	deleteFields.add("addresses");
         	return this;
@@ -85,30 +112,52 @@ public class UpdateUser{
         //end address
         
         //start Nickname
-        public Builder deleteNickname(){
+        /**
+         * deletes the nickName of a existing user
+         * @return
+         */
+        public Builder deleteNickName(){
             deleteFields.add(User_.nickName.toString());
             return this;
         }
 
-        public Builder updateNickname(String nickName){
+        /**
+         * updates the nickName of a existing user
+         * @param nickName the new nickName
+         * @return
+         */
+        public Builder updateNickName(String nickName){
             updateUser.setNickName(nickName);
             return this;
         }
         //end Nickname
         
         //start ExternalID
+        /**
+         * delete the external Id of a existing user
+         * @return
+         */
         public Builder deleteExternalId(){
             deleteFields.add(User_.externalId.toString());
             return this;
         }
 
-        public Builder updateExternalId(String nickName){
-            updateUser.setExternalId(nickName);
+        /**
+         * updates the external id of a existing user
+         * @param externalID new external id
+         * @return
+         */
+        public Builder updateExternalId(String externalID){
+            updateUser.setExternalId(externalID);
             return this;
         }
         //end ExternalID
         
         //start local
+        /**
+         * delete the local value of a existing user
+         * @return
+         */
         public Builder deleteLocal(){
             deleteFields.add(User_.locale.toString());
             return this;
@@ -121,6 +170,11 @@ public class UpdateUser{
         //end local
         
         //start password
+        /**
+         * updates the password of a existing user
+         * @param password new password
+         * @return
+         */
         public Builder updatePassword(String password){
             updateUser.setPassword(password);
             return this;
@@ -128,11 +182,20 @@ public class UpdateUser{
         //end password
         
         //start preferredLanguage
+        /**
+         * delete the preferred Language of a existing user
+         * @return
+         */
         public Builder deletePreferredLanguage(){
             deleteFields.add(User_.preferredLanguage.toString());
             return this;
         }
 
+        /**
+         * updates the preferred language of a existing user
+         * @param preferredLanguage new preferred language
+         * @return
+         */
         public Builder updatePreferredLanguage(String preferredLanguage){
             updateUser.setPreferredLanguage(preferredLanguage);
             return this;
@@ -140,11 +203,20 @@ public class UpdateUser{
         //end preferredLanguage
         
         //start ProfileUrl
+        /**
+         * deletes the profil Url of a existing user
+         * @return
+         */
         public Builder deleteProfileUrl(){
             deleteFields.add(User_.profileUrl.toString());
             return this;
         }
 
+        /**
+         * updates the profil URL of a existing user
+         * @param profileUrl new profilUrl
+         * @return
+         */
         public Builder updateProfileUrl(String profileUrl){
             updateUser.setProfileUrl(profileUrl);
             return this;
@@ -152,11 +224,20 @@ public class UpdateUser{
         //end ProfileUrl
         
         //start timezone
+        /**
+         * deletes the timezone of a existing user
+         * @return
+         */
         public Builder deleteTimezone(){
             deleteFields.add(User_.timezone.toString());
             return this;
         }
 
+        /**
+         * updates the timezone of a existing user
+         * @param timezone new timeZone
+         * @return
+         */
         public Builder updateTimezone(String timezone){
             updateUser.setTimezone(timezone);
             return this;
@@ -164,11 +245,20 @@ public class UpdateUser{
         //end timezone
         
         //start title
+        /**
+         * deletes the title of a existing user
+         * @return
+         */
         public Builder deleteTitle(){
             deleteFields.add(User_.title.toString());
             return this;
         }
 
+        /**
+         * updates the title of a existing user
+         * @param title new tile
+         * @return
+         */
         public Builder updateTitle(String title){
             updateUser.setTitle(title);
             return this;
@@ -176,11 +266,20 @@ public class UpdateUser{
         //end title
         
         //start name
+        /**
+         * deletes the name of a existing user
+         * @return
+         */
         public Builder deleteName(){
             deleteFields.add("name");
             return this;
         }
 
+        /**
+         * updates the name of a existing user
+         * @param name new Name
+         * @return
+         */
         public Builder updateName(Name name){
             updateUser.setName(name);
             return this;
@@ -188,11 +287,20 @@ public class UpdateUser{
         //end name
         
         //start UserType
+        /**
+         * deletes the user type of a existing user
+         * @return
+         */
         public Builder deleteUserType(){
             deleteFields.add(User_.userType.toString());
             return this;
         }
 
+        /**
+         * updates the user type of a existing user
+         * @param userType new user type
+         * @return
+         */
         public Builder updateUserType(String userType){
             updateUser.setUserType(userType);
             return this;
@@ -200,11 +308,20 @@ public class UpdateUser{
         //end UserType
         
         //start DisplayName
+        /**
+         * deletes the display name of a existing user
+         * @return
+         */
         public Builder deleteDisplayName(){
             deleteFields.add(User_.displayName.toString());
             return this;
         }
 
+        /**
+         * updates the display name of a existing user
+         * @param displayName new display name
+         * @return
+         */
         public Builder updateDisplayName(String displayName){
             updateUser.setDisplayName(displayName);
             return this;
@@ -212,6 +329,10 @@ public class UpdateUser{
         //end DisplayName
         
         //start email
+        /**
+         * deletes all emails of a existing user
+         * @return
+         */
         public Builder deleteEmails(){
             deleteFields.add("emails");
             return this;
@@ -225,6 +346,11 @@ public class UpdateUser{
             return this;
         }
 
+        /**
+         * updates a email of a existing user
+         * @param email updated email
+         * @return
+         */
         public Builder updateEmail(MultiValuedAttribute email){
             emails.add(email);
             return this;
@@ -237,6 +363,10 @@ public class UpdateUser{
         //end email
         
       //start certificates
+        /**
+         * deletes all X509Certificates of a existing user
+         * @return
+         */
         public Builder deleteX509Certificates(){
             deleteFields.add("x509Certificates");
             return this;
@@ -250,6 +380,11 @@ public class UpdateUser{
             return this;
         }
 
+        /**
+         * updates an Certificate of a existing user
+         * @param certificate updated certificate
+         * @return
+         */
         public Builder updateX509Certificate(MultiValuedAttribute certificate){
         	certificates.add(certificate);
             return this;
@@ -262,6 +397,10 @@ public class UpdateUser{
         //end certificates
         
       //start roles
+        /**
+         * deletes all roles of a existing user
+         * @return
+         */
         public Builder deleteRoles(){
             deleteFields.add("roles");
             return this;
@@ -275,6 +414,11 @@ public class UpdateUser{
             return this;
         }
 
+        /**
+         * updates an role of a existing user
+         * @param role updated role
+         * @return
+         */
         public Builder updateRole(MultiValuedAttribute role){
             roles.add(role);
             return this;
@@ -287,6 +431,10 @@ public class UpdateUser{
         //end roles
         
       //start ims
+        /**
+         * deletes all ims of a existing user
+         * @return
+         */
         public Builder deleteIms(){
             deleteFields.add("ims");
             return this;
@@ -300,6 +448,11 @@ public class UpdateUser{
             return this;
         }
 
+        /**
+         * updates an ims of a existing user
+         * @param ims updated ims
+         * @return
+         */
         public Builder updateIms(MultiValuedAttribute ims){
             this.ims.add(ims);
             return this;
@@ -317,6 +470,11 @@ public class UpdateUser{
             return this;
         }
         
+        /**
+         * updates an phonenumber of a existing user
+         * @param phoneNumber updated phonenumber
+         * @return
+         */
         public Builder updatePhoneNumber(MultiValuedAttribute phoneNumber){
         	phoneNumbers.add(phoneNumber);
             return this;
@@ -329,7 +487,10 @@ public class UpdateUser{
             phoneNumbers.add(deltePhoneNumber);
             return this;
         }
-        
+        /**
+         * deletes all phonenumbers of a existing user
+         * @return
+         */
         public Builder deletePhoneNumbers(){
             deleteFields.add("phonenumbers");
             return this;
@@ -354,7 +515,10 @@ public class UpdateUser{
             photos.add(deltePhoto);
             return this;
         }
-        
+        /**
+         * deletes all photos of a existing user
+         * @return
+         */
         public Builder deletePhotos(){
             deleteFields.add("photos");
             return this;
@@ -362,12 +526,44 @@ public class UpdateUser{
         //end photos
         
       //start entitlement
+        /**
+         * deletes all entitlements of a existing user
+         * @return
+         */
         public Builder deleteEntitlements(){
             deleteFields.add("entitlements");
             return this;
         }
+                
+        public Builder deleteEntitlement(String entitlement){
+            MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
+                    .setValue(entitlement)
+                    .setOperation("delete").build();
+            entitlements.add(deleteEntitlement);
+            return this;
+        }
+
+        /**
+         * updates an entitlement of a existing user
+         * @param entitlement updated entitlement
+         * @return
+         */
+        public Builder updateEntitlement(MultiValuedAttribute entitlement){
+        	entitlements.add(entitlement);
+            return this;
+        }
+
+        public Builder addEntitlement(MultiValuedAttribute entitlement){
+        	entitlements.add(entitlement);
+            return this;
+        }
+        //end entitlement
         
-      //start group
+        //start group
+        /**
+         * deletes all group memberships of a existing user
+         * @return
+         */
         public Builder deleteGroups(){
             deleteFields.add("groups");
             return this;
@@ -388,32 +584,30 @@ public class UpdateUser{
             groups.add(newGroup);
             return this;
         }
+        
+        public Builder updateGroup(MultiValuedAttribute group){
+        	groups.add(group);
+            return this;
+        }
         //end group
-        
-        public Builder deleteEntitlement(String entitlement){
-            MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
-                    .setValue(entitlement)
-                    .setOperation("delete").build();
-            entitlements.add(deleteEntitlement);
-            return this;
-        }
 
-        public Builder updateEntitlement(MultiValuedAttribute entitlement){
-        	entitlements.add(entitlement);
-            return this;
-        }
-
-        public Builder addEntitlement(MultiValuedAttribute entitlement){
-        	entitlements.add(entitlement);
-            return this;
-        }
-        //end entitlement
-        
+        //start active
+        /**
+         * sets the activ status of a existing User to the given value
+         * @param activ new activ status
+         * @return
+         */
         public Builder setActive(boolean active){
         	updateUser.setActive(active);
         	return this;
         }
+        //end activ
         
+        /**
+         * constructs a UpdateUser with the given values
+         *
+         * @return a valid UpdateUser
+         */
         public UpdateUser build(){
             if(deleteFields.size() > 0){
                 Meta meta = new Meta.Builder()
