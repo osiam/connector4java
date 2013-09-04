@@ -41,8 +41,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private ObjectMapper mapper;
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
-    private DefaultHttpClient httpclient;
-    private ContentType CONTENT_TYPE;
+    private static DefaultHttpClient httpclient;
+    private static ContentType CONTENT_TYPE;
 
     /**
      * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}

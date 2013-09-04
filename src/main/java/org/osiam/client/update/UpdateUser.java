@@ -47,7 +47,7 @@ public final class UpdateUser{
         private List<MultiValuedAttribute> photos = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> certificates = new ArrayList<>();
-        private final static String DELETE = "delete";
+        private static final String DELETE = "delete";
 
         /**
          * to be used if no userName has to be updated

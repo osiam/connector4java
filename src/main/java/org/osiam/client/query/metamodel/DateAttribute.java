@@ -3,12 +3,7 @@ package org.osiam.client.query.metamodel;
 * for licensing see the file license.txt.
 */
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.joda.time.DateTime;
-import org.joda.time.JodaTimePermission;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -17,7 +12,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class DateAttribute extends Attribute{
 
-    private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
     
 
     DateAttribute(String value){
@@ -30,7 +25,7 @@ public class DateAttribute extends Attribute{
      * @return an eq comparison
      */
     public Comparison equalTo(DateTime filter){
-        return new Comparison(value + " eq \"" + dateFormat.print(filter) + "\"");
+        return new Comparison(value + " eq \"" + DATE_FORMAT.print(filter) + "\"");
     }
 
     /**
@@ -47,7 +42,7 @@ public class DateAttribute extends Attribute{
      * @return an gt comparison
      */
     public Comparison greaterThan(DateTime filter) {
-        return new Comparison(value + " gt \"" + dateFormat.print(filter)  + "\"");
+        return new Comparison(value + " gt \"" + DATE_FORMAT.print(filter)  + "\"");
     }
 
     /**
@@ -56,7 +51,7 @@ public class DateAttribute extends Attribute{
      * @return an ge comparison
      */
     public Comparison greaterEquals(DateTime filter) {
-        return new Comparison(value + " ge \"" + dateFormat.print(filter)  + "\"");
+        return new Comparison(value + " ge \"" + DATE_FORMAT.print(filter)  + "\"");
     }
 
     /**
@@ -65,7 +60,7 @@ public class DateAttribute extends Attribute{
      * @return an lt comparison
      */
     public Comparison lessThan(DateTime filter) {
-        return new Comparison(value + " lt \"" + dateFormat.print(filter)  + "\"");
+        return new Comparison(value + " lt \"" + DATE_FORMAT.print(filter)  + "\"");
     }
 
     /**
@@ -74,6 +69,6 @@ public class DateAttribute extends Attribute{
      * @return an le comparison
      */
     public Comparison lessEquals(DateTime filter) {
-        return new Comparison(value + " le \"" + dateFormat.print(filter) + "\"");
+        return new Comparison(value + " le \"" + DATE_FORMAT.print(filter) + "\"");
     }
 }
