@@ -25,7 +25,7 @@ public abstract class User_ {
     /**
      * all meta atttributes from a User
      */
-    public static abstract class Meta {
+    public abstract static class Meta {
         public static final StringAttribute resourceType = new StringAttribute("meta.resourceType");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final DateAttribute created = new DateAttribute("meta.created");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final DateAttribute lastModified = new DateAttribute("meta.lastModified"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -36,7 +36,7 @@ public abstract class User_ {
     /**
      * all name atttributes from a User
      */
-    public static abstract class Name {
+    public abstract static class Name {
         public static final StringAttribute formatted = new StringAttribute("name.formatted");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute familyName = new StringAttribute("name.familyName"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute givenName = new StringAttribute("name.givenName"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -45,7 +45,7 @@ public abstract class User_ {
     /**
      * all email atttributes from a User
      */
-    public static abstract class Emails {
+    public abstract static class Emails {
         public static final StringAttribute value = new StringAttribute("emails.value");     // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("emails.type");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
@@ -53,7 +53,7 @@ public abstract class User_ {
     /**
      * all ims atttributes from a User
      */
-    public static abstract class Ims {
+    public abstract static class Ims {
         public static final StringAttribute value = new StringAttribute("ims.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("ims.type");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
@@ -61,7 +61,7 @@ public abstract class User_ {
     /**
      * all photo atttributes from a User
      */
-    public static abstract class Photos {
+    public abstract static class Photos {
         public static final StringAttribute value = new StringAttribute("photos.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("photos.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
@@ -69,7 +69,7 @@ public abstract class User_ {
     /**
      * address attribute from User
      */
-    public static abstract class Addresses {
+    public abstract static class Addresses {
         public static final StringAttribute type = new StringAttribute("addresses.type");    // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute streetAddress = new StringAttribute("addresses.streetAddress");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute locality = new StringAttribute("addresses.locality");     // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -84,7 +84,7 @@ public abstract class User_ {
     /**
      * all phone number atttributes from a User
      */
-    public static abstract class PhoneNumbers {
+    public abstract static  class PhoneNumbers {
         public static final StringAttribute value = new StringAttribute("phoneNumbers.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("phoneNumbers.type"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
@@ -92,7 +92,7 @@ public abstract class User_ {
     /**
      * all group atttributes from a User
      */
-    public static abstract class Groups {
+    public abstract static  class Groups {
         public static final StringAttribute value = new StringAttribute("groups.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("groups.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
@@ -100,7 +100,7 @@ public abstract class User_ {
     /**
      * all entitlements atttributes from a User
      */
-    public static abstract class Entitlements {
+    public abstract static class Entitlements {
         public static final StringAttribute value = new StringAttribute("entitlements.value");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("entitlements.type");    // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
@@ -108,7 +108,7 @@ public abstract class User_ {
     /**
      * all role atttributes from a User
      */
-    public static abstract class Roles_ {
+    public abstract static class Roles_ {
        public static final StringAttribute value = new StringAttribute("roles.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
        public static final StringAttribute type = new StringAttribute("roles.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }

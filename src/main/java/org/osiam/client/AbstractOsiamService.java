@@ -11,6 +11,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.type.TypeFactory;
@@ -40,6 +42,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
+    private static final String AUTHORIZATION = "Authorization";
+    private DefaultHttpClient httpclient = new DefaultHttpClient();
 
     /**
      * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
@@ -90,9 +94,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
 
@@ -135,9 +136,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - false-positive from clover; if-expression is correct
 
@@ -203,7 +201,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } catch (Exception e){    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
         }
-        if(errorMessage == null){
+        if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
             errorMessage = defaultErrorMessage;
         }
         return errorMessage;
@@ -213,7 +211,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         HttpGet realWebResource;
         try {
             realWebResource = (HttpGet) webResource.clone();
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
             return realWebResource;
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
@@ -232,13 +230,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             URI uri = new URI(webResource.getURI() + "/" + id.toString());
 
             HttpDelete realWebResource = new HttpDelete(uri);
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
 
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
@@ -278,15 +273,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpPost realWebResource = new HttpPost(webResource.getURI());
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+            realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
 
@@ -336,15 +324,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
 
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id.toString());
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+            realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
 
@@ -383,7 +364,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
     }
-
+    
     /**
      * The Builder class is used to prove a WebResource to build the needed Service
      *

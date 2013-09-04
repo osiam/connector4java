@@ -7,12 +7,18 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.JodaTimePermission;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 /**
  * single Date Attribute from a Group or a User
  */
 public class DateAttribute extends Attribute{
 
-    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    
 
     DateAttribute(String value){
         this.value = value;
@@ -23,8 +29,8 @@ public class DateAttribute extends Attribute{
      * @param filter the wanted filter
      * @return an eq comparison
      */
-    public Comparison equalTo(Date filter){
-        return new Comparison(value + " eq \"" + df.format(filter) + "\"");
+    public Comparison equalTo(DateTime filter){
+        return new Comparison(value + " eq \"" + dateFormat.print(filter) + "\"");
     }
 
     /**
@@ -40,8 +46,8 @@ public class DateAttribute extends Attribute{
      * @param filter the wanted filter
      * @return an gt comparison
      */
-    public Comparison greaterThan(Date filter) {
-        return new Comparison(value + " gt \"" + df.format(filter) + "\"");
+    public Comparison greaterThan(DateTime filter) {
+        return new Comparison(value + " gt \"" + dateFormat.print(filter)  + "\"");
     }
 
     /**
@@ -49,8 +55,8 @@ public class DateAttribute extends Attribute{
      * @param filter the wanted filter
      * @return an ge comparison
      */
-    public Comparison greaterEquals(Date filter) {
-        return new Comparison(value + " ge \"" + df.format(filter) + "\"");
+    public Comparison greaterEquals(DateTime filter) {
+        return new Comparison(value + " ge \"" + dateFormat.print(filter)  + "\"");
     }
 
     /**
@@ -58,8 +64,8 @@ public class DateAttribute extends Attribute{
      * @param filter the wanted filter
      * @return an lt comparison
      */
-    public Comparison lessThan(Date filter) {
-        return new Comparison(value + " lt \"" + df.format(filter) + "\"");
+    public Comparison lessThan(DateTime filter) {
+        return new Comparison(value + " lt \"" + dateFormat.print(filter)  + "\"");
     }
 
     /**
@@ -67,7 +73,7 @@ public class DateAttribute extends Attribute{
      * @param filter the wanted filter
      * @return an le comparison
      */
-    public Comparison lessEquals(Date filter) {
-        return new Comparison(value + " le \"" + df.format(filter) + "\"");
+    public Comparison lessEquals(DateTime filter) {
+        return new Comparison(value + " le \"" + dateFormat.print(filter) + "\"");
     }
 }

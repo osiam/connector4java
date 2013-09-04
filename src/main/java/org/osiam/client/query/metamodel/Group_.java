@@ -17,7 +17,7 @@ public abstract class Group_ {
     /**
      * all meta atttributes from a User
      */
-    public static abstract class Meta {
+    public abstract static class Meta {
         public static final StringAttribute resourceType = new StringAttribute("meta.resourceType");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final DateAttribute created = new DateAttribute("meta.created");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final DateAttribute lastModified = new DateAttribute("meta.lastModified"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -28,7 +28,7 @@ public abstract class Group_ {
     /**
      * all Member atttributes from a Group
      */
-    public static abstract class Members {
+    public abstract static class Members {
         public static final StringAttribute value = new StringAttribute("members.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 }
