@@ -43,7 +43,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private String typeName;
     private ObjectMapper mapper;
     private static final String AUTHORIZATION = "Authorization";
-    private DefaultHttpClient httpclient = new DefaultHttpClient();
+    private DefaultHttpClient httpclient;
+    private ContentType CONTENT_TYPE;
 
     /**
      * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
@@ -54,6 +55,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(HttpGet userWebResource) {
         mapper = new ObjectMapper();
+        CONTENT_TYPE = ContentType.create("application/json");
         webResource = userWebResource;
         type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
@@ -83,8 +85,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      *                               if the connection to the given OSIAM service could be initialized
      */
     protected T getResource(UUID id, AccessToken accessToken) {
-        final T resource;
-
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");
         }
@@ -93,10 +93,13 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; simple if, it's ok if message occurs several times
         }
 
+        final T resource;
+        InputStream content = null;
         try {
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -115,12 +118,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 }
             }
 
-            InputStream content = response.getEntity().getContent();
+            content = response.getEntity().getContent();
             resource = mapSingleResourceResponse(content);
 
             return resource;
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }finally{
+        	try {
+				content.close();
+			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
@@ -129,16 +136,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
-        final InputStream queryResult;
-
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");  // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
-
+        
+        final InputStream queryResult;
         try {
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - false-positive from clover; if-expression is correct
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -200,6 +207,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             errorMessage = error.getDescription();
         } catch (Exception e){    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
+        }finally{
+        	content.close();
         }
         if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
             errorMessage = defaultErrorMessage;
@@ -220,7 +229,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected void deleteResource(UUID id, AccessToken accessToken) {
-
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");
         }
@@ -235,6 +243,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpDelete realWebResource = new HttpDelete(uri);
             realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -255,15 +264,12 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         throw new ConnectionInitializationException(errorMessage);
                 }
             }
-
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);  // NOSONAR - its ok to have this message several times
         }
     }
 
     protected T createResource(T resource , AccessToken accessToken) {
-        final T returnResource;
-
         if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given " + typeName + " can't be null.");
         }
@@ -272,15 +278,17 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
 
+        final T returnResource;
+        InputStream content = null;
         try {
             HttpPost realWebResource = new HttpPost(webResource.getURI());
             realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
 
-            realWebResource.setEntity(new StringEntity(userAsString,
-                    ContentType.create("application/json")));
+            realWebResource.setEntity(new StringEntity(userAsString, CONTENT_TYPE));
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -299,18 +307,20 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 }
             }
 
-            InputStream content = response.getEntity().getContent();
+            content = response.getEntity().getContent();
             returnResource = mapSingleResourceResponse(content);
 
             return returnResource;
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }finally{
+        	try {
+				content.close();
+			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
     protected T updateResource(UUID id, T resource , AccessToken accessToken){
-        final T returnResource;
-
         if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given " + typeName + " can't be null.");
         }
@@ -322,16 +332,18 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The id can't be null.");
         }
-
+        
+        final T returnResource;
+        InputStream content = null;
         try {
             HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id.toString());
             realWebResource.addHeader(AUTHORIZATION, "Bearer " + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
 
-            realWebResource.setEntity(new StringEntity(userAsString,
-                    ContentType.create("application/json")));
+            realWebResource.setEntity(new StringEntity(userAsString, CONTENT_TYPE));
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -356,12 +368,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 }
             }
 
-            InputStream content = response.getEntity().getContent();
+            content = response.getEntity().getContent();
             returnResource = mapSingleResourceResponse(content);
 
             return returnResource;
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }finally{
+        	try {
+				content.close();
+			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
     
