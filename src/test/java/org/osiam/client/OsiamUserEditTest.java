@@ -53,27 +53,34 @@ public class OsiamUserEditTest {
         // use happy path for default
         givenAnUserUUID();
         givenAnAccessToken();
+        givenAnUpdateUser();
     }
 
     @Test
     public void service_returns_correct_uri() throws Exception {
         assertEquals(new URI(endpoint + "/Users"), service.getUri());
     }
-
     
     @Test(expected = IllegalArgumentException.class)
     public void uuid_is_null_by_updating_single_user_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+    	givenUUIDisEmpty();
         updateUUID = null;
         updateSingleUser();
         fail("Exception expected");
     }
  
-
     @Test(expected = IllegalArgumentException.class)
-    public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
+    public void null_access_token__by_updating_user_rases_exception() throws Exception {
         givenUUIDisEmpty();
         accessToken = null;
+        updateSingleUser();
+        fail("Exception expected");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void null_UpdateUser_rases_exception() throws Exception {
+        givenUUIDisEmpty();
+        UPDATE_USER = null;
         updateSingleUser();
         fail("Exception expected");
     }
@@ -86,7 +93,6 @@ public class OsiamUserEditTest {
         fail("Exception expected");
     }
 
-    
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
@@ -95,22 +101,18 @@ public class OsiamUserEditTest {
         this.updateUUID = UUID.fromString(userUuidString);
     }
     
+    private void givenAnUpdateUser() {
+        this.UPDATE_USER = new UpdateUser.Builder().build();
+    }
+
     private void updateSingleUser() {
-    	        
-        UPDATE_USER = new UpdateUser.Builder("update")//TODO bug in Server
-		.updateNickName("update")
-		.build();
-        
-        service.updateResource(updateUUID, singleUserResult, accessToken);
+        service.updateUser(updateUUID, UPDATE_USER, accessToken);
     }
     
     private void updateSingleUserWithEmptyResource() {
-        
     	singleUserResult = null;
-        
-      service.updateResource(updateUUID, singleUserResult, accessToken);
+    	service.updateResource(updateUUID, singleUserResult, accessToken);
     }
-    
     
     private void givenUUIDisEmpty() {
         stubFor(givenUUIDisLookedUp("", accessToken)
@@ -125,10 +127,5 @@ public class OsiamUserEditTest {
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
-    
-    
-    
-    
-
 
 }
