@@ -12,7 +12,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 import org.osiam.client.exception.*;
@@ -40,6 +39,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+    private DefaultHttpClient httpclient;
+    private ContentType contentType;
 
     /**
      * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
@@ -50,6 +53,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(HttpGet userWebResource) {
         mapper = new ObjectMapper();
+        contentType = ContentType.create("application/json");
         webResource = userWebResource;
         type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
@@ -79,23 +83,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      *                               if the connection to the given OSIAM service could be initialized
      */
     protected T getResource(UUID id, AccessToken accessToken) {
+        ensureIdIsNotNull(id);
+        ensureAccessTokenIsNotNull(accessToken);
+
         final T resource;
-
-        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given id can't be null.");
-        }
-
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; simple if, it's ok if message occurs several times
-        }
-
+        InputStream content = null;
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -114,12 +111,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 }
             }
 
-            InputStream content = response.getEntity().getContent();
+            content = response.getEntity().getContent();
             resource = mapSingleResourceResponse(content);
 
             return resource;
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }finally{
+        	try {
+				content.close();
+			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
@@ -128,19 +129,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
+        ensureAccessTokenIsNotNull(accessToken);
+        
         final InputStream queryResult;
-
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null.");  // NOSONAR - false-positive from clover; it's ok if message occurs several times
-        }
-
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpGet realWebResource = createRealWebResource(accessToken);
             realWebResource.setURI(new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString))); // NOSONAR - false-positive from clover; if-expression is correct
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -202,8 +198,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             errorMessage = error.getDescription();
         } catch (Exception e){    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
+        }finally{
+        	content.close();
         }
-        if(errorMessage == null){
+        if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
             errorMessage = defaultErrorMessage;
         }
         return errorMessage;
@@ -213,7 +211,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         HttpGet realWebResource;
         try {
             realWebResource = (HttpGet) webResource.clone();
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
             return realWebResource;
         } catch (CloneNotSupportedException ignore) {
             // safe to ignore - HttpGet implements Cloneable!
@@ -222,24 +220,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected void deleteResource(UUID id, AccessToken accessToken) {
-
-        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given id can't be null.");
-        }
-
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null.");  // NOSONAR - false-positive from clover; it's ok if message occurs several times
-        }
+        ensureIdIsNotNull(id);
+        ensureAccessTokenIsNotNull(accessToken);
 
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             URI uri = new URI(webResource.getURI() + "/" + id.toString());
 
             HttpDelete realWebResource = new HttpDelete(uri);
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -260,39 +250,26 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         throw new ConnectionInitializationException(errorMessage);
                 }
             }
-
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);  // NOSONAR - its ok to have this message several times
         }
     }
 
     protected T createResource(T resource , AccessToken accessToken) {
+        ensureResourceIsNotNull(resource);
+        ensureAccessTokenIsNotNull(accessToken);
+
         final T returnResource;
-
-        if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given " + typeName + " can't be null.");
-        }
-
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
-        }
-
+        InputStream content = null;
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpPost realWebResource = new HttpPost(webResource.getURI());
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
 
-            realWebResource.setEntity(new StringEntity(userAsString,
-                    ContentType.create("application/json")));
+            realWebResource.setEntity(new StringEntity(userAsString, contentType));
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -311,46 +288,35 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 }
             }
 
-            InputStream content = response.getEntity().getContent();
+            content = response.getEntity().getContent();
             returnResource = mapSingleResourceResponse(content);
 
             return returnResource;
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }finally{
+        	try {
+				content.close();
+			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
     protected T updateResource(UUID id, T resource , AccessToken accessToken){
+        ensureResourceIsNotNull(resource);
+        ensureAccessTokenIsNotNull(accessToken);
+    	ensureIdIsNotNull(id);
+        
         final T returnResource;
-
-        if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given " + typeName + " can't be null.");
-        }
-
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
-        }
-
-        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The id can't be null.");
-        }
-
+        InputStream content = null;
         try {
-            // TODO: httpClient as instance member
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
             HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id.toString());
-            realWebResource.addHeader("Authorization", "Bearer " + accessToken.getToken());
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
 
-            realWebResource.setEntity(new StringEntity(userAsString,
-                    ContentType.create("application/json")));
+            realWebResource.setEntity(new StringEntity(userAsString, contentType));
 
+            httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -375,15 +341,37 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                 }
             }
 
-            InputStream content = response.getEntity().getContent();
+            content = response.getEntity().getContent();
             returnResource = mapSingleResourceResponse(content);
 
             return returnResource;
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
+        }finally{
+        	try {
+				content.close();
+			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
-
+    
+    private void ensureResourceIsNotNull(T resource){
+        if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given " + typeName + " can't be null.");
+        }
+    }
+    
+    private void ensureAccessTokenIsNotNull(AccessToken accessToken){
+        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
+        }
+    }
+    
+    private void ensureIdIsNotNull(UUID id){
+        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given id can't be null.");
+        }
+    }
+    
     /**
      * The Builder class is used to prove a WebResource to build the needed Service
      *

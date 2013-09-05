@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.omg.CORBA.DATA_CONVERSION;
@@ -46,12 +47,12 @@ public class GroupQueryBuilderTest {
 
     @Test
     public void attribute_meta_created_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.Meta.created.equalTo(new Date()));
+        new Query.Filter(User.class, Group_.Meta.created.equalTo(new DateTime()));
     }
 
     @Test
     public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, Group_.Meta.lastModified.equalTo(new Date()));
+        new Query.Filter(User.class, Group_.Meta.lastModified.equalTo(new DateTime()));
     }
 
     @Test

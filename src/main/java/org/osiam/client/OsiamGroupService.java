@@ -10,14 +10,12 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.User;
 
 /**
  * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
  * given OSIAM installation. For the construction of an instance please use the {@link OsiamGroupService.Builder}
  */
 public final class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of this class
-
 
     /**
      * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder}

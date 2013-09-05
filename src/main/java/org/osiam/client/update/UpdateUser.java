@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Class to create a UpdateUser Object to update a existing User
  */
-public class UpdateUser{
+public final class UpdateUser{// NOSONAR - Builder constructs instances of this class
 
     private User user;
     private UpdateUser(Builder builder){
@@ -36,17 +36,18 @@ public class UpdateUser{
      */
     public static class Builder{
 
-        User.Builder updateUser = null;
-        Set<String> deleteFields = new HashSet<>();
-        List<MultiValuedAttribute> emails = new ArrayList<>();
-        List<MultiValuedAttribute> ims = new ArrayList<>();
-        List<MultiValuedAttribute> groups = new ArrayList<>();
-        List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
-        List<Address> addresses = new ArrayList<>();
-        List<MultiValuedAttribute> entitlements = new ArrayList<>();
-        List<MultiValuedAttribute> photos = new ArrayList<>();
-        List<MultiValuedAttribute> roles = new ArrayList<>();
-        List<MultiValuedAttribute> certificates = new ArrayList<>();
+        private User.Builder updateUser = null;
+        private Set<String> deleteFields = new HashSet<>();
+        private List<MultiValuedAttribute> emails = new ArrayList<>();
+        private List<MultiValuedAttribute> ims = new ArrayList<>();
+        private List<MultiValuedAttribute> groups = new ArrayList<>();
+        private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
+        private List<Address> addresses = new ArrayList<>();
+        private List<MultiValuedAttribute> entitlements = new ArrayList<>();
+        private List<MultiValuedAttribute> photos = new ArrayList<>();
+        private List<MultiValuedAttribute> roles = new ArrayList<>();
+        private List<MultiValuedAttribute> certificates = new ArrayList<>();
+        private static final String DELETE = "delete";
 
         /**
          * to be used if no userName has to be updated
@@ -90,7 +91,7 @@ public class UpdateUser{
             		.setDisplay(address.getDisplay())
             		.setPrimary(address.isPrimary())
             		.setType(address.getType())
-            		.setOperation("delete")
+            		.setOperation(DELETE)
             		.build()
             		
             		
@@ -351,7 +352,7 @@ public class UpdateUser{
         public Builder deleteEmail(String email){
             MultiValuedAttribute delteEmail = new MultiValuedAttribute.Builder()
                     .setValue(email)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             emails.add(delteEmail);
             return this;
         }
@@ -395,7 +396,7 @@ public class UpdateUser{
         public Builder deleteX509Certificate(String certificate){
             MultiValuedAttribute delteCertificates = new MultiValuedAttribute.Builder()
                     .setValue(certificate)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             certificates.add(delteCertificates);
             return this;
         }
@@ -439,7 +440,7 @@ public class UpdateUser{
         public Builder deleteRole(String role){
             MultiValuedAttribute delteRole = new MultiValuedAttribute.Builder()
                     .setValue(role)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             roles.add(delteRole);
             return this;
         }
@@ -483,7 +484,7 @@ public class UpdateUser{
         public Builder deleteIms(String ims){
             MultiValuedAttribute delteIms = new MultiValuedAttribute.Builder()
                     .setValue(ims)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             this.ims.add(delteIms);
             return this;
         }
@@ -538,7 +539,7 @@ public class UpdateUser{
         public Builder deletePhoneNumber(String phoneNumber){
             MultiValuedAttribute deltePhoneNumber = new MultiValuedAttribute.Builder()
                     .setValue(phoneNumber)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             phoneNumbers.add(deltePhoneNumber);
             return this;
         }
@@ -581,7 +582,7 @@ public class UpdateUser{
         public Builder deletePhoto(String photoUri){
             MultiValuedAttribute deltePhoto = new MultiValuedAttribute.Builder()
                     .setValue(photoUri)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             photos.add(deltePhoto);
             return this;
         }
@@ -613,7 +614,7 @@ public class UpdateUser{
         public Builder deleteEntitlement(String entitlement){
             MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
                     .setValue(entitlement)
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             entitlements.add(deleteEntitlement);
             return this;
         }
@@ -657,7 +658,7 @@ public class UpdateUser{
         public Builder deleteGroup(UUID groupId){
             MultiValuedAttribute delteGroup = new MultiValuedAttribute.Builder()
                     .setValue(groupId.toString())
-                    .setOperation("delete").build();
+                    .setOperation(DELETE).build();
             groups.add(delteGroup);
             return this;
         }
@@ -704,33 +705,33 @@ public class UpdateUser{
          * @return a valid UpdateUser
          */
         public UpdateUser build(){
-            if(deleteFields.size() > 0){
+            if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 Meta meta = new Meta.Builder()
                         .setAttributes(deleteFields).build();
                 updateUser.setMeta(meta);
             }
-            if(emails.size() > 0){
+            if(emails.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 updateUser.setEmails(emails);
             }
-            if(phoneNumbers.size() > 0){
+            if(phoneNumbers.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setPhoneNumbers(phoneNumbers);
             }
-            if(addresses.size() > 0){
+            if(addresses.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setAddresses(addresses);
             }
-            if(entitlements.size() > 0){
+            if(entitlements.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setEntitlements(entitlements);
             }
-            if(ims.size() > 0){
+            if(ims.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setIms(ims);
             }
-            if(photos.size() > 0){
+            if(photos.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setPhotos(photos);
             }
-            if(roles.size() > 0){
+            if(roles.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setRoles(roles);
             }
-            if(certificates.size() > 0){
+            if(certificates.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setX509Certificates(certificates);
             }
             

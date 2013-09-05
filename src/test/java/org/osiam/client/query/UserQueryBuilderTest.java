@@ -9,6 +9,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.exception.InvalidAttributeException;
@@ -34,14 +37,14 @@ public class UserQueryBuilderTest {
     private static final String FILTER = "filter=";
     private Query.Builder queryBuilder;
     private Query.Filter filter;
-    private Date DATE = new Date();
+    private DateTime DATE = new DateTime();
     private String DATE_STR;
 
     @Before
     public void setUp() throws UnsupportedEncodingException {
         queryBuilder = new Query.Builder(User.class);
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        DATE_STR = df.format(DATE);
+        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DATE_STR = dateFormat.print(DATE);
     }
 
     @Test
