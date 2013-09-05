@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Group;
 
 /**
@@ -105,8 +106,8 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      */
-    public Group updateGroup(UUID id, Group updateGroup, AccessToken accessToken){
-        return updateResource(id, updateGroup, accessToken);
+    public Group updateGroup(UUID id, UpdateGroup updateGroup, AccessToken accessToken){
+        return updateResource(id, updateGroup.getGroupToUpdate(), accessToken);
     }
 
     /**

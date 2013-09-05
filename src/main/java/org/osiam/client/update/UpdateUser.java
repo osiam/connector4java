@@ -358,21 +358,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
 
         /**
-         * updates a email of a existing user
-         * @param email updated email
-         * @return The builder itself
-         */
-        public Builder updateEmail(MultiValuedAttribute email){
-            emails.add(email);
-            return this;
-        }
-
-        /**
-         * adds a new emil to the existing ones of a existing user
+         * adds or updates a emil of an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param email new email
          * @return The builder itself
          */
-        public Builder addEmail(MultiValuedAttribute email){
+        public Builder addOrUpdateEmail(MultiValuedAttribute email){
             emails.add(email);
             return this;
         }
@@ -402,21 +393,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
 
         /**
-         * updates an Certificate of a existing user
-         * @param certificate updated certificate
-         * @return The builder itself
-         */
-        public Builder updateX509Certificate(MultiValuedAttribute certificate){
-        	certificates.add(certificate);
-            return this;
-        }
-
-        /**
-         * adds a new certificate to the existing ones of a existing user
+         * adds or updates certificate to an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param certificate new certificate
          * @return The builder itself
          */
-        public Builder addX509Certificate(MultiValuedAttribute certificate){
+        public Builder addOrUpdateX509Certificate(MultiValuedAttribute certificate){
         	certificates.add(certificate);
             return this;
         }
@@ -446,21 +428,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
 
         /**
-         * updates an role of a existing user
-         * @param role updated role
-         * @return The builder itself
-         */
-        public Builder updateRole(MultiValuedAttribute role){
-            roles.add(role);
-            return this;
-        }
-
-        /**
-         * adds a new role to the existing ones of a existing user
+         * adds or updates a role of an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param role new role
          * @return The builder itself
          */
-        public Builder addRole(MultiValuedAttribute role){
+        public Builder addOrUpdateRole(MultiValuedAttribute role){
             roles.add(role);
             return this;
         }
@@ -490,21 +463,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
 
         /**
-         * updates an ims of a existing user
-         * @param ims updated ims
-         * @return The builder itself
-         */
-        public Builder updateIms(MultiValuedAttribute ims){
-            this.ims.add(ims);
-            return this;
-        }
-
-        /**
-         * adds a new ims to the existing ones of a existing user
+         * adds or updates a ims to an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param ims new ims
          * @return The builder itself
          */
-        public Builder addIms(MultiValuedAttribute ims){
+        public Builder addOrUpdatesIms(MultiValuedAttribute ims){
             this.ims.add(ims);
             return this;
         }
@@ -512,22 +476,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         
 //start phonenumbers
         /**
-         * adds a new phoneNumber to the existing ones of a existing user
+         * adds or updates a phoneNumber to an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param phoneNumber new phoneNumber 
          * @return The builder itself
          */
-        public Builder addPhoneNumber(MultiValuedAttribute phoneNumber){
+        public Builder addOrUpdatesPhoneNumber(MultiValuedAttribute phoneNumber){
             phoneNumbers.add(phoneNumber);
-            return this;
-        }
-        
-        /**
-         * updates an phonenumber of a existing user
-         * @param phoneNumber updated phonenumber
-         * @return The builder itself
-         */
-        public Builder updatePhoneNumber(MultiValuedAttribute phoneNumber){
-        	phoneNumbers.add(phoneNumber);
             return this;
         }
         
@@ -555,22 +510,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         
 //start photos
         /**
-         * adds a new photo to the existing ones of a existing user
+         * adds or updates a photo to an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param photo new photo
          * @return The builder itself
          */
-        public Builder addPhotos(MultiValuedAttribute photo){
+        public Builder addOrUpdatesPhoto(MultiValuedAttribute photo){
             photos.add(photo);
-            return this;
-        }
-        
-        /**
-         * updates an photo of a existing user
-         * @param photo updated photo
-         * @return The builder itself
-         */
-        public Builder updatePhoto(MultiValuedAttribute photo){
-        	photos.add(photo);
             return this;
         }
         
@@ -620,21 +566,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
 
         /**
-         * updates an entitlement of a existing user
-         * @param entitlement updated entitlement
-         * @return The builder itself
-         */
-        public Builder updateEntitlement(MultiValuedAttribute entitlement){
-        	entitlements.add(entitlement);
-            return this;
-        }
-
-        /**
-         * adds a new entitlement to the existing ones of a existing user
+         * adds or updates a entitlement to an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
          * @param entitlement new entitlement
          * @return The builder itself
          */
-        public Builder addEntitlement(MultiValuedAttribute entitlement){
+        public Builder addOrUpdatesEntitlement(MultiValuedAttribute entitlement){
         	entitlements.add(entitlement);
             return this;
         }
@@ -662,27 +599,15 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             groups.add(delteGroup);
             return this;
         }
-
-        /**
-         * adds a new membership to a group to the existing ones of a existing user
-         * @param groupId new membership
-         * @return The builder itself
-         */
-        public Builder addGroup(UUID groupId){
-            MultiValuedAttribute newGroup = new MultiValuedAttribute.Builder()
-            .setValue(groupId.toString())
-            .build();
-            groups.add(newGroup);
-            return this;
-        }
         
         /**
-         * updates an group of a existing user
-         * @param group updated group
+         * adds or updates an group membership of an existing user
+         * if the .getValue() already exists a update will be done. If not a new one will be added
+         * @param groupMembership updated group membership
          * @return The builder itself
          */
-        public Builder updateGroup(MultiValuedAttribute group){
-        	groups.add(group);
+        public Builder addOrUpdateGroupMembership(MultiValuedAttribute groupMembership){
+        	groups.add(groupMembership);
             return this;
         }
         //end group
@@ -702,7 +627,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         /**
          * constructs a UpdateUser with the given values
          *
-         * @return a valid UpdateUser
+         * @return a valid {@link UpdateUser}
          */
         public UpdateUser build(){
             if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct

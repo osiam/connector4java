@@ -9,6 +9,7 @@ import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.client.update.UpdateGroup;
 import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.User;
@@ -264,7 +265,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      */
-    public Group updateGroup(UUID id, Group updateGroup , AccessToken accessToken){
+    public Group updateGroup(UUID id, UpdateGroup updateGroup , AccessToken accessToken){
         return groupService.updateGroup(id, updateGroup, accessToken);
     }
 
