@@ -168,6 +168,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
      */
     public User updateUser(UUID id, UpdateUser updateUser , AccessToken accessToken){
+        if (updateUser == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given updateUser can't be null.");
+        }
         return updateResource(id, updateUser.getUserToUpdate(), accessToken);
     }
     /**
