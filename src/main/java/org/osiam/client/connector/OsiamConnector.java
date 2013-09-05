@@ -19,7 +19,7 @@ import java.util.UUID;
  * and all methods necessary to manipulate the {@link Group} and {@link User} resources registered in the
  * given OSIAM installation. For the construction of an instance please use the {@link OsiamConnector.Builder}
  */
-public final class OsiamConnector {
+public final class OsiamConnector {// NOSONAR - Builder constructs instances of this class
 
     private String clientId;
     private String clientSecret;

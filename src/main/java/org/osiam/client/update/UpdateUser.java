@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Class to create a UpdateUser Object to update a existing User
  */
-public final class UpdateUser{
+public final class UpdateUser{// NOSONAR - Builder constructs instances of this class
 
     private User user;
     private UpdateUser(Builder builder){
