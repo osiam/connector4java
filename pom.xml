@@ -108,6 +108,56 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <!-- Needed to publish releases to sonatype staging repo -->
+            <!-- which leads to maven central -->
+            <!-- Note: In order for this to work you need to have the -->
+            <!-- appropriate server tag in your .m2/settings.xml -->
+            <!-- with your username/password for the sonatype jira -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.4.4</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <serverId>sonatype-nexus-staging</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                </configuration>
+            </plugin>
+
+            <!-- parent pom defines old version -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.4</version>
+              <executions>
+                  <execution>
+                      <id>sign-artifacts</id>
+                      <phase>verify</phase>
+                      <goals>
+                          <goal>sign</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+            <!-- During release:perform, enable the "release" profile -->
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <releaseProfiles>sonatype-oss-release</releaseProfiles>
+                    <arguments>-Psonatype-oss-release ${release.arguments} </arguments>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
