@@ -26,7 +26,7 @@
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <name>OSIAM Connector 4 Java</name>
     <licenses>
         <license>
@@ -47,7 +47,8 @@
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
         <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
-    </scm>
+      <tag>connector4java-0.3</tag>
+  </scm>
 
     <distributionManagement>
         <repository>
