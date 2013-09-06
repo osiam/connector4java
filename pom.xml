@@ -48,12 +48,23 @@
         <java.version>1.7</java.version>
         <jersey.version>1.17</jersey.version>
     </properties>
+
     <scm>
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
         <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
     </scm>
 
+    <developers>
+        <developer>
+            <id>trossn</id>
+            <name>Thorsten Rossner</name>
+            <email>info@osiam.org</email>
+            <timezone>+1</timezone>
+            <organization>OSIAM</organization>
+        </developer>
+    </developers>
+    
     <distributionManagement>
         <repository>
             <id>osiam-repository</id>
@@ -158,11 +169,13 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.1</version>
                 <configuration>
+                    <!-- During release:perform, enable the "release" profile -->
                     <releaseProfiles>sonatype-oss-release</releaseProfiles>
-                    <arguments>-Psonatype-oss-release ${release.arguments} </arguments>
+                    <arguments>-Psonatype-oss-release -Dgpg.keyname='Buildserver Testkey' -Dgpg.passphrase= </arguments>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
+            
         </plugins>
     </build>
     <dependencies>

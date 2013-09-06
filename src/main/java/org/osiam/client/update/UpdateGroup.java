@@ -73,15 +73,6 @@ public class UpdateGroup {
         
 //start DisplayName
         /**
-         * deletes the display name of a existing group
-         * @return The builder itself
-         */
-        public Builder deleteDisplayName(){
-            deleteFields.add(Group_.displayName.toString());
-            return this;
-        }
-
-        /**
          * updates the display name of a existing group
          * @param displayName new display name
          * @return The builder itself
