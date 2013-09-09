@@ -33,6 +33,10 @@
     <artifactId>connector4java</artifactId>
     <version>0.4-SNAPSHOT</version>
     <name>OSIAM Connector 4 Java</name>
+    <packaging>jar</packaging>
+    
+    <version>0.3-SNAPSHOT</version>
+    
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
@@ -53,7 +57,7 @@
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
         <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
   </scm>
 
     <developers>
