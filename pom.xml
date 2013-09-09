@@ -174,7 +174,7 @@
                 <configuration>
                     <!-- During release:perform, enable the "release" profile -->
                     <releaseProfiles>sonatype-oss-release</releaseProfiles>
-                    <arguments>-Psonatype-oss-release -Dgpg.keyname='Buildserver Testkey' -Dgpg.passphrase= </arguments>
+                    <arguments>-Psonatype-oss-release ${release.arguments} </arguments>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
