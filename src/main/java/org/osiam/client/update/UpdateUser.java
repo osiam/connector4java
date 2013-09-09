@@ -26,7 +26,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
      * the Scim conform User to be used to update a existing User
      * @return User to update
      */
-    public User getUserToUpdate(){
+    public User getScimConformUpdateUser(){
         return user;
     }
 
@@ -36,6 +36,19 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
      */
     public static class Builder{
 
+    	private String userName;
+    	private String nickName;
+    	private String externalId;
+    	private String locale;
+    	private String password;
+    	private String preferredLanguage;
+    	private String profileUrl;
+    	private String timezone;
+    	private String title;
+    	private Name name;
+    	private String userType;
+    	private String displayName;
+    	private Boolean active;
         private User.Builder updateUser = null;
         private Set<String> deleteFields = new HashSet<>();
         private List<MultiValuedAttribute> emails = new ArrayList<>();
@@ -49,21 +62,21 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         private List<MultiValuedAttribute> certificates = new ArrayList<>();
         private static final String DELETE = "delete";
 
-        /**
-         * to be used if no userName has to be updated
-         */
         public Builder(){
-            updateUser = new User.Builder();
-        }
-
-        /**
-         * to be used if the userName has to be updated
-         * @param userName new userName of a existing User
-         */
-        public Builder(String userName){
-            updateUser = new User.Builder(userName);
         }
        
+//start username
+        /**
+         * updates the nickName of a existing user
+         * @param nickName the new nickName
+         * @return The builder itself
+         */
+        public Builder updateUsername(String userName){
+        	this.userName = userName;
+            return this;
+        }
+        //end username
+        
 //start address
         /**
          * adds a new address to the existing addresses of a existing user
@@ -128,7 +141,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateNickName(String nickName){
-            updateUser.setNickName(nickName);
+            this.nickName = nickName;
             return this;
         }
         //end Nickname
@@ -145,11 +158,11 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
 
         /**
          * updates the external id of a existing user
-         * @param externalID new external id
+         * @param externalId new external id
          * @return The builder itself
          */
-        public Builder updateExternalId(String externalID){
-            updateUser.setExternalId(externalID);
+        public Builder updateExternalId(String externalId){
+        	this.externalId = externalId;
             return this;
         }
         //end ExternalID
@@ -170,7 +183,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateLocal(String locale){
-            updateUser.setLocale(locale);
+            this.locale = locale;
             return this;
         }
         //end local
@@ -182,7 +195,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updatePassword(String password){
-            updateUser.setPassword(password);
+            this.password = password;
             return this;
         }
         //end password
@@ -203,7 +216,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updatePreferredLanguage(String preferredLanguage){
-            updateUser.setPreferredLanguage(preferredLanguage);
+        	this.preferredLanguage = preferredLanguage;
             return this;
         }
         //end preferredLanguage
@@ -224,7 +237,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateProfileUrl(String profileUrl){
-            updateUser.setProfileUrl(profileUrl);
+        	this.profileUrl = profileUrl;
             return this;
         }
         //end ProfileUrl
@@ -245,7 +258,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateTimezone(String timezone){
-            updateUser.setTimezone(timezone);
+            this.timezone = timezone;
             return this;
         }
         //end timezone
@@ -266,7 +279,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateTitle(String title){
-            updateUser.setTitle(title);
+            this.title = title;
             return this;
         }
         //end title
@@ -287,7 +300,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateName(Name name){
-            updateUser.setName(name);
+            this.name = name;
             return this;
         }
         //end name
@@ -308,7 +321,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateUserType(String userType){
-            updateUser.setUserType(userType);
+            this.userType = userType;
             return this;
         }
         //end UserType
@@ -329,7 +342,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateDisplayName(String displayName){
-            updateUser.setDisplayName(displayName);
+            this.displayName = displayName;
             return this;
         }
         //end DisplayName
@@ -619,7 +632,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder setActive(boolean active){
-        	updateUser.setActive(active);
+        	this.active = active;
         	return this;
         }
         //end activ
@@ -630,6 +643,49 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build(){
+        	if(userName != null){
+        		updateUser = new User.Builder(userName);
+        	}else{
+        		updateUser = new User.Builder();
+        	}
+        	
+        	if(nickName != null){
+        		updateUser.setNickName(nickName);
+        	}
+        	if(externalId != null){
+        		updateUser.setExternalId(externalId);
+        	}
+        	if(locale != null){
+        		updateUser.setLocale(locale);
+        	}
+        	if(password != null){
+        		updateUser.setPassword(password);
+        	}
+        	if(preferredLanguage != null){
+        		updateUser.setPreferredLanguage(preferredLanguage);
+        	}
+        	if(profileUrl != null){
+        		updateUser.setProfileUrl(profileUrl);
+        	}
+        	if(timezone != null) {
+        		updateUser.setTimezone(timezone);
+        	}
+        	if(title != null){
+        		updateUser.setTitle(title);
+        	}
+        	if(name != null){
+        		updateUser.setName(name);
+        	}
+        	if(userType != null){
+        		updateUser.setUserType(userType);
+        	}
+        	if(displayName != null){
+        		updateUser.setDisplayName(displayName);
+        	}
+        	if(active != null){
+        		updateUser.setActive(active);
+        	}
+
             if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 Meta meta = new Meta.Builder()
                         .setAttributes(deleteFields).build();

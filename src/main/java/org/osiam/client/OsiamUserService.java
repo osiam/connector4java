@@ -171,7 +171,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         if (updateUser == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given updateUser can't be null.");
         }
-        return updateResource(id, updateUser.getUserToUpdate(), accessToken);
+        return updateResource(id, updateUser.getScimConformUpdateUser(), accessToken);
     }
     /**
      * The Builder class is used to construct instances of the {@link OsiamUserService}
