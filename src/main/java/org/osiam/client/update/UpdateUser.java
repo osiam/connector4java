@@ -76,7 +76,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         
         /**
-         * deletes the given address from the list of existing addresses of a exisitng user
+         * deletes the given address from the list of existing addresses of a existing user
          * @param address address to be deleted
          * @return The builder itself
          */
@@ -350,10 +350,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteEmail(String email){
-            MultiValuedAttribute delteEmail = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deleteEmail = new MultiValuedAttribute.Builder()
                     .setValue(email)
                     .setOperation(DELETE).build();
-            emails.add(delteEmail);
+            emails.add(deleteEmail);
             return this;
         }
 
@@ -385,10 +385,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteX509Certificate(String certificate){
-            MultiValuedAttribute delteCertificates = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deleteCertificates = new MultiValuedAttribute.Builder()
                     .setValue(certificate)
                     .setOperation(DELETE).build();
-            certificates.add(delteCertificates);
+            certificates.add(deleteCertificates);
             return this;
         }
 
@@ -420,10 +420,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteRole(String role){
-            MultiValuedAttribute delteRole = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deleteRole = new MultiValuedAttribute.Builder()
                     .setValue(role)
                     .setOperation(DELETE).build();
-            roles.add(delteRole);
+            roles.add(deleteRole);
             return this;
         }
 
@@ -455,10 +455,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteIms(String ims){
-            MultiValuedAttribute delteIms = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deleteIms = new MultiValuedAttribute.Builder()
                     .setValue(ims)
                     .setOperation(DELETE).build();
-            this.ims.add(delteIms);
+            this.ims.add(deleteIms);
             return this;
         }
 
@@ -492,10 +492,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deletePhoneNumber(String phoneNumber){
-            MultiValuedAttribute deltePhoneNumber = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deletePhoneNumber = new MultiValuedAttribute.Builder()
                     .setValue(phoneNumber)
                     .setOperation(DELETE).build();
-            phoneNumbers.add(deltePhoneNumber);
+            phoneNumbers.add(deletePhoneNumber);
             return this;
         }
         /**
@@ -526,10 +526,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deletePhoto(String photoUri){
-            MultiValuedAttribute deltePhoto = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deletePhoto = new MultiValuedAttribute.Builder()
                     .setValue(photoUri)
                     .setOperation(DELETE).build();
-            photos.add(deltePhoto);
+            photos.add(deletePhoto);
             return this;
         }
         /**
@@ -593,10 +593,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteGroup(UUID groupId){
-            MultiValuedAttribute delteGroup = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
                     .setValue(groupId.toString())
                     .setOperation(DELETE).build();
-            groups.add(delteGroup);
+            groups.add(deleteGroup);
             return this;
         }
         

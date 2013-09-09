@@ -99,10 +99,10 @@ public class UpdateGroup {
          * @return The builder itself
          */
         public Builder deleteMember(UUID memberId){
-            MultiValuedAttribute delteGroup = new MultiValuedAttribute.Builder()
+            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
                     .setValue(memberId.toString())
                     .setOperation(DELETE).build();
-            members.add(delteGroup);
+            members.add(deleteGroup);
             return this;
         }
 
