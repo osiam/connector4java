@@ -12,7 +12,9 @@ package org.osiam.client.oauth;
  */
 public enum GrantType {
 
-    PASSWORD("password");
+    PASSWORD("password")
+   , AUTHORIZATION_CODE("authorization_code")
+   , CLIENT_CREDENTIALS("client_credentials");
 
     private String urlParam;
 

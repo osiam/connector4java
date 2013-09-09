@@ -8,6 +8,7 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +31,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.OsiamErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 
 /**
@@ -40,18 +42,17 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private final HttpPost post;
-    private final String clientId;
     private final String endpoint;
 
     private AuthService(Builder builder) {
         post = new HttpPost(builder.endpoint);
         post.setHeaders(builder.headers);
         post.setEntity(builder.body);
-        clientId = builder.clientId;
         endpoint = builder.endpoint;
     }
 
     private HttpResponse performRequest() {
+
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;
         try {
@@ -76,23 +77,25 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         int status = response.getStatusLine().getStatusCode();
 
         if (status != SC_OK) {  // NOSONAR - false-positive from clover; if-expression is correct
+        	String errorMessage;
+        	String defaultMessage;
             switch (status) {
                 case SC_BAD_REQUEST:
-                    throw new ConnectionInitializationException(
-                            "Unable to create Connection. Please make sure that you have the correct grants.");
+                	defaultMessage = "Unable to create Connection. Please make sure that you have the correct grants.";
+                	errorMessage = getErrorMessage(response, defaultMessage);
+                    throw new ConnectionInitializationException(errorMessage);
                 case SC_UNAUTHORIZED:
-                    StringBuilder errorMessage = new StringBuilder(
-                            "You are not authorized to directly retrieve a access token.");
-                    if (response.toString().contains(clientId + " not found")) { // NOSONAR - false-positive from clover; if-expression is correct
-                        errorMessage.append(" Unknown client-id");
-                    } else {
-                        errorMessage.append(" Invalid client secret");
-                    }
+                	defaultMessage = "You are not authorized to directly retrieve a access token.";
+                    errorMessage = getErrorMessage(response, defaultMessage);
                     throw new UnauthorizedException(errorMessage.toString());
                 case SC_NOT_FOUND:
-                    throw new ConnectionInitializationException("Unable to find the given OSIAM service (" + endpoint + ")");
+                	defaultMessage = "Unable to find the given OSIAM service (" + endpoint + ")";
+                	errorMessage = getErrorMessage(response, defaultMessage);
+                    throw new ConnectionInitializationException(errorMessage);
                 default:
-                    throw new ConnectionInitializationException(String.format("Unable to setup connection (HTTP Status Code: %d)", status));
+                	defaultMessage = String.format("Unable to setup connection (HTTP Status Code: %d)", status);
+                	errorMessage = getErrorMessage(response, defaultMessage);
+                    throw new ConnectionInitializationException(errorMessage);
             }
         }
 
@@ -107,6 +110,26 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         return accessToken;
     }
 
+    private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
+    	InputStream content = null;
+        String errorMessage;
+        try{
+        	content = httpResponse.getEntity().getContent();
+        	ObjectMapper mapper = new ObjectMapper();;
+            OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
+            errorMessage = error.getDescription();
+        } catch (Exception e){    // NOSONAR - we catch everything
+            errorMessage = defaultErrorMessage;
+        }finally{
+        	try{
+        		content.close();
+        	}catch(IOException notNeeded){/**doesn't matter**/}
+        }
+        if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
+            errorMessage = defaultErrorMessage;
+        }
+        return errorMessage;
+    }
 
     /**
      * The Builder class is used to construct instances of the {@link AuthService}.
@@ -136,16 +159,13 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         /**
-         * Use the given {@link GrantType} to for the request. At this point only the grant type 'password' is supported.
+         * Use the given {@link GrantType} to for the request. 
          *
          * @param grantType of the requested AuthCode
          * @return The builder itself
          * @throws UnsupportedOperationException If the GrantType is anything else than GrantType.PASSWORD
          */
         public Builder setGrantType(GrantType grantType) {
-            if (!grantType.equals(GrantType.PASSWORD)) { // NOSONAR - false-positive from clover; if-expression is correct
-                throw new UnsupportedOperationException(grantType.getUrlParam() + " grant type not supported at this time");
-            }
             this.grantType = grantType;
             return this;
         }
@@ -204,14 +224,18 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          */
         public AuthService build() {
             if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
-                throw new ConnectionInitializationException("The provided client credentials are incomplete.");
+                throw new IllegalArgumentException("The provided client credentials are incomplete.");
             }
             if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
-                throw new ConnectionInitializationException("The grant type is not set.");
+                throw new IllegalArgumentException("The grant type is not set.");
             }
             if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) { // NOSONAR - false-positive from clover; if-expression is correct
-                throw new ConnectionInitializationException("The grant type 'password' requires username and password");
+                throw new IllegalArgumentException("The grant type 'password' requires username and password");
             }
+            if (grantType.equals(GrantType.CLIENT_CREDENTIALS) && (requestParameters.containsKey("username") || requestParameters.containsKey("password"))) { // NOSONAR - false-positive from clover; if-expression is correct
+                throw new IllegalArgumentException("For the grant type 'client_credentials' setting of password and username are not allowed.");
+            }
+
             requestParameters.put("grant_type", grantType.getUrlParam());
             this.body = buildBody();
             this.headers = buildHead();
@@ -233,9 +257,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 
         private HttpEntity buildBody() {
             List<NameValuePair> nameValuePairs = new ArrayList<>();
-            for (String key : requestParameters.keySet()) {
-                nameValuePairs.add(new BasicNameValuePair(key, requestParameters.get(key)));
-            }
+	            for (String key : requestParameters.keySet()) {
+	            	
+	                nameValuePairs.add(new BasicNameValuePair(key, requestParameters.get(key)));
+	            }
             try {
                 return new UrlEncodedFormEntity(nameValuePairs);
             } catch (UnsupportedEncodingException e) {
