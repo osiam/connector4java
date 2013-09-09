@@ -22,9 +22,9 @@ import org.osiam.resources.scim.User;
  */
 public class UpdateGroup {
 
-    private Group user;
+    private Group group;
     private UpdateGroup(Builder builder){
-        user = builder.updateGroup.build();
+        group = builder.updateGroup.build();
     }
 
     /**
@@ -32,7 +32,7 @@ public class UpdateGroup {
      * @return Group to update
      */
     public Group getGroupToUpdate(){
-        return user;
+        return group;
     }
     
     /**
@@ -44,7 +44,7 @@ public class UpdateGroup {
     	private Group.Builder updateGroup = null;
         private Set<String> deleteFields = new HashSet<>();
         private static final String DELETE = "delete";
-        private List<MultiValuedAttribute> members = new ArrayList<>();
+        private Set<MultiValuedAttribute> members = new HashSet<>();
 
         public Builder(){
         	updateGroup = new Group.Builder();
@@ -111,18 +111,10 @@ public class UpdateGroup {
          * @param member user or group id to be added
          * @return The builder itself
          */
-        public Builder addMember(MultiValuedAttribute member){
-            members.add(member);
-            return this;
-        }
-        
-        /**
-         * updates an member of a existing group
-         * @param member updated group
-         * @return The builder itself
-         */
-        public Builder updateMember(MultiValuedAttribute member){
-        	members.add(member);//TODO wird es benötigt?
+        public Builder addMember(UUID memberId){
+            MultiValuedAttribute newGroup = new MultiValuedAttribute.Builder()
+            		.setValue(memberId.toString()).build();
+            members.add(newGroup);
             return this;
         }
         //end group
@@ -139,7 +131,7 @@ public class UpdateGroup {
                 updateGroup.setMeta(meta);
             }
             if(members.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	//updateGroup.setMembers(members);
+            	updateGroup.setMembers(members);
             }
             
             return new UpdateGroup(this);
