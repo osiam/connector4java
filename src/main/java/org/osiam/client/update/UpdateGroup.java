@@ -1,18 +1,13 @@
 package org.osiam.client.update;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.osiam.client.query.metamodel.Group_;
-import org.osiam.client.query.metamodel.User_;
-import org.osiam.client.update.UpdateUser.Builder;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
-import org.osiam.resources.scim.User;
 /*
  * for licensing see the file license.txt.
  */
@@ -31,7 +26,7 @@ public class UpdateGroup {
      * the Scim conform Group to be used to update a existing Group
      * @return Group to update
      */
-    public Group getGroupToUpdate(){
+    public Group getScimConformUpdateGroup(){
         return group;
     }
     
@@ -56,7 +51,7 @@ public class UpdateGroup {
          * @return The builder itself
          */
         public Builder deleteExternalId(){
-            deleteFields.add(User_.externalId.toString());
+            deleteFields.add(Group_.externalId.toString());
             return this;
         }
 
@@ -120,7 +115,7 @@ public class UpdateGroup {
         //end group
         
     	/**
-         * constructs a UpdateUser with the given values
+         * constructs a {@link UpdateGroup} with the given values
          *
          * @return a valid {@link UpdateGroup}
          */
