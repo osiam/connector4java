@@ -8,7 +8,6 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -154,8 +153,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @param endpoint The URL at which the OAuth2 service lives.
          */
         public Builder(String endpoint) {
-            requestParameters.put("scope", DEFAULT_SCOPE);
-            this.endpoint = endpoint + "/oauth/token";
+            this.endpoint = endpoint;
         }
 
         /**
@@ -226,6 +224,24 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The provided client credentials are incomplete.");
             }
+            ensureGrandtypeParameterAreCorrecht();
+            setFinalEndpoint();
+            
+            requestParameters.put("grant_type", grantType.getUrlParam());
+            this.body = buildBody();
+            this.headers = buildHead();
+            return new AuthService(this);
+        }
+
+        private void setFinalEndpoint(){
+        	if(grantType.equals(GrantType.AUTHORIZATION_CODE)){
+        		endpoint += "/oauth/authorize";
+        	}else{
+        		endpoint += "/oauth/token";
+        	}
+        }
+        
+        private void ensureGrandtypeParameterAreCorrecht(){
             if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type is not set.");
             }
@@ -235,13 +251,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             if (grantType.equals(GrantType.CLIENT_CREDENTIALS) && (requestParameters.containsKey("username") || requestParameters.containsKey("password"))) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("For the grant type 'client_credentials' setting of password and username are not allowed.");
             }
-
-            requestParameters.put("grant_type", grantType.getUrlParam());
-            this.body = buildBody();
-            this.headers = buildHead();
-            return new AuthService(this);
         }
-
+        
         private String encodeClientCredentials(String clientId, String clientSecret) {
             String clientCredentials = clientId + ":" + clientSecret;
             return new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
@@ -256,6 +267,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         private HttpEntity buildBody() {
+            requestParameters.put("scope", DEFAULT_SCOPE);
+        	requestParameters.put("grant_type", grantType.getUrlParam());
             List<NameValuePair> nameValuePairs = new ArrayList<>();
 	            for (String key : requestParameters.keySet()) {
 	            	

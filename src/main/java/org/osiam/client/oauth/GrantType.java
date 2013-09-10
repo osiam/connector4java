@@ -12,7 +12,14 @@ package org.osiam.client.oauth;
  */
 public enum GrantType {
 
+	/**
+	 * for this GrantType also the user name and the user password are needed
+	 */
     PASSWORD("password")
+    /**
+	 * for this GrantType the user name and the user password are not allowed
+	 * If you set one of these a exception will be thrown
+	 */
    , AUTHORIZATION_CODE("authorization_code")
    , CLIENT_CREDENTIALS("client_credentials");
 
