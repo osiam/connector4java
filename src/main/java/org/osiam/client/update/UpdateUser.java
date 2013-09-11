@@ -71,7 +71,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param nickName the new nickName
          * @return The builder itself
          */
-        public Builder updateUsername(String userName){
+        public Builder updateUserName(String userName){
         	this.userName = userName;
             return this;
         }
@@ -182,7 +182,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param locale new local
          * @return The builder itself
          */
-        public Builder updateLocal(String locale){
+        public Builder updateLocale(String locale){
             this.locale = locale;
             return this;
         }

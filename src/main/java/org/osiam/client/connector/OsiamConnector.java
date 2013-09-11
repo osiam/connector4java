@@ -331,7 +331,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
          * @param username The username
          * @return The builder itself
          */
-        public Builder setUsername(String username) {
+        public Builder setUserName(String username) {
             this.username = username;
             return this;
         }

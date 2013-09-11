@@ -77,7 +77,7 @@ public class OsiamConnectorTest {
         oConnector = new OsiamConnector.Builder(endpoint).setGrantType(GrantType.PASSWORD)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
-                .setUsername(IRRELEVANT)
+                .setUserName(IRRELEVANT)
                 .setPassword(IRRELEVANT)
                 .build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
@@ -464,7 +464,7 @@ public class OsiamConnectorTest {
                 .setGrantType(GrantType.PASSWORD)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUsername(VALID_USERNAME)
+                .setUserName(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
                 .build();
     }
