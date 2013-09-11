@@ -86,7 +86,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
                 case SC_UNAUTHORIZED:
                 	defaultMessage = "You are not authorized to directly retrieve a access token.";
                     errorMessage = getErrorMessage(response, defaultMessage);
-                    throw new UnauthorizedException(errorMessage.toString());
+                    throw new UnauthorizedException(errorMessage);
                 case SC_NOT_FOUND:
                 	defaultMessage = "Unable to find the given OSIAM service (" + endpoint + ")";
                 	errorMessage = getErrorMessage(response, defaultMessage);
@@ -114,14 +114,14 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         String errorMessage;
         try{
         	content = httpResponse.getEntity().getContent();
-        	ObjectMapper mapper = new ObjectMapper();;
+        	ObjectMapper mapper = new ObjectMapper();
             OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
             errorMessage = error.getDescription();
         } catch (Exception e){    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
         }finally{
         	try{
-        		content.close();
+        		if(content != null) { content.close(); }// NOSONAR - false-positive from clover; if-expression is correct
         	}catch(IOException notNeeded){/**doesn't matter**/}
         }
         if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
@@ -224,24 +224,23 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The provided client credentials are incomplete.");
             }
-            ensureGrandtypeParameterAreCorrecht();
+            ensureGrandtypeParameterAreCorrect();
             setFinalEndpoint();
             
-            requestParameters.put("grant_type", grantType.getUrlParam());
             this.body = buildBody();
             this.headers = buildHead();
             return new AuthService(this);
         }
 
         private void setFinalEndpoint(){
-        	if(grantType.equals(GrantType.AUTHORIZATION_CODE)){
+        	if(grantType.equals(GrantType.AUTHORIZATION_CODE)){// NOSONAR - we check before that the grantType is not null
         		endpoint += "/oauth/authorize";
         	}else{
         		endpoint += "/oauth/token";
         	}
         }
         
-        private void ensureGrandtypeParameterAreCorrecht(){
+        private void ensureGrandtypeParameterAreCorrect(){
             if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type is not set.");
             }
@@ -268,7 +267,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 
         private HttpEntity buildBody() {
             requestParameters.put("scope", DEFAULT_SCOPE);
-        	requestParameters.put("grant_type", grantType.getUrlParam());
+        	requestParameters.put("grant_type", grantType.getUrlParam()); // NOSONAR - we check before that the grantType is not null
             List<NameValuePair> nameValuePairs = new ArrayList<>();
 	            for (String key : requestParameters.keySet()) {
 	            	

@@ -15,7 +15,7 @@ import org.osiam.resources.scim.MultiValuedAttribute;
 /**
  * Class to create a UpdateGroup Object to update a existing Group
  */
-public class UpdateGroup {
+public final class UpdateGroup {// NOSONAR - Builder constructs instances of this class
 
     private Group group;
     private UpdateGroup(Builder builder){

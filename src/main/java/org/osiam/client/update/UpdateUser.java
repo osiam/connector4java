@@ -642,47 +642,47 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          *
          * @return a valid {@link UpdateUser}
          */
-        public UpdateUser build(){
-        	if(userName != null){
+        public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10 
+        	if(userName != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser = new User.Builder(userName);
         	}else{
         		updateUser = new User.Builder();
         	}
         	
-        	if(nickName != null){
+        	if(nickName != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setNickName(nickName);
         	}
-        	if(externalId != null){
+        	if(externalId != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setExternalId(externalId);
         	}
-        	if(locale != null){
+        	if(locale != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setLocale(locale);
         	}
-        	if(password != null){
+        	if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setPassword(password);
         	}
         	if(preferredLanguage != null){
         		updateUser.setPreferredLanguage(preferredLanguage);
         	}
-        	if(profileUrl != null){
+        	if(profileUrl != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setProfileUrl(profileUrl);
         	}
-        	if(timezone != null) {
+        	if(timezone != null) {// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setTimezone(timezone);
         	}
-        	if(title != null){
+        	if(title != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setTitle(title);
         	}
-        	if(name != null){
+        	if(name != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setName(name);
         	}
-        	if(userType != null){
+        	if(userType != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setUserType(userType);
         	}
-        	if(displayName != null){
+        	if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setDisplayName(displayName);
         	}
-        	if(active != null){
+        	if(active != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setActive(active);
         	}
 
