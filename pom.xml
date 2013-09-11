@@ -21,20 +21,21 @@
   ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
   ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    
+
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
     <version>0.6-SNAPSHOT</version>
     <name>OSIAM Connector 4 Java</name>
     <packaging>jar</packaging>
-    
+
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
@@ -56,7 +57,7 @@
         <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
         <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <developers>
         <developer>
@@ -67,7 +68,7 @@
             <organization>OSIAM</organization>
         </developer>
     </developers>
-    
+
     <distributionManagement>
         <repository>
             <id>osiam-repository</id>
@@ -90,6 +91,13 @@
     </repositories>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.2</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -154,18 +162,18 @@
 
             <!-- parent pom defines old version -->
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.4</version>
-              <executions>
-                  <execution>
-                      <id>sign-artifacts</id>
-                      <phase>verify</phase>
-                      <goals>
-                          <goal>sign</goal>
-                      </goals>
-                  </execution>
-              </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- During release:perform, enable the "release" profile -->
             <plugin>
@@ -174,11 +182,11 @@
                 <configuration>
                     <!-- During release:perform, enable the "release" profile -->
                     <releaseProfiles>sonatype-oss-release</releaseProfiles>
-                    <arguments>-Psonatype-oss-release ${release.arguments} </arguments>
+                    <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-            
+
         </plugins>
     </build>
     <dependencies>
@@ -260,10 +268,10 @@
             <version>1.0.1.Final</version>
         </dependency>
         <dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time</artifactId>
-		    <version>2.3</version>
-		</dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
