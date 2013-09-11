@@ -661,7 +661,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setPassword(password);
         	}
-        	if(preferredLanguage != null){
+        	if(preferredLanguage != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setPreferredLanguage(preferredLanguage);
         	}
         	if(profileUrl != null){// NOSONAR - false-positive from clover; if-expression is correct
