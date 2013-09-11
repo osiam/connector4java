@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.osiam.client.AccessTokenMockProvider;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -466,6 +466,7 @@ public class OsiamConnectorTest {
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUserName(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
+                .setScope(Scope.GET)
                 .build();
     }
 

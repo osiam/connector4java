@@ -108,6 +108,7 @@ public class AuthServiceTest {
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUsername(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
+                .setScope(Scope.GET)
                 .build();
     }
     
@@ -118,6 +119,7 @@ public class AuthServiceTest {
                 .setClientSecret(INVALID_CLIENT_SECRET)
                 .setUsername(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
+                .setScope(Scope.GET)
                 .build();
     }
     
@@ -128,6 +130,7 @@ public class AuthServiceTest {
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUsername(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
+                .setScope(Scope.GET)
                 .build();
     }
 

@@ -7,6 +7,7 @@ import org.osiam.client.OsiamUserService;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
@@ -28,6 +29,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     private String username;
     private String password;
     private String endpoint;
+    private Scope scope;
+    private Scope[] scopes;
     
 	private AuthService authService;
 	private OsiamUserService userService;
@@ -40,6 +43,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         this.username = builder.username;
         this.password = builder.password;
         this.endpoint = builder.endpoint;
+        this.scope = builder.scope;
+        this.scopes = builder.scopes;
     }
     
     private AuthService authService(){
@@ -60,6 +65,11 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     		}
     		if(username != null){    // NOSONAR - false-positive from clover; if-expression is correct
     			builder = builder.setUsername(username);
+    		}
+    		if(scope != null && scopes != null){// NOSONAR - false-positive from clover; if-expression is correct
+    			builder = builder.setScope(scope, scopes);
+    		}else if (scope != null){// NOSONAR - false-positive from clover; if-expression is correct
+    			builder = builder.setScope(scope);
     		}
     		authService = builder.build();
     	}
@@ -280,7 +290,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private String username;
         private String password;
         private String endpoint;
-
+        private Scope scope;
+        private Scope[] scopes;
+        
         /**
          * Set up the Builder for the construction of  an {@link OsiamConnector} instance for the OAuth2 service at
          * the given endpoint
@@ -291,6 +303,18 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
             this.endpoint = endpoint;
         }
 
+        /**
+         * Use the given {@link Scope} to for the request. 
+         * @param scope the needed scope
+         * @param scopes the needed scopes
+         * @return
+         */
+        public Builder setScope(Scope scope, Scope... scopes){
+        	this.scope = scope;
+        	this.scopes = scopes;
+        	return this;
+        }
+        
         /**
          * Use the given {@link org.osiam.client.oauth.GrantType} to for the request. At this point only the grant type 'password' is supported.
          *

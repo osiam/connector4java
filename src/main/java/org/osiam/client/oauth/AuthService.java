@@ -139,8 +139,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         private String clientSecret;
         private GrantType grantType;
         private Header[] headers;
-
-        private static final String DEFAULT_SCOPE = "GET POST PUT PATCH DELETE";
+        private String scopes;
 
         private Map<String, String> requestParameters = new HashMap<>();
         private String endpoint;
@@ -156,6 +155,30 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             this.endpoint = endpoint;
         }
 
+        /**
+         * Use the given {@link Scope} to for the request. 
+         * @param scope the needed scope
+         * @param scopes the needed scopes
+         * @return
+         */
+        public Builder setScope(Scope scope, Scope... scopes){
+        	List<Scope> scopeList = new ArrayList<>();
+        	scopeList.add(scope);
+        	for (Scope actScope : scopes) {
+        		scopeList.add(actScope);
+			}
+        	if(scopeList.contains(Scope.ALL)){
+        		this.scopes = Scope.ALL.toString();
+        	}else{
+        		StringBuilder scopeBuilder = new StringBuilder();
+        		for (Scope actScope : scopeList) {
+					scopeBuilder.append(" ").append(actScope.toString());
+        		}
+        		this.scopes = scopeBuilder.toString().trim();
+        	}
+        	return this;
+        }
+        
         /**
          * Use the given {@link GrantType} to for the request. 
          *
@@ -221,10 +244,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          *          or, if the requested grant type is 'password', the user credentials (userName/password) are incomplete.
          */
         public AuthService build() {
-            if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
-                throw new IllegalArgumentException("The provided client credentials are incomplete.");
-            }
-            ensureGrandtypeParameterAreCorrect();
+
+            ensureAllNeededParameterAreCorrect();
             setFinalEndpoint();
             
             this.body = buildBody();
@@ -240,7 +261,13 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         	}
         }
         
-        private void ensureGrandtypeParameterAreCorrect(){
+        private void ensureAllNeededParameterAreCorrect(){
+            if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
+                throw new IllegalArgumentException("The provided client credentials are incomplete.");
+            }
+            if(scopes == null){// NOSONAR - false-positive from clover; if-expression is correct
+            	throw new IllegalArgumentException("At least one scope needs to be set.");
+            }
             if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type is not set.");
             }
@@ -266,7 +293,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         private HttpEntity buildBody() {
-            requestParameters.put("scope", DEFAULT_SCOPE);
+            requestParameters.put("scope", scopes);
         	requestParameters.put("grant_type", grantType.getUrlParam()); // NOSONAR - we check before that the grantType is not null
             List<NameValuePair> nameValuePairs = new ArrayList<>();
 	            for (String key : requestParameters.keySet()) {
