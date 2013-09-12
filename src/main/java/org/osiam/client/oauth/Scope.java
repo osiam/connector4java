@@ -1,5 +1,11 @@
 package org.osiam.client.oauth;
+/*
+ * for licensing see the file license.txt.
+ */
 
+/**
+ * supported access scopes by the OSIAM Server
+ */
 public enum Scope {
 
 	GET
