@@ -14,10 +14,11 @@ public enum Scope {
 	,PATCH
 	,DELETE
 	,ALL{ 
+			@Override
 			public String toString(){
 				StringBuilder allScopes = new StringBuilder();
 				for (Scope actScope : Scope.values()) {
-					if(!actScope.equals(this)){
+					if(actScope != this){
 						allScopes.append(" ").append(actScope.toString());
 					}
 				}
