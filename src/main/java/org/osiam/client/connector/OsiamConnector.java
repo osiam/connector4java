@@ -263,7 +263,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
      */
     public User updateUser(UUID id, UpdateUser updateUser , AccessToken accessToken){
-        return userService.updateUser(id, updateUser, accessToken);
+        return userService().updateUser(id, updateUser, accessToken);
     }
 
     /**
@@ -276,7 +276,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      */
     public Group updateGroup(UUID id, UpdateGroup updateGroup , AccessToken accessToken){
-        return groupService.updateGroup(id, updateGroup, accessToken);
+        return groupService().updateGroup(id, updateGroup, accessToken);
     }
 
     /**

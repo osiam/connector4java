@@ -105,6 +105,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given UUID " + id);
                         throw new NoResultException(errorMessage);
+                    case SC_FORBIDDEN:
+                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to get this " + typeName + ".";
+                        throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
@@ -146,6 +149,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_UNAUTHORIZED:
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
+                    case SC_FORBIDDEN:
+                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to search for " + typeName + "s.";
+                        throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
@@ -245,6 +251,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case  SC_CONFLICT:
                         errorMessage = getErrorMessage(response, "Unable to save: " + response.getStatusLine().getReasonPhrase());
                         throw new ConflictException(errorMessage);
+                    case SC_FORBIDDEN:
+                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to delete a " + typeName + ".";
+                        throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
@@ -282,6 +291,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case  SC_CONFLICT:
                         errorMessage = getErrorMessage(response, "Unable to save");
                         throw new ConflictException(errorMessage);
+                    case SC_FORBIDDEN:
+                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to create a " + typeName + ".";
+                        throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);
@@ -335,6 +347,9 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case  SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id + " could be found to be updated.");
                         throw new ConflictException(errorMessage);
+                    case SC_FORBIDDEN:
+                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to update this " + typeName + ".";
+                        throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
                         throw new ConnectionInitializationException(errorMessage);

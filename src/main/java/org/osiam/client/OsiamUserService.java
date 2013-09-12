@@ -3,6 +3,7 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
@@ -17,6 +18,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
@@ -90,6 +92,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
                     case SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "No User could be found, who holds the supplied access token");
                         throw new NoResultException(errorMessage);
+                    case SC_FORBIDDEN:
+                    	errorMessage = getErrorMessage(response, "You are not retrieve the actual User.");
+                        throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
                         throw new ConnectionInitializationException(errorMessage);

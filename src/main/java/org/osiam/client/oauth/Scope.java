@@ -7,13 +7,16 @@ public enum Scope {
 	,PUT
 	,PATCH
 	,DELETE
-	,ALL;
-	
-	public String toString(){
-		if(this == Scope.ALL){
-			return "GET POST PUT PATCH DELETE";
-		}else{
-			return super.toString();
+	,ALL{ 
+			public String toString(){
+				StringBuilder allScopes = new StringBuilder();
+				for (Scope actScope : Scope.values()) {
+					if(!actScope.equals(this)){
+						allScopes.append(" ").append(actScope.toString());
+					}
+				}
+				return allScopes.toString().trim();
+			}
 		}
-	}
+	;
 }

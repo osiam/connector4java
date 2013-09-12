@@ -49,7 +49,7 @@ public class OsiamUserEditTest {
     public void setUp() throws Exception {
         service = new OsiamUserService.Builder(endpoint).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
-
+        
         // use happy path for default
         givenAnUserUUID();
         givenAnAccessToken();
@@ -58,7 +58,7 @@ public class OsiamUserEditTest {
 
     @Test
     public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(endpoint + "/Users"), service.getUri());
+        assertEquals(new URI(endpoint + "/Users"),service.getUri());
     }
     
     @Test(expected = IllegalArgumentException.class)
