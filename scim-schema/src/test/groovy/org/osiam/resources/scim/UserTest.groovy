@@ -81,8 +81,9 @@ class UserTest extends Specification {
 
     def "should generate a user based on builder"() {
         given:
+        def multivalueAttribute = new MultiValuedAttribute.Builder().build()
+
         def builder = new User.Builder("test").setActive(true)
-                .setAny(["ha"] as Set)
                 .setDisplayName("display")
                 .setLocale("locale")
                 .setName(new Name.Builder().build())
@@ -93,13 +94,15 @@ class UserTest extends Specification {
                 .setTimezone("time")
                 .setTitle("title")
                 .setUserType("userType")
+                .setEntitlements([multivalueAttribute] as List)
+                .setRoles([multivalueAttribute] as List)
+                .setX509Certificates([multivalueAttribute] as List)
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
         when:
         User user = builder.build()
         then:
         user.active == builder.active
         user.addresses == builder.addresses
-        user.any == builder.any
         user.displayName == builder.displayName
         user.emails == builder.emails
         user.entitlements == builder.entitlements
@@ -127,9 +130,7 @@ class UserTest extends Specification {
     def "should ignore password on output"() {
         given:
         User user = new User.Builder("test").setActive(true)
-                .setAny(["ha"] as Set)
                 .setDisplayName("display")
-
                 .setLocale("locale")
                 .setName(new Name.Builder().build())
                 .setNickName("nickname")
@@ -154,7 +155,6 @@ class UserTest extends Specification {
         clonedUser.externalId == user.externalId
         clonedUser.meta == user.meta
         clonedUser.active == user.active
-        clonedUser.any == user.any
         clonedUser.displayName == user.displayName
         clonedUser.locale == user.locale
         clonedUser.name == user.name
@@ -166,7 +166,6 @@ class UserTest extends Specification {
     def "should set empty lists for pretty output"() {
         given:
         User user = new User.Builder("test").setActive(true)
-                .setAny(["ha"] as Set)
                 .setDisplayName("display")
                 .setLocale("locale")
                 .setName(new Name.Builder().build())
@@ -199,7 +198,6 @@ class UserTest extends Specification {
         def generalAttribute = new MultiValuedAttribute.Builder().build()
 
         User user = new User.Builder("test").setActive(true)
-                .setAny(["ha"] as Set)
                 .setDisplayName("display")
                 .setLocale("locale")
                 .setName(new Name.Builder().build())

@@ -59,7 +59,6 @@ public class User extends CoreResource {
     private List<MultiValuedAttribute> entitlements;
     private List<MultiValuedAttribute> roles;
     private List<MultiValuedAttribute> x509Certificates;
-    private Set<Object> any;
 
     public User() {
     }
@@ -88,7 +87,6 @@ public class User extends CoreResource {
         this.entitlements = builder.entitlements;
         this.roles = builder.roles;
         this.x509Certificates = builder.x509Certificates;
-        this.any = builder.any;
     }
 
     /**
@@ -247,30 +245,6 @@ public class User extends CoreResource {
         return x509Certificates;
     }
 
-    /**
-     * Gets the value of the any property.
-     * <p/>
-     * <p/>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the any property.
-     * <p/>
-     * <p/>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAny().add(newItem);
-     * </pre>
-     * <p/>
-     * <p/>
-     * <p/>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Object }
-     */
-    public Set<Object> getAny() {
-        return this.any;
-    }
-
     public static class Builder extends CoreResource.Builder {
         private final String userName;
         private String password;
@@ -293,7 +267,6 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
-        private Set<Object> any;
 
 
         public Builder(String userName) {
@@ -340,7 +313,6 @@ public class User extends CoreResource {
             builder.entitlements = user.entitlements ;
             builder.roles = user.roles;
             builder.x509Certificates = user.x509Certificates;
-            builder.any = user.any;
             builder.schemas = user.getSchemas();
             return builder.build();
         }
@@ -442,11 +414,6 @@ public class User extends CoreResource {
 
         public Builder setX509Certificates(List<MultiValuedAttribute> x509Certificates) {
             this.x509Certificates = x509Certificates;
-            return this;
-        }
-
-        public Builder setAny(Set<Object> any) {
-            this.any = any;
             return this;
         }
 

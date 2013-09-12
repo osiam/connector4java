@@ -26,8 +26,8 @@ package org.osiam.resources.scim
 import spock.lang.Specification
 
 class AddressTest extends Specification {
-    def "should generate an address from builder"() {
 
+    def "should generate an address from builder"() {
         given:
         def builder = new Address.Builder().setCountry("country")
                 .setFormatted("formatted")
@@ -48,5 +48,10 @@ class AddressTest extends Specification {
         address.streetAddress == builder.streetAddress
     }
 
-
+    def "empty constructor for json serializing should be present"() {
+        when:
+        def result = new Address();
+        then:
+        result
+    }
 }

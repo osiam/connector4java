@@ -26,9 +26,13 @@ package org.osiam.resources.scim
 import spock.lang.Specification
 
 class GroupTest extends Specification {
+
     def "should be able to generate a group"() {
         given:
-        def builder = new Group.Builder().setDisplayName("display").setAny(new Object())
+        def multiValueAttribute = new MultiValuedAttribute.Builder().build()
+        def builder = new Group.Builder().setDisplayName("display")
+        .setMembers([multiValueAttribute] as Set)
+
         when:
         def group = builder.build()
 
@@ -39,7 +43,7 @@ class GroupTest extends Specification {
 
     def "should be able to enrich group members"() {
         given:
-        def group = new Group.Builder().setDisplayName("display").setAny(new Object()).build()
+        def group = new Group.Builder().setDisplayName("display").build()
         when:
         group.members.add(new MultiValuedAttribute.Builder().build())
 
@@ -49,7 +53,7 @@ class GroupTest extends Specification {
 
     def "members should be a must exist implementation"() {
         given:
-        def group = new Group.Builder().setDisplayName("display").setAny(new Object()).build()
+        def group = new Group.Builder().setDisplayName("display").build()
 
         when:
         group.members.add(new MultiValuedAttribute.Builder().build())
@@ -71,7 +75,6 @@ class GroupTest extends Specification {
         given:
         def group = new Group.Builder().
                 setDisplayName("display").
-                setAny(new Object()).
                 setId("id").build()
         when:
         def result  = new Group.Builder(group).build()
