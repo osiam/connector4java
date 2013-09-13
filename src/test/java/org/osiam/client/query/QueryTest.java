@@ -26,7 +26,7 @@ public class QueryTest {
 
     @Test
     public void no_parameters_in_query_returns_default_index() {
-        assertEquals(0, query.getStartIndex());
+        assertEquals(1, query.getStartIndex());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class QueryTest {
 
     @Test
     public void index_is_appended_and_incremented() {
-        assertEquals(QUERY_LACKING_COUNT_AND_INDEX + "&startIndex=100", query.nextPage().toString());
+        assertEquals(QUERY_LACKING_COUNT_AND_INDEX + "&startIndex=101", query.nextPage().toString());
     }
 
     @Test

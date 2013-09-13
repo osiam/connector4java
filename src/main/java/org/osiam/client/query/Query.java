@@ -22,8 +22,7 @@ import org.osiam.resources.scim.CoreResource;
  */
 public class Query {
     private static final int DEFAULT_COUNT = 100;
-    // FIXME DEFAULT_INDEX should be 1 to comply to the Scim spec, but OSIAM server still depends on 0
-    private static final int DEFAULT_INDEX = 0;
+    private static final int DEFAULT_INDEX = 1;
     private static final Pattern INDEX_PATTERN = Pattern.compile("startIndex=(\\d+)&?");
     private static final Pattern COUNT_PATTERN = Pattern.compile("count=(\\d+)&?");
 
@@ -82,10 +81,13 @@ public class Query {
      * @return A new query paged backward by one.
      */
     public Query previousPage() {
-        int newIndex = getStartIndex() - getCount();
+        if(getStartIndex() <= DEFAULT_INDEX){// NOSONAR - false-positive from clover; if-expression is correct
+        	throw new IllegalStateException("StartIndex < " + DEFAULT_INDEX + " is not possible.");
+        }
+    	int newIndex = getStartIndex() - getCount();
         
         if (newIndex < DEFAULT_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalStateException("Negative startIndex is not possible.");
+            newIndex = DEFAULT_INDEX;
         }
         
         return new Query(indexMatcher.replaceFirst("startIndex=" + newIndex));
