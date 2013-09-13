@@ -21,9 +21,17 @@ class SCIMSearchResultTest extends Specification {
 
         then:
         a.resources == result
-        a.totalResult == 2342
+        a.totalResults == 2342
         a.itemsPerPage == 100
         a.startIndex == 1
         a.schemas == schemas
+    }
+
+    def "empty constructor should be present for jackson"() {
+        when:
+        def result = new SCIMSearchResult()
+
+        then:
+        result
     }
 }

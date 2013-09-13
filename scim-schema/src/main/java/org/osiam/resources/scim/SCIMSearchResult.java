@@ -16,15 +16,17 @@ import java.util.Set;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class SCIMSearchResult<T> {
 
-    private long totalResult;
+    private long totalResults;
     private long itemsPerPage;
     private long startIndex;
     private Set<String> schemas;
     private List<T> resources;
 
-    public SCIMSearchResult(List<T> resources, long totalResult, long itemsPerPage, long startIndex, Set<String> schemas) {
+    public SCIMSearchResult() {}
+
+    public SCIMSearchResult(List<T> resources, long totalResults, long itemsPerPage, long startIndex, Set<String> schemas) {
         this.resources = resources;
-        this.totalResult = totalResult;
+        this.totalResults = totalResults;
         this.itemsPerPage = itemsPerPage;
         this.startIndex = startIndex;
         this.schemas = schemas;
@@ -35,8 +37,8 @@ public class SCIMSearchResult<T> {
         return resources;
     }
 
-    public long getTotalResult() {
-        return totalResult;
+    public long getTotalResults() {
+        return totalResults;
     }
 
     public Set<String> getSchemas() {
