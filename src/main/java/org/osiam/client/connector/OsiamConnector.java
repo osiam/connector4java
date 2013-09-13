@@ -8,6 +8,7 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
+import org.osiam.client.oauth.AuthService.Builder;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
@@ -31,6 +32,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     private String endpoint;
     private Scope scope;
     private Scope[] scopes;
+    private String stringScope;
     
 	private AuthService authService;
 	private OsiamUserService userService;
@@ -45,6 +47,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         this.endpoint = builder.endpoint;
         this.scope = builder.scope;
         this.scopes = builder.scopes;
+        this.stringScope = builder.stringScope;
     }
     
     private AuthService authService(){
@@ -70,6 +73,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     			builder = builder.setScope(scope, scopes);
     		}else if (scope != null){// NOSONAR - false-positive from clover; if-expression is correct
     			builder = builder.setScope(scope);
+    		}
+    		if(stringScope != null){// NOSONAR - false-positive from clover; if-expression is correct
+    			builder = builder.setScope(stringScope);
     		}
     		authService = builder.build();
     	}
@@ -292,6 +298,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private String endpoint;
         private Scope scope;
         private Scope[] scopes;
+        private String stringScope;
         
         /**
          * Set up the Builder for the construction of  an {@link OsiamConnector} instance for the OAuth2 service at
@@ -312,6 +319,16 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         public Builder setScope(Scope scope, Scope... scopes){
         	this.scope = scope;
         	this.scopes = scopes;
+        	return this;
+        }
+        
+        /**
+         * The needed access token scopes as String like 'GET PATCH' 
+         * @param scope the needed scope
+         * @return The builder itself
+         */
+        public Builder setScope(String scope){
+        	this.stringScope = scope;
         	return this;
         }
         

@@ -159,7 +159,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Use the given {@link Scope} to for the request. 
          * @param scope the needed scope
          * @param scopes the needed scopes
-         * @return
+         * @return The builder itself
          */
         public Builder setScope(Scope scope, Scope... scopes){
         	List<Scope> scopeList = new ArrayList<>();
@@ -176,6 +176,16 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         		}
         		this.scopes = scopeBuilder.toString().trim();
         	}
+        	return this;
+        }
+        
+        /**
+         * The needed access token scopes as String like 'GET PATCH' 
+         * @param scope the needed scope
+         * @return The builder itself
+         */
+        public Builder setScope(String scope){
+        	this.scopes = scope;
         	return this;
         }
         
