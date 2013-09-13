@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -57,7 +56,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
      */
-    public User getUser(UUID id, AccessToken accessToken) {
+    public User getUser(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
@@ -154,7 +153,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @param uuid id to be delete
      * @param accessToken the OSIAM access token from for the current session
      */
-    public void deleteUser(UUID id, AccessToken accessToken) {
+    public void deleteUser(String id, AccessToken accessToken) {
         deleteResource(id, accessToken);
     }
 
@@ -177,7 +176,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
      */
-    public User updateUser(UUID id, UpdateUser updateUser , AccessToken accessToken){
+    public User updateUser(String id, UpdateUser updateUser , AccessToken accessToken){
         if (updateUser == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given updateUser can't be null.");
         }

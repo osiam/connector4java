@@ -3,8 +3,6 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import java.util.UUID;
-
 import org.apache.http.client.methods.HttpGet;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
@@ -40,7 +38,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM service could be initialized
      */
-    public Group getGroup(UUID id, AccessToken accessToken) {
+    public Group getGroup(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
@@ -83,7 +81,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param uuid id to be delete
      * @param accessToken the OSIAM access token from for the current session
      */
-    public void deleteGroup(UUID id, AccessToken accessToken) {
+    public void deleteGroup(String id, AccessToken accessToken) {
     	deleteResource(id, accessToken);
     }
     
@@ -106,7 +104,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      */
-    public Group updateGroup(UUID id, UpdateGroup updateGroup, AccessToken accessToken){
+    public Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken){
         return updateResource(id, updateGroup.getScimConformUpdateGroup(), accessToken);
     }
 

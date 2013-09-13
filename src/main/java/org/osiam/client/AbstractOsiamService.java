@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
 
 import static org.apache.http.HttpStatus.*;
 
@@ -82,7 +81,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could be initialized
      */
-    protected T getResource(UUID id, AccessToken accessToken) {
+    protected T getResource(String id, AccessToken accessToken) {
         ensureIdIsNotNull(id);
         ensureAccessTokenIsNotNull(accessToken);
 
@@ -229,7 +228,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
     }
 
-    protected void deleteResource(UUID id, AccessToken accessToken) {
+    protected void deleteResource(String id, AccessToken accessToken) {
         ensureIdIsNotNull(id);
         ensureAccessTokenIsNotNull(accessToken);
 
@@ -317,7 +316,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
     }
 
-    protected T updateResource(UUID id, T resource , AccessToken accessToken){
+    protected T updateResource(String id, T resource , AccessToken accessToken){
         ensureResourceIsNotNull(resource);
         ensureAccessTokenIsNotNull(accessToken);
     	ensureIdIsNotNull(id);
@@ -385,7 +384,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
     }
     
-    private void ensureIdIsNotNull(UUID id){
+    private void ensureIdIsNotNull(String id){
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");
         }

@@ -8,7 +8,6 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
-import org.osiam.client.oauth.AuthService.Builder;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
@@ -16,7 +15,6 @@ import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.User;
 
-import java.util.UUID;
 /**
  * OsiamConnector provides access to the OAuth2 service used to authorize requests
  * and all methods necessary to manipulate the {@link Group} and {@link User} resources registered in the
@@ -108,7 +106,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
      */
-    public User getUser(UUID id, AccessToken accessToken) {
+    public User getUser(String id, AccessToken accessToken) {
         return userService().getUser(id, accessToken);
     }
 
@@ -170,7 +168,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM service could be initialized
      */
-    public Group getGroup(UUID id, AccessToken accessToken) {
+    public Group getGroup(String id, AccessToken accessToken) {
         return groupService().getGroup(id, accessToken);
     }
 
@@ -247,7 +245,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @param uuid id to be delete
      * @param accessToken the OSIAM access token from for the current session
      */
-    public void deleteGroup(UUID id, AccessToken accessToken) {
+    public void deleteGroup(String id, AccessToken accessToken) {
     	groupService().deleteGroup(id, accessToken);
     }
     /**
@@ -255,7 +253,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @param uuid id to be delete
      * @param accessToken the OSIAM access token from for the current session
      */
-    public void deleteUser(UUID id, AccessToken accessToken) {
+    public void deleteUser(String id, AccessToken accessToken) {
     	userService().deleteUser(id, accessToken);
     }
 
@@ -268,7 +266,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
      */
-    public User updateUser(UUID id, UpdateUser updateUser , AccessToken accessToken){
+    public User updateUser(String id, UpdateUser updateUser , AccessToken accessToken){
         return userService().updateUser(id, updateUser, accessToken);
     }
 
@@ -281,7 +279,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @return
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      */
-    public Group updateGroup(UUID id, UpdateGroup updateGroup , AccessToken accessToken){
+    public Group updateGroup(String id, UpdateGroup updateGroup , AccessToken accessToken){
         return groupService().updateGroup(id, updateGroup, accessToken);
     }
 

@@ -37,7 +37,7 @@ public class OsiamUserEditTest {
     final static private String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     
     final static private String endpoint = "http://localhost:9090/osiam-server/";
-    private UUID updateUUID;
+    private String updateUUID;
     private UpdateUser UPDATE_USER;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -98,7 +98,7 @@ public class OsiamUserEditTest {
     }
 
     private void givenAnUserUUID() {
-        this.updateUUID = UUID.fromString(userUuidString);
+        this.updateUUID = userUuidString;
     }
     
     private void givenAnUpdateUser() {

@@ -63,7 +63,7 @@ public class OsiamUserServiceTest {
     final static private String endpoint = "http://localhost:9090/osiam-server/";
     final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
     
-    private UUID searchedUUID;
+    private String searchedUUID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
 
@@ -229,14 +229,14 @@ public class OsiamUserServiceTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_null_user_raises_exception(){
-        UUID userUUID = null;
+        String userUUID = null;
         service.deleteUser(userUUID, accessToken);
         Assert.fail("Exception excpected");
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_user_with_null_accestoken_raises_exception(){
-        UUID uuid = UUID.randomUUID();
+        String uuid = UUID.randomUUID().toString();
         service.deleteUser(uuid, null);
         Assert.fail("Exception excpected");
     }
@@ -246,7 +246,7 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAnUserUUID() {
-        this.searchedUUID = UUID.fromString(userUuidString);
+        this.searchedUUID = userUuidString;
     }
 
     private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {
@@ -365,8 +365,8 @@ public class OsiamUserServiceTest {
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
-    private void thenReturnedUserHasUUID(UUID uuid) {
-        assertEquals(uuid.toString(), singleUserResult.getId());
+    private void thenReturnedUserHasUUID(String uuid) {
+        assertEquals(uuid, singleUserResult.getId());
     }
 
     private void thenQueryWasValid() {

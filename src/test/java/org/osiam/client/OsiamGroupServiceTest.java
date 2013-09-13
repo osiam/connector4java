@@ -55,7 +55,7 @@ public class OsiamGroupServiceTest {
     final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
     final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+test_group01";
 
-    private UUID SEARCHED_UUID;
+    private String SEARCHED_UUID;
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -198,14 +198,14 @@ public class OsiamGroupServiceTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_null_group_raises_exception(){
-        UUID groupUUID = null;
+        String groupUUID = null;
         service.deleteGroup(groupUUID, accessToken);
         Assert.fail("Exception excpected");
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_group_with_null_accestoken_raises_exception(){
-        UUID uuid = UUID.randomUUID();
+        String uuid = UUID.randomUUID().toString();
         service.deleteGroup(uuid, null);
         Assert.fail("Exception excpected");
     }
@@ -215,7 +215,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenAGroupUUID() {
-        this.SEARCHED_UUID = UUID.fromString(GROUP_UUID_STRING);
+        this.SEARCHED_UUID = GROUP_UUID_STRING;
     }
 
     private void whenSingleGroupIsLookedUp() {
@@ -303,7 +303,7 @@ public class OsiamGroupServiceTest {
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
-    private void thenReturnedGroupHasUUID(UUID uuid) {
+    private void thenReturnedGroupHasUUID(String uuid) {
         Group result = service.getGroup(uuid, accessToken);
         assertEquals(uuid.toString(), result.getId());
     }

@@ -50,8 +50,8 @@ public class OsiamConnectorTest {
     private AccessToken accessToken;
     private User singleUserResult;
     private Group singleGroupResult;
-    private UUID searchedUserUUID;
-    private UUID SEARCHED_GROUP_UUID;
+    private String searchedUserUUID;
+    private String SEARCHED_GROUP_UUID;
     final static private String COUNTRY = "Germany";
     private static final String IRRELEVANT = "irrelevant";
     private AccessTokenMockProvider tokenProvider;
@@ -192,7 +192,7 @@ public class OsiamConnectorTest {
         singleUserResult = oConnector.getUser(searchedUserUUID, accessToken);
     }
 
-    private void thenReturnedUserHasUUID(UUID uuid) {
+    private void thenReturnedUserHasUUID(String uuid) {
         assertEquals(uuid.toString(), singleUserResult.getId());
     }
 
@@ -243,7 +243,7 @@ public class OsiamConnectorTest {
     }
 
     private void givenAnUserUUID() {
-        this.searchedUserUUID = UUID.fromString(userUuidString);
+        this.searchedUserUUID = userUuidString;
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
@@ -400,10 +400,10 @@ public class OsiamConnectorTest {
     }
 
     private void givenAGroupUUID() {
-        this.SEARCHED_GROUP_UUID = UUID.fromString(GROUP_UUID_STRING);
+        this.SEARCHED_GROUP_UUID = GROUP_UUID_STRING;
     }
 
-    private void thenReturnedGroupHasUUID(UUID uuid) {
+    private void thenReturnedGroupHasUUID(String uuid) {
         Group result = oConnector.getGroup(uuid, accessToken);
         assertEquals(uuid.toString(), result.getId());
     }

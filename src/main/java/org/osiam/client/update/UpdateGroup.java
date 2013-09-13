@@ -106,7 +106,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @param member user or group id to be added
          * @return The builder itself
          */
-        public Builder addMember(UUID memberId){
+        public Builder addMember(String memberId){
             MultiValuedAttribute newGroup = new MultiValuedAttribute.Builder()
             		.setValue(memberId.toString()).build();
             members.add(newGroup);
