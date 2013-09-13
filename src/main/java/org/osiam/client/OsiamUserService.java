@@ -93,7 +93,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
                         errorMessage = getErrorMessage(response, "No User could be found, who holds the supplied access token");
                         throw new NoResultException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = getErrorMessage(response, "You are not retrieve the actual User.");
+                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to retrieve the actual User.";
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));

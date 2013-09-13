@@ -18,7 +18,7 @@ public enum Scope {
 			public String toString(){
 				StringBuilder allScopes = new StringBuilder();
 				for (Scope actScope : Scope.values()) {
-					if(actScope != this){
+					if(actScope != this){// NOSONAR - false-positive from clover; if-expression is correct
 						allScopes.append(" ").append(actScope.toString());
 					}
 				}

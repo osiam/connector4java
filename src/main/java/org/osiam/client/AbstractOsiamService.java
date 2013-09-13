@@ -106,7 +106,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given UUID " + id);
                         throw new NoResultException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to get this " + typeName + ".";
+                    	errorMessage = getErrorMessageForbidden(accessToken, "get");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -150,7 +150,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to search for " + typeName + "s.";
+                    	errorMessage = getErrorMessageForbidden(accessToken, "get");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -187,6 +187,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 	    return mapper.readValue(content, type);
     }
 
+    protected String getErrorMessageForbidden(AccessToken accessToken, String process){
+    	return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
+    }
+    
     protected String getErrorMessageUnauthorized(HttpResponse httpResponse) throws IOException {
         return getErrorMessage(httpResponse, "You are not authorized to access OSIAM. Please make sure your access token is valid");
     }
@@ -252,7 +256,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "Unable to save: " + response.getStatusLine().getReasonPhrase());
                         throw new ConflictException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to delete a " + typeName + ".";
+                    	errorMessage = getErrorMessageForbidden(accessToken, "delete");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -292,7 +296,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "Unable to save");
                         throw new ConflictException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to create a " + typeName + ".";
+                    	errorMessage = getErrorMessageForbidden(accessToken, "create");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -348,7 +352,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id + " could be found to be updated.");
                         throw new ConflictException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to update this " + typeName + ".";
+                    	errorMessage = getErrorMessageForbidden(accessToken, "update");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);

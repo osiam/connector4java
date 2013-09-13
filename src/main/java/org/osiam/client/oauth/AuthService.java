@@ -167,7 +167,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         	for (Scope actScope : scopes) {
         		scopeList.add(actScope);
 			}
-        	if(scopeList.contains(Scope.ALL)){
+        	if(scopeList.contains(Scope.ALL)){// NOSONAR - false-positive from clover; if-expression is correct
         		this.scopes = Scope.ALL.toString();
         	}else{
         		StringBuilder scopeBuilder = new StringBuilder();
@@ -261,7 +261,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         	}
         }
         
-        private void ensureAllNeededParameterAreCorrect(){
+        private void ensureAllNeededParameterAreCorrect(){// NOSONAR - this is a test method the Cyclomatic Complexity can be over 10.
             if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The provided client credentials are incomplete.");
             }
