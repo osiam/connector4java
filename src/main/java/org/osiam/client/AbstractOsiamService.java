@@ -128,7 +128,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> getAllResources(AccessToken accessToken) {
-        return searchResources("", accessToken);
+        return searchResources("count=" + Integer.MAX_VALUE, accessToken);
     }
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {

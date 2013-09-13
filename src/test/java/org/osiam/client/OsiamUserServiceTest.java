@@ -321,7 +321,7 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE))
+        stubFor(get(urlEqualTo(URL_BASE + "?count=" + Integer.MAX_VALUE))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
