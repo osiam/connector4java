@@ -56,6 +56,8 @@ public class OsiamConnectorTest {
     private AccessTokenMockProvider tokenProvider;
     private QueryResult<User> userQueryResult;
     private QueryResult<Group> groupQueryResult;
+    private List<User> allUsers;
+    private List<Group> allGroups;
     final static private String SIMPLE_USER_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
     final static private String SIMPLE_GROUP_QUERY_STRING = "filter=displayName+eq+test_group01";
     private Query query;
@@ -102,7 +104,7 @@ public class OsiamConnectorTest {
     public void getAllUsers_is_transferred_correctly() {
         givenAllUsersAreLookedUpSuccessfully();
         whenAllUsersAreLookedUp();
-        thenNumberOfReturnedUsersIs(1);
+        thenNumberOfAllUsersIs(1);
     }
 
     @Test
@@ -256,12 +258,16 @@ public class OsiamConnectorTest {
     }
 
     private void whenAllUsersAreLookedUp() {
-        userQueryResult = oConnector.getAllUsers(accessToken);
+        allUsers = oConnector.getAllUsers(accessToken);
     }
 
     private void thenNumberOfReturnedUsersIs(int numberOfUsers) {
         assertEquals(numberOfUsers, userQueryResult.getTotalResults());
         assertEquals(numberOfUsers, userQueryResult.getResources().size());
+    }
+    
+    private void thenNumberOfAllUsersIs(int numberOfUsers) {
+        assertEquals(numberOfUsers, allUsers.size());
     }
 
     private void givenASingleUserCanBeSearchedByQuery() {
@@ -418,12 +424,12 @@ public class OsiamConnectorTest {
     }
 
     private void whenAllGroupsAreLookedUp() {
-        groupQueryResult = oConnector.getAllGroups(accessToken);
+        allGroups = oConnector.getAllGroups(accessToken);
     }
 
     private void thenReturnedListOfAllGroupsIsAsExpected() {
-        assertEquals(NUMBER_OF_EXPECTED_GROUPS, groupQueryResult.getTotalResults());
-        for (Group currentGroup : groupQueryResult.getResources()) {
+        assertEquals(NUMBER_OF_EXPECTED_GROUPS, allGroups.size());
+        for (Group currentGroup : allGroups) {
             if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
                 for (MultiValuedAttribute actValue : currentGroup.getMembers()) {

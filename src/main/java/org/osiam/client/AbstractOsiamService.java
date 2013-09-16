@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static org.apache.http.HttpStatus.*;
 
@@ -126,8 +127,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
     }
 
-    protected QueryResult<T> getAllResources(AccessToken accessToken) {
-        return searchResources("count=" + Integer.MAX_VALUE, accessToken);
+    protected List<T> getAllResources(AccessToken accessToken) {
+        return searchResources("count=" + Integer.MAX_VALUE, accessToken).getResources();
     }
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {

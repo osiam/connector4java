@@ -3,6 +3,8 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import java.util.List;
+
 import org.apache.http.client.methods.HttpGet;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
@@ -47,9 +49,9 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * only the first 100 are returned, The returned QueryResult contains Information about the total number of entries.
      *
      * @param accessToken the OSIAM access token for the current session
-     * @return a QueryResult Containing a list of all groups
+     * @return a list of all groups
      */
-    public QueryResult<Group> getAllGroups(AccessToken accessToken) {
+    public List<Group> getAllGroups(AccessToken accessToken) {
         return getAllResources(accessToken);
     }
 

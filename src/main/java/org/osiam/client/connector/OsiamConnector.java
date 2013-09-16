@@ -2,6 +2,8 @@ package org.osiam.client.connector;
 /*
 * for licensing see the file license.txt.
 */
+import java.util.List;
+
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
 import org.osiam.client.oauth.AccessToken;
@@ -113,9 +115,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     /**
      * Retrieves all existing Users
      * @param accessToken
-     * @return a QueryResult Containing a list of all Users
+     * @return a list of all Users
      */
-    public QueryResult<User> getAllUsers(AccessToken accessToken) {
+    public List<User> getAllUsers(AccessToken accessToken) {
         return userService().getAllUsers(accessToken);
     }
 
@@ -177,9 +179,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * only the first 100 are returned, The returned QueryResult contains Information about the total number of entries.
      *
      * @param accessToken the OSIAM access token for the current session
-     * @return a QueryResult Containing a list of all groups
+     * @return a list of all groups
      */
-    public QueryResult<Group> getAllGroups(AccessToken accessToken) {
+    public List<Group> getAllGroups(AccessToken accessToken) {
         return groupService().getAllGroups(accessToken);
     }
 

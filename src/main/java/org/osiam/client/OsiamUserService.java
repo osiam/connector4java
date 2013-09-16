@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -117,9 +118,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     /**
      * Retrieves all existing Users
      * @param accessToken
-     * @return a QueryResult Containing a list of all Users
+     * @return a list of all Users
      */
-    public QueryResult<User> getAllUsers(AccessToken accessToken) {
+    public List<User> getAllUsers(AccessToken accessToken) {
         return super.getAllResources(accessToken);
     }
 

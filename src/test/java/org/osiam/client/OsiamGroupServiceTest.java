@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -61,6 +62,7 @@ public class OsiamGroupServiceTest {
 
     private Group singleGroupResult;
     private QueryResult<Group> queryResult;
+    private List<Group> allGroups;
 
     OsiamGroupService service;
 
@@ -222,7 +224,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void whenAllGroupsAreLookedUp() {
-        queryResult = service.getAllGroups(accessToken);
+        allGroups = service.getAllGroups(accessToken);
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
@@ -319,8 +321,8 @@ public class OsiamGroupServiceTest {
     }
 
     private void thenReturnedListOfAllGroupsIsAsExpected() {
-        assertEquals(NUMBER_OF_EXPECTED_GROUPS, queryResult.getTotalResults());
-        for (Group currentGroup : queryResult.getResources()) {
+        assertEquals(NUMBER_OF_EXPECTED_GROUPS, allGroups.size());
+        for (Group currentGroup : allGroups) {
             if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
                 for (MultiValuedAttribute actValue : currentGroup.getMembers()) {

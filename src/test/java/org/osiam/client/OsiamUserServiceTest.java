@@ -69,6 +69,7 @@ public class OsiamUserServiceTest {
     private User singleUserResult;
     private Query query;
     private QueryResult<User> queryResult;
+    private List<User> allUsers;
 
     OsiamUserService service;
 
@@ -183,7 +184,7 @@ public class OsiamUserServiceTest {
     public void all_users_are_looked_up() {
         givenAllUsersAreLookedUpSuccessfully();
         whenAllUsersAreLookedUp();
-        thenNumberOfReturnedUsersIs(1);
+        thenNumberOfAllUsersIs(1);
     }
 
     @Test
@@ -343,7 +344,7 @@ public class OsiamUserServiceTest {
     }
 
     private void whenAllUsersAreLookedUp() {
-        queryResult = service.getAllUsers(accessToken);
+        allUsers = service.getAllUsers(accessToken);
     }
 
     private void whenSearchIsUsedByQuery() {
@@ -382,6 +383,10 @@ public class OsiamUserServiceTest {
     private void thenNumberOfReturnedUsersIs(int numberOfUsers) {
         assertEquals(numberOfUsers, queryResult.getTotalResults());
         assertEquals(numberOfUsers, queryResult.getResources().size());
+    }
+    
+    private void thenNumberOfAllUsersIs(int numberOfUsers) {
+        assertEquals(numberOfUsers, allUsers.size());
     }
 
     private void thenMetaDataWasDeserializedCorrectly() throws ParseException {
