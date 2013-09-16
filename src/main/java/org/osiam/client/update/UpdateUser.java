@@ -605,9 +605,9 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param groupId membership to be removed
          * @return The builder itself
          */
-        public Builder deleteGroup(UUID groupId){
+        public Builder deleteGroup(String groupId){
             MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-                    .setValue(groupId.toString())
+                    .setValue(groupId)
                     .setOperation(DELETE).build();
             groups.add(deleteGroup);
             return this;

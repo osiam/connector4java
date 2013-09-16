@@ -25,7 +25,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -45,13 +44,13 @@ public class OsiamConnectorTest {
     final static private String endpoint = "http://localhost:9090/osiam-server/";
     private static final String URL_BASE_USERS = "/osiam-server//Users";
     private static final String URL_BASE_GROUPS = "/osiam-server//Groups";
-    final static private String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    final static private String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private AccessToken accessToken;
     private User singleUserResult;
     private Group singleGroupResult;
-    private String searchedUserUUID;
-    private String SEARCHED_GROUP_UUID;
+    private String searchedUserID;
+    private String SEARCHED_GROUP_ID;
     final static private String COUNTRY = "Germany";
     private static final String IRRELEVANT = "irrelevant";
     private AccessTokenMockProvider tokenProvider;
@@ -83,16 +82,16 @@ public class OsiamConnectorTest {
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
         // use happy path for default
-        givenAnUserUUID();
-        givenAGroupUUID();
+        givenAnUserID();
+        givenAGroupID();
         givenAnAccessToken();
     }
 
     @Test
     public void getUser_is_transferred_correctly() throws Exception {
-        givenUserUUIDcanBeFound();
-        whenSingleUUIDisLookedUp();
-        thenReturnedUserHasUUID(searchedUserUUID);
+        givenUserIDcanBeFound();
+        whenSingleIDisLookedUp();
+        thenReturnedUserHasID(searchedUserID);
         thenMetaDataWasDeserializedCorrectly();
         thenAddressIsDeserializedCorrectly();
         thenPhoneNumbersAreDeserializedCorrectly();
@@ -132,9 +131,9 @@ public class OsiamConnectorTest {
 
     @Test
     public void getGroup_is_transferred_correctly() throws IOException {
-        givenGroupUUIDcanBeFound();
+        givenGroupIDcanBeFound();
         whenSingleGroupIsLookedUp();
-        thenReturnedGroupHasUUID(SEARCHED_GROUP_UUID);
+        thenReturnedGroupHasID(SEARCHED_GROUP_ID);
     }
 
     @Test
@@ -160,40 +159,40 @@ public class OsiamConnectorTest {
         then_access_token_is_valid();
     }
 
-    private void givenUserUUIDcanBeFound() {
-        stubFor(givenUserUUIDisLookedUp(userUuidString, accessToken)
+    private void givenUserIDcanBeFound() {
+        stubFor(givenUserIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + userUuidString + ".json")));
+                        .withBodyFile("user_" + userIdString + ".json")));
     }
 
-    private void givenGroupUUIDcanBeFound() {
-        stubFor(givenGroupUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
+    private void givenGroupIDcanBeFound() {
+        stubFor(givenGroupIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("group_" + GROUP_UUID_STRING + ".json")));
+                        .withBodyFile("group_" + GROUP_ID_STRING + ".json")));
     }
 
-    private MappingBuilder givenUserUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE_USERS + "/" + uuidString))
+    private MappingBuilder givenUserIDisLookedUp(String id, AccessToken accessToken) {
+        return get(urlEqualTo(URL_BASE_USERS + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
-    private MappingBuilder givenGroupUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE_GROUPS + "/" + uuidString))
+    private MappingBuilder givenGroupIDisLookedUp(String id, AccessToken accessToken) {
+        return get(urlEqualTo(URL_BASE_GROUPS + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
-    private void whenSingleUUIDisLookedUp() {
-        singleUserResult = oConnector.getUser(searchedUserUUID, accessToken);
+    private void whenSingleIDisLookedUp() {
+        singleUserResult = oConnector.getUser(searchedUserID, accessToken);
     }
 
-    private void thenReturnedUserHasUUID(String uuid) {
-        assertEquals(uuid.toString(), singleUserResult.getId());
+    private void thenReturnedUserHasID(String id) {
+        assertEquals(id.toString(), singleUserResult.getId());
     }
 
     private void thenMetaDataWasDeserializedCorrectly() throws ParseException {
@@ -242,8 +241,8 @@ public class OsiamConnectorTest {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
-    private void givenAnUserUUID() {
-        this.searchedUserUUID = userUuidString;
+    private void givenAnUserID() {
+        this.searchedUserID = userIdString;
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
@@ -316,7 +315,7 @@ public class OsiamConnectorTest {
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + userUuidString + ".json")));
+                        .withBodyFile("user_" + userIdString + ".json")));
     }
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
@@ -355,7 +354,7 @@ public class OsiamConnectorTest {
         StringBuilder jsonUser = null;
         User expectedUser;
         try {
-            reader = new FileReader("src/test/resources/__files/user_" + userUuidString + ".json");
+            reader = new FileReader("src/test/resources/__files/user_" + userIdString + ".json");
             jsonUser = new StringBuilder();
             for (int c; (c = reader.read()) != -1; )
                 jsonUser.append((char) c);
@@ -396,16 +395,16 @@ public class OsiamConnectorTest {
     }
 
     private void whenSingleGroupIsLookedUp() {
-        singleGroupResult = oConnector.getGroup(SEARCHED_GROUP_UUID, accessToken);
+        singleGroupResult = oConnector.getGroup(SEARCHED_GROUP_ID, accessToken);
     }
 
-    private void givenAGroupUUID() {
-        this.SEARCHED_GROUP_UUID = GROUP_UUID_STRING;
+    private void givenAGroupID() {
+        this.SEARCHED_GROUP_ID = GROUP_ID_STRING;
     }
 
-    private void thenReturnedGroupHasUUID(String uuid) {
-        Group result = oConnector.getGroup(uuid, accessToken);
-        assertEquals(uuid.toString(), result.getId());
+    private void thenReturnedGroupHasID(String id) {
+        Group result = oConnector.getGroup(id, accessToken);
+        assertEquals(id.toString(), result.getId());
     }
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
@@ -425,10 +424,10 @@ public class OsiamConnectorTest {
     private void thenReturnedListOfAllGroupsIsAsExpected() {
         assertEquals(NUMBER_OF_EXPECTED_GROUPS, groupQueryResult.getTotalResults());
         for (Group currentGroup : groupQueryResult.getResources()) {
-            if (currentGroup.getId().equals(GROUP_UUID_STRING)) {
+            if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
                 for (MultiValuedAttribute actValue : currentGroup.getMembers()) {
-                    assertEquals(userUuidString, actValue.getValue().toString());
+                    assertEquals(userIdString, actValue.getValue().toString());
                 }
                 break;
             }

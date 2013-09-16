@@ -4,7 +4,7 @@ package org.osiam.client.exception;
  */
 
 /**
- * Thrown when a query for a given UUID doesn't return any results.
+ * Thrown when a query for a given ID doesn't return any results.
  */
 public class NoResultException extends RuntimeException {
 

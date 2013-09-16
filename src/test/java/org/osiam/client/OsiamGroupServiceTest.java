@@ -23,7 +23,6 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 import junit.framework.Assert;
 import org.apache.http.entity.ContentType;
@@ -46,16 +45,16 @@ public class OsiamGroupServiceTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
-    private static final String GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String INVALID_GROUP_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
-    private static final String USER_UUID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String INVALID_GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
+    private static final String USER_ID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
     private static final String endpoint = "http://localhost:9090/osiam-server/";
 
     final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
     final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+test_group01";
 
-    private String SEARCHED_UUID;
+    private String SEARCHED_ID;
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -70,7 +69,7 @@ public class OsiamGroupServiceTest {
         service = new OsiamGroupService.Builder(endpoint).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
-        givenAGroupUUID();
+        givenAGroupID();
         givenAnAccessToken();
     }
 
@@ -81,14 +80,14 @@ public class OsiamGroupServiceTest {
 
     @Test
     public void existing_group_is_returned() throws IOException {
-        givenUUIDcanBeFound();
+        givenIDcanBeFound();
         whenSingleGroupIsLookedUp();
-        thenReturnedGroupHasUUID(SEARCHED_UUID);
+        thenReturnedGroupHasID(SEARCHED_ID);
     }
 
     @Test
     public void group_has_valid_values() throws Exception {
-        givenUUIDcanBeFound();
+        givenIDcanBeFound();
         whenSingleGroupIsLookedUp();
         thenReturnedGroupIsAsExpected();
     }
@@ -109,16 +108,16 @@ public class OsiamGroupServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void uuid_is_null_by_getting_single_user_raises_exception() throws Exception {
-        givenUUIDisEmpty();
-        SEARCHED_UUID = null;
+    public void id_is_null_by_getting_single_user_raises_exception() throws Exception {
+        givenIDisEmpty();
+        SEARCHED_ID = null;
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_getting_single_group_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+        givenIDisEmpty();
         accessToken = null;
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
@@ -126,7 +125,7 @@ public class OsiamGroupServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_getting_all_group_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+        givenIDisEmpty();
         accessToken = null;
         whenAllGroupsAreLookedUp();
         fail("Exception expected");
@@ -134,7 +133,7 @@ public class OsiamGroupServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_searching_for_group_by_string_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+        givenIDisEmpty();
         accessToken = null;
         whenSingleGroupIsSearchedByQueryString("filter=meta.version=3");
         fail("Exception expected");
@@ -142,28 +141,28 @@ public class OsiamGroupServiceTest {
 
     @Test(expected = NoResultException.class)
     public void group_does_not_exist() throws IOException {
-        givenUUIDcanNotBeFound();
+        givenIDcanNotBeFound();
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void invalid_UUID_search() throws IOException {
-        givenUUIDisInvalid();
+    public void invalid_ID_search() throws IOException {
+        givenIDisInvalid();
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void invalid_UUID_is_star() throws IOException {
-        givenUUIDisSpecial("*");
+    public void invalid_ID_is_star() throws IOException {
+        givenIDisSpecial("*");
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void invalid_UUID_is_dot() throws IOException {
-        givenUUIDisSpecial(".");
+    public void invalid_ID_is_dot() throws IOException {
+        givenIDisSpecial(".");
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
@@ -198,15 +197,15 @@ public class OsiamGroupServiceTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_null_group_raises_exception(){
-        String groupUUID = null;
-        service.deleteGroup(groupUUID, accessToken);
+        String groupID = null;
+        service.deleteGroup(groupID, accessToken);
         Assert.fail("Exception excpected");
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_group_with_null_accestoken_raises_exception(){
-        String uuid = UUID.randomUUID().toString();
-        service.deleteGroup(uuid, null);
+        String id = "HelloWorld";
+        service.deleteGroup(id, null);
         Assert.fail("Exception excpected");
     }
 
@@ -214,12 +213,12 @@ public class OsiamGroupServiceTest {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
-    private void givenAGroupUUID() {
-        this.SEARCHED_UUID = GROUP_UUID_STRING;
+    private void givenAGroupID() {
+        this.SEARCHED_ID = GROUP_ID_STRING;
     }
 
     private void whenSingleGroupIsLookedUp() {
-        singleGroupResult = service.getGroup(SEARCHED_UUID, accessToken);
+        singleGroupResult = service.getGroup(SEARCHED_ID, accessToken);
     }
 
     private void whenAllGroupsAreLookedUp() {
@@ -231,32 +230,32 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
-        stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
+        stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
     private void givenInvalidAccessTokenIsUsedForLookup() {
-        stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
+        stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
-    private void givenUUIDcanNotBeFound() {
-        stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
+    private void givenIDcanNotBeFound() {
+        stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
 
-    private void givenUUIDisInvalid() {
-        stubFor(givenUUIDisLookedUp(INVALID_GROUP_UUID_STRING, accessToken)
+    private void givenIDisInvalid() {
+        stubFor(givenIDisLookedUp(INVALID_GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
 
 
-    private void givenUUIDisSpecial(String wildcard) {
-        stubFor(givenUUIDisLookedUp(wildcard, accessToken)
+    private void givenIDisSpecial(String wildcard) {
+        stubFor(givenIDisLookedUp(wildcard, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_CONFLICT)));
     }
@@ -270,16 +269,16 @@ public class OsiamGroupServiceTest {
                         .withBodyFile("query_group_by_name.json")));
     }
 
-    private void givenUUIDcanBeFound() {
-        stubFor(givenUUIDisLookedUp(GROUP_UUID_STRING, accessToken)
+    private void givenIDcanBeFound() {
+        stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("group_" + GROUP_UUID_STRING + ".json")));
+                        .withBodyFile("group_" + GROUP_ID_STRING + ".json")));
     }
 
-    private void givenUUIDisEmpty() {
-        stubFor(givenUUIDisLookedUp("", accessToken)
+    private void givenIDisEmpty() {
+        stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
@@ -297,15 +296,15 @@ public class OsiamGroupServiceTest {
                         .withBodyFile("query_all_groups.json")));
     }
 
-    private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE + "/" + uuidString))
+    private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
+        return get(urlEqualTo(URL_BASE + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
-    private void thenReturnedGroupHasUUID(String uuid) {
-        Group result = service.getGroup(uuid, accessToken);
-        assertEquals(uuid.toString(), result.getId());
+    private void thenReturnedGroupHasID(String id) {
+        Group result = service.getGroup(id, accessToken);
+        assertEquals(id.toString(), result.getId());
     }
 
     private void thenQueryWasValid() {
@@ -322,10 +321,10 @@ public class OsiamGroupServiceTest {
     private void thenReturnedListOfAllGroupsIsAsExpected() {
         assertEquals(NUMBER_OF_EXPECTED_GROUPS, queryResult.getTotalResults());
         for (Group currentGroup : queryResult.getResources()) {
-            if (currentGroup.getId().equals(GROUP_UUID_STRING)) {
+            if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
                 for (MultiValuedAttribute actValue : currentGroup.getMembers()) {
-                    assertEquals(USER_UUID_STRING, actValue.getValue().toString());
+                    assertEquals(USER_ID_STRING, actValue.getValue().toString());
                 }
                 break;
             }
@@ -334,7 +333,7 @@ public class OsiamGroupServiceTest {
 
     private void thenReturnedGroupIsAsExpected() throws Exception {
 
-        assertEquals(GROUP_UUID_STRING, singleGroupResult.getId());
+        assertEquals(GROUP_ID_STRING, singleGroupResult.getId());
         assertEquals("Group", singleGroupResult.getMeta().getResourceType());
 
         Date created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2011-08-01 20:29:49");
@@ -349,7 +348,7 @@ public class OsiamGroupServiceTest {
             Object value = multiValuedAttribute.getValue();
             assertTrue(value.getClass().equals(String.class));
             String userId = (String) multiValuedAttribute.getValue();
-            assertEquals(USER_UUID_STRING, userId);
+            assertEquals(USER_ID_STRING, userId);
             count++;
         }
         assertEquals(1, count);

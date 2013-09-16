@@ -48,7 +48,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * Retrieve a single User with the given id. If no user for the given id can be found a {@link NoResultException}
      * is thrown.
      *
-     * @param id          the uuid of the wanted user
+     * @param id          the id of the wanted user
      * @param accessToken the OSIAM access token from for the current session
      * @return the user with the given id
      * @throws UnauthorizedException if the request could not be authorized.
@@ -150,7 +150,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
     /**
      * delete the given {@link User} at the OSIAM DB.
-     * @param uuid id to be delete
+     * @param id id to be delete
      * @param accessToken the OSIAM access token from for the current session
      */
     public void deleteUser(String id, AccessToken accessToken) {
@@ -161,7 +161,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * saves the given {@link User} to the OSIAM DB.
      * @param user user to be saved
      * @param accessToken the OSIAM access token from for the current session
-     * @return the same user Object like the given but with filled metadata and a new valid uuid
+     * @return the same user Object like the given but with filled metadata and a new valid id
      */
     public User createUser(User user , AccessToken accessToken) {
         return createResource(user , accessToken);

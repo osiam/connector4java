@@ -30,7 +30,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * Retrieve a single Group with the given id. If no group with the given id can be found a
      * {@link NoResultException} is thrown.
      *
-     * @param id          the uuid of the wanted group
+     * @param id          the id of the wanted group
      * @param accessToken the access token from OSIAM for the current session.
      * @return the group with the given id.
      * @throws UnauthorizedException if the request could not be authorized.
@@ -78,7 +78,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
     }
     /**
      * delete the given {@link Group} at the OSIAM DB.
-     * @param uuid id to be delete
+     * @param id id to be deleted
      * @param accessToken the OSIAM access token from for the current session
      */
     public void deleteGroup(String id, AccessToken accessToken) {
@@ -89,7 +89,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * saves the given {@link Group} to the OSIAM DB.
      * @param group group to be saved
      * @param accessToken the OSIAM access token from for the current session
-     * @return the same group Object like the given but with filled metadata and a new valid uuid
+     * @return the same group Object like the given but with filled metadata and a new valid id
      */
     public Group createGroup(Group group, AccessToken accessToken) {
         return createResource(group , accessToken);

@@ -2,7 +2,6 @@ package org.osiam.client.update;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
@@ -93,9 +92,9 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @param memberId group or user id to be removed
          * @return The builder itself
          */
-        public Builder deleteMember(UUID memberId){
+        public Builder deleteMember(String memberId){
             MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-                    .setValue(memberId.toString())
+                    .setValue(memberId)
                     .setOperation(DELETE).build();
             members.add(deleteGroup);
             return this;

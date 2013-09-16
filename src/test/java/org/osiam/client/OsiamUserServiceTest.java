@@ -28,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import junit.framework.Assert;
 import org.apache.http.entity.ContentType;
@@ -58,12 +57,12 @@ public class OsiamUserServiceTest {
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final static private String COUNTRY = "Germany";
-    final static private String userUuidString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    final static private String INVALID_USER_UUID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
+    final static private String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    final static private String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
     final static private String endpoint = "http://localhost:9090/osiam-server/";
     final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
     
-    private String searchedUUID;
+    private String searchedID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
 
@@ -79,7 +78,7 @@ public class OsiamUserServiceTest {
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
         // use happy path for default
-        givenAnUserUUID();
+        givenAnUserID();
         givenAnAccessToken();
     }
 
@@ -90,9 +89,9 @@ public class OsiamUserServiceTest {
 
     @Test
     public void existing_user_is_returned() throws Exception {
-        givenUUIDcanBeFound();
-        whenSingleUUIDisLookedUp();
-        thenReturnedUserHasUUID(searchedUUID);
+        givenIDcanBeFound();
+        whenSingleIDisLookedUp();
+        thenReturnedUserHasID(searchedID);
         thenMetaDataWasDeserializedCorrectly();
         thenAddressIsDeserializedCorrectly();
         thenPhoneNumbersAreDeserializedCorrectly();
@@ -101,30 +100,30 @@ public class OsiamUserServiceTest {
 
     @Test
     public void user_has_valid_values() throws Exception {
-        givenUUIDcanBeFound();
-        whenSingleUUIDisLookedUp();
+        givenIDcanBeFound();
+        whenSingleIDisLookedUp();
         thenReturnedUserMatchesExpectations();
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void uuid_is_null_by_getting_single_user_raises_exception() throws Exception {
-        givenUUIDisEmpty();
-        searchedUUID = null;
-        whenSingleUUIDisLookedUp();
+    public void id_is_null_by_getting_single_user_raises_exception() throws Exception {
+        givenIDisEmpty();
+        searchedID = null;
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+        givenIDisEmpty();
         accessToken = null;
-        whenSingleUUIDisLookedUp();
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_getting_all_group_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+        givenIDisEmpty();
         accessToken = null;
         whenAllUsersAreLookedUp();
         fail("Exception expected");
@@ -132,7 +131,7 @@ public class OsiamUserServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_searching_for_group_by_string_raises_exception() throws Exception {
-        givenUUIDisEmpty();
+        givenIDisEmpty();
         accessToken = null;
         whenSearchIsUsedByString("meta.version=3");
         fail("Exception expected");
@@ -140,43 +139,43 @@ public class OsiamUserServiceTest {
 
     @Test(expected = NoResultException.class)
     public void user_does_not_exist() throws IOException {
-        givenUUIDcanNotBeFound();
-        whenSingleUUIDisLookedUp();
+        givenIDcanNotBeFound();
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void expired_access_token() throws Exception {
         givenExpiredAccessTokenIsUsedForLookup();
-        whenSingleUUIDisLookedUp();
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void invalid_access_token() throws Exception {
         givenInvalidAccessTokenIsUsedForLookup();
-        whenSingleUUIDisLookedUp();
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void invalid_UUID_search() throws IOException {
-        givenUUIDisInvalid();
-        whenSingleUUIDisLookedUp();
+    public void invalid_ID_search() throws IOException {
+        givenIDisInvalid();
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void invalid_UUID_is_star() throws IOException {
-        givenUUIDisSpecial("*");
-        whenSingleUUIDisLookedUp();
+    public void invalid_ID_is_star() throws IOException {
+        givenIDisSpecial("*");
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void invalid_UUID_is_dot() throws IOException {
-        givenUUIDisSpecial(".");
-        whenSingleUUIDisLookedUp();
+    public void invalid_ID_is_dot() throws IOException {
+        givenIDisSpecial(".");
+        whenSingleIDisLookedUp();
         fail("Exception expected");
     }
 
@@ -229,15 +228,15 @@ public class OsiamUserServiceTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_null_user_raises_exception(){
-        String userUUID = null;
-        service.deleteUser(userUUID, accessToken);
+        String userID = null;
+        service.deleteUser(userID, accessToken);
         Assert.fail("Exception excpected");
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void delete_user_with_null_accestoken_raises_exception(){
-        String uuid = UUID.randomUUID().toString();
-        service.deleteUser(uuid, null);
+        String id = "HelloWorld";
+        service.deleteUser(id, null);
         Assert.fail("Exception excpected");
     }
 
@@ -245,8 +244,8 @@ public class OsiamUserServiceTest {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
-    private void givenAnUserUUID() {
-        this.searchedUUID = userUuidString;
+    private void givenAnUserID() {
+        this.searchedID = userIdString;
     }
 
     private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {
@@ -269,53 +268,53 @@ public class OsiamUserServiceTest {
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
-        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
+        stubFor(givenIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
     private void givenInvalidAccessTokenIsUsedForLookup() {
-        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
+        stubFor(givenIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
-    private void givenUUIDcanNotBeFound() {
-        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
+    private void givenIDcanNotBeFound() {
+        stubFor(givenIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
 
-    private void givenUUIDcanBeFound() {
-        stubFor(givenUUIDisLookedUp(userUuidString, accessToken)
+    private void givenIDcanBeFound() {
+        stubFor(givenIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + userUuidString + ".json")));
+                        .withBodyFile("user_" + userIdString + ".json")));
     }
 
-    private void givenUUIDisEmpty() {
-        stubFor(givenUUIDisLookedUp("", accessToken)
+    private void givenIDisEmpty() {
+        stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_all_users.json")));
     }
 
-    private void givenUUIDisInvalid() {
-        stubFor(givenUUIDisLookedUp(INVALID_USER_UUID_STRING, accessToken)
+    private void givenIDisInvalid() {
+        stubFor(givenIDisLookedUp(INVALID_USER_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
 
-    private void givenUUIDisSpecial(String wildcard) {
-        stubFor(givenUUIDisLookedUp(wildcard, accessToken)
+    private void givenIDisSpecial(String wildcard) {
+        stubFor(givenIDisLookedUp(wildcard, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_CONFLICT)));
     }
 
-    private MappingBuilder givenUUIDisLookedUp(String uuidString, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE + "/" + uuidString))
+    private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
+        return get(urlEqualTo(URL_BASE + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
@@ -339,8 +338,8 @@ public class OsiamUserServiceTest {
                         .withBodyFile("query_user_by_name.json")));
     }
 
-    private void whenSingleUUIDisLookedUp() {
-        singleUserResult = service.getUser(searchedUUID, accessToken);
+    private void whenSingleIDisLookedUp() {
+        singleUserResult = service.getUser(searchedID, accessToken);
     }
 
     private void whenAllUsersAreLookedUp() {
@@ -365,8 +364,8 @@ public class OsiamUserServiceTest {
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
-    private void thenReturnedUserHasUUID(String uuid) {
-        assertEquals(uuid, singleUserResult.getId());
+    private void thenReturnedUserHasID(String id) {
+        assertEquals(id, singleUserResult.getId());
     }
 
     private void thenQueryWasValid() {
@@ -480,7 +479,7 @@ public class OsiamUserServiceTest {
         StringBuilder jsonUser = null;
         User expectedUser;
         try {
-            reader = new FileReader("src/test/resources/__files/user_" + userUuidString + ".json");
+            reader = new FileReader("src/test/resources/__files/user_" + userIdString + ".json");
             jsonUser = new StringBuilder();
             for (int c; (c = reader.read()) != -1; )
                 jsonUser.append((char) c);

@@ -73,7 +73,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
      * Retrieve the Resource of the given Type with the given id. If no resource with the given id can be found, an
      * {@link org.osiam.client.exception.NoResultException} is thrown.
      *
-     * @param id          the uuid from the wanted resource
+     * @param id          the id from the wanted resource
      * @param accessToken the access token from OSIAM for the actual session
      * @return The resource of the given type with the given id
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
@@ -102,7 +102,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case SC_NOT_FOUND:
-                        errorMessage = getErrorMessage(response, "No " + typeName + " with given UUID " + id);
+                        errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                         throw new NoResultException(errorMessage);
                     case SC_FORBIDDEN:
                     	errorMessage = getErrorMessageForbidden(accessToken, "get");
@@ -249,7 +249,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case SC_NOT_FOUND:
-                        errorMessage = getErrorMessage(response, "No " + typeName + " with given UUID " + id);
+                        errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                         throw new NoResultException(errorMessage);
                     case  SC_CONFLICT:
                         errorMessage = getErrorMessage(response, "Unable to save: " + response.getStatusLine().getReasonPhrase());
