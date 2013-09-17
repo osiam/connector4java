@@ -329,12 +329,12 @@ public class UserQueryBuilderTest {
     }
     
     private String encodeExpectedString(String string) {
-	try {
-	    return URLEncoder.encode(string, Charsets.UTF_8.name());
-	} catch (UnsupportedEncodingException e) {
-	    fail("Filter contains non UTF-8 characters");
-	}
-	
-	return "";
+		try {
+		    return URLEncoder.encode(string, Charsets.UTF_8.name());
+		} catch (UnsupportedEncodingException e) {
+		    fail("Filter contains non UTF-8 characters");
+		}
+		
+		return "";
     }
 }

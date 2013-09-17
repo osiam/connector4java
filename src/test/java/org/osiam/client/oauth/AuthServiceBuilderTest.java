@@ -83,4 +83,38 @@ public class AuthServiceBuilderTest {
                 .build();
         fail("We expected an exception");
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void when_grant_type_is_access_token_username_is_set_raise_exception() {
+        new AuthService.Builder(IRRELEVANT)
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setGrantType(GrantType.AUTHORIZATION_CODE)
+                .setUsername(IRRELEVANT)
+                .setClientRedirectUri(IRRELEVANT)
+                .build();
+        fail("We expected an exception");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void when_grant_type_is_access_token_password_is_set_raise_exception() {
+        new AuthService.Builder(IRRELEVANT)
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setGrantType(GrantType.AUTHORIZATION_CODE)
+                .setPassword(IRRELEVANT)
+                .setClientRedirectUri(IRRELEVANT)
+                .build();
+        fail("We expected an exception");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void when_grant_type_is_access_token_redirect_uri_is_not_setraise_exception() {
+        new AuthService.Builder(IRRELEVANT)
+                .setClientId(IRRELEVANT)
+                .setClientSecret(IRRELEVANT)
+                .setGrantType(GrantType.AUTHORIZATION_CODE)
+                .build();
+        fail("We expected an exception");
+    }
 }

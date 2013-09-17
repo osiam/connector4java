@@ -11,11 +11,11 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
@@ -25,10 +25,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.OsiamErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
@@ -40,18 +42,37 @@ import org.osiam.client.exception.UnauthorizedException;
 public final class AuthService { // NOSONAR - Builder constructs instances of this class
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
-    private final HttpPost post;
+    private HttpPost post;
     private final String endpoint;
+    private Header[] headers;
+    private String clientId;
+    private String clientSecret;
+    private String clientRedirectUri;
+    private String scopes;
+    private String password;
+    private String userName;
+    private GrantType grantType;
+    private HttpEntity body;
 
     private AuthService(Builder builder) {
-        post = new HttpPost(builder.endpoint);
-        post.setHeaders(builder.headers);
-        post.setEntity(builder.body);
-        endpoint = builder.endpoint;
+    	endpoint = builder.endpoint;
+    	scopes = builder.scopes;
+        grantType = builder.grantType;
+        userName = builder.userName;
+        password = builder.password;
+        clientId = builder.clientId;
+        clientSecret = builder.clientSecret;
+        clientRedirectUri = builder.clientRedirectUri;
     }
 
     private HttpResponse performRequest() {
-
+    	if(post == null){
+	    	buildHead();
+	    	buildBody();
+	    	post = new HttpPost(getFinalEndpoint());
+	        post.setHeaders(headers);
+	        post.setEntity(body);
+    	}
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;
         try {
@@ -62,6 +83,36 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         return response;
     }
 
+    private void buildHead() {
+        String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
+        Header authHeader = new BasicHeader("Authorization", authHeaderValue);
+        headers = new Header[]{
+        		authHeader
+        	};
+    }
+        
+    private String encodeClientCredentials(String clientId, String clientSecret) {
+        String clientCredentials = clientId + ":" + clientSecret;
+        return new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
+    }
+    
+    private void buildBody() {
+        List<NameValuePair> nameValuePairs = new ArrayList<>();
+        nameValuePairs.add(new BasicNameValuePair("scope", scopes));
+        nameValuePairs.add(new BasicNameValuePair("grant_type", grantType.getUrlParam())); // NOSONAR - we check before that the grantType is not null
+        if(userName != null){
+        	nameValuePairs.add(new BasicNameValuePair("username", userName));
+        }
+        if(password != null){
+        	nameValuePairs.add(new BasicNameValuePair("password", password));
+        }
+        try {
+            body = new UrlEncodedFormEntity(nameValuePairs);
+        } catch (UnsupportedEncodingException e) {
+            throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
+        }
+    }
+    
     /**
      * Provide an {@link AccessToken} for the given parameters of this service.
      *
@@ -72,6 +123,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
+    	if(grantType == GrantType.AUTHORIZATION_CODE){
+    		throw new IllegalAccessError("For the grant type " + GrantType.AUTHORIZATION_CODE
+    				+ " you need to retrieve a authentication code first.");
+    	}
         HttpResponse response = performRequest();
         int status = response.getStatusLine().getStatusCode();
 
@@ -88,7 +143,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
                     errorMessage = getErrorMessage(response, defaultMessage);
                     throw new UnauthorizedException(errorMessage);
                 case SC_NOT_FOUND:
-                	defaultMessage = "Unable to find the given OSIAM service (" + endpoint + ")";
+                	defaultMessage = "Unable to find the given OSIAM service (" + getFinalEndpoint() + ")";
                 	errorMessage = getErrorMessage(response, defaultMessage);
                     throw new ConnectionInitializationException(errorMessage);
                 default:
@@ -98,15 +153,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             }
         }
 
-        final AccessToken accessToken;
-        try {
-            InputStream content = response.getEntity().getContent();
-            ObjectMapper mapper = new ObjectMapper();
-            accessToken = mapper.readValue(content, AccessToken.class);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token: IOException", e);
-        }
-        return accessToken;
+        return getAccessToken(response);
     }
 
     private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
@@ -131,19 +178,119 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
+     * provides the needed URI which is needed to reconect the User to the OSIAM server to login.
+     * A detailed example how to use this methode, can be seen in our wiki in gitHub
+     * @return
+     */
+    public URI getRedirectLoginUri() {
+    	if(grantType != GrantType.AUTHORIZATION_CODE){
+    		throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE 
+    				+ " to be able to use this method.");
+    	}
+    	URI returnUri;
+     	try {		
+            returnUri =  new URIBuilder().setPath(getFinalEndpoint())
+            		.addParameter("client_id", clientId)
+            		.addParameter("response_type", "code")
+            		.addParameter("redirect_uri", clientRedirectUri)
+            		.addParameter("scope", scopes)
+            		.build();
+		} catch (URISyntaxException e){
+			throw new ConnectionInitializationException("Unable to create redirect URI", e);
+		}
+    	return returnUri;
+    }  
+    
+    /**
+     * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
+     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. 
+     * For more information please look at the wiki at github
+     * @returna valid AccessToken
+     */
+    public AccessToken retrieveAccessToken(String authCode) {
+        if (authCode == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            throw new IllegalArgumentException("The given authentication code can't be null.");
+        }
+
+        HttpPost realWebResource = getWebRessourceToEchangeAuthCode(authCode);
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        HttpResponse response;
+        int httpStatus = 0;
+        try{
+            response = httpclient.execute(realWebResource);
+            httpStatus = response.getStatusLine().getStatusCode();
+        }catch(IOException e){
+        	throw new ConnectionInitializationException("Unable to setup connection", e); 
+        }
+        
+        if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            String errorMessage;
+            switch (httpStatus) {
+                case SC_BAD_REQUEST:
+                    errorMessage = getErrorMessage(response, "Could not exchange yout authentication code against a access token.");
+                    throw new ConflictException(errorMessage);
+                default:
+                    errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                    throw new ConnectionInitializationException(errorMessage);
+            }
+        }
+
+        return getAccessToken(response);
+    }
+    
+    private AccessToken getAccessToken(HttpResponse response){
+        final AccessToken accessToken;
+        try {
+            InputStream content = response.getEntity().getContent();
+            ObjectMapper mapper = new ObjectMapper();
+            accessToken = mapper.readValue(content, AccessToken.class);
+        } catch (IOException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token: IOException", e);
+        }
+        return accessToken;	
+    }
+    
+    private String getFinalEndpoint(){
+    	String finalEndpoint = endpoint;
+    	if(grantType.equals(GrantType.AUTHORIZATION_CODE)){// NOSONAR - we check before that the grantType is not null
+    		 finalEndpoint += "/oauth/authorize";
+    	}else{
+    		finalEndpoint += "/oauth/token";
+    	}
+    	return finalEndpoint;
+    }
+    
+    private HttpPost getWebRessourceToEchangeAuthCode(String authCode){
+    	 HttpPost realWebResource = new HttpPost(endpoint + "/oauth/token");
+         String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
+         realWebResource.addHeader("Authorization", authHeaderValue);
+
+         List<NameValuePair> nameValuePairs = new ArrayList<>();
+         nameValuePairs.add(new BasicNameValuePair("code", authCode));
+         nameValuePairs.add(new BasicNameValuePair("grant_type", "authorization_code"));
+         nameValuePairs.add(new BasicNameValuePair("redirect_uri", clientRedirectUri));
+         
+         try{
+         	realWebResource.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+         }catch(UnsupportedEncodingException e){
+         	throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
+         }
+         return realWebResource;
+    }
+    
+    /**
      * The Builder class is used to construct instances of the {@link AuthService}.
      */
     public static class Builder {
 
         private String clientId;
         private String clientSecret;
-        private GrantType grantType;
-        private Header[] headers;
+        private GrantType grantType;      
         private String scopes;
-
-        private Map<String, String> requestParameters = new HashMap<>();
         private String endpoint;
-        private HttpEntity body;
+        private String password;
+        private String userName;
+        private String clientRedirectUri;
 
         /**
          * Set up the Builder for the construction of  an {@link AuthService} instance for the OAuth2 service at
@@ -211,7 +358,18 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             this.clientId = clientId;
             return this;
         }
-
+        
+        /**
+         * Add a Client redirect URI to the OAuth2 request
+         *
+         * @param clientRedirectUri the clientRedirectUri which is known to the OSIAM server
+         * @return The builder itself
+         */
+        public Builder setClientRedirectUri(String clientRedirectUri) {
+			this.clientRedirectUri = clientRedirectUri;
+            return this;
+        }
+        
         /**
          * Add a clientSecret to the OAuth2 request
          *
@@ -226,11 +384,11 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         /**
          * Add the given username to the OAuth2 request
          *
-         * @param username The username
+         * @param userName The username
          * @return The builder itself
          */
-        public Builder setUsername(String username) {
-            requestParameters.put("username", username);
+        public Builder setUsername(String userName) {
+        	this.userName = userName;
             return this;
         }
 
@@ -241,7 +399,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @return The builder itself
          */
         public Builder setPassword(String password) {
-            requestParameters.put("password", password);
+        	this.password = password;
             return this;
         }
 
@@ -254,21 +412,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          *          or, if the requested grant type is 'password', the user credentials (userName/password) are incomplete.
          */
         public AuthService build() {
-
             ensureAllNeededParameterAreCorrect();
-            setFinalEndpoint();
-            
-            this.body = buildBody();
-            this.headers = buildHead();
             return new AuthService(this);
-        }
-
-        private void setFinalEndpoint(){
-        	if(grantType.equals(GrantType.AUTHORIZATION_CODE)){// NOSONAR - we check before that the grantType is not null
-        		endpoint += "/oauth/authorize";
-        	}else{
-        		endpoint += "/oauth/token";
-        	}
         }
         
         private void ensureAllNeededParameterAreCorrect(){// NOSONAR - this is a test method the Cyclomatic Complexity can be over 10.
@@ -281,39 +426,15 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type is not set.");
             }
-            if (grantType.equals(GrantType.PASSWORD) && !(requestParameters.containsKey("username") && requestParameters.containsKey("password"))) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (grantType.equals(GrantType.PASSWORD) && (userName == null && password == null)) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type 'password' requires username and password");
             }
-            if (grantType.equals(GrantType.CLIENT_CREDENTIALS) && (requestParameters.containsKey("username") || requestParameters.containsKey("password"))) { // NOSONAR - false-positive from clover; if-expression is correct
-                throw new IllegalArgumentException("For the grant type 'client_credentials' setting of password and username are not allowed.");
+            if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))
+            		&& (userName != null || password != null)) { // NOSONAR - false-positive from clover; if-expression is correct
+                throw new IllegalArgumentException("For the grant type '" + grantType + "' setting of password and username are not allowed.");
             }
-        }
-        
-        private String encodeClientCredentials(String clientId, String clientSecret) {
-            String clientCredentials = clientId + ":" + clientSecret;
-            return new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
-        }
-
-        private Header[] buildHead() {
-            String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
-            Header authHeader = new BasicHeader("Authorization", authHeaderValue);
-            return new Header[]{
-                    authHeader
-            };
-        }
-
-        private HttpEntity buildBody() {
-            requestParameters.put("scope", scopes);
-        	requestParameters.put("grant_type", grantType.getUrlParam()); // NOSONAR - we check before that the grantType is not null
-            List<NameValuePair> nameValuePairs = new ArrayList<>();
-	            for (String key : requestParameters.keySet()) {
-	            	
-	                nameValuePairs.add(new BasicNameValuePair(key, requestParameters.get(key)));
-	            }
-            try {
-                return new UrlEncodedFormEntity(nameValuePairs);
-            } catch (UnsupportedEncodingException e) {
-                throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
+            if (grantType.equals(GrantType.AUTHORIZATION_CODE) && clientRedirectUri == null) { // NOSONAR - false-positive from clover; if-expression is correct
+                throw new IllegalArgumentException("For the grant type '" + grantType + "' the redirect Uri is needed.");
             }
         }
     }
