@@ -186,7 +186,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * @return
      */
     public URI getRedirectLoginUri() {
-    	if(grantType != GrantType.AUTHORIZATION_CODE){
+    	if(grantType != GrantType.AUTHORIZATION_CODE){// NOSONAR - false-positive from clover; if-expression is correct
     		throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE 
     				+ " to be able to use this method.");
     	}
