@@ -109,15 +109,15 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     /**
-     * Retrieve a single User with the given id. If no user for the given id can be found a {@link org.osiam.client.exception.NoResultException}
+     * Retrieve a single User with the given id. If no user for the given id can be found a {@link NoResultException}
      * is thrown.
      *
      * @param id          the id of the wanted user
      * @param accessToken the OSIAM access token from for the current session
      * @return the user with the given id
-     * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
-     * @throws org.osiam.client.exception.NoResultException     if no user with the given id can be found
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws UnauthorizedException if the request could not be authorized.
+     * @throws NoResultException     if no user with the given id can be found
+     * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
      */
     public User getUser(String id, AccessToken accessToken) {
@@ -247,8 +247,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}.
      * If the User acepted your request for the needed data you will get an access token. 
      * If the User denied your request a {@link ForbiddenException} will be thrown.
-     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a 
-     * {@linkplain InvalidAttributeException} will be thrown
+     * If the {@link HttpResponse} does not contain a value named "code" or "error" a 
+     * {@link InvalidAttributeException} will be thrown
      * @param authCodeResponse response goven from the OSIAM server. 
      * For more information please look at the wiki at github
      * @return a valid AccessToken
