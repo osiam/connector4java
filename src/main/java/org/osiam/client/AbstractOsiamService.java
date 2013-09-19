@@ -78,7 +78,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         InputStream content = null;
         try {
             HttpGet realWebResource = createRealWebResource(accessToken);
-            realWebResource.setURI(new URI(webResource.getURI() + "/" + id.toString()));
+            realWebResource.setURI(new URI(webResource.getURI() + "/" + id));
 
             httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
@@ -222,7 +222,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         ensureAccessTokenIsNotNull(accessToken);
 
         try {
-            URI uri = new URI(webResource.getURI() + "/" + id.toString());
+            URI uri = new URI(webResource.getURI() + "/" + id);
 
             HttpDelete realWebResource = new HttpDelete(uri);
             realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
@@ -313,7 +313,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         final T returnResource;
         InputStream content = null;
         try {
-            HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id.toString());
+            HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id);
             realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);

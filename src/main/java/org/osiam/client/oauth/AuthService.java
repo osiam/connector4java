@@ -69,7 +69,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     private HttpResponse performRequest() {
-    	if(post == null){
+    	if(post == null){// NOSONAR - false-positive from clover; if-expression is correct
 	    	buildHead();
 	    	buildBody();
 	    	post = new HttpPost(getFinalEndpoint());
@@ -103,10 +103,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         nameValuePairs.add(new BasicNameValuePair("scope", scopes));
         nameValuePairs.add(new BasicNameValuePair("grant_type", grantType.getUrlParam())); // NOSONAR - we check before that the grantType is not null
-        if(userName != null){
+        if(userName != null){// NOSONAR - false-positive from clover; if-expression is correct
         	nameValuePairs.add(new BasicNameValuePair("username", userName));
         }
-        if(password != null){
+        if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
         	nameValuePairs.add(new BasicNameValuePair("password", password));
         }
         try {
@@ -126,7 +126,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
-    	if(grantType == GrantType.AUTHORIZATION_CODE){
+    	if(grantType == GrantType.AUTHORIZATION_CODE){// NOSONAR - false-positive from clover; if-expression is correct
     		throw new IllegalAccessError("For the grant type " + GrantType.AUTHORIZATION_CODE
     				+ " you need to retrieve a authentication code first.");
     	}
@@ -219,15 +219,15 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     	Header header = authCodeResponse.getLastHeader("Location");
 		HeaderElement[] elements = header.getElements();
 		for (HeaderElement actHeaderElement : elements) {
-			if(actHeaderElement.getName().contains("code")){
+			if(actHeaderElement.getName().contains("code")){// NOSONAR - false-positive from clover; if-expression is correct
 				authCode = actHeaderElement.getValue();
 				break;
 			}
-			if(actHeaderElement.getName().contains("error")){
+			if(actHeaderElement.getName().contains("error")){// NOSONAR - false-positive from clover; if-expression is correct
 				throw new ForbiddenException("The user had denied the acces to his data.");
 			}
 		}
-		if(authCode == null){
+		if(authCode == null){// NOSONAR - false-positive from clover; if-expression is correct
 			throw new InvalidAttributeException("Could not find any auth code or error message in the given Response");
 		}
     	return retrieveAccessToken(authCode);
@@ -461,7 +461,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             if (grantType.equals(GrantType.PASSWORD) && (userName == null && password == null)) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type 'password' requires username and password");
             }
-            if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))
+            if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))// NOSONAR - false-positive from clover; if-expression is correct
             		&& (userName != null || password != null)) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("For the grant type '" + grantType + "' setting of password and username are not allowed.");
             }
