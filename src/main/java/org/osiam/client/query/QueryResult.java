@@ -3,6 +3,7 @@ package org.osiam.client.query;
  * for licensing see the file license.txt.
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,9 +17,9 @@ public class QueryResult<T extends CoreResource> {
     private int totalResults;
     private int itemsPerPage;
     private int startIndex;
-    private String schemas;
+    private List<String> schemas;
     @JsonProperty("Resources")
-    private List<T> resources;
+    private List<T> resources = new ArrayList<>();
 
     public int getTotalResults() {
         return totalResults;
@@ -32,7 +33,7 @@ public class QueryResult<T extends CoreResource> {
         return startIndex;
     }
 
-    public String getSchemas() {
+    public List<String> getSchemas() {
         return schemas;
     }
 

@@ -2,14 +2,31 @@ package org.osiam.client.connector;
 /*
 * for licensing see the file license.txt.
 */
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_OK;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
+import org.osiam.client.oauth.AuthService.Builder;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
@@ -33,6 +50,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     private Scope scope;
     private Scope[] scopes;
     private String stringScope;
+    private String clientRedirectUri;
     
 	private AuthService authService;
 	private OsiamUserService userService;
@@ -48,6 +66,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         this.scope = builder.scope;
         this.scopes = builder.scopes;
         this.stringScope = builder.stringScope;
+        this.clientRedirectUri = builder.clientRedirectUri;
     }
     
     private AuthService authService(){
@@ -76,6 +95,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     		}
     		if(stringScope != null){// NOSONAR - false-positive from clover; if-expression is correct
     			builder = builder.setScope(stringScope);
+    		}
+    		if(clientRedirectUri != null){// NOSONAR - false-positive from clover; if-expression is correct
+    			builder = builder.setClientRedirectUri(clientRedirectUri);
     		}
     		authService = builder.build();
     	}
@@ -223,6 +245,39 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     /**
+     * provides the needed URI which is needed to reconect the User to the OSIAM server to login.
+     * A detailed example how to use this methode, can be seen in our wiki in gitHub
+     * @return
+     */
+    public URI getRedirectLoginUri() {
+    	return authService().getRedirectLoginUri();
+    } 
+    
+    /**
+     * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}.
+     * If the User acepted your request for the needed data you will get an access token. 
+     * If the User denied your request a {@link ForbiddenException} will be thrown.
+     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a 
+     * {@linkplain InvalidAttributeException} will be thrown
+     * @param authCodeResponse response goven from the OSIAM server. 
+     * For more information please look at the wiki at github
+     * @return a valid AccessToken
+     */
+    public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
+    	return authService().retrieveAccessToken(authCodeResponse);
+    }
+    
+    /**
+     * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
+     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. 
+     * For more information please look at the wiki at github
+     * @return a valid AccessToken
+     */
+    public AccessToken retrieveAccessToken(String authCode) {
+    	return authService().retrieveAccessToken(authCode);
+    }
+    
+    /**
      * saves the given {@link User} to the OSIAM DB.
      * @param user user to be saved
      * @param accessToken the OSIAM access token from for the current session
@@ -299,6 +354,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private Scope scope;
         private Scope[] scopes;
         private String stringScope;
+        private String clientRedirectUri;
         
         /**
          * Set up the Builder for the construction of  an {@link OsiamConnector} instance for the OAuth2 service at
@@ -388,6 +444,17 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
             return this;
         }
 
+        /**
+         * Add a Client redirect URI to the OAuth2 request
+         *
+         * @param clientRedirectUri the clientRedirectUri which is known to the OSIAM server
+         * @return The builder itself
+         */
+        public Builder setClientRedirectUri(String clientRedirectUri) {
+			this.clientRedirectUri = clientRedirectUri;
+            return this;
+        }
+        
         /**
          * Construct the {@link OsiamConnector} with the parameters passed to this builder.
          *

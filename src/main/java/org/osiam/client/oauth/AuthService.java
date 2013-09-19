@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -32,6 +33,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.OsiamErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 
@@ -202,10 +205,39 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }  
     
     /**
+     * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}.
+     * If the User acepted your request for the needed data you will get an access token. 
+     * If the User denied your request a {@link ForbiddenException} will be thrown.
+     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a 
+     * {@linkplain InvalidAttributeException} will be thrown
+     * @param authCodeResponse response goven from the OSIAM server. 
+     * For more information please look at the wiki at github
+     * @return a valid AccessToken
+     */
+    public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
+		String authCode = null;
+    	Header header = authCodeResponse.getLastHeader("Location");
+		HeaderElement[] elements = header.getElements();
+		for (HeaderElement actHeaderElement : elements) {
+			if(actHeaderElement.getName().contains("code")){
+				authCode = actHeaderElement.getValue();
+				break;
+			}
+			if(actHeaderElement.getName().contains("error")){
+				throw new ForbiddenException("The user had denied the acces to his data.");
+			}
+		}
+		if(authCode == null){
+			throw new InvalidAttributeException("Could not find any auth code or error message in the given Response");
+		}
+    	return retrieveAccessToken(authCode);
+    }
+    
+    /**
      * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
      * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. 
      * For more information please look at the wiki at github
-     * @returna valid AccessToken
+     * @return a valid AccessToken
      */
     public AccessToken retrieveAccessToken(String authCode) {
         if (authCode == null) { // NOSONAR - false-positive from clover; if-expression is correct
@@ -236,7 +268,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         return getAccessToken(response);
-    }
+    }  
     
     private AccessToken getAccessToken(HttpResponse response){
         final AccessToken accessToken;

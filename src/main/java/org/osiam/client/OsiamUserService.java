@@ -52,18 +52,20 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @param id          the id of the wanted user
      * @param accessToken the OSIAM access token from for the current session
      * @return the user with the given id
-     * @throws UnauthorizedException if the request could not be authorized.
-     * @throws NoResultException     if no user with the given id can be found
-     * @throws ConnectionInitializationException
-     *                               if no connection to the given OSIAM services could be initialized
+     * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
+     * @throws org.osiam.client.exception.NoResultException     if no user with the given id can be found
+     * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
+     * @throws org.osiam.client.exception.ConnectionInitializationException
+     *                               if the connection to the given OSIAM service could be initialized
      */
     public User getUser(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
     /**
-     * Retrieve the User with the who holds the given access token.
-     * @param accessToken
+     * Retrieve the User who holds the given access token.
+     * Not to be used for the grant Client-Credentials
+     * @param accessToken the OSIAM access token from for the current session
      * @return the OSIAM access token from for the current session
      * @throws UnauthorizedException if the request could not be authorized.
      * @throws ConnectionInitializationException

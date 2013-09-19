@@ -35,10 +35,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param id          the id of the wanted group
      * @param accessToken the access token from OSIAM for the current session.
      * @return the group with the given id.
-     * @throws UnauthorizedException if the request could not be authorized.
-     * @throws NoResultException     if no group with the given id can be found.
-     * @throws ConnectionInitializationException
-     *                               if no connection to the given OSIAM service could be initialized
+     * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
+     * @throws org.osiam.client.exception.NoResultException     if no user with the given id can be found
+     * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
+     * @throws org.osiam.client.exception.ConnectionInitializationException
+     *                               if the connection to the given OSIAM service could be initialized
      */
     public Group getGroup(String id, AccessToken accessToken) {
         return getResource(id, accessToken);

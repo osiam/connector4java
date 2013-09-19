@@ -3,8 +3,22 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 import org.apache.http.HttpResponse;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
@@ -15,20 +29,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
-import org.osiam.client.exception.*;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OsiamErrorMessage;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.CoreResource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import static org.apache.http.HttpStatus.*;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
@@ -45,12 +55,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private DefaultHttpClient httpclient;
     private ContentType contentType;
 
-    /**
-     * The protected constructor for the AbstractOsiamService. Please use the {@link AbstractOsiamService.Builder}
-     * to construct one.
-     *
-     * @param userWebResource a valid WebResource to connect to a given OSIAM server
-     */
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(HttpGet userWebResource) {
         mapper = new ObjectMapper();
@@ -62,27 +66,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         typeName = type.getSimpleName();
     }
 
-    /**
-     * Provide the {@link java.net.URI} this Service uses for queries.
-     *
-     * @return The URI used by this Service
-     */
     public URI getUri() {
         return webResource.getURI();
     }
 
-    /**
-     * Retrieve the Resource of the given Type with the given id. If no resource with the given id can be found, an
-     * {@link org.osiam.client.exception.NoResultException} is thrown.
-     *
-     * @param id          the id from the wanted resource
-     * @param accessToken the access token from OSIAM for the actual session
-     * @return The resource of the given type with the given id
-     * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
-     * @throws org.osiam.client.exception.NoResultException     if no user with the given id can be found
-     * @throws org.osiam.client.exception.ConnectionInitializationException
-     *                               if the connection to the given OSIAM service could be initialized
-     */
     protected T getResource(String id, AccessToken accessToken) {
         ensureIdIsNotNull(id);
         ensureAccessTokenIsNotNull(accessToken);
@@ -254,7 +241,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                         throw new NoResultException(errorMessage);
                     case  SC_CONFLICT:
-                        errorMessage = getErrorMessage(response, "Unable to save: " + response.getStatusLine().getReasonPhrase());
+                        errorMessage = getErrorMessage(response, "Unable to delete: " + response.getStatusLine().getReasonPhrase());
                         throw new ConflictException(errorMessage);
                     case SC_FORBIDDEN:
                     	errorMessage = getErrorMessageForbidden(accessToken, "delete");

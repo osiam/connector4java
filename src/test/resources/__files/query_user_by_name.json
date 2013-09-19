@@ -2,7 +2,7 @@
     "totalResults": 1,
     "itemsPerPage": 100,
     "startIndex": 0,
-    "schemas": "urn:scim:schemas:core:1.0",
+    "schemas": ["urn:scim:schemas:core:1.0"],
     "Resources": [
         {
             "id": "f04f1022-8870-469a-ad56-c3209aebf8eb",
