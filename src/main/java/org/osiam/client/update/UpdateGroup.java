@@ -31,7 +31,6 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
     
     /**
      * The Builder is used to construct instances of the {@link UpdateGroup}
-     *
      */
     public static class Builder{
 

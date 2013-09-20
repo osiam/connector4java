@@ -601,7 +601,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         
         /**
-         * removes the membership of the given group of a existing user
+         * removes the membership of in the given group of a existing user
          * @param groupId membership to be removed
          * @return The builder itself
          */
@@ -627,11 +627,11 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
 
 //start active
         /**
-         * sets the activ status of a existing User to the given value
-         * @param activ new activ status
+         * updates the active status of a existing User to the given value
+         * @param activ new active status
          * @return The builder itself
          */
-        public Builder setActive(boolean active){
+        public Builder updateActive(boolean active){
         	this.active = active;
         	return this;
         }
@@ -648,7 +648,6 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	}else{
         		updateUser = new User.Builder();
         	}
-        	
         	if(nickName != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setNickName(nickName);
         	}
@@ -685,7 +684,6 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	if(active != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser.setActive(active);
         	}
-
             if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 Meta meta = new Meta.Builder()
                         .setAttributes(deleteFields).build();

@@ -4,7 +4,7 @@ package org.osiam.client.exception;
  */
 
 /**
- * Thrown if a conflict happens while creating/deleteting/modify a User or a Group
+ * Thrown if a conflict happens while creating/deleting/modify a User or a Group
  */
 public class ConflictException extends RuntimeException {
 

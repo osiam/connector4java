@@ -31,7 +31,7 @@ public class QueryTest {
 
     @Test
     public void no_parameters_in_query_returns_default_count() {
-        assertEquals(100, query.getCount());
+        assertEquals(100, query.getCountPerPage());
     }
 
     @Test
@@ -60,13 +60,13 @@ public class QueryTest {
     @Test
     public void count_is_found_in_front_of_string() {
         givenQuery("count=200&" + QUERY_LACKING_COUNT_AND_INDEX);
-        assertEquals(EXPECTED_INT, query.getCount());
+        assertEquals(EXPECTED_INT, query.getCountPerPage());
     }
 
     @Test
     public void count_is_found_at_end_of_string() {
         givenQuery(QUERY_LACKING_COUNT_AND_INDEX + "&count=200");
-        assertEquals(EXPECTED_INT, query.getCount());
+        assertEquals(EXPECTED_INT, query.getCountPerPage());
     }
 
     @Test

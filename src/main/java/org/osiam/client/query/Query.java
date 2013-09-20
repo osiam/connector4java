@@ -43,7 +43,7 @@ public class Query {
      *
      * @return The number of Items this Query is configured for.
      */
-    public int getCount() {
+    public int getCountPerPage() {
         if (queryStringContainsCount()) { // NOSONAR - false-positive from clover; if-expression is correct
             return Integer.parseInt(countMatcher.group(1));
         }
@@ -51,7 +51,7 @@ public class Query {
     }
 
     /**
-     * Returns the startIndex ot this query. If no startIndex was set, it returns the default, which is 0.
+     * Returns the startIndex of this query. If no startIndex was set, it returns the default, which is 1.
      *
      * @return The startIndex of this query.
      */
@@ -68,7 +68,7 @@ public class Query {
      * @return A new query paged forward by one.
      */
     public Query nextPage() {
-        String nextIndex = "startIndex=" + (getCount() + getStartIndex());
+        String nextIndex = "startIndex=" + (getCountPerPage() + getStartIndex());
         if (queryStringContainsIndex()) { // NOSONAR - false-positive from clover; if-expression is correct
             return new Query(indexMatcher.replaceFirst(nextIndex));
         }
@@ -79,12 +79,13 @@ public class Query {
      * Create a new query that is moved backward the result set by one page.
      *
      * @return A new query paged backward by one.
+     * @throws IllegalStateException in case you are already at the first page
      */
     public Query previousPage() {
         if(getStartIndex() <= DEFAULT_INDEX){// NOSONAR - false-positive from clover; if-expression is correct
         	throw new IllegalStateException("StartIndex < " + DEFAULT_INDEX + " is not possible.");
         }
-    	int newIndex = getStartIndex() - getCount();
+    	int newIndex = getStartIndex() - getCountPerPage();
         
         if (newIndex < DEFAULT_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
             newIndex = DEFAULT_INDEX;
@@ -135,15 +136,12 @@ public class Query {
      */
     public static final class Builder {
 
-	// FIXME DEFAULT_START_INDEX should be 1 to comply to the Scim spec, but OSIAM server still depends on 0
-        private static final int DEFAULT_START_INDEX = 0;
-        private static final int DEFAULT_COUNT_PER_PAGE = 100;
         private Class<? extends CoreResource> clazz;
         private String filter;
         private String sortBy;
         private SortOrder sortOrder;
-        private int startIndex = DEFAULT_START_INDEX;
-        private int countPerPage = DEFAULT_COUNT_PER_PAGE;
+        private int startIndex = DEFAULT_INDEX;
+        private int countPerPage = DEFAULT_COUNT;
 
         /**
          * The Constructor of the QueryBuilder
@@ -217,7 +215,7 @@ public class Query {
          */
         public Builder setSortBy(Attribute attribute) {
             if (!(isAttributeValid(attribute.toString()))) {// NOSONAR - false-positive from clover; if-expression is correct
-                throw new InvalidAttributeException("Sorting for this attribute is not supported");
+                throw new InvalidAttributeException("Sorting for this attribute is not supported");//TODO
             }
             sortBy = attribute.toString();
             return this;
@@ -250,12 +248,12 @@ public class Query {
                         .append(sortOrder);
 
             }
-            if (countPerPage != DEFAULT_COUNT_PER_PAGE) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (countPerPage != DEFAULT_COUNT) { // NOSONAR - false-positive from clover; if-expression is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("count=")
                         .append(countPerPage);
             }
-            if (startIndex != DEFAULT_START_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (startIndex != DEFAULT_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
                 ensureQueryParamIsSeparated(builder);
                 builder.append("startIndex=")
                         .append(startIndex);
@@ -342,7 +340,7 @@ public class Query {
         }
 
         /**
-         * Adds the query of the given Builder into ( and ) to the filter
+         * Adds the query of the given Builder with an 'logical and' into an ( ... ) to the filter
          *
          * @param innerFilter the inner filter
          * @return The Builder with the inner filter added.
@@ -365,7 +363,7 @@ public class Query {
         }
 
         /**
-         * Adds the query of the given Builder into ( or ) to the filter
+         * Adds the query of the given Builder an 'logical or' into ( ... ) to the filter
          *
          * @param innerFilter the inner filter
          * @return The Builder with the inner filter added.
@@ -381,7 +379,7 @@ public class Query {
         }
 
         /**
-         * provides all appended Comparisions as String
+         * provides all appended Comparisons as String
          * @return the build together filter
          */
         public String toString(){

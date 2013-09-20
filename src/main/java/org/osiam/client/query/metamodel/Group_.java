@@ -15,7 +15,7 @@ public abstract class Group_ {
     public static final StringAttribute externalId = new StringAttribute("externalId");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 
     /**
-     * all meta atttributes from a User
+     * all meta attributes from a User
      */
     public abstract static class Meta {
         public static final StringAttribute resourceType = new StringAttribute("meta.resourceType");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -26,7 +26,7 @@ public abstract class Group_ {
     }
 
     /**
-     * all Member atttributes from a Group
+     * all Member attributes from a Group
      */
     public abstract static class Members {
         public static final StringAttribute value = new StringAttribute("members.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'

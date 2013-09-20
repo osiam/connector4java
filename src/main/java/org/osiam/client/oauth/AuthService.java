@@ -15,7 +15,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
@@ -57,6 +59,12 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private GrantType grantType;
     private HttpEntity body;
 
+    /**
+     * The private constructor for the AuthService. Please use the {@link AuthService.Builder}
+     * to construct one.
+     *
+     * @param builder a valid Builder that holds all needed variables
+     */
     private AuthService(Builder builder) {
     	endpoint = builder.endpoint;
     	scopes = builder.scopes;
@@ -96,7 +104,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         
     private String encodeClientCredentials(String clientId, String clientSecret) {
         String clientCredentials = clientId + ":" + clientSecret;
-        return new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
+        clientCredentials = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);;
+        return clientCredentials;
     }
     
     private void buildBody() {
@@ -120,9 +129,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * Provide an {@link AccessToken} for the given parameters of this service.
      *
      * @return a valid AccessToken
-     * @throws ConnectionInitializationException
+     * @throws org.osiam.client.ConnectionInitializationException
      *                               If the Service is unable to connect to the configured OAuth2 service.
-     * @throws UnauthorizedException If the configured credentials for this service are not permitted
+     * @throws org.osiam.client.UnauthorizedException If the configured credentials for this service are not permitted
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
@@ -181,9 +190,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
-     * provides the needed URI which is needed to reconect the User to the OSIAM server to login.
-     * A detailed example how to use this methode, can be seen in our wiki in gitHub
-     * @return
+     * provides the needed URI which is needed to reconnect the User to the OSIAM server to login.
+     * A detailed example how to use this method, can be seen in our wiki in gitHub
+     * @return the needed redirect Uri
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public URI getRedirectLoginUri() {
     	if(grantType != GrantType.AUTHORIZATION_CODE){// NOSONAR - false-positive from clover; if-expression is correct
@@ -210,9 +220,15 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * If the User denied your request a {@link ForbiddenException} will be thrown.
      * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a 
      * {@linkplain InvalidAttributeException} will be thrown
-     * @param authCodeResponse response goven from the OSIAM server. 
+     * @param authCodeResponse response given from the OSIAM server. 
      * For more information please look at the wiki at github
      * @return a valid AccessToken
+     * @throws org.osiam.client.exception.ForbiddenException in case the User had denied you the wanted data
+     * @throws org.osiam.client.exception.InvalidAttributeException in case not authCode and no error message could be found in the response
+     * @throws org.osiam.client.exception.ConflictException in case the given authCode could not be exchanged against a access token
+     * @throws org.osiam.client.exception.ConnectionInitializationException
+     *                               If the Service is unable to connect to the configured OAuth2 service.
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
 		String authCode = null;
@@ -238,6 +254,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. 
      * For more information please look at the wiki at github
      * @return a valid AccessToken
+     * @throws org.osiam.exception.client.ConflictException in case the given authCode could not be exchanged against a access token
+     * @throws org.osiam.exception.client.ConnectionInitializationException
+     *                               If the Service is unable to connect to the configured OAuth2 service.
+     * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public AccessToken retrieveAccessToken(String authCode) {
         if (authCode == null) { // NOSONAR - false-positive from clover; if-expression is correct
@@ -341,16 +361,18 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * @return The builder itself
          */
         public Builder setScope(Scope scope, Scope... scopes){
-        	List<Scope> scopeList = new ArrayList<>();
-        	scopeList.add(scope);
-        	for (Scope actScope : scopes) {
-        		scopeList.add(actScope);
+        	Set<Scope> scopeSet = new HashSet<>(); 
+        	
+        	scopeSet.add(scope);
+        	for (Scope actScope: scopes) {
+				scopeSet.add(actScope);
 			}
-        	if(scopeList.contains(Scope.ALL)){// NOSONAR - false-positive from clover; if-expression is correct
+
+        	if(scopeSet.contains(Scope.ALL)){// NOSONAR - false-positive from clover; if-expression is correct
         		this.scopes = Scope.ALL.toString();
         	}else{
         		StringBuilder scopeBuilder = new StringBuilder();
-        		for (Scope actScope : scopeList) {
+        		for (Scope actScope : scopeSet) {
 					scopeBuilder.append(" ").append(actScope.toString());
         		}
         		this.scopes = scopeBuilder.toString().trim();
@@ -360,7 +382,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         
         /**
          * The needed access token scopes as String like 'GET PATCH' 
-         * @param scope the needed scope
+         * @param scope the needed scopes
          * @return The builder itself
          */
         public Builder setScope(String scope){
@@ -373,7 +395,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          *
          * @param grantType of the requested AuthCode
          * @return The builder itself
-         * @throws UnsupportedOperationException If the GrantType is anything else than GrantType.PASSWORD
          */
         public Builder setGrantType(GrantType grantType) {
             this.grantType = grantType;
@@ -414,9 +435,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         /**
-         * Add the given username to the OAuth2 request
+         * Add the given userName to the OAuth2 request
          *
-         * @param userName The username
+         * @param userName The userName
          * @return The builder itself
          */
         public Builder setUsername(String userName) {
@@ -439,9 +460,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Construct the {@link AuthService} with the parameters passed to this builder.
          *
          * @return An AuthService configured accordingly.
-         * @throws ConnectionInitializationException
-         *          If either the provided client credentials (clientId/clientSecret)
-         *          or, if the requested grant type is 'password', the user credentials (userName/password) are incomplete.
          */
         public AuthService build() {
             ensureAllNeededParameterAreCorrect();

@@ -4,7 +4,7 @@ package org.osiam.client.query.metamodel;
 */
 
 /**
- * a single String atttributes from a User or a Group
+ * a single String attributes from a User or a Group
  */
 public class StringAttribute extends Attribute{
 

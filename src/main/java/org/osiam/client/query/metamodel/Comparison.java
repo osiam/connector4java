@@ -4,7 +4,7 @@ package org.osiam.client.query.metamodel;
  */
 
 /**
- * a comparision beetwen a Attribute and a value
+ * a comparision between a Attribute and a value
  */
 public class Comparison {
 

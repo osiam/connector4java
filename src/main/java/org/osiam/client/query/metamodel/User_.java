@@ -4,7 +4,7 @@ package org.osiam.client.query.metamodel;
 */
 
 /**
- * all atttributes from a User
+ * all attributes from a User
  */
 public abstract class User_ {
 
@@ -23,7 +23,7 @@ public abstract class User_ {
     public static final StringAttribute active = new StringAttribute("active");// NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
 
     /**
-     * all meta atttributes from a User
+     * all meta attributes from a User
      */
     public abstract static class Meta {
         public static final StringAttribute resourceType = new StringAttribute("meta.resourceType");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -34,7 +34,7 @@ public abstract class User_ {
     }
 
     /**
-     * all name atttributes from a User
+     * all name attributes from a User
      */
     public abstract static class Name {
         public static final StringAttribute formatted = new StringAttribute("name.formatted");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -43,7 +43,7 @@ public abstract class User_ {
     }
 
     /**
-     * all email atttributes from a User
+     * all email attributes from a User
      */
     public abstract static class Emails {
         public static final StringAttribute value = new StringAttribute("emails.value");     // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -51,7 +51,7 @@ public abstract class User_ {
     }
 
     /**
-     * all ims atttributes from a User
+     * all ims attributes from a User
      */
     public abstract static class Ims {
         public static final StringAttribute value = new StringAttribute("ims.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -59,7 +59,7 @@ public abstract class User_ {
     }
 
     /**
-     * all photo atttributes from a User
+     * all photo attributes from a User
      */
     public abstract static class Photos {
         public static final StringAttribute value = new StringAttribute("photos.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -82,7 +82,7 @@ public abstract class User_ {
     }
 
     /**
-     * all phone number atttributes from a User
+     * all phone number attributes from a User
      */
     public abstract static  class PhoneNumbers {
         public static final StringAttribute value = new StringAttribute("phoneNumbers.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -90,7 +90,7 @@ public abstract class User_ {
     }
 
     /**
-     * all group atttributes from a User
+     * all group attributes from a User
      */
     public abstract static  class Groups {
         public static final StringAttribute value = new StringAttribute("groups.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -98,7 +98,7 @@ public abstract class User_ {
     }
 
     /**
-     * all entitlements atttributes from a User
+     * all entitlements attributes from a User
      */
     public abstract static class Entitlements {
         public static final StringAttribute value = new StringAttribute("entitlements.value");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -106,7 +106,7 @@ public abstract class User_ {
     }
 
     /**
-     * all role atttributes from a User
+     * all role attributes from a User
      */
     public abstract static class Roles_ {
        public static final StringAttribute value = new StringAttribute("roles.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'

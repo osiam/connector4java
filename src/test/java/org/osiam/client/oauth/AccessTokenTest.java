@@ -59,13 +59,6 @@ public class AccessTokenTest {
                 .verify();
     }
 
-    @Test(expected = NoSuchMethodError.class)
-    public void getRefreshToken_raises_exception() throws IOException {
-        given_a_valid_access_token();
-        accessToken.getRefreshToken();
-        fail();
-    }
-
     private void given_an_expired_access_token() throws Exception {
         accessToken = tokenProvider.expired_access_token();
     }

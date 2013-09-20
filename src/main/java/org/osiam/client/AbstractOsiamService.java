@@ -33,6 +33,7 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.NotFoundException;
 import org.osiam.client.exception.OsiamErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
@@ -161,7 +162,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
         }
-
     }
 
     protected QueryResult<T> searchResources(Query query, AccessToken accessToken) {
@@ -186,7 +186,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) throws IOException {
         return getErrorMessage(httpResponse, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
     }
-
 
     protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) throws IOException {
         InputStream content = httpResponse.getEntity().getContent();
@@ -256,7 +255,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         }
     }
 
-    protected T createResource(T resource , AccessToken accessToken) {
+    protected T createResource(T resource, AccessToken accessToken) {
         ensureResourceIsNotNull(resource);
         ensureAccessTokenIsNotNull(accessToken);
 
@@ -317,9 +316,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
-
             realWebResource.setEntity(new StringEntity(userAsString, contentType));
-
             httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
@@ -338,7 +335,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         throw new ConflictException(errorMessage);
                     case  SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id + " could be found to be updated.");
-                        throw new ConflictException(errorMessage);
+                        throw new NotFoundException(errorMessage);
                     case SC_FORBIDDEN:
                     	errorMessage = getErrorMessageForbidden(accessToken, "update");
                         throw new ForbiddenException(errorMessage);
@@ -378,23 +375,12 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             throw new IllegalArgumentException("The given id can't be null.");
         }
     }
-    
-    /**
-     * The Builder class is used to prove a WebResource to build the needed Service
-     *
-     * @param <T> a org.osiam.resources.scim.User or a org.osiam.resources.scim.Group
-     */
+
     protected static class Builder<T> {
         private String endpoint;
         private Class<T> type;
         private String typeName;
 
-        /**
-         * Set up the Builder for the construction of  an {@link AbstractOsiamService} instance for the OAuth2 service at
-         * the given endpoint
-         *
-         * @param endpoint The URL at which the OSIAM server lives.
-         */
         @SuppressWarnings("unchecked")
         protected Builder(String endpoint) {
             this.endpoint = endpoint;
@@ -404,11 +390,6 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             typeName = type.getSimpleName();
         }
 
-        /**
-         * creates a WebResource to the needed endpoint
-         *
-         * @return The webresource for the type of OSIAM-service
-         */
         protected HttpGet getWebResource() {
             HttpGet webResource;
             try {
