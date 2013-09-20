@@ -28,7 +28,7 @@ public class AuthServiceBuilderTest {
         new AuthService.Builder(IRRELEVANT)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
-                .setGrantType(GrantType.PASSWORD)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setPassword(IRRELEVANT).build();
         fail("We expected an exception");
     }
@@ -38,7 +38,7 @@ public class AuthServiceBuilderTest {
         new AuthService.Builder(IRRELEVANT)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
-                .setGrantType(GrantType.PASSWORD)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setUsername(IRRELEVANT).build();
         fail("We expected an exception");
     }
@@ -48,7 +48,7 @@ public class AuthServiceBuilderTest {
         new AuthService.Builder(IRRELEVANT)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
-                .setGrantType(GrantType.PASSWORD).build();
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).build();
         fail("We expected an exception");
     }
 

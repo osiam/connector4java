@@ -75,7 +75,7 @@ public class OsiamConnectorTest {
 
     @Before
     public void setUp() throws Exception {
-        oConnector = new OsiamConnector.Builder(endpoint).setGrantType(GrantType.PASSWORD)
+        oConnector = new OsiamConnector.Builder(endpoint).setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
                 .setUserName(IRRELEVANT)
@@ -466,7 +466,7 @@ public class OsiamConnectorTest {
 
     private void given_a_correctly_configured_auth_service() {
         oConnector = new OsiamConnector.Builder(endpoint)
-                .setGrantType(GrantType.PASSWORD)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUserName(VALID_USERNAME)

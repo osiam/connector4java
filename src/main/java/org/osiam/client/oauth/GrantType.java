@@ -15,7 +15,7 @@ public enum GrantType {
 	/**
 	 * for this GrantType also the user name and the user password are needed
 	 */
-    PASSWORD("password")
+    RESOURCE_OWNER_PASSWORD_CREDENTIALS("password")
     /**
 	 * for this GrantType the user name and the user password are not allowed
 	 * If you set one of these a exception will be thrown

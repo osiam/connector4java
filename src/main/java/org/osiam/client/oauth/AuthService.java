@@ -458,7 +458,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type is not set.");
             }
-            if (grantType.equals(GrantType.PASSWORD) && (userName == null && password == null)) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (grantType.equals(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS) && (userName == null && password == null)) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The grant type 'password' requires username and password");
             }
             if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))// NOSONAR - false-positive from clover; if-expression is correct

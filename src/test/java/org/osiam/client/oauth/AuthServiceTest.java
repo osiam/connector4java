@@ -118,7 +118,7 @@ public class AuthServiceTest {
     
     private void given_a_wrong_configured_auth_service_with_wrong_endpoint() {
         service = new AuthService.Builder(WRONG_ENDPOINT)
-                .setGrantType(GrantType.PASSWORD)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUsername(VALID_USERNAME)
@@ -129,7 +129,7 @@ public class AuthServiceTest {
     
     private void given_a_wrong_configured_auth_service_with_invalid_client_credentials() {
         service = new AuthService.Builder(ENDPOINT)
-                .setGrantType(GrantType.PASSWORD)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(INVALID_CLIENT_ID)
                 .setClientSecret(INVALID_CLIENT_SECRET)
                 .setUsername(VALID_USERNAME)
@@ -140,7 +140,7 @@ public class AuthServiceTest {
     
     private void given_a_correctly_configured_password_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
-                .setGrantType(GrantType.PASSWORD)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUsername(VALID_USERNAME)
