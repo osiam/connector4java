@@ -35,13 +35,11 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
     public static class Builder{
 
     	private Group.Builder updateGroup = null;
+    	private String displayName = null;
+    	private String externalId = null;
         private Set<String> deleteFields = new HashSet<>();
         private static final String DELETE = "delete";
         private Set<MultiValuedAttribute> members = new HashSet<>();
-
-        public Builder(){
-        	updateGroup = new Group.Builder();
-        }
         
 //start ExternalID
         /**
@@ -59,7 +57,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return The builder itself
          */
         public Builder updateExternalId(String externalID){
-        	updateGroup.setExternalId(externalID);
+        	this.externalId = externalID;
             return this;
         }
         //end ExternalID
@@ -71,7 +69,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return The builder itself
          */
         public Builder updateDisplayName(String displayName){
-            updateGroup.setDisplayName(displayName);
+            this.displayName = displayName;
             return this;
         }
         //end DisplayName
@@ -118,7 +116,15 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build(){
-            if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(displayName != null){
+            	updateGroup = new Group.Builder(displayName);
+            }else{
+            	updateGroup = new Group.Builder();
+            }
+        	if(externalId != null){
+        		updateGroup.setExternalId(externalId);
+        	}
+        	if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 Meta meta = new Meta.Builder()
                         .setAttributes(deleteFields).build();
                 updateGroup.setMeta(meta);
