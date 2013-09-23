@@ -1,4 +1,7 @@
 package org.osiam.client.query;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import static org.junit.Assert.assertEquals;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -11,8 +14,7 @@ public class QueryTest {
 
     private static final String QUERY_LACKING_COUNT_AND_INDEX = "IRRELEVANT";
     private static final int EXPECTED_INT = 200;
-
-    Query query;
+    private Query query;
 
     @Before
     public void setUp() {

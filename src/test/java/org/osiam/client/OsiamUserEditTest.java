@@ -33,37 +33,32 @@ public class OsiamUserEditTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
-    final static private String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    
-    final static private String endpoint = "http://localhost:9090/osiam-server/";
-    private String updateID;
-    private UpdateUser UPDATE_USER;
+    final static private String ENDPOINT = "http://localhost:9090/osiam-server/";
+    private static String UPDATE_USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private UpdateUser updateUser;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
-
     private User singleUserResult;
-    OsiamUserService service;
+    private OsiamUserService service;
 
     @Before
     public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpoint).build();
+        service = new OsiamUserService.Builder(ENDPOINT).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
-        
-        // use happy path for default
-        givenAnUserID();
+
         givenAnAccessToken();
         givenAnUpdateUser();
     }
 
     @Test
     public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(endpoint + "/Users"),service.getUri());
+        assertEquals(new URI(ENDPOINT + "/Users"),service.getUri());
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void id_is_null_by_updating_single_user_raises_exception() throws Exception {
     	givenIDisEmpty();
-        updateID = null;
+        UPDATE_USER_ID = null;
         updateSingleUser();
         fail("Exception expected");
     }
@@ -79,7 +74,7 @@ public class OsiamUserEditTest {
     @Test(expected = IllegalArgumentException.class)
     public void null_UpdateUser_rases_exception() throws Exception {
         givenIDisEmpty();
-        UPDATE_USER = null;
+        updateUser = null;
         updateSingleUser();
         fail("Exception expected");
     }
@@ -95,22 +90,18 @@ public class OsiamUserEditTest {
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
-
-    private void givenAnUserID() {
-        this.updateID = userIdString;
-    }
     
     private void givenAnUpdateUser() {
-        this.UPDATE_USER = new UpdateUser.Builder().build();
+        this.updateUser = new UpdateUser.Builder().build();
     }
 
     private void updateSingleUser() {
-        service.updateUser(updateID, UPDATE_USER, accessToken);
+        service.updateUser(UPDATE_USER_ID, updateUser, accessToken);
     }
     
     private void updateSingleUserWithEmptyResource() {
     	singleUserResult = null;
-    	service.updateResource(updateID, singleUserResult, accessToken);
+    	service.updateResource(UPDATE_USER_ID, singleUserResult, accessToken);
     }
     
     private void givenIDisEmpty() {

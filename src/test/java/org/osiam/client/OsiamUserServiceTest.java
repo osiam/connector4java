@@ -3,7 +3,6 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -56,11 +55,11 @@ public class OsiamUserServiceTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
-    final static private String COUNTRY = "Germany";
-    final static private String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    final static private String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
-    final static private String endpoint = "http://localhost:9090/osiam-server/";
-    final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
+    private final static String COUNTRY = "Germany";
+    private final static String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private final static String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
+    private final static String endpoint = "http://localhost:9090/osiam-server/";
+    private final static String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
     
     private String searchedID;
     private AccessToken accessToken;
@@ -78,7 +77,6 @@ public class OsiamUserServiceTest {
         service = new OsiamUserService.Builder(endpoint).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
-        // use happy path for default
         givenAnUserID();
         givenAnAccessToken();
     }
@@ -246,7 +244,7 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAnUserID() {
-        this.searchedID = userIdString;
+        this.searchedID = USER_ID;
     }
 
     private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {
@@ -269,29 +267,29 @@ public class OsiamUserServiceTest {
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
-        stubFor(givenIDisLookedUp(userIdString, accessToken)
+        stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
     private void givenInvalidAccessTokenIsUsedForLookup() {
-        stubFor(givenIDisLookedUp(userIdString, accessToken)
+        stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
 
     private void givenIDcanNotBeFound() {
-        stubFor(givenIDisLookedUp(userIdString, accessToken)
+        stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_NOT_FOUND)));
     }
 
     private void givenIDcanBeFound() {
-        stubFor(givenIDisLookedUp(userIdString, accessToken)
+        stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + userIdString + ".json")));
+                        .withBodyFile("user_" + USER_ID + ".json")));
     }
 
     private void givenIDisEmpty() {
@@ -484,7 +482,7 @@ public class OsiamUserServiceTest {
         StringBuilder jsonUser = null;
         User expectedUser;
         try {
-            reader = new FileReader("src/test/resources/__files/user_" + userIdString + ".json");
+            reader = new FileReader("src/test/resources/__files/user_" + USER_ID + ".json");
             jsonUser = new StringBuilder();
             for (int c; (c = reader.read()) != -1; )
                 jsonUser.append((char) c);

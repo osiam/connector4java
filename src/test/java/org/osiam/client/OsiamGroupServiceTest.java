@@ -49,26 +49,21 @@ public class OsiamGroupServiceTest {
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String INVALID_GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
     private static final String USER_ID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-
-    private static final String endpoint = "http://localhost:9090/osiam-server/";
-
+    private static final String ENDPOINT = "http://localhost:9090/osiam-server/";
     final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
     final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+test_group01";
 
-    private String SEARCHED_ID;
-
+    private String searchedId;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
-
     private Group singleGroupResult;
     private QueryResult<Group> queryResult;
     private List<Group> allGroups;
-
-    OsiamGroupService service;
+    private OsiamGroupService service;
 
     @Before
     public void setUp() throws IOException {
-        service = new OsiamGroupService.Builder(endpoint).build();
+        service = new OsiamGroupService.Builder(ENDPOINT).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
         givenAGroupID();
@@ -77,14 +72,14 @@ public class OsiamGroupServiceTest {
 
     @Test
     public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(endpoint + "/Groups"), service.getUri());
+        assertEquals(new URI(ENDPOINT + "/Groups"), service.getUri());
     }
 
     @Test
     public void existing_group_is_returned() throws IOException {
         givenIDcanBeFound();
         whenSingleGroupIsLookedUp();
-        thenReturnedGroupHasID(SEARCHED_ID);
+        thenReturnedGroupHasID(searchedId);
     }
 
     @Test
@@ -112,7 +107,7 @@ public class OsiamGroupServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void id_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenIDisEmpty();
-        SEARCHED_ID = null;
+        searchedId = null;
         whenSingleGroupIsLookedUp();
         fail("Exception expected");
     }
@@ -216,11 +211,11 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenAGroupID() {
-        this.SEARCHED_ID = GROUP_ID_STRING;
+        this.searchedId = GROUP_ID_STRING;
     }
 
     private void whenSingleGroupIsLookedUp() {
-        singleGroupResult = service.getGroup(SEARCHED_ID, accessToken);
+        singleGroupResult = service.getGroup(searchedId, accessToken);
     }
 
     private void whenAllGroupsAreLookedUp() {

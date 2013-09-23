@@ -13,7 +13,6 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import org.apache.http.HttpStatus;

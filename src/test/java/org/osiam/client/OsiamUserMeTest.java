@@ -46,32 +46,29 @@ public class OsiamUserMeTest {
 
 
     final static private String COUNTRY = "Germany";
-    final static private String endpoint = "http://localhost:9090/osiam-server/";
-    final static private String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";  
+    final static private String ENDPOINT = "http://localhost:9090/osiam-server/";
+    final static private String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";  
     private static final String URL_BASE = "/osiam-server//Users";
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
-
     private User singleUserResult;
-    private String searchedID;
     
     OsiamUserService service;
 
     @Before
     public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpoint).build();
+        service = new OsiamUserService.Builder(ENDPOINT).build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
         givenAnAccessToken();
-        givenAnUserID();
     }
 
     @Test
     public void me_user_is_returned() throws Exception {
         givenAccessTokenForMeIsValid();
         whenMeIsLookedUp();
-        thenReturnedUserHasID(searchedID);
+        thenReturnedUserHasID(USER_ID);
         thenMetaDataWasDeserializedCorrectly();
         thenAddressIsDeserializedCorrectly();
         thenPhoneNumbersAreDeserializedCorrectly();
@@ -107,10 +104,6 @@ public class OsiamUserMeTest {
         fail("Exception expected");
     }
     
-    private void givenAnUserID() {
-        this.searchedID = userIdString;
-    }    
-    
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
@@ -123,7 +116,7 @@ public class OsiamUserMeTest {
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + userIdString + ".json")));
+                        .withBodyFile("user_" + USER_ID + ".json")));
     }
     
     private void whenMeIsLookedUp() {
@@ -257,7 +250,7 @@ public class OsiamUserMeTest {
         StringBuilder jsonUser = null;
         User expectedUser;
         try {
-            reader = new FileReader("src/test/resources/__files/user_" + userIdString + ".json");
+            reader = new FileReader("src/test/resources/__files/user_" + USER_ID + ".json");
             jsonUser = new StringBuilder();
             for (int c; (c = reader.read()) != -1; )
                 jsonUser.append((char) c);

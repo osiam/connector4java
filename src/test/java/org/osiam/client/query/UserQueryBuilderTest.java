@@ -1,13 +1,13 @@
 package org.osiam.client.query;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -29,7 +29,6 @@ public class UserQueryBuilderTest {
     private static final DateAttribute VALID_META_ATTR = User_.Meta.created;
     private static final StringAttribute VALID_NAME_ATTR = User_.Name.givenName;
     private static final StringAttribute VALID_EMAIL_ATTR = User_.Emails.value;
-    //private static final String INVALID_EMAIL_ATTR = "emails.false";
     private static final String IRRELEVANT = "irrelevant";
     private static final StringAttribute IRRELEVANT_FIELD = Group_.Members.value;
     private static final int START_INDEX = 5;
@@ -37,14 +36,14 @@ public class UserQueryBuilderTest {
     private static final String FILTER = "filter=";
     private Query.Builder queryBuilder;
     private Query.Filter filter;
-    private DateTime DATE = new DateTime();
-    private String DATE_STR;
+    private DateTime dateNow = new DateTime();
+    private String dateNowString;
 
     @Before
     public void setUp() throws UnsupportedEncodingException {
         queryBuilder = new Query.Builder(User.class);
         DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        DATE_STR = dateFormat.print(DATE);
+        dateNowString = dateFormat.print(dateNow);
     }
 
     @Test
@@ -63,9 +62,9 @@ public class UserQueryBuilderTest {
 
     @Test
     public void nested_meta_attribute_is_added_to_query() {
-        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterThan(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterThan(dateNow));
         queryBuilder.setFilter(filter);
-        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " gt \"" + DATE_STR + "\""));
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " gt \"" + dateNowString + "\""));
     }
 
     @Test
@@ -121,30 +120,30 @@ public class UserQueryBuilderTest {
 
     @Test
     public void filter_greater_than_is_added_to_query() {
-        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterThan(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterThan(dateNow));
         queryBuilder.setFilter(filter);
-        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " gt \"" + DATE_STR + "\""));
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " gt \"" + dateNowString + "\""));
     }
 
     @Test
     public void filter_greater_equals_is_added_to_query() {
-        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterEquals(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.greaterEquals(dateNow));
         queryBuilder.setFilter(filter);
-        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " ge \"" + DATE_STR + "\""));
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " ge \"" + dateNowString + "\""));
     }
 
     @Test
     public void filter_less_than_is_added_to_query() {
-        filter = new Query.Filter(User.class, VALID_META_ATTR.lessThan(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.lessThan(dateNow));
         queryBuilder.setFilter(filter);
-        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " lt \"" + DATE_STR + "\""));
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " lt \"" + dateNowString + "\""));
     }
 
     @Test
     public void filter_less_equals_is_added_to_query() {
-        filter = new Query.Filter(User.class, VALID_META_ATTR.lessEquals(DATE));
+        filter = new Query.Filter(User.class, VALID_META_ATTR.lessEquals(dateNow));
         queryBuilder.setFilter(filter);
-        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " le \"" + DATE_STR + "\""));
+        buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " le \"" + dateNowString + "\""));
     }
 
     @Test(expected = InvalidAttributeException.class)
@@ -285,12 +284,12 @@ public class UserQueryBuilderTest {
 
     @Test
     public void attribute_meta_created_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.Meta.created.equalTo(DATE));
+        new Query.Filter(User.class, User_.Meta.created.equalTo(dateNow));
     }
 
     @Test
     public void attribute_meta_last_modified_is_correct_reconised_over_reflection(){
-        new Query.Filter(User.class, User_.Meta.lastModified.equalTo(DATE));
+        new Query.Filter(User.class, User_.Meta.lastModified.equalTo(dateNow));
     }
 
     @Test

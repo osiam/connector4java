@@ -1,4 +1,7 @@
 package org.osiam.client.connector;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -32,50 +35,42 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dmoeb
- * Date: 23.08.13
- * Time: 10:09
- * To change this template use File | Settings | File Templates.
- */
 public class OsiamConnectorTest {
 
-    final static private String endpoint = "http://localhost:9090/osiam-server/";
+	private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
     private static final String URL_BASE_USERS = "/osiam-server//Users";
     private static final String URL_BASE_GROUPS = "/osiam-server//Groups";
-    final static private String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private final static String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private AccessToken accessToken;
-    private User singleUserResult;
-    private Group singleGroupResult;
-    private String searchedUserID;
-    private String SEARCHED_GROUP_ID;
-    final static private String COUNTRY = "Germany";
+    private final static String COUNTRY = "Germany";
     private static final String IRRELEVANT = "irrelevant";
-    private AccessTokenMockProvider tokenProvider;
-    private QueryResult<User> userQueryResult;
-    private QueryResult<Group> groupQueryResult;
-    private List<User> allUsers;
-    private List<Group> allGroups;
-    final static private String SIMPLE_USER_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
-    final static private String SIMPLE_GROUP_QUERY_STRING = "filter=displayName+eq+test_group01";
-    private Query query;
-    final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
+    private final static String SIMPLE_USER_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
+    private final static String SIMPLE_GROUP_QUERY_STRING = "filter=displayName+eq+test_group01";
+    private final static int NUMBER_OF_EXPECTED_GROUPS = 7;
     private final static String VALID_CLIENT_ID = "valid-client";
     private final static String VALID_CLIENT_SECRET = "valid_secret";
     private final static String VALID_USERNAME = "valid-username";
     private final static String VALID_PASSWORD = "valid-password";
     private final static String TOKEN_PATH = "/oauth/token";
-
+    
+    private AccessToken accessToken;
+    private User singleUserResult;
+    private String searchedUserID;
+    private String searchedGroupId;
+    private AccessTokenMockProvider tokenProvider;
+    private QueryResult<User> userQueryResult;
+    private QueryResult<Group> groupQueryResult;
+    private List<User> allUsers;
+    private List<Group> allGroups;
+    private Query query;
+    
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
-
-    OsiamConnector oConnector;
+    private OsiamConnector oConnector;
 
     @Before
     public void setUp() throws Exception {
-        oConnector = new OsiamConnector.Builder(endpoint).setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+        oConnector = new OsiamConnector.Builder(ENDPOINT).setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
                 .setUserName(IRRELEVANT)
@@ -83,7 +78,6 @@ public class OsiamConnectorTest {
                 .build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
-        // use happy path for default
         givenAnUserID();
         givenAGroupID();
         givenAnAccessToken();
@@ -135,7 +129,7 @@ public class OsiamConnectorTest {
     public void getGroup_is_transferred_correctly() throws IOException {
         givenGroupIDcanBeFound();
         whenSingleGroupIsLookedUp();
-        thenReturnedGroupHasID(SEARCHED_GROUP_ID);
+        thenReturnedGroupHasID(searchedGroupId);
     }
 
     @Test
@@ -401,11 +395,11 @@ public class OsiamConnectorTest {
     }
 
     private void whenSingleGroupIsLookedUp() {
-        singleGroupResult = oConnector.getGroup(SEARCHED_GROUP_ID, accessToken);
+        oConnector.getGroup(searchedGroupId, accessToken);
     }
 
     private void givenAGroupID() {
-        this.SEARCHED_GROUP_ID = GROUP_ID_STRING;
+        this.searchedGroupId = GROUP_ID_STRING;
     }
 
     private void thenReturnedGroupHasID(String id) {
@@ -465,7 +459,7 @@ public class OsiamConnectorTest {
     }
 
     private void given_a_correctly_configured_auth_service() {
-        oConnector = new OsiamConnector.Builder(endpoint)
+        oConnector = new OsiamConnector.Builder(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)

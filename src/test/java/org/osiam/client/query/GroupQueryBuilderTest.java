@@ -1,19 +1,18 @@
 package org.osiam.client.query;
-
+/*
+ * for licensing see the file license.txt.
+ */
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.DATA_CONVERSION;
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.client.query.metamodel.StringAttribute;
-import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.User;
 

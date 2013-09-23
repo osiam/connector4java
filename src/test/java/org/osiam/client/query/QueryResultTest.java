@@ -1,4 +1,7 @@
 package org.osiam.client.query;
+/*
+ * for licensing see the file license.txt.
+ */
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,12 +18,9 @@ import org.osiam.resources.scim.Group;
 public class QueryResultTest {
 
     final static private String GROUP_PATH = "src/test/resources/__files/query_all_groups.json";
-
     final static private int EXPECTED_NUMBER_OF_GROUPS = 7;
     private String jsonGroupString;
-
     private ObjectMapper mapper;
-
     private QueryResult<Group> result;
 
     @Before
