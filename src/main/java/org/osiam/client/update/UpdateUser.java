@@ -94,24 +94,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteAddress(Address address){
-        /*    Address deleteAddress = new Address.Builder()
-            		.setCountry(address.getCountry())
-            		.setFormatted(address.getFormatted())
-            		.setLocality(address.getLocality())
-            		.setPostalCode(address.getPostalCode())
-            		.setRegion(address.getRegion())
-            		.setStreetAddress(address.getStreetAddress())
-            		.setDisplay(address.getDisplay())
-            		.setPrimary(address.isPrimary())
-            		.setType(address.getType())
+        	
+            Address deleteAddress = new Address.Builder(address)
             		.setOperation(DELETE)
-            		.build()
-            		
-            		
-        	//TODO we can't build a address since setOperation is a Multivalue Field 
-        	 * and its builder can't build a address
-        	addresses.add(address);
-        	*/
+            		.build();
+ 
+        	addresses.add(deleteAddress);
             return this;
         }
         
