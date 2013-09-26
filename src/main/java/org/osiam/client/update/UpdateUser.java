@@ -5,10 +5,18 @@ package org.osiam.client.update;
 
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Entitlement;
+import org.osiam.resources.scim.Ims;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.PhoneNumber;
+import org.osiam.resources.scim.Photo;
+import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.GroupRef;
+import org.osiam.resources.scim.X509Certificate;
 
 import java.util.*;
 
@@ -51,15 +59,15 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
     	private Boolean active;
         private User.Builder updateUser = null;
         private Set<String> deleteFields = new HashSet<>();
-        private List<MultiValuedAttribute> emails = new ArrayList<>();
-        private List<MultiValuedAttribute> ims = new ArrayList<>();
-        private List<MultiValuedAttribute> groups = new ArrayList<>();
-        private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
+        private List<Email> emails = new ArrayList<>();
+        private List<Ims> ims = new ArrayList<>();
+        private List<GroupRef> groups = new ArrayList<>();
+        private List<PhoneNumber> phoneNumbers = new ArrayList<>();
         private List<Address> addresses = new ArrayList<>();
-        private List<MultiValuedAttribute> entitlements = new ArrayList<>();
-        private List<MultiValuedAttribute> photos = new ArrayList<>();
-        private List<MultiValuedAttribute> roles = new ArrayList<>();
-        private List<MultiValuedAttribute> certificates = new ArrayList<>();
+        private List<Entitlement> entitlements = new ArrayList<>();
+        private List<Photo> photos = new ArrayList<>();
+        private List<Role> roles = new ArrayList<>();
+        private List<X509Certificate> certificates = new ArrayList<>();
         private static final String DELETE = "delete";
 
         public Builder(){
@@ -351,7 +359,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteEmail(String email){
-            MultiValuedAttribute deleteEmail = new MultiValuedAttribute.Builder()
+            Email deleteEmail = new Email.Builder()
                     .setValue(email)
                     .setOperation(DELETE).build();
             emails.add(deleteEmail);
@@ -364,7 +372,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param email new email
          * @return The builder itself
          */
-        public Builder addOrUpdateEmail(MultiValuedAttribute email){
+        public Builder addOrUpdateEmail(Email email){
             emails.add(email);
             return this;
         }
@@ -386,7 +394,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteX509Certificate(String certificate){
-            MultiValuedAttribute deleteCertificates = new MultiValuedAttribute.Builder()
+            X509Certificate deleteCertificates = new X509Certificate.Builder()
                     .setValue(certificate)
                     .setOperation(DELETE).build();
             certificates.add(deleteCertificates);
@@ -399,7 +407,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param certificate new certificate
          * @return The builder itself
          */
-        public Builder addOrUpdateX509Certificate(MultiValuedAttribute certificate){
+        public Builder addOrUpdateX509Certificate(X509Certificate certificate){
         	certificates.add(certificate);
             return this;
         }
@@ -421,7 +429,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteRole(String role){
-            MultiValuedAttribute deleteRole = new MultiValuedAttribute.Builder()
+            Role deleteRole = new Role.Builder()
                     .setValue(role)
                     .setOperation(DELETE).build();
             roles.add(deleteRole);
@@ -434,7 +442,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param role new role
          * @return The builder itself
          */
-        public Builder addOrUpdateRole(MultiValuedAttribute role){
+        public Builder addOrUpdateRole(Role role){
             roles.add(role);
             return this;
         }
@@ -456,7 +464,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteIms(String ims){
-            MultiValuedAttribute deleteIms = new MultiValuedAttribute.Builder()
+            Ims deleteIms = new Ims.Builder()
                     .setValue(ims)
                     .setOperation(DELETE).build();
             this.ims.add(deleteIms);
@@ -469,7 +477,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param ims new ims
          * @return The builder itself
          */
-        public Builder addOrUpdatesIms(MultiValuedAttribute ims){
+        public Builder addOrUpdatesIms(Ims ims){
             this.ims.add(ims);
             return this;
         }
@@ -482,7 +490,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param phoneNumber new phoneNumber 
          * @return The builder itself
          */
-        public Builder addOrUpdatesPhoneNumber(MultiValuedAttribute phoneNumber){
+        public Builder addOrUpdatesPhoneNumber(PhoneNumber phoneNumber){
             phoneNumbers.add(phoneNumber);
             return this;
         }
@@ -493,7 +501,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deletePhoneNumber(String phoneNumber){
-            MultiValuedAttribute deletePhoneNumber = new MultiValuedAttribute.Builder()
+            PhoneNumber deletePhoneNumber = new PhoneNumber.Builder()
                     .setValue(phoneNumber)
                     .setOperation(DELETE).build();
             phoneNumbers.add(deletePhoneNumber);
@@ -516,7 +524,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param photo new photo
          * @return The builder itself
          */
-        public Builder addOrUpdatesPhoto(MultiValuedAttribute photo){
+        public Builder addOrUpdatesPhoto(Photo photo){
             photos.add(photo);
             return this;
         }
@@ -527,7 +535,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deletePhoto(String photoUri){
-            MultiValuedAttribute deletePhoto = new MultiValuedAttribute.Builder()
+            Photo deletePhoto = new Photo.Builder()
                     .setValue(photoUri)
                     .setOperation(DELETE).build();
             photos.add(deletePhoto);
@@ -559,7 +567,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteEntitlement(String entitlement){
-            MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
+            Entitlement deleteEntitlement = new Entitlement.Builder()
                     .setValue(entitlement)
                     .setOperation(DELETE).build();
             entitlements.add(deleteEntitlement);
@@ -572,7 +580,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param entitlement new entitlement
          * @return The builder itself
          */
-        public Builder addOrUpdatesEntitlement(MultiValuedAttribute entitlement){
+        public Builder addOrUpdatesEntitlement(Entitlement entitlement){
         	entitlements.add(entitlement);
             return this;
         }
@@ -594,7 +602,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteGroup(String groupId){
-            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
+            GroupRef deleteGroup = new GroupRef.Builder()
                     .setValue(groupId)
                     .setOperation(DELETE).build();
             groups.add(deleteGroup);
@@ -607,7 +615,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param groupMembership updated group membership
          * @return The builder itself
          */
-        public Builder addOrUpdateGroupMembership(MultiValuedAttribute groupMembership){
+        public Builder addOrUpdateGroupMembership(GroupRef groupMembership){
         	groups.add(groupMembership);
             return this;
         }

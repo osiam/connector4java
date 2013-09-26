@@ -19,6 +19,7 @@ import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.*;
+import org.osiam.resources.type.PhoneNumberType;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -215,12 +216,12 @@ public class OsiamConnectorTest {
     }
 
     public void thenPhoneNumbersAreDeserializedCorrectly() {
-        List<MultiValuedAttribute> phonenumbers = singleUserResult.getPhoneNumbers();
+        List<PhoneNumber> phonenumbers = singleUserResult.getPhoneNumbers();
         assertEquals(1, phonenumbers.size());
-        MultiValuedAttribute phonenumber = phonenumbers.get(0);
+        PhoneNumber phonenumber = phonenumbers.get(0);
 
         assertEquals("555-555-8377", phonenumber.getValue().toString());
-        assertEquals("work", phonenumber.getType());
+        assertEquals(PhoneNumberType.WORK, phonenumber.getType());
     }
 
     public void thenBasicValuesAreDeserializedCorrectly() throws Exception {
@@ -333,7 +334,7 @@ public class OsiamConnectorTest {
         User expectedUser = get_expected_user();
 
         assertEquals(expectedUser.getDisplayName(), singleUserResult.getDisplayName());
-        assertEqualsMultiValueList(expectedUser.getEmails(), singleUserResult.getEmails());
+        assertEqualsEmailList(expectedUser.getEmails(), singleUserResult.getEmails());
         assertEquals(expectedUser.getExternalId(), singleUserResult.getExternalId());
         assertEquals(expectedUser.getLocale(), singleUserResult.getLocale());
         assertEqualsName(expectedUser.getName(), singleUserResult.getName());
@@ -369,7 +370,7 @@ public class OsiamConnectorTest {
         return expectedUser;
     }
 
-    private void assertEqualsMultiValueList(List<MultiValuedAttribute> expected, List<MultiValuedAttribute> actual) {
+    private void assertEqualsEmailList(List<Email> expected, List<Email> actual) {
         if (expected == null && actual == null) {
             return;
         }
@@ -377,8 +378,8 @@ public class OsiamConnectorTest {
             fail("The expected List has not the same number of values like the actual list");
         }
         for (int count = 0; count < expected.size(); count++) {
-            MultiValuedAttribute expectedAttribute = expected.get(count);
-            MultiValuedAttribute actualAttribute = actual.get(count);
+        	Email expectedAttribute = expected.get(count);
+        	Email actualAttribute = actual.get(count);
             assertEquals(expectedAttribute.getValue().toString(), actualAttribute.getValue().toString());
         }
     }
@@ -426,7 +427,7 @@ public class OsiamConnectorTest {
         for (Group currentGroup : allGroups) {
             if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
-                for (MultiValuedAttribute actValue : currentGroup.getMembers()) {
+                for (Member actValue : currentGroup.getMembers()) {
                     assertEquals(userIdString, actValue.getValue().toString());
                 }
                 break;

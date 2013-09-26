@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,7 @@ import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.Comparison;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
 import org.osiam.resources.scim.CoreResource;
 
 /**
@@ -280,21 +283,44 @@ public class Query {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Meta.class);
             }
             if (attribute.startsWith("emails.")) { // NOSONAR - false-positive from clover; if-expression is correct
-                return isAttributeValid(compositeField, org.osiam.resources.scim.MultiValuedAttribute.class);
+                return isAttributeValid(compositeField, org.osiam.resources.scim.Email.class);
             }
             if (attribute.startsWith("name.")) { // NOSONAR - false-positive from clover; if-expression is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);
             }
 
-            for (Field field : clazz.getDeclaredFields()) {
+            List<String> fields = getAllClassFields(clazz);
+            if(fields.contains(attribute)){
+            	return true;
+            }
+            /*for (Field field : clazz.getDeclaredFields()) {
                 if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) { // NOSONAR - false-positive from clover; if-expression is correct
                     return true;
                 }
-            }
+            }*/
             return false;
         }
     }
 
+    
+    private static List<String> getAllClassFields(Class<?> clazz){
+    	ArrayList<String> fields = new ArrayList<>();
+        for (Field actField : clazz.getDeclaredFields()) {
+            fields.add(actField.getName());
+        }
+    	addFieldsFromSuperClass(fields, clazz.getSuperclass());
+    	return fields;
+    }
+    
+    private static void addFieldsFromSuperClass(List<String> fields, Class<?> clazz){
+        if(clazz == null){
+        	return;
+        }
+    	for (Field actField : clazz.getDeclaredFields()) {
+            fields.add(actField.getName());
+        }
+    	addFieldsFromSuperClass(fields, clazz.getSuperclass());
+    }
     /**
      * A Filter is used to produce filter criteria for the query.
      */

@@ -5,8 +5,9 @@ import java.util.Set;
 
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.Member;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
 /*
  * for licensing see the file license.txt.
  */
@@ -39,7 +40,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
     	private String externalId = null;
         private Set<String> deleteFields = new HashSet<>();
         private static final String DELETE = "delete";
-        private Set<MultiValuedAttribute> members = new HashSet<>();
+        private Set<Member> members = new HashSet<>();
         
 //start ExternalID
         /**
@@ -90,7 +91,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return The builder itself
          */
         public Builder deleteMember(String memberId){
-            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
+        	Member deleteGroup = new Member.Builder()
                     .setValue(memberId)
                     .setOperation(DELETE).build();
             members.add(deleteGroup);
@@ -103,7 +104,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return The builder itself
          */
         public Builder addMember(String memberId){
-            MultiValuedAttribute newGroup = new MultiValuedAttribute.Builder()
+        	Member newGroup = new Member.Builder()
             		.setValue(memberId).build();
             members.add(newGroup);
             return this;

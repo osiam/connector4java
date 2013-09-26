@@ -30,10 +30,13 @@ import org.junit.Test;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.type.PhoneNumberType;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -180,12 +183,12 @@ public class OsiamUserMeTest {
     
     public void thenPhoneNumbersAreDeserializedCorrectly() {
 
-        List<MultiValuedAttribute> phonenumbers = singleUserResult.getPhoneNumbers();
+        List<PhoneNumber> phonenumbers = singleUserResult.getPhoneNumbers();
         assertEquals(1, phonenumbers.size());
-        MultiValuedAttribute phonenumber = phonenumbers.get(0);
+        PhoneNumber phonenumber = phonenumbers.get(0);
 
         assertEquals("555-555-8377", phonenumber.getValue().toString());
-        assertEquals("work", phonenumber.getType());
+        assertEquals(PhoneNumberType.WORK, phonenumber.getType());
 
     }
 
@@ -204,7 +207,7 @@ public class OsiamUserMeTest {
         User expectedUser = get_expected_user();
 
         assertEquals(expectedUser.getDisplayName(), singleUserResult.getDisplayName());
-        assertEqualsMultiValueList(expectedUser.getEmails(), singleUserResult.getEmails());
+        assertEqualsEmailList(expectedUser.getEmails(), singleUserResult.getEmails());
         assertEquals(expectedUser.getExternalId(), singleUserResult.getExternalId());
         assertEquals(expectedUser.getLocale(), singleUserResult.getLocale());
         assertEqualsName(expectedUser.getName(), singleUserResult.getName());
@@ -220,7 +223,7 @@ public class OsiamUserMeTest {
         assertEquals(expectedUser.isActive(), singleUserResult.isActive());
     }
     
-    private void assertEqualsMultiValueList(List<MultiValuedAttribute> expected, List<MultiValuedAttribute> actual) {
+    private void assertEqualsEmailList(List<Email> expected, List<Email> actual) {
         if (expected == null && actual == null) {
             return;
         }
@@ -228,8 +231,8 @@ public class OsiamUserMeTest {
             fail("The expected List has not the same number of values like the actual list");
         }
         for (int count = 0; count < expected.size(); count++) {
-            MultiValuedAttribute expectedAttribute = expected.get(count);
-            MultiValuedAttribute actualAttribute = actual.get(count);
+            BasicMultiValuedAttribute expectedAttribute = expected.get(count);
+            BasicMultiValuedAttribute actualAttribute = actual.get(count);
             assertEquals(expectedAttribute.getValue().toString(), actualAttribute.getValue().toString());
         }
     }
