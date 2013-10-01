@@ -49,11 +49,6 @@ public class OsiamUserEditTest {
         givenAnAccessToken();
         givenAnUpdateUser();
     }
-
-    @Test
-    public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(ENDPOINT + "/Users"),service.getUri());
-    }
     
     @Test(expected = IllegalArgumentException.class)
     public void id_is_null_by_updating_single_user_raises_exception() throws Exception {

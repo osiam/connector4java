@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
@@ -40,8 +41,8 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      *
      * @param userWebResource a valid WebResource to connect to a given OSIAM server
      */
-    private OsiamUserService(HttpGet userWebResource) {
-        super(userWebResource);
+    private OsiamUserService(Builder builder) {
+        super(builder);
     }
 
     /**
@@ -71,7 +72,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @throws ConnectionInitializationException
      *                               if no connection to the given OSIAM services could be initialized
      */
-    public User getMe(AccessToken accessToken) {
+    public User getMeBasic(AccessToken accessToken) {
     	final User user;
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null.");
@@ -81,7 +82,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             DefaultHttpClient httpclient = new DefaultHttpClient();
             
             HttpGet realWebresource = createRealWebResource(accessToken);
-            realWebresource.setURI(new URI(getUri() + "/me"));
+            realWebresource.setURI(new URI(getMeWebResource().getURI().toString()));
             
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
@@ -113,6 +114,18 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         }
     }
 
+    protected HttpGet getMeWebResource() {
+        HttpGet webResource;
+        try {
+            webResource = new HttpGet(new URI(getEndpoint() + "/me"));
+            webResource.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+        } catch (URISyntaxException e) {
+            throw new ConnectionInitializationException("Unable to setup connection " + getEndpoint() +
+                    "is not a valid URI.", e);
+        }
+        return webResource;
+    }
+    
     /**
      * Retrieve a list of the of all {@link User} resources saved in the OSIAM service. 
      * If you need to have all User but the number is very big, this method can be slow.
@@ -234,7 +247,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
          * @return a valid OsiamUserService
          */
         public OsiamUserService build() {
-            return new OsiamUserService(super.getWebResource());
+            return new OsiamUserService(this);
         }
     }
 }

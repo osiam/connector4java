@@ -5,7 +5,7 @@ package org.osiam.client;
 
 import java.util.List;
 
-import org.apache.http.client.methods.HttpGet;
+import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
@@ -24,8 +24,8 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      *
      * @param groupWebResource a valid WebResource to connect to a given OSIAM server
      */
-    private OsiamGroupService(HttpGet groupWebResource) {
-        super(groupWebResource);
+    private OsiamGroupService(Builder builder) {
+        super(builder);
     }
 
     /**
@@ -165,7 +165,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
          * @return a valid OsiamGroupService
          */
         public OsiamGroupService build() {
-            return new OsiamGroupService(super.getWebResource());
+            return new OsiamGroupService(this);
         }
     }
 }

@@ -55,22 +55,24 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     private static final String BEARER = "Bearer ";
     private DefaultHttpClient httpclient;
     private ContentType contentType;
+    private String endpoint;
 
     @SuppressWarnings("unchecked")
-    protected AbstractOsiamService(HttpGet userWebResource) {
+    protected AbstractOsiamService(@SuppressWarnings("rawtypes") Builder builder) {
         mapper = new ObjectMapper();
         contentType = ContentType.create("application/json");
-        webResource = userWebResource;
+        webResource = builder.getWebResource();
         type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
                         .getActualTypeArguments()[0];
         typeName = type.getSimpleName();
+        endpoint = builder.endpoint;
     }
 
-    public URI getUri() {
-        return webResource.getURI();
+    protected String getEndpoint(){
+    	return endpoint;
     }
-
+   
     protected T getResource(String id, AccessToken accessToken) {
         ensureIdIsNotNull(id);
         ensureAccessTokenIsNotNull(accessToken);

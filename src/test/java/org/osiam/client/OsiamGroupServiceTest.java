@@ -72,11 +72,6 @@ public class OsiamGroupServiceTest {
     }
 
     @Test
-    public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(ENDPOINT + "/Groups"), service.getUri());
-    }
-
-    @Test
     public void existing_group_is_returned() throws IOException {
         givenIDcanBeFound();
         whenSingleGroupIsLookedUp();

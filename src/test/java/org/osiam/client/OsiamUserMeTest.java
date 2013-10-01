@@ -123,7 +123,7 @@ public class OsiamUserMeTest {
     }
     
     private void whenMeIsLookedUp() {
-        singleUserResult = service.getMe(accessToken);
+        singleUserResult = service.getMeBasic(accessToken);
     }
     
     private void givenIDisEmpty() {

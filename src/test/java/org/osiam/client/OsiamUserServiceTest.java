@@ -84,10 +84,6 @@ public class OsiamUserServiceTest {
         givenAnAccessToken();
     }
 
-    @Test
-    public void service_returns_correct_uri() throws Exception {
-        assertEquals(new URI(endpoint + "/Users"), service.getUri());
-    }
 
     @Test
     public void existing_user_is_returned() throws Exception {

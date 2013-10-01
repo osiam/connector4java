@@ -203,7 +203,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *                               if no connection to the given OSIAM services could be initialized
      */
     public User getMe(AccessToken accessToken) {
-        return userService().getMe(accessToken);
+        return userService().getMeBasic(accessToken);
     }
 
     /**
