@@ -1,9 +1,3 @@
-scim-schema
-===========
-
-The scim schema as used by OSIAM
-
-
 #scim schema
 
 This repository contains the scim schema.
