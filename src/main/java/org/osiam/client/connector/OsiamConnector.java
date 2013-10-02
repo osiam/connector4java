@@ -206,6 +206,10 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return userService().getMe(accessToken);
     }
 
+    public User getMeBasic(AccessToken accessToken) {
+        return userService().getMeBasic(accessToken);
+    }
+    
     /**
      * Retrieve a single Group with the given id. If no group with the given id can be found a
      * {@link NoResultException} is thrown.
