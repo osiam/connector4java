@@ -69,6 +69,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         endpoint = builder.endpoint;
     }
 
+    public URI getUri() {
+    	return webResource.getURI();
+    }
+    	
     protected String getEndpoint(){
     	return endpoint;
     }

@@ -114,6 +114,58 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         }
     }
 
+    /**
+    * Retrieve the User who holds the given access token.
+    * Not to be used for the grant Client-Credentials
+    * @param accessToken the OSIAM access token from for the current session
+    * @return the actual logged in user
+    * @throws UnauthorizedException if the request could not be authorized.
+    * @throws org.osiam.client.exception.ForbiddenException if the scope doesn't allow this request
+    * @throws ConnectionInitializationException
+    * if no connection to the given OSIAM services could be initialized
+    */
+        public User getMe(AccessToken accessToken) {
+         final User user;
+            if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+                throw new IllegalArgumentException("The given accessToken can't be null.");
+            }
+
+            try {
+                DefaultHttpClient httpclient = new DefaultHttpClient();
+                
+                HttpGet realWebresource = createRealWebResource(accessToken);
+                realWebresource.setURI(new URI(getUri() + "/me"));
+                
+                HttpResponse response = httpclient.execute(realWebresource);
+                int httpStatus = response.getStatusLine().getStatusCode();
+
+                if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+                    String errorMessage;
+                    switch (httpStatus) {
+                        case SC_UNAUTHORIZED:
+                            errorMessage = getErrorMessage(response, "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                            throw new UnauthorizedException(errorMessage);
+                        case SC_FORBIDDEN:
+                         errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to retrieve the actual User.";
+                            throw new ForbiddenException(errorMessage);
+                        case SC_CONFLICT:
+                            errorMessage = getErrorMessage(response, "Unable to retrieve the actual User.");
+                            throw new ConflictException(errorMessage);
+                        default:
+                            errorMessage = getErrorMessage(response, String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                            throw new ConnectionInitializationException(errorMessage);
+                    }
+                }
+
+                InputStream content = response.getEntity().getContent();
+                user = mapSingleResourceResponse(content);
+
+                return user;
+            } catch (IOException | URISyntaxException e) {
+                throw new ConnectionInitializationException("Unable to setup connection", e);
+            }
+        }
+        
     protected HttpGet getMeWebResource() {
         HttpGet webResource;
         try {
@@ -125,6 +177,8 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         }
         return webResource;
     }
+    
+    
     
     /**
      * Retrieve a list of the of all {@link User} resources saved in the OSIAM service. 

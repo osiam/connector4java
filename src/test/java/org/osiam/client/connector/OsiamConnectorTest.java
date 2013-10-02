@@ -40,7 +40,7 @@ public class OsiamConnectorTest {
 
 	private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
     private static final String URL_BASE_USERS = "/osiam-server//Users";
-    private static final String URL_BASE_ME = "/osiam-server";
+    private static final String URL_BASE_ME = "/osiam-server//me";
     private static final String URL_BASE_GROUPS = "/osiam-server//Groups";
     private final static String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
@@ -321,7 +321,7 @@ public class OsiamConnectorTest {
     }
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE_ME + "/me"))
+        return get(urlEqualTo(URL_BASE_USERS + "/me"))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
