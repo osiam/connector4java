@@ -3,22 +3,24 @@ package org.osiam.client.update;
  * for licensing see the file license.txt.
  */
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
+import org.osiam.resources.scim.GroupRef;
 import org.osiam.resources.scim.Ims;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.BasicMultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.Photo;
 import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.User;
-import org.osiam.resources.scim.GroupRef;
 import org.osiam.resources.scim.X509Certificate;
-
-import java.util.*;
 
 /**
  * Class to create a UpdateUser Object to update a existing User
@@ -117,6 +119,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          */
         public Builder deleteAddresses(){
         	deleteFields.add("addresses");
+        	return this;
+        }
+        
+        /**
+         * updates the old Address with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new Address
+         * @return The builder itself
+         */
+        public Builder updateAddress(Address oldAttribute, Address newAttribute){
+        	deleteAddress(oldAttribute);
+        	addAddress(newAttribute);
         	return this;
         }
         //end address
@@ -358,9 +372,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param email to be deleted
          * @return The builder itself
          */
-        public Builder deleteEmail(String email){
-            Email deleteEmail = new Email.Builder()
-                    .setValue(email)
+        public Builder deleteEmail(Email email){
+            Email deleteEmail = new Email.Builder(email)
                     .setOperation(DELETE).build();
             emails.add(deleteEmail);
             return this;
@@ -375,6 +388,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder addEmail(Email email){
             emails.add(email);
             return this;
+        }
+        
+        /**
+         * updates the old Email with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new Email
+         * @return The builder itself
+         */
+        public Builder updateEmail(Email oldAttribute, Email newAttribute){
+        	deleteEmail(oldAttribute);
+        	addEmail(newAttribute);
+        	return this;
         }
         //end email
         
@@ -393,9 +418,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param certificate to be deleted
          * @return The builder itself
          */
-        public Builder deleteX509Certificate(String certificate){
-            X509Certificate deleteCertificates = new X509Certificate.Builder()
-                    .setValue(certificate)
+        public Builder deleteX509Certificate(X509Certificate certificate){
+            X509Certificate deleteCertificates = new X509Certificate.Builder(certificate)
                     .setOperation(DELETE).build();
             certificates.add(deleteCertificates);
             return this;
@@ -410,6 +434,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder addX509Certificate(X509Certificate certificate){
         	certificates.add(certificate);
             return this;
+        }
+        
+        /**
+         * updates the old X509Certificate with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new X509Certificate
+         * @return The builder itself
+         */
+        public Builder updateX509Certificate(X509Certificate oldAttribute, X509Certificate newAttribute){
+        	deleteX509Certificate(oldAttribute);
+        	addX509Certificate(newAttribute);
+        	return this;
         }
         //end certificates
         
@@ -428,9 +464,21 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param role to be deleted
          * @return The builder itself
          */
+        public Builder deleteRole(Role role){
+            Role deleteRole = new Role.Builder(role)
+                    .setOperation(DELETE).build();
+            roles.add(deleteRole);
+            return this;
+        }
+        
+        /**
+         * deletes the given role of a existing user
+         * @param role to be deleted
+         * @return The builder itself
+         */
         public Builder deleteRole(String role){
             Role deleteRole = new Role.Builder()
-                    .setValue(role)
+            		.setValue(role)
                     .setOperation(DELETE).build();
             roles.add(deleteRole);
             return this;
@@ -445,6 +493,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder addRole(Role role){
             roles.add(role);
             return this;
+        }
+        
+        /**
+         * updates the old Role with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new Role
+         * @return The builder itself
+         */
+        public Builder updateRole(Role oldAttribute, Role newAttribute){
+        	deleteRole(oldAttribute);
+        	addRole(newAttribute);
+        	return this;
         }
         //end roles
         
@@ -463,9 +523,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param ims to be deleted
          * @return The builder itself
          */
-        public Builder deleteIms(String ims){
-            Ims deleteIms = new Ims.Builder()
-                    .setValue(ims)
+        public Builder deleteIms(Ims ims){
+            Ims deleteIms = new Ims.Builder(ims)
                     .setOperation(DELETE).build();
             this.ims.add(deleteIms);
             return this;
@@ -480,6 +539,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder addIms(Ims ims){
             this.ims.add(ims);
             return this;
+        }
+        
+        /**
+         * updates the old Ims with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new Ims
+         * @return The builder itself
+         */
+        public Builder updateIms(Ims oldAttribute, Ims newAttribute){
+        	deleteIms(oldAttribute);
+        	addIms(newAttribute);
+        	return this;
         }
         //end ims
         
@@ -500,9 +571,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param phoneNumber to be deleted
          * @return The builder itself
          */
-        public Builder deletePhoneNumber(String phoneNumber){
-            PhoneNumber deletePhoneNumber = new PhoneNumber.Builder()
-                    .setValue(phoneNumber)
+        public Builder deletePhoneNumber(PhoneNumber phoneNumber){
+            PhoneNumber deletePhoneNumber = new PhoneNumber.Builder(phoneNumber)
                     .setOperation(DELETE).build();
             phoneNumbers.add(deletePhoneNumber);
             return this;
@@ -514,6 +584,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder deletePhoneNumbers(){
             deleteFields.add("phonenumbers");
             return this;
+        }
+        
+        /**
+         * updates the old PhoneNumber with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new PhoneNumber
+         * @return The builder itself
+         */
+        public Builder updatePhoneNumber(PhoneNumber oldAttribute, PhoneNumber newAttribute){
+        	deletePhoneNumber(oldAttribute);
+        	addPhoneNumber(newAttribute);
+        	return this;
         }
         //end phonenumbers
         
@@ -531,13 +613,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         
         /**
          * deletes the photo of a existing user
-         * @param photoUri
+         * @param photo to be deleted
          * @return The builder itself
          */
-        public Builder deletePhoto(String photoUri){
-            Photo deletePhoto = new Photo.Builder()
-                    .setValue(photoUri)
-                    .setOperation(DELETE).build();
+        public Builder deletePhoto(Photo photo){
+            Photo deletePhoto = new Photo.Builder(photo)
+                    .setOperation(DELETE)
+                    .build();
             photos.add(deletePhoto);
             return this;
         }
@@ -548,6 +630,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder deletePhotos(){
             deleteFields.add("photos");
             return this;
+        }
+        
+        /**
+         * updates the old Photo with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new Photo
+         * @return The builder itself
+         */
+        public Builder updatePhoneNumber(Photo oldAttribute, Photo newAttribute){
+        	deletePhoto(oldAttribute);
+        	addPhoto(newAttribute);
+        	return this;
         }
         //end photos
         
@@ -566,10 +660,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param entitlement to be deleted
          * @return The builder itself
          */
-        public Builder deleteEntitlement(String entitlement){
-            Entitlement deleteEntitlement = new Entitlement.Builder()
-                    .setValue(entitlement)
-                    .setOperation(DELETE).build();
+        public Builder deleteEntitlement(Entitlement entitlement){
+            Entitlement deleteEntitlement = new Entitlement.Builder(entitlement)
+                    .setOperation(DELETE)
+                    .build();
             entitlements.add(deleteEntitlement);
             return this;
         }
@@ -584,6 +678,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	entitlements.add(entitlement);
             return this;
         }
+        
+        /**
+         * updates the old Entitlement with the new one
+         * @param oldAttribute to be replaced
+         * @param newAttribute new Entitlement
+         * @return The builder itself
+         */
+        public Builder updateEntitlement(Entitlement oldAttribute, Entitlement newAttribute){
+        	deleteEntitlement(oldAttribute);
+        	addEntitlement(newAttribute);
+        	return this;
+        }
         //end entitlement
         
 //start group
@@ -596,6 +702,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         
+        
         /**
          * removes the membership of in the given group of a existing user
          * @param groupId membership to be removed
@@ -604,6 +711,18 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder deleteGroup(String groupId){
             GroupRef deleteGroup = new GroupRef.Builder()
                     .setValue(groupId)
+                    .setOperation(DELETE).build();
+            groups.add(deleteGroup);
+            return this;
+        }
+        
+        /**
+         * removes the membership of in the given group of a existing user
+         * @param groupRef membership to be removed
+         * @return The builder itself
+         */
+        public Builder deleteGroup(GroupRef groupRef){
+            GroupRef deleteGroup = new GroupRef.Builder(groupRef)
                     .setOperation(DELETE).build();
             groups.add(deleteGroup);
             return this;
