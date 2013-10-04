@@ -372,7 +372,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param email new email
          * @return The builder itself
          */
-        public Builder addOrUpdateEmail(Email email){
+        public Builder addEmail(Email email){
             emails.add(email);
             return this;
         }
@@ -407,7 +407,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param certificate new certificate
          * @return The builder itself
          */
-        public Builder addOrUpdateX509Certificate(X509Certificate certificate){
+        public Builder addX509Certificate(X509Certificate certificate){
         	certificates.add(certificate);
             return this;
         }
@@ -442,7 +442,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param role new role
          * @return The builder itself
          */
-        public Builder addOrUpdateRole(Role role){
+        public Builder addRole(Role role){
             roles.add(role);
             return this;
         }
@@ -477,7 +477,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param ims new ims
          * @return The builder itself
          */
-        public Builder addOrUpdatesIms(Ims ims){
+        public Builder addIms(Ims ims){
             this.ims.add(ims);
             return this;
         }
@@ -490,7 +490,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param phoneNumber new phoneNumber 
          * @return The builder itself
          */
-        public Builder addOrUpdatesPhoneNumber(PhoneNumber phoneNumber){
+        public Builder addPhoneNumber(PhoneNumber phoneNumber){
             phoneNumbers.add(phoneNumber);
             return this;
         }
@@ -524,7 +524,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param photo new photo
          * @return The builder itself
          */
-        public Builder addOrUpdatesPhoto(Photo photo){
+        public Builder addPhoto(Photo photo){
             photos.add(photo);
             return this;
         }
@@ -580,7 +580,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param entitlement new entitlement
          * @return The builder itself
          */
-        public Builder addOrUpdatesEntitlement(Entitlement entitlement){
+        public Builder addEntitlement(Entitlement entitlement){
         	entitlements.add(entitlement);
             return this;
         }
@@ -615,7 +615,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @param groupMembership updated group membership
          * @return The builder itself
          */
-        public Builder addOrUpdateGroupMembership(GroupRef groupMembership){
+        public Builder addGroupMembership(GroupRef groupMembership){
         	groups.add(groupMembership);
             return this;
         }
