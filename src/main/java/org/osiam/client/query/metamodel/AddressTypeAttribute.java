@@ -1,5 +1,7 @@
 package org.osiam.client.query.metamodel;
 
+import java.util.Locale;
+
 import org.osiam.resources.type.AddressType;
 /*
 * for licensing see the file license.txt.
@@ -20,6 +22,6 @@ public class AddressTypeAttribute extends Attribute{
      * @return an eq comparison
      */
     public Comparison equalTo(AddressType filter){
-        return new Comparison(value + " eq \"" + filter.name().toLowerCase() + "\"");
+        return new Comparison(value + " eq \"" + filter.name().toLowerCase(Locale.ENGLISH) + "\"");
     }
 }

@@ -104,7 +104,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         
     private String encodeClientCredentials(String clientId, String clientSecret) {
         String clientCredentials = clientId + ":" + clientSecret;
-        clientCredentials = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);;
+        clientCredentials = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
         return clientCredentials;
     }
     

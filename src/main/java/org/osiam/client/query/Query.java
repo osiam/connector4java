@@ -6,7 +6,6 @@ package org.osiam.client.query;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.Comparison;
-import org.osiam.resources.scim.BasicMultiValuedAttribute;
 import org.osiam.resources.scim.CoreResource;
 
 /**
@@ -290,14 +288,9 @@ public class Query {
             }
 
             List<String> fields = getAllClassFields(clazz);
-            if(fields.contains(attribute)){
+            if(fields.contains(attribute)){// NOSONAR - false-positive from clover; if-expression is correct
             	return true;
             }
-            /*for (Field field : clazz.getDeclaredFields()) {
-                if (Modifier.isPrivate(field.getModifiers()) && field.getName().equalsIgnoreCase(attribute)) { // NOSONAR - false-positive from clover; if-expression is correct
-                    return true;
-                }
-            }*/
             return false;
         }
     }
@@ -313,7 +306,7 @@ public class Query {
     }
     
     private static void addFieldsFromSuperClass(List<String> fields, Class<?> clazz){
-        if(clazz == null){
+        if(clazz == null){// NOSONAR - false-positive from clover; if-expression is correct
         	return;
         }
     	for (Field actField : clazz.getDeclaredFields()) {

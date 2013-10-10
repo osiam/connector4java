@@ -7,7 +7,6 @@ import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Member;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.BasicMultiValuedAttribute;
 /*
  * for licensing see the file license.txt.
  */
@@ -117,12 +116,12 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build(){
-            if(displayName != null){
+            if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
             	updateGroup = new Group.Builder(displayName);
             }else{
             	updateGroup = new Group.Builder();
             }
-        	if(externalId != null){
+        	if(externalId != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateGroup.setExternalId(externalId);
         	}
         	if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
