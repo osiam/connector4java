@@ -281,7 +281,7 @@ public class Query {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Meta.class);
             }
             if (attribute.startsWith("emails.")) { // NOSONAR - false-positive from clover; if-expression is correct
-                return isAttributeValid(compositeField, org.osiam.resources.scim.Email.class);
+                return isAttributeValid(compositeField, org.osiam.resources.scim.MultiValuedAttribute.class);
             }
             if (attribute.startsWith("name.")) { // NOSONAR - false-positive from clover; if-expression is correct
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);

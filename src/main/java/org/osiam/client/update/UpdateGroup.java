@@ -5,11 +5,11 @@ import java.util.Set;
 
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.Member;
 import org.osiam.resources.scim.Meta;
 /*
  * for licensing see the file license.txt.
  */
+import org.osiam.resources.scim.MultiValuedAttribute;
 
 /**
  * Class to create a UpdateGroup Object to update a existing Group
@@ -39,7 +39,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
     	private String externalId = null;
         private Set<String> deleteFields = new HashSet<>();
         private static final String DELETE = "delete";
-        private Set<Member> members = new HashSet<>();
+        private Set<MultiValuedAttribute> members = new HashSet<>();
         
 //start ExternalID
         /**
@@ -90,7 +90,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return The builder itself
          */
         public Builder deleteMember(String memberId){
-        	Member deleteGroup = new Member.Builder()
+        	MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
                     .setValue(memberId)
                     .setOperation(DELETE).build();
             members.add(deleteGroup);
@@ -103,7 +103,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return The builder itself
          */
         public Builder addMember(String memberId){
-        	Member newGroup = new Member.Builder()
+        	MultiValuedAttribute newGroup = new MultiValuedAttribute.Builder()
             		.setValue(memberId).build();
             members.add(newGroup);
             return this;
@@ -117,7 +117,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          */
         public UpdateGroup build(){
             if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateGroup = new Group.Builder(displayName);
+            	updateGroup = new Group.Builder().setDisplayName(displayName);
             }else{
             	updateGroup = new Group.Builder();
             }

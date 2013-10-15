@@ -35,8 +35,7 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.BasicMultiValuedAttribute;
-import org.osiam.resources.scim.Member;
+import org.osiam.resources.scim.MultiValuedAttribute;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -316,7 +315,7 @@ public class OsiamGroupServiceTest {
         for (Group currentGroup : allGroups) {
             if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
-                for (Member actValue : currentGroup.getMembers()) {
+                for (MultiValuedAttribute actValue : currentGroup.getMembers()) {
                     assertEquals(USER_ID_STRING, actValue.getValue().toString());
                 }
                 break;
@@ -335,9 +334,9 @@ public class OsiamGroupServiceTest {
         assertEquals(created, singleGroupResult.getMeta().getLastModified());
         assertEquals("test_group01", singleGroupResult.getDisplayName());
 
-        Set<Member> users = singleGroupResult.getMembers();
+        Set<MultiValuedAttribute> users = singleGroupResult.getMembers();
         int count = 0;
-        for (Member multiValuedAttribute : users) {
+        for (MultiValuedAttribute multiValuedAttribute : users) {
             Object value = multiValuedAttribute.getValue();
             assertTrue(value.getClass().equals(String.class));
             String userId = (String) multiValuedAttribute.getValue();
