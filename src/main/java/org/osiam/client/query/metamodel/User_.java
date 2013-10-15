@@ -1,6 +1,5 @@
 package org.osiam.client.query.metamodel;
 
-import org.osiam.resources.type.GroupRefType;
 /*
 * for licensing see the file license.txt.
 */
@@ -49,7 +48,7 @@ public abstract class User_ {
      */
     public abstract static class Emails {
         public static final StringAttribute value = new StringAttribute("emails.value");     // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
-        public static final EmailTypeAttribute type = new EmailTypeAttribute();   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute type = new StringAttribute("emails.type");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 
     /**
@@ -57,7 +56,7 @@ public abstract class User_ {
      */
     public abstract static class Ims {
         public static final StringAttribute value = new StringAttribute("ims.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
-        public static final ImsTypeAttribute type = new ImsTypeAttribute();   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute type = new StringAttribute("ims.type");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 
     /**
@@ -65,14 +64,14 @@ public abstract class User_ {
      */
     public abstract static class Photos {
         public static final StringAttribute value = new StringAttribute("photos.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
-        public static final PhotoTypeAttribute type = new PhotoTypeAttribute();  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute type = new StringAttribute("photos.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 
     /**
      * address attribute from User
      */
     public abstract static class Addresses {
-        public static final AddressTypeAttribute type = new AddressTypeAttribute();    // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute type = new StringAttribute("addresses.type");    // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute streetAddress = new StringAttribute("addresses.streetAddress");   // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute locality = new StringAttribute("addresses.locality");     // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute region = new StringAttribute("addresses.region");        // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
@@ -88,7 +87,7 @@ public abstract class User_ {
      */
     public abstract static  class PhoneNumbers {
         public static final StringAttribute value = new StringAttribute("phoneNumbers.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
-        public static final PhoneNumberTypeAttribute type = new PhoneNumberTypeAttribute(); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute type = new StringAttribute("phoneNumbers.type"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 
     /**
@@ -96,7 +95,7 @@ public abstract class User_ {
      */
     public abstract static  class Groups {
         public static final StringAttribute value = new StringAttribute("groups.value"); // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
-        public static final GroupRefTypeAttribute type = new GroupRefTypeAttribute();  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute type = new StringAttribute("groups.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 
     /**

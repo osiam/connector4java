@@ -20,7 +20,6 @@ import org.osiam.client.query.metamodel.Group_;
 import org.osiam.client.query.metamodel.StringAttribute;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.User;
-import org.osiam.resources.type.EmailType;
 
 import com.google.common.base.Charsets;
 
@@ -31,7 +30,7 @@ public class UserQueryBuilderTest {
     private static final StringAttribute VALID_NAME_ATTR = User_.Name.givenName;
     private static final StringAttribute VALID_EMAIL_ATTR = User_.Emails.value;
     private static final String IRRELEVANT = "irrelevant";
-    private static final EmailType IRRELEVANT_EMAIL_TYPE = EmailType.OTHER;
+    private static final String IRRELEVANT_EMAIL_TYPE = "other";
     private static final StringAttribute IRRELEVANT_FIELD = Group_.Members.value;
     private static final int START_INDEX = 5;
     private static final int COUNT_PER_PAGE = 7;
