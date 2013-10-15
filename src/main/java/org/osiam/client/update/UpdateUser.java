@@ -15,8 +15,6 @@ import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
 
-import com.google.common.collect.Sets.SetView;
-
 /**
  * Class to create a UpdateUser Object to update a existing User
  */
@@ -69,7 +67,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
 
         public Builder(){
         }
-       
+
 //start username
         /**
          * updates the nickName of a existing user
@@ -81,7 +79,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end username
-        
+
 //start address
         /**
          * adds a new address to the existing addresses of a existing user
@@ -92,7 +90,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             addresses.add(address);
             return this;
         }
-        
+
         /**
          * deletes the given address from the list of existing addresses of a existing user
          * @param address address to be deleted
@@ -103,12 +101,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             Address deleteAddress = new Address.Builder(address)
             		.setOperation(DELETE)
             		.build();
- 
+
         	addresses.add(deleteAddress);
         	*/
             return this;
         }
-        
+
         /**
          * deletes all existing addresses of the a existing user
          * @return The builder itself
@@ -117,7 +115,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	deleteFields.add("addresses");
         	return this;
         }
-        
+
         /**
          * updates the old Address with the new one
          * @param oldAttribute to be replaced
@@ -130,7 +128,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end address
-        
+
 //start Nickname
         /**
          * deletes the nickName of a existing user
@@ -151,7 +149,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end Nickname
-        
+
 //start ExternalID
         /**
          * delete the external Id of a existing user
@@ -172,7 +170,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end ExternalID
-        
+
 //start local
         /**
          * delete the local value of a existing user
@@ -193,7 +191,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end local
-        
+
 //start password
         /**
          * updates the password of a existing user
@@ -205,7 +203,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end password
-        
+
 //start preferredLanguage
         /**
          * delete the preferred Language of a existing user
@@ -226,7 +224,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end preferredLanguage
-        
+
 //start ProfileUrl
         /**
          * deletes the profil Url of a existing user
@@ -247,7 +245,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end ProfileUrl
-        
+
 //start timezone
         /**
          * deletes the timezone of a existing user
@@ -268,7 +266,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end timezone
-        
+
 //start title
         /**
          * deletes the title of a existing user
@@ -289,7 +287,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end title
-        
+
 //start name
         /**
          * deletes the name of a existing user
@@ -310,7 +308,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end name
-        
+
 //start UserType
         /**
          * deletes the user type of a existing user
@@ -331,7 +329,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end UserType
-        
+
 //start DisplayName
         /**
          * deletes the display name of a existing user
@@ -352,7 +350,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end DisplayName
-        
+
 //start email
         /**
          * deletes all emails of a existing user
@@ -362,7 +360,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("emails");
             return this;
         }
-        
+
         /**
          * deletes the given email of a existing user
          * @param email to be deleted
@@ -387,7 +385,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             emails.add(email);
             return this;
         }
-        
+
         /**
          * updates the old Email with the new one
          * @param oldAttribute to be replaced
@@ -400,7 +398,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end email
-        
+
 //start certificates
         /**
          * deletes all X509Certificates of a existing user
@@ -410,7 +408,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("x509Certificates");
             return this;
         }
-        
+
         /**
          * deletes the given certificate of a existing user
          * @param certificate to be deleted
@@ -434,7 +432,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	certificates.add(certificate);
             return this;
         }
-        
+
         /**
          * updates the old X509Certificate with the new one
          * @param oldAttribute to be replaced
@@ -447,7 +445,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end certificates
-        
+
 //start roles
         /**
          * deletes all roles of a existing user
@@ -457,7 +455,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("roles");
             return this;
         }
-        
+
         /**
          * deletes the given role of a existing user
          * @param role to be deleted
@@ -470,7 +468,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             roles.add(deleteRole);
             return this;
         }
-        
+
         /**
          * deletes the given role of a existing user
          * @param role to be deleted
@@ -494,7 +492,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             roles.add(role);
             return this;
         }
-        
+
         /**
          * updates the old Role with the new one
          * @param oldAttribute to be replaced
@@ -507,7 +505,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end roles
-        
+
 //start ims
         /**
          * deletes all ims of a existing user
@@ -517,7 +515,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("ims");
             return this;
         }
-        
+
         /**
          * deletes the ims of a existing user
          * @param ims to be deleted
@@ -542,7 +540,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             this.ims.add(ims);
             return this;
         }
-        
+
         /**
          * updates the old Ims with the new one
          * @param oldAttribute to be replaced
@@ -555,21 +553,21 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end ims
-        
+
 //start phonenumbers
         /**
          * adds or updates a phoneNumber to an existing user
          * if the .getValue() already exists a update will be done. If not a new one will be added
-         * @param phoneNumber new phoneNumber 
+         * @param phoneNumber new phoneNumber
          * @return The builder itself
          */
         public Builder addPhoneNumber(MultiValuedAttribute phoneNumber){
             phoneNumbers.add(phoneNumber);
             return this;
         }
-        
+
         /**
-         * deletes the phonenumber of a existing user 
+         * deletes the phonenumber of a existing user
          * @param phoneNumber to be deleted
          * @return The builder itself
          */
@@ -589,7 +587,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("phonenumbers");
             return this;
         }
-        
+
         /**
          * updates the old PhoneNumber with the new one
          * @param oldAttribute to be replaced
@@ -602,7 +600,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end phonenumbers
-        
+
 //start photos
         /**
          * adds or updates a photo to an existing user
@@ -614,7 +612,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             photos.add(photo);
             return this;
         }
-        
+
         /**
          * deletes the photo of a existing user
          * @param photo to be deleted
@@ -637,7 +635,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("photos");
             return this;
         }
-        
+
         /**
          * updates the old Photo with the new one
          * @param oldAttribute to be replaced
@@ -650,7 +648,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end photos
-        
+
 //start entitlement
         /**
          * deletes all entitlements of a existing user
@@ -660,7 +658,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("entitlements");
             return this;
         }
-                
+
         /**
          * deletes the entitlement of a existing user
          * @param entitlement to be deleted
@@ -686,7 +684,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	entitlements.add(entitlement);
             return this;
         }
-        
+
         /**
          * updates the old Entitlement with the new one
          * @param oldAttribute to be replaced
@@ -699,7 +697,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end entitlement
-        
+
 //start group
         /**
          * deletes all group memberships of a existing user
@@ -709,8 +707,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             deleteFields.add("groups");
             return this;
         }
-        
-        
+
+
         /**
          * removes the membership of in the given group of a existing user
          * @param groupId membership to be removed
@@ -723,7 +721,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             groups.add(deleteGroup);
             return this;
         }
-        
+
         /**
          * removes the membership of in the given group of a existing user
          * @param groupRef membership to be removed
@@ -736,7 +734,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             groups.add(deleteGroup);
             return this;
         }
-        
+
         /**
          * adds or updates an group membership of an existing user
          * if the .getValue() already exists a update will be done. If not a new one will be added
@@ -760,13 +758,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         	return this;
         }
         //end activ
-        
+
         /**
          * constructs a UpdateUser with the given values
          *
          * @return a valid {@link UpdateUser}
          */
-        public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10 
+        public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
         	if(userName != null){// NOSONAR - false-positive from clover; if-expression is correct
         		updateUser = new User.Builder(userName);
         	}else{
@@ -837,7 +835,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             if(certificates.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
             	updateUser.setX509Certificates(certificates);
             }
-            
+
             return new UpdateUser(this);
         }
     }
