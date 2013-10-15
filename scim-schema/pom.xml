@@ -24,7 +24,8 @@
   ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
   ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- refer to sonatype parent pom for publishment to maven central -->
     <parent>
@@ -52,15 +53,15 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
-	<clover.version>3.1.11</clover.version>
+        <clover.version>3.1.11</clover.version>
     </properties>
 
     <scm>
         <connection>scm:git://git@github.com/osiam/scim-schema.git</connection>
         <url>git@github.com/osiam/scim-schema.git</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/scim-schema.git</developerConnection>
-      <tag>scim-schema-0.14</tag>
-  </scm>
+        <tag>scim-schema-0.14</tag>
+    </scm>
 
     <developers>
         <developer>
@@ -143,23 +144,6 @@
                 </configuration>
             </plugin>
 
-            <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
-            <!-- If not given, gpg passphrase has to be provided interactively -->
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.4</version>
-              <executions>
-                  <execution>
-                      <id>sign-artifacts</id>
-                      <phase>verify</phase>
-                      <goals>
-                          <goal>sign</goal>
-                      </goals>
-                  </execution>
-              </executions>
-            </plugin>
-
             <!-- Configure the compiler plugin for Groovy -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -217,7 +201,7 @@
             <!--
               ~ Extra parameters are passed using the "release.arguments" property on the command line.
               ~ In Jenkins configure Maven release build / Release goals and options (in one line):
-              ~     -Dresume=false  release:clean release:prepare release:perform 
+              ~     -Dresume=false  release:clean release:prepare release:perform
               ~     -Drelease.arguments="-Dgpg.passphrase=$PASSPHRASE -Dgpg.keyname=Signing\\ Key "
               ~ (Take care of proper quoting/escaping: Spaces within the key's uid have to be escaped!)
             -->
@@ -226,7 +210,7 @@
                 <version>2.4.1</version>
                 <configuration>
                     <releaseProfiles>sonatype-oss-release</releaseProfiles>
-                    <arguments>-Psonatype-oss-release ${release.arguments} </arguments>
+                    <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
@@ -284,4 +268,32 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
+                    <!-- If not given, gpg passphrase has to be provided interactively -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
