@@ -161,21 +161,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- parent pom defines old version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- During release:perform, enable the "release" profile -->
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
@@ -284,6 +269,8 @@
                 <plugins>
                     <!-- call as "mvn -Psign verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
                     <!-- If not given, gpg passphrase has to be provided interactively -->
+
+                    <!-- parent pom defines old version -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
