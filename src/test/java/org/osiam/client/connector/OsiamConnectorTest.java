@@ -31,13 +31,11 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class OsiamConnectorTest {
 
-	private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
+    private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
     private static final String URL_BASE_USERS = "/osiam-server//Users";
     private static final String URL_BASE_ME = "/osiam-server//me";
     private static final String URL_BASE_GROUPS = "/osiam-server//Groups";
@@ -53,7 +51,7 @@ public class OsiamConnectorTest {
     private final static String VALID_USERNAME = "valid-username";
     private final static String VALID_PASSWORD = "valid-password";
     private final static String TOKEN_PATH = "/oauth/token";
-    
+
     private AccessToken accessToken;
     private User singleUserResult;
     private String searchedUserID;
@@ -64,14 +62,17 @@ public class OsiamConnectorTest {
     private List<User> allUsers;
     private List<Group> allGroups;
     private Query query;
-    
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
     private OsiamConnector oConnector;
 
     @Before
     public void setUp() throws Exception {
-        oConnector = new OsiamConnector.Builder(ENDPOINT).setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+        oConnector = new OsiamConnector.Builder()
+                .setAuthServiceEndpoint(ENDPOINT)
+                .setResourceEndpoint(ENDPOINT)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
                 .setUserName(IRRELEVANT)
@@ -260,7 +261,7 @@ public class OsiamConnectorTest {
         assertEquals(numberOfUsers, userQueryResult.getTotalResults());
         assertEquals(numberOfUsers, userQueryResult.getResources().size());
     }
-    
+
     private void thenNumberOfAllUsersIs(int numberOfUsers) {
         assertEquals(numberOfUsers, allUsers.size());
     }
@@ -378,8 +379,8 @@ public class OsiamConnectorTest {
             fail("The expected List has not the same number of values like the actual list");
         }
         for (int count = 0; count < expected.size(); count++) {
-        	MultiValuedAttribute expectedAttribute = expected.get(count);
-        	MultiValuedAttribute actualAttribute = actual.get(count);
+            MultiValuedAttribute expectedAttribute = expected.get(count);
+            MultiValuedAttribute actualAttribute = actual.get(count);
             assertEquals(expectedAttribute.getValue().toString(), actualAttribute.getValue().toString());
         }
     }
@@ -460,7 +461,9 @@ public class OsiamConnectorTest {
     }
 
     private void given_a_correctly_configured_auth_service() {
-        oConnector = new OsiamConnector.Builder(ENDPOINT)
+        oConnector = new OsiamConnector.Builder()
+                .setAuthServiceEndpoint(ENDPOINT)
+                .setResourceEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
