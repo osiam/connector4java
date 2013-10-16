@@ -36,7 +36,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     private GrantType grantType;
     private String username;
     private String password;
-    private String endpoint;
+    private String authServiceEndpoint;
+    private String resourceServiceEndpoint;
     private Scope scope;
     private Scope[] scopes;
     private String stringScope;
@@ -58,7 +59,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         this.grantType = builder.grantType;
         this.username = builder.username;
         this.password = builder.password;
-        this.endpoint = builder.endpoint;
+        this.authServiceEndpoint = builder.authServiceEndpoint;
+        this.resourceServiceEndpoint = builder.resourceServiceEndpoint;
         this.scope = builder.scope;
         this.scopes = builder.scopes;
         this.stringScope = builder.stringScope;
@@ -71,7 +73,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     private AuthService authService(){// NOSONAR - its ok if the Cyclomatic Complexity is > 10
     	if(authService == null){    // NOSONAR - false-positive from clover; if-expression is correct
-    		AuthService.Builder builder = new AuthService.Builder(endpoint);
+    		AuthService.Builder builder = new AuthService.Builder(authServiceEndpoint);
 
     		if(clientId != null){   // NOSONAR - false-positive from clover; if-expression is correct
     			builder = builder.setClientId(clientId);
@@ -110,7 +112,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     private OsiamUserService userService(){
     	if(userService == null){     // NOSONAR - false-positive from clover; if-expression is correct
-    		userService = new OsiamUserService.Builder(endpoint).build();
+    		userService = new OsiamUserService.Builder(resourceServiceEndpoint).build();
     	}
     	return userService;
     }
@@ -121,7 +123,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     private OsiamGroupService groupService(){
         if(groupService == null){    // NOSONAR - false-positive from clover; if-expression is correct
-            groupService = new OsiamGroupService.Builder(endpoint).build();
+            groupService = new OsiamGroupService.Builder(resourceServiceEndpoint).build();
         }
         return groupService;
     }
@@ -442,27 +444,55 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private GrantType grantType;
         private String username;
         private String password;
-        private String endpoint;
+        private String authServiceEndpoint;
+        private String resourceServiceEndpoint;
         private Scope scope;
         private Scope[] scopes;
         private String stringScope;
         private String clientRedirectUri;
 
         /**
-         * Set up the Builder for the construction of  an {@link OsiamConnector} instance for the OAuth2 service at
-         * the given endpoint
-         *
-         * @param endpoint The URL at which the OAuth2 service lives.
+         * Temporary default constructor
          */
-        public Builder(String endpoint) {
-            this.endpoint = endpoint;
+        public Builder(){
+
+        }
+
+        /**
+         * Set up the Builder for the construction of an {@link OsiamConnector} instance for the OAuth2-AuthService
+         * service at the given authServiceEndpoint
+         *
+         * @param authServiceEndpoint The URL at which the OAuth2 service lives.
+         */
+        public Builder(String authServiceEndpoint) {
+            this.authServiceEndpoint = authServiceEndpoint;
+        }
+
+        /**
+         * use the given endpoint for communication with the OAuth2-Service for authentication
+         * @param endpoint The AuthService endpoint to use for communication
+         * @return The builder itself
+         */
+        public Builder setAuthServiceEndpoint(String endpoint){
+            this.authServiceEndpoint = endpoint;
+            return this;
+        }
+
+        /**
+         * use the given endpoint for communication with the SCIM2 resource server.
+         * @param endpoint The resource service endpoint to use
+         * @return The builder itself
+         */
+        public Builder setResourceEndpoint(String endpoint){
+            this.resourceServiceEndpoint = endpoint;
+            return this;
         }
 
         /**
          * Use the given {@link Scope} to for the request.
          * @param scope the needed scope
          * @param scopes the needed scopes
-         * @return
+         * @return The builder itself
          */
         public Builder setScope(Scope scope, Scope... scopes){
         	this.scope = scope;
