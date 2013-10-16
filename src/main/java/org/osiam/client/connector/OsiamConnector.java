@@ -123,7 +123,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     private OsiamGroupService groupService(){
         if(groupService == null){    // NOSONAR - false-positive from clover; if-expression is correct
-            groupService = new OsiamGroupService.Builder(authServiceEndpoint).build();
+            groupService = new OsiamGroupService.Builder(resourceServiceEndpoint).build();
         }
         return groupService;
     }
