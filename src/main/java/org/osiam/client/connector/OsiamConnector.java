@@ -41,11 +41,11 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     private Scope[] scopes;
     private String stringScope;
     private String clientRedirectUri;
-    
+
 	private AuthService authService;
 	private OsiamUserService userService;
     private OsiamGroupService groupService;
-	
+
     /**
      * The private constructor for the OsiamConnector. Please use the {@link OsiamConnector.Builder}
      * to construct one.
@@ -64,15 +64,15 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         this.stringScope = builder.stringScope;
         this.clientRedirectUri = builder.clientRedirectUri;
     }
-    
+
     /**
-     * 
+     *
      * @return a valid AuthService build out of the provided variables
      */
     private AuthService authService(){// NOSONAR - its ok if the Cyclomatic Complexity is > 10
     	if(authService == null){    // NOSONAR - false-positive from clover; if-expression is correct
     		AuthService.Builder builder = new AuthService.Builder(endpoint);
-    		
+
     		if(clientId != null){   // NOSONAR - false-positive from clover; if-expression is correct
     			builder = builder.setClientId(clientId);
     		}
@@ -103,9 +103,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     	}
     	return authService;
     }
-    
+
     /**
-     * 
+     *
      * @return a valid OsiamUserService build out of the provided variables
      */
     private OsiamUserService userService(){
@@ -116,7 +116,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     /**
-     * 
+     *
      * @return a valid OsiamGroupService build out of the provided variables
      */
     private OsiamGroupService groupService(){
@@ -144,11 +144,11 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     /**
-     * Retrieve a list of the of all {@link User} resources saved in the OSIAM service. 
+     * Retrieve a list of the of all {@link User} resources saved in the OSIAM service.
      * If you need to have all User but the number is very big, this method can be slow.
      * In this case you can also use Query.Builder with no filter to split the number of User returned
      *
-     * @param accessToken
+     * @param accessToken A valid AccessToken
      * @return a list of all Users
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
@@ -209,7 +209,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     public User getMeBasic(AccessToken accessToken) {
         return userService().getMeBasic(accessToken);
     }
-    
+
     /**
      * Retrieve a single Group with the given id. If no group with the given id can be found a
      * {@link NoResultException} is thrown.
@@ -228,7 +228,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     /**
-     * Retrieve a list of the of all {@link Group} resources saved in the OSIAM service. 
+     * Retrieve a list of the of all {@link Group} resources saved in the OSIAM service.
      * If you need to have all Group but the number is very big, this method can be slow.
      * In this case you can also use Query.Builder with no filter to split the number of Groups returned
      *
@@ -281,9 +281,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * Provide an {@link AccessToken} for the given parameters of this service.
      *
      * @return a valid AccessToken
-     * @throws org.osiam.client.ConnectionInitializationException
+     * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               If the Service is unable to connect to the configured OAuth2 service.
-     * @throws org.osiam.client.UnauthorizedException If the configured credentials for this service are not permitted
+     * @throws org.osiam.client.exception.UnauthorizedException If the configured credentials for this service are not permitted
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
@@ -298,15 +298,15 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     public URI getRedirectLoginUri() {
     	return authService().getRedirectLoginUri();
-    } 
-    
+    }
+
     /**
      * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}.
-     * If the User acepted your request for the needed data you will get an access token. 
+     * If the User acepted your request for the needed data you will get an access token.
      * If the User denied your request a {@link ForbiddenException} will be thrown.
-     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a 
+     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a
      * {@linkplain InvalidAttributeException} will be thrown
-     * @param authCodeResponse response given from the OSIAM server. 
+     * @param authCodeResponse response given from the OSIAM server.
      * For more information please look at the wiki at github
      * @return a valid AccessToken
      * @throws org.osiam.client.exception.ForbiddenException in case the User had denied you the wanted data
@@ -319,21 +319,21 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
     	return authService().retrieveAccessToken(authCodeResponse);
     }
-    
+
     /**
      * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
-     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. 
+     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow.
      * For more information please look at the wiki at github
      * @return a valid AccessToken
-     * @throws org.osiam.exception.client.ConflictException in case the given authCode could not be exchanged against a access token
-     * @throws org.osiam.exception.client.ConnectionInitializationException
+     * @throws org.osiam.client.exception.ConflictException in case the given authCode could not be exchanged against a access token
+     * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               If the Service is unable to connect to the configured OAuth2 service.
      * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public AccessToken retrieveAccessToken(String authCode) {
     	return authService().retrieveAccessToken(authCode);
     }
-    
+
     /**
      * saves the given {@link User} to the OSIAM DB.
      * @param user user to be saved
@@ -355,7 +355,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @param accessToken the OSIAM access token from for the current session
      * @return the same group Object like the given but with filled metadata and a new valid id
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
-     * @throws org.osiam.client.ConflictException               if the Group could not be created
+     * @throws org.osiam.client.exception.ConflictException     if the Group could not be created
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
@@ -363,7 +363,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     public Group createGroup(Group group, AccessToken accessToken) {
         return groupService().createGroup(group, accessToken);
     }
-    
+
     /**
      * delete the given {@link Group} at the OSIAM DB.
      * @param id id of the Group to be deleted
@@ -378,7 +378,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     public void deleteGroup(String id, AccessToken accessToken) {
     	groupService().deleteGroup(id, accessToken);
     }
-    
+
     /**
      * delete the given {@link User} at the OSIAM DB.
      * @param id id of the User to be delete
@@ -419,7 +419,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @param id id of the Group to be updated
      * @param updateGroup all Fields that need to be updated
      * @param accessToken the OSIAM access token from for the current session
-     * @return the updated group Object 
+     * @return the updated group Object
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ConflictException     if the Group could not be updated
@@ -447,7 +447,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private Scope[] scopes;
         private String stringScope;
         private String clientRedirectUri;
-        
+
         /**
          * Set up the Builder for the construction of  an {@link OsiamConnector} instance for the OAuth2 service at
          * the given endpoint
@@ -459,7 +459,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         }
 
         /**
-         * Use the given {@link Scope} to for the request. 
+         * Use the given {@link Scope} to for the request.
          * @param scope the needed scope
          * @param scopes the needed scopes
          * @return
@@ -469,9 +469,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         	this.scopes = scopes;
         	return this;
         }
-        
+
         /**
-         * The needed access token scopes as String like 'GET PATCH' 
+         * The needed access token scopes as String like 'GET PATCH'
          * @param scope the needed scope
          * @return The builder itself
          */
@@ -479,7 +479,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         	this.stringScope = scope;
         	return this;
         }
-        
+
         /**
          * Use the given {@link org.osiam.client.oauth.GrantType} to for the request. At this point only the grant type 'password' is supported.
          *
@@ -546,7 +546,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
 			this.clientRedirectUri = clientRedirectUri;
             return this;
         }
-        
+
         /**
          * Construct the {@link OsiamConnector} with the parameters passed to this builder.
          *
