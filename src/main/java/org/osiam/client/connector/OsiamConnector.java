@@ -109,31 +109,31 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     private String getAuthServiceEndPoint(){
-    	if(authServiceEndpoint != null && authServiceEndpoint.length() > 0){
+    	if(! (authServiceEndpoint == null || authServiceEndpoint.isEmpty())){
     		return authServiceEndpoint;
     	}
-    	if(genEndpoint != null && genEndpoint.length() > 0){
-    		String endpoint = this.genEndpoint;
-    		if(!endpoint.endsWith("/")){
-    			endpoint += "/";
+    	if(! (genEndpoint == null || genEndpoint.isEmpty())){
+            StringBuilder endpoint = new StringBuilder(this.genEndpoint);
+    		if(!genEndpoint.endsWith("/")){
+    			endpoint.append("/");
     		}
-    		endpoint += "osiam-auth-server/";
-    		return endpoint;
+    		endpoint.append("osiam-auth-server/");
+    		return endpoint.toString();
     	}
     	throw new InvalidAttributeException("No endpoint to the OSIAM server has been set");
     }
 
     private String getResourceServiceEndPoint(){
-        if(resourceServiceEndpoint != null && resourceServiceEndpoint.length() > 0){
+        if( ! (resourceServiceEndpoint == null || resourceServiceEndpoint.isEmpty())){
             return resourceServiceEndpoint;
         }
-        if(genEndpoint != null && genEndpoint.length() > 0){
-            String endpoint = this.genEndpoint;
-            if(!endpoint.endsWith("/")){
-                endpoint += "/";
+        if( ! (genEndpoint == null || genEndpoint.isEmpty())){
+            StringBuilder endpoint = new StringBuilder(this.genEndpoint);
+            if(!genEndpoint.endsWith("/")){
+                endpoint.append("/");
             }
-            endpoint += "osiam-resource-server/";
-            return endpoint;
+            endpoint.append("osiam-resource-server/");
+            return endpoint.toString();
         }
         throw new InvalidAttributeException("No endpoint to the OSIAM server has been set");
     }
