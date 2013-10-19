@@ -36,6 +36,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     private GrantType grantType;
     private String username;
     private String password;
+    private String genEndpoint;
     private String authServiceEndpoint;
     private String resourceServiceEndpoint;
     private Scope scope;
@@ -61,6 +62,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         this.password = builder.password;
         this.authServiceEndpoint = builder.authServiceEndpoint;
         this.resourceServiceEndpoint = builder.resourceServiceEndpoint;
+        this.genEndpoint = builder.genEndpoint;
         this.scope = builder.scope;
         this.scopes = builder.scopes;
         this.stringScope = builder.stringScope;
@@ -73,7 +75,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     private AuthService authService(){// NOSONAR - its ok if the Cyclomatic Complexity is > 10
     	if(authService == null){    // NOSONAR - false-positive from clover; if-expression is correct
-    		AuthService.Builder builder = new AuthService.Builder(authServiceEndpoint);
+    		AuthService.Builder builder = new AuthService.Builder(getAuthServiceEndPoint());
 
     		if(clientId != null){   // NOSONAR - false-positive from clover; if-expression is correct
     			builder = builder.setClientId(clientId);
@@ -106,13 +108,43 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     	return authService;
     }
 
+    private String getAuthServiceEndPoint(){
+    	if(! (authServiceEndpoint == null || authServiceEndpoint.isEmpty())){
+    		return authServiceEndpoint;
+    	}
+    	if(! (genEndpoint == null || genEndpoint.isEmpty())){
+            StringBuilder endpoint = new StringBuilder(this.genEndpoint);
+    		if(!genEndpoint.endsWith("/")){
+    			endpoint.append("/");
+    		}
+    		endpoint.append("osiam-auth-server/");
+    		return endpoint.toString();
+    	}
+    	throw new InvalidAttributeException("No endpoint to the OSIAM server has been set");
+    }
+
+    private String getResourceServiceEndPoint(){
+        if( ! (resourceServiceEndpoint == null || resourceServiceEndpoint.isEmpty())){
+            return resourceServiceEndpoint;
+        }
+        if( ! (genEndpoint == null || genEndpoint.isEmpty())){
+            StringBuilder endpoint = new StringBuilder(this.genEndpoint);
+            if(!genEndpoint.endsWith("/")){
+                endpoint.append("/");
+            }
+            endpoint.append("osiam-resource-server/");
+            return endpoint.toString();
+        }
+        throw new InvalidAttributeException("No endpoint to the OSIAM server has been set");
+    }
+
     /**
      *
      * @return a valid OsiamUserService build out of the provided variables
      */
     private OsiamUserService userService(){
     	if(userService == null){     // NOSONAR - false-positive from clover; if-expression is correct
-    		userService = new OsiamUserService.Builder(resourceServiceEndpoint).build();
+    		userService = new OsiamUserService.Builder(getResourceServiceEndPoint()).build();
     	}
     	return userService;
     }
@@ -123,7 +155,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     private OsiamGroupService groupService(){
         if(groupService == null){    // NOSONAR - false-positive from clover; if-expression is correct
-            groupService = new OsiamGroupService.Builder(resourceServiceEndpoint).build();
+            groupService = new OsiamGroupService.Builder(getResourceServiceEndPoint()).build();
         }
         return groupService;
     }
@@ -144,6 +176,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     public User getUser(String id, AccessToken accessToken) {
         return userService().getUser(id, accessToken);
     }
+
 
     /**
      * Retrieve a list of the of all {@link User} resources saved in the OSIAM service.
@@ -444,6 +477,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private GrantType grantType;
         private String username;
         private String password;
+        private String genEndpoint;
         private String authServiceEndpoint;
         private String resourceServiceEndpoint;
         private Scope scope;
@@ -452,20 +486,15 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         private String clientRedirectUri;
 
         /**
-         * Temporary default constructor
+         * use the given basic endpoint for communication with the OAuth2-Service for authentication
+         * and the SCIM2 resource server.
+         * The schema will be <endpoint>/osiam-auth-server and <endpoint>/osiam-resource-server
+         * @param endpoint The endpoint to use for communication
+         * @return The builder itself
          */
-        public Builder(){
-
-        }
-
-        /**
-         * Set up the Builder for the construction of an {@link OsiamConnector} instance for the OAuth2-AuthService
-         * service at the given authServiceEndpoint
-         *
-         * @param authServiceEndpoint The URL at which the OAuth2 service lives.
-         */
-        public Builder(String authServiceEndpoint) {
-            this.authServiceEndpoint = authServiceEndpoint;
+        public Builder setEndpoint(String endpoint){
+            this.genEndpoint = endpoint;
+            return this;
         }
 
         /**

@@ -3,22 +3,19 @@ package org.osiam.client.connector;
  * for licensing see the file license.txt.
  */
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.osiam.client.AccessTokenMockProvider;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
-import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
-import org.osiam.client.query.metamodel.User_;
-import org.osiam.resources.scim.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -29,16 +26,37 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.junit.Assert.*;
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.osiam.client.AccessTokenMockProvider;
+import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryResult;
+import org.osiam.client.query.metamodel.User_;
+import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.Meta;
+import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.User;
+
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamConnectorTest {
 
-    private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
-    private static final String URL_BASE_USERS = "/osiam-server//Users";
+    private final static String ENDPOINT = "http://localhost:9090/";
+    static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server/";
+    private static final String URL_BASE_USERS = "/osiam-resource-server//Users";
     private static final String URL_BASE_ME = "/osiam-server//me";
-    private static final String URL_BASE_GROUPS = "/osiam-server//Groups";
+    private static final String URL_BASE_GROUPS = "/osiam-resource-server//Groups";
     private final static String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String COUNTRY = "Germany";
@@ -70,8 +88,7 @@ public class OsiamConnectorTest {
     @Before
     public void setUp() throws Exception {
         oConnector = new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(ENDPOINT)
-                .setResourceEndpoint(ENDPOINT)
+        		.setEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
@@ -157,6 +174,20 @@ public class OsiamConnectorTest {
         then_access_token_is_valid();
     }
 
+    @Test (expected = InvalidAttributeException.class)
+    public void request_access_token_without_setting_endpoint_raises_exception(){
+    	givenAConfiguredServiceWithoutEndpoint();
+    	when_token_is_requested();
+    }
+    
+    @Test (expected = InvalidAttributeException.class)
+    public void request_me_user_without_setting_endpint_raises_exception(){
+    	givenAConfiguredServiceWithoutResourceEndpoint();
+    	given_oauth_server_issues_access_token();
+    	when_token_is_requested();
+    	when_me_user_is_requested();
+    }
+    
     private void givenUserIDcanBeFound() {
         stubFor(givenUserIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
@@ -462,9 +493,31 @@ public class OsiamConnectorTest {
 
     private void given_a_correctly_configured_auth_service() {
         oConnector = new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(ENDPOINT)
-                .setResourceEndpoint(ENDPOINT)
+        		.setEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+                .setClientId(VALID_CLIENT_ID)
+                .setClientSecret(VALID_CLIENT_SECRET)
+                .setUserName(VALID_USERNAME)
+                .setPassword(VALID_PASSWORD)
+                .setScope(Scope.GET)
+                .build();
+    }
+    
+    private void givenAConfiguredServiceWithoutEndpoint() {
+        oConnector = new OsiamConnector.Builder()
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+                .setClientId(VALID_CLIENT_ID)
+                .setClientSecret(VALID_CLIENT_SECRET)
+                .setUserName(VALID_USERNAME)
+                .setPassword(VALID_PASSWORD)
+                .setScope(Scope.GET)
+                .build();
+    }
+    
+    private void givenAConfiguredServiceWithoutResourceEndpoint() {
+        oConnector = new OsiamConnector.Builder()
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUserName(VALID_USERNAME)
@@ -474,7 +527,7 @@ public class OsiamConnectorTest {
     }
 
     private void given_oauth_server_issues_access_token() {
-        stubFor(post(urlEqualTo("/osiam-server/" + TOKEN_PATH)).
+        stubFor(post(urlEqualTo("/osiam-auth-server/" + TOKEN_PATH)).
                 willReturn(aResponse()
                         .withStatus(HttpStatus.SC_OK)
                         .withBodyFile("valid_accesstoken.json")));
@@ -482,6 +535,10 @@ public class OsiamConnectorTest {
 
     private void when_token_is_requested() {
         accessToken = oConnector.retrieveAccessToken();
+    }
+    
+    private void when_me_user_is_requested() {
+        oConnector.getMe(accessToken);
     }
 
     private void then_access_token_is_valid() throws Exception {
