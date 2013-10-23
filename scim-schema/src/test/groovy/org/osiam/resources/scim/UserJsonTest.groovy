@@ -27,7 +27,7 @@ class UserJsonTest extends Specification {
 
     def "should create flat list on json output"() {
         given:
-        def builder = new User.Builder("test").setActive(true)
+        def user = new User.Builder("test").setActive(true)
                 .setDisplayName("display")
                 .setAddresses([new Address.Builder().setCountry("de").setFormatted("moep").setPostalCode("53111").build()])
                 .setEmails([new MultiValuedAttribute.Builder().setValue("moep").build()])
@@ -47,7 +47,7 @@ class UserJsonTest extends Specification {
                 .setExternalId("externalid").setId("id").build()
 
         when:
-        def json = mapper.writeValueAsString(builder)
+        def json = mapper.writeValueAsString(user)
         then:
         json == """{"id":"id","schemas":["urn:scim:schemas:core:1.0"],"externalId":"externalid","userName":"test","name":{},"displayName":"display","nickName":"nickname","profileUrl":"profileUrl","title":"title","userType":"userType","preferredLanguage":"prefereedLanguage","locale":"locale","timezone":"time","active":true,"password":"password","emails":[{"value":"moep"}],"phoneNumbers":[{"value":"moep"}],"ims":[{"value":"moep"}],"photos":[{"value":"moep"}],"addresses":[{"formatted":"moep","postalCode":"53111","country":"de"}],"groups":[{"value":"moep"}]}"""
     }
