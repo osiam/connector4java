@@ -32,7 +32,7 @@ import spock.lang.Unroll;
 
 class UserTest extends Specification {
     
-    static def EXTENSION_URN = "urn:tarent:schemas:test:2.0:Test"
+    static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
     static def EXTENSION_EMPTY = new Extension([:])
 
     def "default constructor should be present due to json mappings"() {
@@ -106,11 +106,11 @@ class UserTest extends Specification {
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
-                .addExtension("urn:tarent:schemas:test:2.0:Test", new Extension([:]))
+                .addExtension("urn:org.osiam:schemas:test:1.0:Test", new Extension([:]))
         when:
         User user = builder.build()
         then:
-        user.active == builder.active
+        user.active == builder.active    
         user.addresses == builder.addresses
         user.displayName == builder.displayName
         user.emails == builder.emails
@@ -134,7 +134,7 @@ class UserTest extends Specification {
         user.id == builder.id
         user.externalId == builder.externalId
         user.meta == builder.meta
-        user.extensions == builder.extensions
+        user.extensions == builder.extensions    
     }
 
     def "generateForOutput should remove the password"() {
@@ -183,7 +183,7 @@ class UserTest extends Specification {
             .setPhotos([generalAttribute])
             .setRoles([generalAttribute])
             .setX509Certificates([generalAttribute])
-            .addExtension("urn:tarent:schemas:test:2.0:Test", extension)
+            .addExtension("urn:org.osiam:schemas:test:1.0:Test", extension)
             .build()
 
         when:
@@ -199,8 +199,8 @@ class UserTest extends Specification {
         clonedUser.roles.get(0) == generalAttribute
         clonedUser.x509Certificates.get(0) == generalAttribute
         
-        clonedUser.extensions.containsKey("urn:tarent:schemas:test:2.0:Test")
-        clonedUser.extensions.get("urn:tarent:schemas:test:2.0:Test") == extension
+        clonedUser.extensions.containsKey("urn:org.osiam:schemas:test:1.0:Test")
+        clonedUser.extensions.get("urn:org.osiam:schemas:test:1.0:Test") == extension
     }
 
 
@@ -244,9 +244,9 @@ class UserTest extends Specification {
     
     def 'builder should add a schema to the schema Set for each added extension' () {
         given:
-            def extension1Urn = "urn:tarent:schemas:test:2.0:Test1";
+            def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
             def extension1 = new Extension([:])
-            def extension2Urn = "urn:tarent:schemas:test:2.0:Test2";
+            def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
             def extension2 = new Extension([:])
         when:
             def user = new User.Builder("test2")
@@ -260,9 +260,9 @@ class UserTest extends Specification {
     
     def 'scim core schema must always be present in schema set when adding extensions'() {
         given:
-            def extension1Urn = "urn:tarent:schemas:test:2.0:Test1";
+            def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
             def extension1 = new Extension([:])
-            def extension2Urn = "urn:tarent:schemas:test:2.0:Test2";
+            def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
             def extension2 = new Extension([:])
             def coreSchemaUrn = Constants.CORE_SCHEMAS.first()
         when:
