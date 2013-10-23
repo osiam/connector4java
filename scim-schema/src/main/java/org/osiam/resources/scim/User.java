@@ -26,7 +26,9 @@ package org.osiam.resources.scim;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -59,6 +61,7 @@ public class User extends CoreResource {
     private List<MultiValuedAttribute> entitlements;
     private List<MultiValuedAttribute> roles;
     private List<MultiValuedAttribute> x509Certificates;
+    private Map<String, Extension> extensions;
 
     public User() {
     }
@@ -87,6 +90,7 @@ public class User extends CoreResource {
         this.entitlements = builder.entitlements;
         this.roles = builder.roles;
         this.x509Certificates = builder.x509Certificates;
+        this.extensions = builder.extensions;
     }
 
     /**
@@ -244,7 +248,11 @@ public class User extends CoreResource {
     public List<MultiValuedAttribute> getX509Certificates() {
         return x509Certificates;
     }
-
+    
+    public Map<String, Extension> getExtensions() {
+        return extensions;
+    }
+    
     public static class Builder extends CoreResource.Builder {
         private final String userName;
         private String password;
@@ -267,7 +275,7 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
-
+        private Map<String, Extension> extensions = new HashMap<>();
 
         public Builder(String userName) {
             if (userName == null) { throw new IllegalArgumentException("userName must not be null."); }
@@ -314,6 +322,7 @@ public class User extends CoreResource {
             builder.roles = user.roles;
             builder.x509Certificates = user.x509Certificates;
             builder.schemas = user.getSchemas();
+            builder.extensions = user.getExtensions();
             return builder.build();
         }
 
@@ -414,6 +423,11 @@ public class User extends CoreResource {
 
         public Builder setX509Certificates(List<MultiValuedAttribute> x509Certificates) {
             this.x509Certificates = x509Certificates;
+            return this;
+        }
+        
+        public Builder addExtension(String urn, Extension extension) {
+            extensions.put(urn, extension);
             return this;
         }
 

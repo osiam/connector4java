@@ -23,6 +23,9 @@
 
 package org.osiam.resources.scim
 
+import org.codehaus.groovy.classgen.Verifier.DefaultArgsAction;
+import org.codehaus.groovy.transform.NewifyASTTransformation;
+
 import spock.lang.Specification
 
 class UserTest extends Specification {
@@ -98,6 +101,7 @@ class UserTest extends Specification {
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
+                .addExtension("urn:test", new Extension([:]))
         when:
         User user = builder.build()
         then:
@@ -125,6 +129,7 @@ class UserTest extends Specification {
         user.id == builder.id
         user.externalId == builder.externalId
         user.meta == builder.meta
+        user.extensions == builder.extensions
     }
 
     def "generateForOutput should remove the password"() {
@@ -138,7 +143,7 @@ class UserTest extends Specification {
         clonedUser.password == null
     }
 
-    def "should set empty lists for pretty output"() {
+    def "should set empty collections for pretty output"() {
         given:
         User user = new User.Builder("test").build()
         when:
@@ -153,12 +158,15 @@ class UserTest extends Specification {
         clonedUser.photos.empty
         clonedUser.roles.empty
         clonedUser.x509Certificates.empty
+        // clonedUser.extensions.empty does not work
+        clonedUser.extensions.size() == 0
     }
 
-    def "generateForOutput should copy lists from original user"() {
+    def "generateForOutput should copy collections from original user"() {
         given:
         def address = new Address.Builder().build()
         def generalAttribute = new MultiValuedAttribute.Builder().build()
+        def extension = new Extension([:])
 
         User user = new User.Builder("test")
             .setAddresses([address])
@@ -170,6 +178,7 @@ class UserTest extends Specification {
             .setPhotos([generalAttribute])
             .setRoles([generalAttribute])
             .setX509Certificates([generalAttribute])
+            .addExtension("urn:test", extension)
             .build()
 
         when:
@@ -184,15 +193,18 @@ class UserTest extends Specification {
         clonedUser.photos.get(0) == generalAttribute
         clonedUser.roles.get(0) == generalAttribute
         clonedUser.x509Certificates.get(0) == generalAttribute
-
+        
+        clonedUser.extensions.containsKey("urn:test")
+        clonedUser.extensions.get("urn:test") == extension
     }
 
 
-    def "should be able to enrich addresses, emails, entitlements, groups, phone-numbers, photos, roles and certificates"() {
+    def "should be able to enrich addresses, emails, entitlements, groups, phone-numbers, photos, roles, certificates and extensions"() {
         given:
         def user = new User.Builder("test2").build()
         def address = new Address.Builder().build()
         def generalAttribute = new MultiValuedAttribute.Builder().build()
+        def extension = new Extension([:])
 
         when:
         user.getAddresses().add(address)
@@ -204,6 +216,7 @@ class UserTest extends Specification {
         user.getPhotos().add(generalAttribute)
         user.getRoles().add(generalAttribute)
         user.getX509Certificates().add(generalAttribute)
+        user.getExtensions().put("urn:test", extension)
 
         then:
         user.addresses.get(0) == address
@@ -215,6 +228,9 @@ class UserTest extends Specification {
         user.photos.get(0) == generalAttribute
         user.roles.get(0) == generalAttribute
         user.x509Certificates.get(0) == generalAttribute
+        
+        user.extensions.containsKey("urn:test")
+        user.extensions.get("urn:test") == extension
     }
     
 }
