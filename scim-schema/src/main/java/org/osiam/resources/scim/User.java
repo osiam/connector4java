@@ -23,11 +23,14 @@
 
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 
 /**
@@ -59,6 +62,7 @@ public class User extends CoreResource {
     private List<MultiValuedAttribute> entitlements;
     private List<MultiValuedAttribute> roles;
     private List<MultiValuedAttribute> x509Certificates;
+    private Map<String, Extension> extensions;
 
     public User() {
     }
@@ -87,6 +91,7 @@ public class User extends CoreResource {
         this.entitlements = builder.entitlements;
         this.roles = builder.roles;
         this.x509Certificates = builder.x509Certificates;
+        this.extensions = builder.extensions;
     }
 
     /**
@@ -244,7 +249,34 @@ public class User extends CoreResource {
     public List<MultiValuedAttribute> getX509Certificates() {
         return x509Certificates;
     }
-
+    
+    /**
+     * Provides an unmodifiable view of the extensions as a map
+     * @return an unmodifiable view of the extensions
+     */
+    public Map<String, Extension> getAllExtensions() {
+        return Collections.unmodifiableMap(extensions);
+    }
+    
+    /**
+     * Provides the extension with the given URN
+     * @param urn The URN of the extension
+     * @return The extension for the given URN
+     * @throws IllegalArgumentException If urn is null or empty
+     * @throws NoSuchElementException If extension with given urn is not available
+     */
+    public Extension getExtension(String urn) {
+        if (urn == null || urn.isEmpty()) {
+            throw new IllegalArgumentException("urn must be neither null nor empty");
+        }
+        
+        if (!extensions.containsKey(urn)) {
+            throw new NoSuchElementException("extension " + urn + " is not available");
+        }
+        
+        return extensions.get(urn);
+    }
+    
     public static class Builder extends CoreResource.Builder {
         private final String userName;
         private String password;
@@ -267,7 +299,7 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
-
+        private Map<String, Extension> extensions = new HashMap<>();
 
         public Builder(String userName) {
             if (userName == null) { throw new IllegalArgumentException("userName must not be null."); }
@@ -314,6 +346,7 @@ public class User extends CoreResource {
             builder.roles = user.roles;
             builder.x509Certificates = user.x509Certificates;
             builder.schemas = user.getSchemas();
+            builder.extensions = user.getAllExtensions();
             return builder.build();
         }
 
@@ -414,6 +447,12 @@ public class User extends CoreResource {
 
         public Builder setX509Certificates(List<MultiValuedAttribute> x509Certificates) {
             this.x509Certificates = x509Certificates;
+            return this;
+        }
+        
+        public Builder addExtension(String urn, Extension extension) {
+            extensions.put(urn, extension);
+            schemas.add(urn);
             return this;
         }
 
