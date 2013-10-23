@@ -23,13 +23,14 @@
 
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.NoSuchElementException;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 
 /**
@@ -249,8 +250,31 @@ public class User extends CoreResource {
         return x509Certificates;
     }
     
-    public Map<String, Extension> getExtensions() {
-        return extensions;
+    /**
+     * Provides an unmodifiable view of the extensions as a map
+     * @return an unmodifiable view of the extensions
+     */
+    public Map<String, Extension> getAllExtensions() {
+        return Collections.unmodifiableMap(extensions);
+    }
+    
+    /**
+     * Provides the extension with the given URN
+     * @param urn The URN of the extension
+     * @return The extension for the given URN
+     * @throws IllegalArgumentException If urn is null or empty
+     * @throws NoSuchElementException If extension with given urn is not available
+     */
+    public Extension getExtension(String urn) {
+        if (urn == null || urn.isEmpty()) {
+            throw new IllegalArgumentException("urn must be neither null nor empty");
+        }
+        
+        if (!extensions.containsKey(urn)) {
+            throw new NoSuchElementException("extension " + urn + " is not available");
+        }
+        
+        return extensions.get(urn);
     }
     
     public static class Builder extends CoreResource.Builder {
@@ -322,7 +346,7 @@ public class User extends CoreResource {
             builder.roles = user.roles;
             builder.x509Certificates = user.x509Certificates;
             builder.schemas = user.getSchemas();
-            builder.extensions = user.getExtensions();
+            builder.extensions = user.getAllExtensions();
             return builder.build();
         }
 
@@ -428,6 +452,7 @@ public class User extends CoreResource {
         
         public Builder addExtension(String urn, Extension extension) {
             extensions.put(urn, extension);
+            schemas.add(urn);
             return this;
         }
 
