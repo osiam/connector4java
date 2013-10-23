@@ -65,6 +65,16 @@ class ExtensionTest extends Specification {
             'null'    | null           | IllegalArgumentException
             'invalid' | FIELD_INJECTED | IllegalArgumentException
     }
+    
+    def 'setting an existing field changes the field value'() {
+        given:
+            def extension = new Extension([(FIELD):VALUE])
+            def newValue = "new value"
+        when:
+            extension.setField(FIELD, newValue)
+        then:
+            extension.fields.get(FIELD) == newValue
+    }
 
     def 'getAllFields returns a map of all the fields'(){
         given:
