@@ -34,6 +34,7 @@ class UserTest extends Specification {
     
     static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
     static def EXTENSION_EMPTY = new Extension([:])
+    static def CORE_SCHEMA_SET = [Constants.CORE_SCHEMA] as Set
 
     def "default constructor should be present due to json mappings"() {
         when:
@@ -47,14 +48,14 @@ class UserTest extends Specification {
         when:
         def user = new User.Builder("username").build()
         then:
-        user.schemas == Constants.CORE_SCHEMAS;
+        user.schemas == CORE_SCHEMA_SET
     }
 
     def "should be possible to create an user without name for PATCH"() {
         when:
         def user = new User.Builder().build()
         then:
-        user.schemas == Constants.CORE_SCHEMAS;
+        user.schemas == CORE_SCHEMA_SET
         user.name == null
     }
 
@@ -264,7 +265,7 @@ class UserTest extends Specification {
             def extension1 = new Extension([:])
             def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
             def extension2 = new Extension([:])
-            def coreSchemaUrn = Constants.CORE_SCHEMAS.first()
+            def coreSchemaUrn = Constants.CORE_SCHEMA
         when:
             def user = new User.Builder("test2")
                     .addExtension(extension1Urn, extension1)
