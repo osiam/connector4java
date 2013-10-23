@@ -4,6 +4,7 @@ import org.codehaus.groovy.classgen.Verifier.DefaultArgsAction;
 import org.codehaus.groovy.transform.sc.StaticCompilationMetadataKeys;
 
 import spock.lang.Specification
+import spock.lang.Unroll;
 
 
 class ExtensionTest extends Specification {
@@ -49,23 +50,20 @@ class ExtensionTest extends Specification {
         then:
             thrown(IllegalArgumentException)
     }
-
-    def 'Setting a field to null raises IllegalArgumentException'(){
+    
+    @Unroll
+    def 'Setting a field with a #testCase name raises exception'(){
         given:
             def extension = new Extension()
         when:
-            extension.setField(null, VALUE)
+            extension.setField(fieldName, VALUE)
         then:
-            thrown(IllegalArgumentException)
-    }
-    
-    def 'Adding a field raises exception' () {
-        given:
-            def extension = new Extension([(FIELD):VALUE, (VALUE):FIELD])
-        when:
-            extension.setField(FIELD_INJECTED, VALUE_INJECTED)
-        then:
-            thrown(IllegalArgumentException)
+            thrown(expectedException)
+            
+        where:
+            testCase  | fieldName      | expectedException
+            'null'    | null           | IllegalArgumentException
+            'invalid' | FIELD_INJECTED | IllegalArgumentException
     }
 
     def 'getAllFields returns a map of all the fields'(){
