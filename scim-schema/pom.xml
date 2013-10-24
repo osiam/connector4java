@@ -39,7 +39,23 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>0.23-SNAPSHOT</version>
+    <!-- version 0.23_.1_ for pom enhancment, fork/branch OSN-198 -->
+    <version>0.23.1-SNAPSHOT</version>
+
+    <!-- Point the fork to internal repo for now -->
+    <distributionManagement>
+        <repository>
+            <id>osiam-repository</id>
+            <name>public evolvis release repository</name>
+            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>OSIAM-NG-SNAPSHOT-repository</id>
+            <name>public evolvis release repository</name>
+            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
@@ -165,23 +181,6 @@
                     </includes>
                 </configuration>
             </plugin>
-            <!-- During release:perform, enable the "release" profile -->
-            <!--
-              ~ Extra parameters are passed using the "release.arguments" property on the command line.
-              ~ In Jenkins configure Maven release build / Release goals and options (in one line):
-              ~     -Dresume=false  release:clean release:prepare release:perform
-              ~     -Drelease.arguments="-Dgpg.passphrase=$PASSPHRASE -Dgpg.keyname=Signing\\ Key "
-              ~ (Take care of proper quoting/escaping: Spaces within the key's uid have to be escaped!)
-            -->
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.4.1</version>
-                <configuration>
-                    <releaseProfiles>sonatype-oss-release</releaseProfiles>
-                    <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
-                    <goals>deploy</goals>
-                </configuration>
-            </plugin>
 
             <!-- Needed due to a problem with SSH -->
             <plugin>
@@ -237,13 +236,29 @@
         </plugins>
     </build>
     <profiles>
+        <!-- ==================== Profile: release ==================== -->
         <profile>
             <id>release</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
             <build>
                 <plugins>
+                    <!-- During release:perform, enable the "release" profile -->
+                    <!--
+                      ~ Extra parameters are passed using the "release.arguments" property on the command line.
+                      ~ In Jenkins configure Maven release build / Release goals and options (in one line):
+                      ~     -Dresume=false  release:clean release:prepare release:perform
+                      ~     -Drelease.arguments="-Dgpg.passphrase=$PASSPHRASE -Dgpg.keyname=Signing\\ Key "
+                      ~ (Take care of proper quoting/escaping: Spaces within the key's uid have to be escaped!)
+                    -->
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.4.1</version>
+                        <configuration>
+                            <releaseProfiles>sonatype-oss-release</releaseProfiles>
+                            <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+
                     <!-- Needed to publish releases to sonatype staging repo -->
                     <!-- which leads to maven central -->
                     <!-- Note: In order for this to work you need to have the -->
