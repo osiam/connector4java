@@ -280,6 +280,8 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- ==================== Profile: sign ==================== -->
         <profile>
             <id>sign</id>
             <activation>
@@ -306,6 +308,8 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- ==================== Profile: coverage ==================== -->
         <profile>
             <id>coverage</id>
             <activation>
