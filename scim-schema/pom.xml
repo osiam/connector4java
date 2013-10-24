@@ -138,6 +138,15 @@
 
     </dependencies>
     <build>
+        <!-- extension needed for integration deployment -->
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.2</version>
+            </extension>
+        </extensions>
+
         <plugins>
             <!-- Configure the compiler plugin for Groovy -->
             <plugin>
