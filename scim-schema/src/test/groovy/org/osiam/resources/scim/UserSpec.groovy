@@ -23,15 +23,11 @@
 
 package org.osiam.resources.scim
 
-import org.codehaus.groovy.classgen.Verifier.DefaultArgsAction;
-import org.codehaus.groovy.transform.NewifyASTTransformation;
-import org.spockframework.compiler.model.WhenBlock;
-
 import spock.lang.Specification
-import spock.lang.Unroll;
+import spock.lang.Unroll
 
-class UserTest extends Specification {
-    
+class UserSpec extends Specification {
+
     static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
     static def EXTENSION_EMPTY = new Extension([:])
     static def CORE_SCHEMA_SET = [Constants.CORE_SCHEMA] as Set
@@ -111,7 +107,7 @@ class UserTest extends Specification {
         when:
         User user = builder.build()
         then:
-        user.active == builder.active    
+        user.active == builder.active
         user.addresses == builder.addresses
         user.displayName == builder.displayName
         user.emails == builder.emails
@@ -135,7 +131,7 @@ class UserTest extends Specification {
         user.id == builder.id
         user.externalId == builder.externalId
         user.meta == builder.meta
-        user.extensions == builder.extensions    
+        user.extensions == builder.extensions
     }
 
     def "generateForOutput should remove the password"() {
@@ -175,17 +171,17 @@ class UserTest extends Specification {
         def extension = new Extension([:])
 
         User user = new User.Builder("test")
-            .setAddresses([address])
-            .setEmails([generalAttribute])
-            .setEntitlements([generalAttribute])
-            .setGroups([generalAttribute])
-            .setIms([generalAttribute])
-            .setPhoneNumbers([generalAttribute])
-            .setPhotos([generalAttribute])
-            .setRoles([generalAttribute])
-            .setX509Certificates([generalAttribute])
-            .addExtension("urn:org.osiam:schemas:test:1.0:Test", extension)
-            .build()
+                .setAddresses([address])
+                .setEmails([generalAttribute])
+                .setEntitlements([generalAttribute])
+                .setGroups([generalAttribute])
+                .setIms([generalAttribute])
+                .setPhoneNumbers([generalAttribute])
+                .setPhotos([generalAttribute])
+                .setRoles([generalAttribute])
+                .setX509Certificates([generalAttribute])
+                .addExtension("urn:org.osiam:schemas:test:1.0:Test", extension)
+                .build()
 
         when:
         User clonedUser = User.Builder.generateForOutput(user)
@@ -199,7 +195,7 @@ class UserTest extends Specification {
         clonedUser.photos.get(0) == generalAttribute
         clonedUser.roles.get(0) == generalAttribute
         clonedUser.x509Certificates.get(0) == generalAttribute
-        
+
         clonedUser.extensions.containsKey("urn:org.osiam:schemas:test:1.0:Test")
         clonedUser.extensions.get("urn:org.osiam:schemas:test:1.0:Test") == extension
     }
@@ -233,72 +229,72 @@ class UserTest extends Specification {
         user.roles.get(0) == generalAttribute
         user.x509Certificates.get(0) == generalAttribute
     }
-    
+
     def 'enriching extension using the getter raises exception'() {
         given:
-            def user = new User.Builder("test2").build()
+        def user = new User.Builder("test2").build()
         when:
-            user.getAllExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
+        user.getAllExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
         then:
-            thrown(UnsupportedOperationException)
+        thrown(UnsupportedOperationException)
     }
-    
-    def 'builder should add a schema to the schema Set for each added extension' () {
+
+    def 'builder should add a schema to the schema Set for each added extension'() {
         given:
-            def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
-            def extension1 = new Extension([:])
-            def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
-            def extension2 = new Extension([:])
+        def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
+        def extension1 = new Extension([:])
+        def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
+        def extension2 = new Extension([:])
         when:
-            def user = new User.Builder("test2")
-                    .addExtension(extension1Urn, extension1)
-                    .addExtension(extension2Urn, extension2)
-                    .build()
+        def user = new User.Builder("test2")
+                .addExtension(extension1Urn, extension1)
+                .addExtension(extension2Urn, extension2)
+                .build()
         then:
-            user.schemas.contains(extension1Urn)
-            user.schemas.contains(extension2Urn)
+        user.schemas.contains(extension1Urn)
+        user.schemas.contains(extension2Urn)
     }
-    
+
     def 'scim core schema must always be present in schema set when adding extensions'() {
         given:
-            def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
-            def extension1 = new Extension([:])
-            def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
-            def extension2 = new Extension([:])
-            def coreSchemaUrn = Constants.CORE_SCHEMA
+        def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
+        def extension1 = new Extension([:])
+        def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
+        def extension2 = new Extension([:])
+        def coreSchemaUrn = Constants.CORE_SCHEMA
         when:
-            def user = new User.Builder("test2")
-                    .addExtension(extension1Urn, extension1)
-                    .addExtension(extension2Urn, extension2)
-                    .build()
+        def user = new User.Builder("test2")
+                .addExtension(extension1Urn, extension1)
+                .addExtension(extension2Urn, extension2)
+                .build()
         then:
-            user.schemas.contains(coreSchemaUrn)
+        user.schemas.contains(coreSchemaUrn)
     }
-    
+
     def 'an added extension can be retrieved'() {
         given:
-            def user = new User.Builder("test2")
-                    .addExtension(EXTENSION_URN, EXTENSION_EMPTY)
-                    .build()
+        def user = new User.Builder("test2")
+                .addExtension(EXTENSION_URN, EXTENSION_EMPTY)
+                .build()
         expect:
-            user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
+        user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
     }
-    
+
     @Unroll
     def 'retrieving extension with #testCase urn raises exception'() {
         given:
-            def user = new User.Builder("test2")
-                    .build()
+        def user = new User.Builder("test2")
+                .build()
         when:
-            user.getExtension(urn)
+        user.getExtension(urn)
         then:
-            thrown(expectedException)
-            
+        thrown(expectedException)
+
         where:
-            testCase  | urn           | expectedException 
-            'null'    | null          | IllegalArgumentException
-            'empty'   | ''            | IllegalArgumentException
-            'invalid' | EXTENSION_URN | NoSuchElementException
+        testCase  | urn           | expectedException
+        'null'    | null          | IllegalArgumentException
+        'empty'   | ''            | IllegalArgumentException
+        'invalid' | EXTENSION_URN | NoSuchElementException
     }
-    
+
 }

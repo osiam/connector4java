@@ -25,30 +25,31 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class MultiValuedAttributeTest extends Specification {
-    def "should contain value, display, primary, type and operation"() {
+class NameSpec extends Specification {
+    def "should contain a bunch of values"() {
         given:
-        def builder = new MultiValuedAttribute.Builder()
-                .setDisplay("display")
-                .setOperation("op")
-                .setPrimary(true)
-                .setType("type")
-                .setValue("value")
+        def builder = new Name.Builder()
+                .setFamilyName("familyName")
+                .setFormatted("formatted")
+                .setGivenName("given by whom?")
+                .setHonorificPrefix("prof")
+                .setHonorificSuffix("dunno?")
+                .setMiddleName("jack")
         when:
-        def mva = builder.build()
-
+        def name = builder.build()
         then:
-        mva.display == builder.display
-        mva.isPrimary() == builder.primary
-        mva.value == builder.value
-        mva.type == builder.type
-        mva.operation == builder.operation
+        name.formatted == builder.formatted;
+        name.familyName == builder.familyName;
+        name.givenName == builder.givenName;
+        name.middleName == builder.middleName;
+        name.honorificPrefix == builder.honorificPrefix;
+        name.honorificSuffix == builder.honorificSuffix;
     }
 
-    def "should contain an empty constructor for json"() {
+    def "should be able to be initialized with empty constructor for json serializing"() {
         when:
-        def result = new MultiValuedAttribute()
+        def name = new Name()
         then:
-        result
+        name
     }
 }

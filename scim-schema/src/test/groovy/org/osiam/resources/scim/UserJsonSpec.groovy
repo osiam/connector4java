@@ -20,7 +20,7 @@ package org.osiam.resources.scim
 import org.codehaus.jackson.map.ObjectMapper
 import spock.lang.Specification
 
-class UserJsonTest extends Specification {
+class UserJsonSpec extends Specification {
     def mapper = new ObjectMapper()
 
 

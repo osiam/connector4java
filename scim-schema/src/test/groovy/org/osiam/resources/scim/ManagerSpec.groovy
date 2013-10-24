@@ -25,31 +25,12 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class NameTest extends Specification {
-    def "should contain a bunch of values"() {
-        given:
-        def builder = new Name.Builder()
-                .setFamilyName("familyName")
-                .setFormatted("formatted")
-                .setGivenName("given by whom?")
-                .setHonorificPrefix("prof")
-                .setHonorificSuffix("dunno?")
-                .setMiddleName("jack")
+class ManagerSpec extends Specification {
+    def "should contain an id and a display name"() {
         when:
-        def name = builder.build()
+        def manager = new Manager("id", "Wald Fee")
         then:
-        name.formatted == builder.formatted;
-        name.familyName == builder.familyName;
-        name.givenName == builder.givenName;
-        name.middleName == builder.middleName;
-        name.honorificPrefix == builder.honorificPrefix;
-        name.honorificSuffix == builder.honorificSuffix;
-    }
-
-    def "should be able to be initialized with empty constructor for json serializing"() {
-        when:
-        def name = new Name()
-        then:
-        name
+        manager.managerId == "id"
+        manager.displayName == "Wald Fee"
     }
 }

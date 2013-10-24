@@ -25,7 +25,7 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class EnterpriseTest extends Specification {
+class EnterpriseSpec extends Specification {
     def "should contain employeeNumber, costCenter, organization, division, department as well as a manager"() {
         given:
         def builder = new Enterprise.Builder()
