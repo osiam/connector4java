@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.codehaus.jackson.annotate.JsonUnwrapped;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.ser.BeanSerializer;
 
 
 /**
@@ -38,7 +40,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY, using = BeanSerializer.class)
 public class User extends CoreResource {
 
     private String userName;
@@ -249,15 +251,16 @@ public class User extends CoreResource {
     public List<MultiValuedAttribute> getX509Certificates() {
         return x509Certificates;
     }
-    
+
     /**
      * Provides an unmodifiable view of the extensions as a map
      * @return an unmodifiable view of the extensions
      */
+    @JsonUnwrapped
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
-    
+
     /**
      * Provides the extension with the given URN
      * @param urn The URN of the extension
@@ -269,16 +272,16 @@ public class User extends CoreResource {
         if (urn == null || urn.isEmpty()) {
             throw new IllegalArgumentException("urn must be neither null nor empty");
         }
-        
+
         if (!extensions.containsKey(urn)) {
             throw new NoSuchElementException("extension " + urn + " is not available");
         }
-        
+
         return extensions.get(urn);
     }
-    
+
     public static class Builder extends CoreResource.Builder {
-        private final String userName;
+        private String userName;
         private String password;
         private Boolean active;
         private String timezone;
@@ -301,18 +304,8 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
         private Map<String, Extension> extensions = new HashMap<>();
 
-        public Builder(String userName) {
-            if (userName == null) { throw new IllegalArgumentException("userName must not be null."); }
-            this.userName = userName;
-        }
-
-        public Builder() {
-            this.userName = null;
-        }
-
         /**
-         * This class is for generating the output of an User. It does not copy the password and it checks for empty
-         * lists; if a list is empty it will be nulled so that json-mapping will ignore it.
+         * This class is for generating the output of an User. It does not copy the password.
          *
          * @param user
          * @return new (filtered) {@link User} object
@@ -321,33 +314,46 @@ public class User extends CoreResource {
             if (user == null) {
                 return null;
             }
-            Builder builder = new Builder(user.userName);
-            builder.id = user.getId();
-            builder.meta = user.getMeta();
-            builder.externalId = user.getExternalId();
-            builder.name = user.name;
-            builder.displayName = user.displayName;
-            builder.nickName = user.nickName;
-            builder.profileUrl = user.profileUrl;
-            builder.title = user.title;
-            builder.userType = user.userType;
-            builder.preferredLanguage = user.preferredLanguage;
-            builder.locale = user.locale;
-            builder.timezone = user.timezone;
-            builder.active = user.active;
-            // null lists when empty
-            builder.emails = user.emails;
-            builder.phoneNumbers = user.phoneNumbers;
-            builder.ims = user.ims;
-            builder.photos = user.photos;
-            builder.addresses =user.addresses;
-            builder.groups = user.groups;
-            builder.entitlements = user.entitlements ;
-            builder.roles = user.roles;
-            builder.x509Certificates = user.x509Certificates;
-            builder.schemas = user.getSchemas();
-            builder.extensions = user.getAllExtensions();
+
+            Builder builder = new Builder(user);
+            builder.setPassword(null);
             return builder.build();
+        }
+
+        public Builder(String userName) {
+            if (userName == null || userName.isEmpty()) { throw new IllegalArgumentException("userName must not be null or empty."); }
+            this.userName = userName;
+        }
+
+        public Builder() {}
+
+        public Builder(User user){
+            this.userName = user.userName;
+            this.name = user.name;
+            this.displayName = user.displayName;
+            this.nickName = user.nickName;
+            this.profileUrl = user.profileUrl;
+            this.title = user.title;
+            this.userType = user.userType;
+            this.preferredLanguage = user.preferredLanguage;
+            this.locale = user.locale;
+            this.timezone = user.timezone;
+            this.active = user.active;
+            this.password = user.password;
+            this.emails = user.emails != null ? user.emails: this.emails;
+            this.phoneNumbers = user.phoneNumbers != null ? user.phoneNumbers : this.phoneNumbers;
+            this.ims = user.ims != null ? user.ims : this.ims;
+            this.photos = user.photos != null ? user.photos : this.photos;
+            this.addresses = user.addresses != null ? user.addresses : this.addresses;
+            this.groups = user.groups != null ? user.groups : this.groups;
+            this.entitlements = user.entitlements != null ? user.entitlements : this.entitlements;
+            this.roles = user.roles != null ? user.roles : this.roles;
+            this.x509Certificates = user.x509Certificates != null ? user.x509Certificates : this.x509Certificates;
+            this.extensions = user.extensions != null ? user.extensions : this.extensions;
+            this.externalId = user.getExternalId();
+            this.id = user.getId();
+            this.meta = user.getMeta();
+            this.schemas = user.getSchemas();
         }
 
         public Builder setName(Name name) {
@@ -449,7 +455,7 @@ public class User extends CoreResource {
             this.x509Certificates = x509Certificates;
             return this;
         }
-        
+
         public Builder addExtension(String urn, Extension extension) {
             extensions.put(urn, extension);
             schemas.add(urn);

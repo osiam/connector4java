@@ -1,5 +1,7 @@
 package org.osiam.resources.scim;
 
+import org.codehaus.jackson.annotate.JsonUnwrapped;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.NoSuchElementException;
  */
 public class Extension {
 
+    @JsonUnwrapped
     private Map<String, String> fields = new HashMap<>();
 
     /**
@@ -17,11 +20,10 @@ public class Extension {
      */
     public Extension () {
     }
-    
+
     public Extension(Map<String, String> fields) {
         this.fields = new HashMap<>(fields);
     }
-
     /**
      * Return the value for the field with a given name
      * @param field The name of the field to retrieve the value of.

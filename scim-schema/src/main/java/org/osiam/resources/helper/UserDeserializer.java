@@ -1,13 +1,21 @@
 package org.osiam.resources.helper;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.*;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.codehaus.jackson.type.JavaType;
+import org.codehaus.jackson.type.TypeReference;
+import org.osiam.resources.scim.Constants;
+import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class UserDeserializer extends StdDeserializer<User> {
 
@@ -20,8 +28,33 @@ public class UserDeserializer extends StdDeserializer<User> {
     }
 
     @Override
-    public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        return null;
+    public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        JsonNode rootNode = jp.readValueAsTree();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        User user = mapper.readValue(rootNode, User.class);
+
+        if (user.getSchemas().size() == 1) {
+            return user;
+        }
+
+        User.Builder builder = new User.Builder(user);
+
+        for (String urn:user.getSchemas()){
+            if (urn.equals(Constants.CORE_SCHEMA)) {
+                continue;
+            }
+
+
+            JsonNode extensionNode = rootNode.get(urn);
+            if (extensionNode == null) {
+                throw new JsonParseException("Registered extension not present.", JsonLocation.NA);
+            }
+            Map<String, String> map = mapper.readValue(extensionNode, new TypeReference<Map<String,String>>(){});
+            builder.addExtension(urn, new Extension(map));
+        }
+        return builder.build();
     }
 
 }

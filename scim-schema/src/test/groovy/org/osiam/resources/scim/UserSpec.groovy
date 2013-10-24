@@ -80,7 +80,7 @@ class UserSpec extends Specification {
         new User.Builder(null)
         then:
         def e = thrown(IllegalArgumentException)
-        e.message == "userName must not be null."
+        e.message == "userName must not be null or empty."
     }
 
 
@@ -94,7 +94,7 @@ class UserSpec extends Specification {
                 .setName(new Name.Builder().build())
                 .setNickName("nickname")
                 .setPassword("password")
-                .setPreferredLanguage("prefereedLanguage")
+                .setPreferredLanguage("preferredLanguage")
                 .setProfileUrl("profileUrl")
                 .setTimezone("time")
                 .setTitle("title")
