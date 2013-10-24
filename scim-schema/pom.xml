@@ -358,11 +358,10 @@
 
             <build>
                 <plugins>
-                    <!-- Needed due to a problem with SSH -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.5</version>
+                        <version>2.7</version>
                         <dependencies>
                             <dependency>
                                 <groupId>org.apache.maven.wagon</groupId>
@@ -370,15 +369,6 @@
                                 <version>1.0-beta-7</version>
                             </dependency>
                         </dependencies>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.7</version>
                         <executions>
                             <execution>
                                 <id>default-deploy</id>
