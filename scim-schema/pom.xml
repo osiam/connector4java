@@ -182,22 +182,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Needed due to a problem with SSH -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.5</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-ssh</artifactId>
-                        <version>1.0-beta-7</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
 
             <!-- Build Helper: will add Groovy sources to path -->
             <plugin>
@@ -339,6 +323,69 @@
                                 <configuration>
                                     <quiet>true</quiet>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- ==================== Profile: build internally for integration runs  ==================== -->
+        <!-- Deployment needs to be run from jenkins server which has credentials to access the internal repository -->
+        <profile>
+            <id>integration</id>
+
+            <distributionManagement>
+                <repository>
+                    <id>osiam-repository</id>
+                    <name>public evolvis release repository</name>
+                    <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>OSIAM-NG-SNAPSHOT-repository</id>
+                    <name>public evolvis release repository</name>
+                    <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
+                </snapshotRepository>
+
+            </distributionManagement>
+
+            <repositories>
+                <repository>
+                    <id>osiam releases repo</id>
+                    <url>https://maven-repo.evolvis.org/releases</url>
+                </repository>
+            </repositories>
+
+            <build>
+                <plugins>
+                    <!-- Needed due to a problem with SSH -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.5</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-ssh</artifactId>
+                                <version>1.0-beta-7</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+                            <execution>
+                                <id>default-deploy</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
