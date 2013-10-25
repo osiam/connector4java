@@ -19,15 +19,18 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UserExtensionsTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090);
 
-    private static final String URL_BASE = "/osiam-auth-server//Users";
-    final static private String ENDPOINT = "http://localhost:9090/osiam-auth-server/";
+    private final static String URL_BASE = "/osiam-auth-server//Users";
+    private final static String ENDPOINT = "http://localhost:9090/osiam-auth-server/";
     private final static String USER_ID_WITHOUT_EXTENSION = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String USER_ID_WITH_EXTENSION = "a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private final static String ENTERPRISE_EXTENSION_URN = "urn:scim:schemas:extension:enterprise:2.0:User";
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
     private OsiamUserService service;
@@ -46,34 +49,29 @@ public class UserExtensionsTest {
     public void the_extension_map_is_empty_if_the_user_has_no_extensions() {
         givenAnUserIdWithoutExtension();
         givenUserIdIsLookedUp();
-        
+
         whenSingleUserisRetrieved();
-        
-        Assert.assertEquals(0, singleUserResult.getAllExtensions().size());
-    }
 
-    private void givenAnUserIdWithoutExtension() {
-        userIdToRetrieve = USER_ID_WITHOUT_EXTENSION;
-    }
-    
-    private void givenAnUserIdWithExtension() {
-        userIdToRetrieve = USER_ID_WITH_EXTENSION;
-    }
-
-    @Test
-    public void the_schema_set_only_contains_the_core_schema_if_the_user_has_no_extensions() {
+        assertEquals(0, singleUserResult.getAllExtensions().size());
     }
 
     @Test
     public void if_an_extension_is_defined_its_urn_is_listed_in_the_schema_set() {
+        givenAnUserIdWithExtension();
+        givenUserIdIsLookedUp();
+
+        whenSingleUserisRetrieved();
+
+        assertTrue(singleUserResult.getAllExtensions().containsKey(ENTERPRISE_EXTENSION_URN));
     }
 
-    @Test
-    public void if_an_extension_is_defined_it_shows_up_in_the_extensions_map() {
+
+    private void givenAnUserIdWithoutExtension() {
+        userIdToRetrieve = USER_ID_WITHOUT_EXTENSION;
     }
 
-    @Test
-    public void updates_to_fields_are_correctly_serialized() {
+    private void givenAnUserIdWithExtension() {
+        userIdToRetrieve = USER_ID_WITH_EXTENSION;
     }
 
     private void whenSingleUserisRetrieved() {
