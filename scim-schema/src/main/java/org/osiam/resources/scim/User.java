@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonUnwrapped;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.BeanSerializer;
@@ -40,7 +41,7 @@ import org.codehaus.jackson.map.ser.BeanSerializer;
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY, using = BeanSerializer.class)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class User extends CoreResource {
 
     private String userName;
@@ -256,7 +257,7 @@ public class User extends CoreResource {
      * Provides an unmodifiable view of the extensions as a map
      * @return an unmodifiable view of the extensions
      */
-    @JsonUnwrapped
+    @JsonAnyGetter
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }

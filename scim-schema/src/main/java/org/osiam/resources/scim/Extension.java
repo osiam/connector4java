@@ -1,18 +1,17 @@
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.annotate.JsonUnwrapped;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import org.codehaus.jackson.annotate.JsonAnyGetter;
 
 /**
  * The extension class models a deserialized view of schema extensions as specified by the scim 2.0 specification.
  */
 public class Extension {
 
-    @JsonUnwrapped
     private Map<String, String> fields = new HashMap<>();
 
     /**
@@ -58,6 +57,7 @@ public class Extension {
      * Provide a unmodifiable view on the entries in this schema as a map.
      * @return The Entries of this schema as an map.
      */
+    @JsonAnyGetter
     public Map<String, String> getAllFields(){
         return Collections.unmodifiableMap(fields);
     }
