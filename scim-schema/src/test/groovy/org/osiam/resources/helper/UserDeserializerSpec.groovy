@@ -1,99 +1,83 @@
 package org.osiam.resources.helper
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import groovy.text.SimpleTemplateEngine
-import groovy.text.Template
-
 import org.codehaus.jackson.JsonProcessingException
-import org.codehaus.jackson.Version
 import org.codehaus.jackson.map.JsonMappingException
-import org.codehaus.jackson.map.ObjectMapper
-import org.codehaus.jackson.map.module.SimpleModule
-import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Extension
-import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.User
-import org.osiam.test.util.JsonFixturesHelper;
-
-import spock.lang.Ignore;
+import org.osiam.test.util.JsonFixturesHelper
 import spock.lang.Specification
 import spock.lang.Unroll
 
-
 class UserDeserializerSpec extends Specification {
 
-    def 'Return an User Instance'(){
+    def 'Return an User Instance'() {
         when:
-            User user = JsonFixturesHelper.mapExtendedUser()
+        User user = JsonFixturesHelper.mapExtendedUser()
         then:
-            user instanceof User
+        user instanceof User
     }
 
-    def 'A valid basic user is returned'(){
+    def 'A valid basic user is returned'() {
         when:
-            User user = JsonFixturesHelper.mapBasicUser()
+        User user = JsonFixturesHelper.mapBasicUser()
         then:
-            user.getUserName() == 'bjensen'
-    }
-
-    @Unroll
-    def 'Deserializing a simple basic user sets #fieldName field not to null'(){
-        when:
-            User user = JsonFixturesHelper.mapSimpleUser()
-        then:
-            user[fieldName] != null
-        
-        where:
-            fieldName << ['emails',
-                    'phoneNumbers',
-                    'ims',
-                    'photos',
-                    'addresses',
-                    'groups',
-                    'entitlements',
-                    'roles',
-                    'x509Certificates',
-                    'extensions']
-    }
-
-    def 'Extension gets deserialized correctly'(){
-        when:
-            User user = JsonFixturesHelper.mapExtendedUser()
-        then:
-            user.getAllExtensions().size() == 1
-            user.getAllExtensions().entrySet().first().value instanceof Extension
+        user.getUserName() == 'bjensen'
     }
 
     @Unroll
-    def 'Value #fieldName is deserialized correctly'(){
+    def 'Deserializing a simple basic user sets #fieldName field not to null'() {
         when:
-            def user = JsonFixturesHelper.mapExtendedUser()
-            def extension = user.getExtension(JsonFixturesHelper.ENTERPRISE_URN)
+        User user = JsonFixturesHelper.mapSimpleUser()
         then:
-            extension.getField(fieldName) == fieldValue
+        user[fieldName] != null
+
         where:
-            fieldName        | fieldValue
-            'employeeNumber' | '701984'
-            'organization'   | 'Universal Studios'
-            'department'     | 'Tour Operations'
+        fieldName << ['emails',
+                'phoneNumbers',
+                'ims',
+                'photos',
+                'addresses',
+                'groups',
+                'entitlements',
+                'roles',
+                'x509Certificates',
+                'extensions']
     }
 
-    def 'Extension schema registered but missing field raises exception'(){
+    def 'Extension gets deserialized correctly'() {
         when:
-            JsonFixturesHelper.mapInvalidExtendedUser()
+        User user = JsonFixturesHelper.mapExtendedUser()
         then:
-            thrown(JsonProcessingException)
+        user.getAllExtensions().size() == 1
+        user.getAllExtensions().entrySet().first().value instanceof Extension
     }
 
-    def 'Extension of wrong JSON type raises exception'(){
+    @Unroll
+    def 'Value #fieldName is deserialized correctly'() {
         when:
-            JsonFixturesHelper.mapWrongFieldExtendedUser()
+        def user = JsonFixturesHelper.mapExtendedUser()
+        def extension = user.getExtension(JsonFixturesHelper.ENTERPRISE_URN)
         then:
-            thrown(JsonMappingException)
+        extension.getField(fieldName) == fieldValue
+        where:
+        fieldName        | fieldValue
+        'employeeNumber' | '701984'
+        'organization'   | 'Universal Studios'
+        'department'     | 'Tour Operations'
+    }
+
+    def 'Extension schema registered but missing field raises exception'() {
+        when:
+        JsonFixturesHelper.mapInvalidExtendedUser()
+        then:
+        thrown(JsonProcessingException)
+    }
+
+    def 'Extension of wrong JSON type raises exception'() {
+        when:
+        JsonFixturesHelper.mapWrongFieldExtendedUser()
+        then:
+        thrown(JsonMappingException)
     }
 
 }
