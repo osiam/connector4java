@@ -61,9 +61,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git://git@github.com/osiam/scim-schema.git</connection>
-        <url>git@github.com/osiam/scim-schema.git</url>
-        <developerConnection>scm:git:ssh://git@github.com/osiam/scim-schema.git</developerConnection>
+        <connection>scm:git://git@github.com/ripley8/scim-schema.git</connection>
+        <url>git@github.com/ripley8/scim-schema.git</url>
+        <developerConnection>scm:git:ssh://git@github.com/ripley8/scim-schema.git</developerConnection>
         <tag>scim-schema-0.14</tag>
     </scm>
 
