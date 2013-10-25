@@ -3,14 +3,6 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_CONFLICT;
-import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
@@ -26,7 +18,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.module.SimpleModule;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 import org.osiam.client.exception.ConflictException;
@@ -39,7 +33,17 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.resources.helper.UserDeserializer;
 import org.osiam.resources.scim.CoreResource;
+import org.osiam.resources.scim.User;
+
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
@@ -60,6 +64,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(@SuppressWarnings("rawtypes") Builder builder) {
         mapper = new ObjectMapper();
+        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
+                .addDeserializer(User.class, new UserDeserializer(User.class));
+        mapper.registerModule(userDeserializerModule);
+        
         contentType = ContentType.create("application/json");
         webResource = builder.getWebResource();
         type = (Class<T>)
