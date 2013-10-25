@@ -47,12 +47,12 @@
         <repository>
             <id>osiam-repository</id>
             <name>public evolvis release repository</name>
-            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/fork-releases</url>
+            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
         </repository>
         <snapshotRepository>
             <id>OSIAM-NG-SNAPSHOT-repository</id>
             <name>public evolvis release repository</name>
-            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/fork-snapshots/</url>
+            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
