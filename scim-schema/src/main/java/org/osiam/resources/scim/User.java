@@ -56,16 +56,16 @@ public class User extends CoreResource {
     private String timezone;
     private Boolean active;
     private String password;
-    private List<MultiValuedAttribute> emails;
-    private List<MultiValuedAttribute> phoneNumbers;
-    private List<MultiValuedAttribute> ims;
-    private List<MultiValuedAttribute> photos;
-    private List<Address> addresses;
-    private List<MultiValuedAttribute> groups;
-    private List<MultiValuedAttribute> entitlements;
-    private List<MultiValuedAttribute> roles;
-    private List<MultiValuedAttribute> x509Certificates;
-    private Map<String, Extension> extensions;
+    private List<MultiValuedAttribute> emails = new ArrayList<>();
+    private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
+    private List<MultiValuedAttribute> ims = new ArrayList<>();
+    private List<MultiValuedAttribute> photos = new ArrayList<>();
+    private List<Address> addresses = new ArrayList<>();
+    private List<MultiValuedAttribute> groups = new ArrayList<>();
+    private List<MultiValuedAttribute> entitlements = new ArrayList<>();
+    private List<MultiValuedAttribute> roles = new ArrayList<>();
+    private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
+    private Map<String, Extension> extensions = new HashMap<>();
 
     public User() {
     }
