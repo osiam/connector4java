@@ -39,7 +39,7 @@
     <packaging>jar</packaging>
 
     <!-- version 0.23_.1_ for pom enhancment, fork/branch OSN-198 -->
-    <version>0.23.6-SNAPSHOT</version>
+    <version>0.23.6</version>
 
     <!-- Point the fork to internal repo for now -->
     <distributionManagement>
@@ -83,7 +83,7 @@
         <connection>scm:git://git@github.com/ripley8/scim-schema.git</connection>
         <url>git@github.com/ripley8/scim-schema.git</url>
         <developerConnection>scm:git:ssh://git@github.com/ripley8/scim-schema.git</developerConnection>
-        <tag>scim-schema-0.23.4</tag>
+        <tag>scim-schema-0.23.6</tag>
     </scm>
 
     <developers>
