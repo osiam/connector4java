@@ -18,39 +18,27 @@
 package org.osiam.resources.scim
 
 import org.codehaus.jackson.map.ObjectMapper
+import org.osiam.test.util.JsonFixturesHelper
+
 import spock.lang.Specification
+import spock.lang.Unroll;
 
 class UserJsonSpec extends Specification {
-    def mapper = new ObjectMapper()
-
-
-
-    def "should create flat list on json output"() {
-        given:
-        def user = new User.Builder("test").setActive(true)
-                .setDisplayName("display")
-                .setAddresses([new Address.Builder().setCountry("de").setFormatted("moep").setPostalCode("53111").build()])
-                .setEmails([new MultiValuedAttribute.Builder().setValue("moep").build()])
-                .setPhoneNumbers([new MultiValuedAttribute.Builder().setValue("moep").build()])
-                .setIms([new MultiValuedAttribute.Builder().setValue("moep").build()])
-                .setGroups([new MultiValuedAttribute.Builder().setValue("moep").build()])
-                .setPhotos([new MultiValuedAttribute.Builder().setValue("moep").build()])
-                .setLocale("locale")
-                .setName(new Name.Builder().build())
-                .setNickName("nickname")
-                .setPassword("password")
-                .setPreferredLanguage("prefereedLanguage")
-                .setProfileUrl("profileUrl")
-                .setTimezone("time")
-                .setTitle("title")
-                .setUserType("userType")
-                .setExternalId("externalid").setId("id").build()
-
+    
+    private final static ObjectMapper mapper = new ObjectMapper()
+    
+    @Unroll
+    def 'A #userType User is correctly serialized' () {
         when:
-        def json = mapper.writeValueAsString(user)
+            def result = mapper.writeValueAsString(user)
         then:
-        json == """{"id":"id","schemas":["urn:scim:schemas:core:1.0"],"externalId":"externalid","userName":"test","name":{},"displayName":"display","nickName":"nickname","profileUrl":"profileUrl","title":"title","userType":"userType","preferredLanguage":"prefereedLanguage","locale":"locale","timezone":"time","active":true,"password":"password","emails":[{"value":"moep"}],"phoneNumbers":[{"value":"moep"}],"ims":[{"value":"moep"}],"photos":[{"value":"moep"}],"addresses":[{"formatted":"moep","postalCode":"53111","country":"de"}],"groups":[{"value":"moep"}]}"""
+            result == expectedJson
+            
+        where:
+            userType   | expectedJson                          | user
+            'simple'   | JsonFixturesHelper.JSON_SIMPLE_USER   | JsonFixturesHelper.mapSimpleUser()
+            'basic'    | JsonFixturesHelper.JSON_BASIC_USER    | JsonFixturesHelper.mapBasicUser()
+            'extended' | JsonFixturesHelper.JSON_EXTENDED_USER | JsonFixturesHelper.mapExtendedUser()
     }
-
 
 }
