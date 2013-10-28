@@ -9,9 +9,9 @@ import spock.lang.Specification
  * Time: 4:14 PM
  * To change this template use File | Settings | File Templates.
  */
-class SCIMSearchResultTest extends Specification {
+class SCIMSearchResultSpec extends Specification {
 
-    def "parametrized constructor and corresponding getter should be present"(){
+    def "parametrized constructor and corresponding getter should be present"() {
         given:
         def result = ["searchResult"] as List
         def schema = "schema1"

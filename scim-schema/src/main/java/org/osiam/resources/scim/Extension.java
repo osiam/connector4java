@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.codehaus.jackson.annotate.JsonAnyGetter;
+
 /**
  * The extension class models a deserialized view of schema extensions as specified by the scim 2.0 specification.
  */
@@ -17,11 +19,10 @@ public class Extension {
      */
     public Extension () {
     }
-    
+
     public Extension(Map<String, String> fields) {
         this.fields = new HashMap<>(fields);
     }
-
     /**
      * Return the value for the field with a given name
      * @param field The name of the field to retrieve the value of.
@@ -56,6 +57,7 @@ public class Extension {
      * Provide a unmodifiable view on the entries in this schema as a map.
      * @return The Entries of this schema as an map.
      */
+    @JsonAnyGetter
     public Map<String, String> getAllFields(){
         return Collections.unmodifiableMap(fields);
     }

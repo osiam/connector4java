@@ -25,32 +25,29 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class AddressTest extends Specification {
-
-    def "should generate an address from builder"() {
+class MultiValuedAttributeSpec extends Specification {
+    def "should contain value, display, primary, type and operation"() {
         given:
-        def builder = new Address.Builder().setCountry("country")
-                .setFormatted("formatted")
-                .setLocality("locality")
-                .setPostalCode("code")
-                .setRegion("region")
-                .setStreetAddress("street")
-
+        def builder = new MultiValuedAttribute.Builder()
+                .setDisplay("display")
+                .setOperation("op")
+                .setPrimary(true)
+                .setType("type")
+                .setValue("value")
         when:
-        def address = builder.build()
-        then:
+        def mva = builder.build()
 
-        address.country == builder.country
-        address.formatted == builder.formatted
-        address.locality == builder.locality
-        address.postalCode == builder.postalCode
-        address.region == builder.region
-        address.streetAddress == builder.streetAddress
+        then:
+        mva.display == builder.display
+        mva.isPrimary() == builder.primary
+        mva.value == builder.value
+        mva.type == builder.type
+        mva.operation == builder.operation
     }
 
-    def "empty constructor for json serializing should be present"() {
+    def "should contain an empty constructor for json"() {
         when:
-        def result = new Address();
+        def result = new MultiValuedAttribute()
         then:
         result
     }

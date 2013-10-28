@@ -25,7 +25,7 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class MetaTest extends Specification {
+class MetaSpec extends Specification {
 
     def "should contain empty constructor for json serializing"() {
         when:
@@ -122,7 +122,7 @@ class MetaTest extends Specification {
         meta.getResourceType() == "rt"
     }
 
-    def"should be able to set location without the builder"() {
+    def "should be able to set location without the builder"() {
         given:
         def meta = new Meta.Builder()
                 .setLocation("dunno")
