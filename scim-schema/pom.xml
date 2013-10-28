@@ -39,22 +39,7 @@
     <packaging>jar</packaging>
 
     <!-- version 0.23_.1_ for pom enhancment, fork/branch OSN-198 -->
-    <version>0.23.7-SNAPSHOT</version>
-
-    <!-- Point the fork to internal repo for now -->
-    <distributionManagement>
-        <repository>
-            <id>osiam-repository</id>
-            <name>public evolvis release repository</name>
-            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>OSIAM-NG-SNAPSHOT-repository</id>
-            <name>public evolvis release repository</name>
-            <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
+    <version>0.24-SNAPSHOT</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
