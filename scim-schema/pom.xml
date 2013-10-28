@@ -38,7 +38,6 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <!-- version 0.23_.1_ for pom enhancment, fork/branch OSN-198 -->
     <version>0.24-SNAPSHOT</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
