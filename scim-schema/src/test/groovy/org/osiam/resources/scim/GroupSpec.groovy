@@ -25,13 +25,13 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class GroupTest extends Specification {
+class GroupSpec extends Specification {
 
     def "should be able to generate a group"() {
         given:
         def multiValueAttribute = new MultiValuedAttribute.Builder().build()
         def builder = new Group.Builder().setDisplayName("display")
-        .setMembers([multiValueAttribute] as Set)
+                .setMembers([multiValueAttribute] as Set)
 
         when:
         def group = builder.build()
@@ -77,7 +77,7 @@ class GroupTest extends Specification {
                 setDisplayName("display").
                 setId("id").build()
         when:
-        def result  = new Group.Builder(group).build()
+        def result = new Group.Builder(group).build()
 
         then:
         group.displayName == result.displayName

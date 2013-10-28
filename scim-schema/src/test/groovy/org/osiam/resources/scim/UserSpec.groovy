@@ -24,8 +24,13 @@
 package org.osiam.resources.scim
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
-class UserTest extends Specification {
+class UserSpec extends Specification {
+
+    static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
+    static def EXTENSION_EMPTY = new Extension([:])
+    static def CORE_SCHEMA_SET = [Constants.CORE_SCHEMA] as Set
 
     def "default constructor should be present due to json mappings"() {
         when:
@@ -35,23 +40,23 @@ class UserTest extends Specification {
         user != null
     }
 
-    def "user should contain core schemas as default"() {
+    def "should contain core schemas as default"() {
         when:
         def user = new User.Builder("username").build()
         then:
-        user.schemas == Constants.CORE_SCHEMAS;
+        user.schemas == CORE_SCHEMA_SET
     }
 
-    def "user should be able to create an user without name for PATCH"() {
+    def "should be possible to create an user without name for PATCH"() {
         when:
         def user = new User.Builder().build()
         then:
-        user.schemas == Constants.CORE_SCHEMAS;
+        user.schemas == CORE_SCHEMA_SET
         user.name == null
     }
 
 
-    def "user should be able to contain schemas"() {
+    def "should be able to contain schemas"() {
         def schemas = ["urn:wtf", "urn:hajo"] as Set
         when:
         User user = new User.Builder("username").setSchemas(schemas).build()
@@ -60,7 +65,7 @@ class UserTest extends Specification {
 
     }
 
-    def "user should clone schemas"() {
+    def "generateForOutput should copy schemas"() {
         def schemas = ["urn:wtf", "urn:hajo"] as Set
         User oldUser = new User.Builder("username").setSchemas(schemas).build()
         when:
@@ -70,12 +75,12 @@ class UserTest extends Specification {
 
     }
 
-    def "userName is a required field so it should throw an exception when setting it null"() {
+    def "using null for userName raises exception"() {
         when:
         new User.Builder(null)
         then:
         def e = thrown(IllegalArgumentException)
-        e.message == "userName must not be null."
+        e.message == "userName must not be null or empty."
     }
 
 
@@ -89,7 +94,7 @@ class UserTest extends Specification {
                 .setName(new Name.Builder().build())
                 .setNickName("nickname")
                 .setPassword("password")
-                .setPreferredLanguage("prefereedLanguage")
+                .setPreferredLanguage("preferredLanguage")
                 .setProfileUrl("profileUrl")
                 .setTimezone("time")
                 .setTitle("title")
@@ -98,6 +103,7 @@ class UserTest extends Specification {
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
+                .addExtension("urn:org.osiam:schemas:test:1.0:Test", new Extension([:]))
         when:
         User user = builder.build()
         then:
@@ -125,59 +131,23 @@ class UserTest extends Specification {
         user.id == builder.id
         user.externalId == builder.externalId
         user.meta == builder.meta
+        user.extensions == builder.extensions
     }
 
-    def "should ignore password on output"() {
+    def "generateForOutput should remove the password"() {
         given:
-        User user = new User.Builder("test").setActive(true)
-                .setDisplayName("display")
-                .setLocale("locale")
-                .setName(new Name.Builder().build())
-                .setNickName("nickname")
+        User user = new User.Builder("test")
                 .setPassword("password")
-                .setPreferredLanguage("prefereedLanguage")
-                .setProfileUrl("profileUrl")
-                .setTimezone("time")
-                .setTitle("title")
-                .setUserType("userType")
-                .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
                 .build()
         when:
         User clonedUser = User.Builder.generateForOutput(user)
         then:
         clonedUser.password == null
-
-        clonedUser.timezone == user.timezone
-        clonedUser.title == user.title
-        clonedUser.userType == user.userType
-        clonedUser.userName == user.userName
-        clonedUser.id == user.id
-        clonedUser.externalId == user.externalId
-        clonedUser.meta == user.meta
-        clonedUser.active == user.active
-        clonedUser.displayName == user.displayName
-        clonedUser.locale == user.locale
-        clonedUser.name == user.name
-        clonedUser.nickName == user.nickName
-        clonedUser.preferredLanguage == user.preferredLanguage
-        clonedUser.profileUrl == user.profileUrl
     }
 
-    def "should set empty lists for pretty output"() {
+    def "should set empty collections for pretty output"() {
         given:
-        User user = new User.Builder("test").setActive(true)
-                .setDisplayName("display")
-                .setLocale("locale")
-                .setName(new Name.Builder().build())
-                .setNickName("nickname")
-                .setPassword("password")
-                .setPreferredLanguage("prefereedLanguage")
-                .setProfileUrl("profileUrl")
-                .setTimezone("time")
-                .setTitle("title")
-                .setUserType("userType")
-                .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
-                .build()
+        User user = new User.Builder("test").build()
         when:
         User clonedUser = User.Builder.generateForOutput(user)
         then:
@@ -190,36 +160,28 @@ class UserTest extends Specification {
         clonedUser.photos.empty
         clonedUser.roles.empty
         clonedUser.x509Certificates.empty
+        // clonedUser.extensions.empty does not work
+        clonedUser.extensions.size() == 0
     }
 
-    def "should copy lists from origin user"() {
+    def "generateForOutput should copy collections from original user"() {
         given:
         def address = new Address.Builder().build()
         def generalAttribute = new MultiValuedAttribute.Builder().build()
+        def extension = new Extension([:])
 
-        User user = new User.Builder("test").setActive(true)
-                .setDisplayName("display")
-                .setLocale("locale")
-                .setName(new Name.Builder().build())
-                .setNickName("nickname")
-                .setPassword("password")
-                .setPreferredLanguage("prefereedLanguage")
-                .setProfileUrl("profileUrl")
-                .setTimezone("time")
-                .setTitle("title")
-                .setUserType("userType")
-                .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
+        User user = new User.Builder("test")
+                .setAddresses([address])
+                .setEmails([generalAttribute])
+                .setEntitlements([generalAttribute])
+                .setGroups([generalAttribute])
+                .setIms([generalAttribute])
+                .setPhoneNumbers([generalAttribute])
+                .setPhotos([generalAttribute])
+                .setRoles([generalAttribute])
+                .setX509Certificates([generalAttribute])
+                .addExtension("urn:org.osiam:schemas:test:1.0:Test", extension)
                 .build()
-
-        user.addresses.add(address)
-        user.emails.add(generalAttribute)
-        user.entitlements.add(generalAttribute)
-        user.groups.add(generalAttribute)
-        user.ims.add(generalAttribute)
-        user.phoneNumbers.add(generalAttribute)
-        user.photos.add(generalAttribute)
-        user.roles.add(generalAttribute)
-        user.x509Certificates.add(generalAttribute)
 
         when:
         User clonedUser = User.Builder.generateForOutput(user)
@@ -234,6 +196,8 @@ class UserTest extends Specification {
         clonedUser.roles.get(0) == generalAttribute
         clonedUser.x509Certificates.get(0) == generalAttribute
 
+        clonedUser.extensions.containsKey("urn:org.osiam:schemas:test:1.0:Test")
+        clonedUser.extensions.get("urn:org.osiam:schemas:test:1.0:Test") == extension
     }
 
 
@@ -244,34 +208,93 @@ class UserTest extends Specification {
         def generalAttribute = new MultiValuedAttribute.Builder().build()
 
         when:
-        user.addresses.add(address)
-        user.emails.add(generalAttribute)
-        user.entitlements.add(generalAttribute)
-        user.groups.add(generalAttribute)
-        user.ims.add(generalAttribute)
-        user.phoneNumbers.add(generalAttribute)
-        user.photos.add(generalAttribute)
-        user.roles.add(generalAttribute)
-        user.x509Certificates.add(generalAttribute)
+        user.getAddresses().add(address)
+        user.getEmails().add(generalAttribute)
+        user.getEntitlements().add(generalAttribute)
+        user.getGroups().add(generalAttribute)
+        user.getIms().add(generalAttribute)
+        user.getPhoneNumbers().add(generalAttribute)
+        user.getPhotos().add(generalAttribute)
+        user.getRoles().add(generalAttribute)
+        user.getX509Certificates().add(generalAttribute)
 
-        and:
-        user.addresses.get(0) == address
-        and:
-        user.emails.get(0) == generalAttribute
-        and:
-        user.entitlements.get(0) == generalAttribute
-        and:
-        user.groups.get(0) == generalAttribute
-        and:
-        user.ims.get(0) == generalAttribute
-        and:
-        user.phoneNumbers.get(0) == generalAttribute
-        and:
-        user.photos.get(0) == generalAttribute
-        and:
-        user.roles.get(0) == generalAttribute
         then:
+        user.addresses.get(0) == address
+        user.emails.get(0) == generalAttribute
+        user.entitlements.get(0) == generalAttribute
+        user.groups.get(0) == generalAttribute
+        user.ims.get(0) == generalAttribute
+        user.phoneNumbers.get(0) == generalAttribute
+        user.photos.get(0) == generalAttribute
+        user.roles.get(0) == generalAttribute
         user.x509Certificates.get(0) == generalAttribute
+    }
+
+    def 'enriching extension using the getter raises exception'() {
+        given:
+        def user = new User.Builder("test2").build()
+        when:
+        user.getAllExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
+        then:
+        thrown(UnsupportedOperationException)
+    }
+
+    def 'builder should add a schema to the schema Set for each added extension'() {
+        given:
+        def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
+        def extension1 = new Extension([:])
+        def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
+        def extension2 = new Extension([:])
+        when:
+        def user = new User.Builder("test2")
+                .addExtension(extension1Urn, extension1)
+                .addExtension(extension2Urn, extension2)
+                .build()
+        then:
+        user.schemas.contains(extension1Urn)
+        user.schemas.contains(extension2Urn)
+    }
+
+    def 'scim core schema must always be present in schema set when adding extensions'() {
+        given:
+        def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
+        def extension1 = new Extension([:])
+        def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
+        def extension2 = new Extension([:])
+        def coreSchemaUrn = Constants.CORE_SCHEMA
+        when:
+        def user = new User.Builder("test2")
+                .addExtension(extension1Urn, extension1)
+                .addExtension(extension2Urn, extension2)
+                .build()
+        then:
+        user.schemas.contains(coreSchemaUrn)
+    }
+
+    def 'an added extension can be retrieved'() {
+        given:
+        def user = new User.Builder("test2")
+                .addExtension(EXTENSION_URN, EXTENSION_EMPTY)
+                .build()
+        expect:
+        user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
+    }
+
+    @Unroll
+    def 'retrieving extension with #testCase urn raises exception'() {
+        given:
+        def user = new User.Builder("test2")
+                .build()
+        when:
+        user.getExtension(urn)
+        then:
+        thrown(expectedException)
+
+        where:
+        testCase  | urn           | expectedException
+        'null'    | null          | IllegalArgumentException
+        'empty'   | ''            | IllegalArgumentException
+        'invalid' | EXTENSION_URN | NoSuchElementException
     }
 
 }

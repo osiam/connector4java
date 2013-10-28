@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -45,7 +47,7 @@ public abstract class Resource {
     public abstract static class Builder {
         protected String id; // NOSONAR - fields are needed in child classes
         protected Meta meta; // NOSONAR - fields are needed in child classes
-        protected Set<String> schemas = Constants.CORE_SCHEMAS; // NOSONAR - fields are needed in child classes
+        protected Set<String> schemas = new HashSet<>(Arrays.asList(Constants.CORE_SCHEMA)); // NOSONAR - fields are needed in child classes
 
         public Builder setSchemas(Set<String> schemas) {
             this.schemas = schemas;

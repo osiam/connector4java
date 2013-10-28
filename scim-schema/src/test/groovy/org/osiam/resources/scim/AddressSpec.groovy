@@ -25,12 +25,33 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-class ManagerTest extends Specification {
-    def "should contain an id and a display name"() {
+class AddressSpec extends Specification {
+
+    def "should generate an address from builder"() {
+        given:
+        def builder = new Address.Builder().setCountry("country")
+                .setFormatted("formatted")
+                .setLocality("locality")
+                .setPostalCode("code")
+                .setRegion("region")
+                .setStreetAddress("street")
+
         when:
-        def manager = new Manager("id", "Wald Fee")
+        def address = builder.build()
         then:
-        manager.managerId == "id"
-        manager.displayName == "Wald Fee"
+
+        address.country == builder.country
+        address.formatted == builder.formatted
+        address.locality == builder.locality
+        address.postalCode == builder.postalCode
+        address.region == builder.region
+        address.streetAddress == builder.streetAddress
+    }
+
+    def "empty constructor for json serializing should be present"() {
+        when:
+        def result = new Address();
+        then:
+        result
     }
 }

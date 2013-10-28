@@ -3,6 +3,7 @@ package org.osiam.resources.scim;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,16 @@ public class SCIMSearchResult<T> {
     private List<T> resources;
 
     public SCIMSearchResult() {}
+
+    public SCIMSearchResult(List<T> resources, long totalResults, long itemsPerPage, long startIndex, String schema) {
+        this.resources = resources;
+        this.totalResults = totalResults;
+        this.itemsPerPage = itemsPerPage;
+        this.startIndex = startIndex;
+
+        this.schemas = new HashSet<>();
+        this.schemas.add(schema);
+    }
 
     public SCIMSearchResult(List<T> resources, long totalResults, long itemsPerPage, long startIndex, Set<String> schemas) {
         this.resources = resources;

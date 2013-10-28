@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.codehaus.jackson.annotate.JsonAnyGetter;
+
 /**
  * The extension class models a deserialized view of schema extensions as specified by the scim 2.0 specification.
  */
@@ -12,6 +14,15 @@ public class Extension {
 
     private Map<String, String> fields = new HashMap<>();
 
+    /**
+     * Default constructor for Jackson
+     */
+    public Extension () {
+    }
+
+    public Extension(Map<String, String> fields) {
+        this.fields = new HashMap<>(fields);
+    }
     /**
      * Return the value for the field with a given name
      * @param field The name of the field to retrieve the value of.
@@ -30,13 +41,13 @@ public class Extension {
     }
 
     /**
-     *  Add or update the field with the given name to the given value.
+     * Update the field with the given name to the given value.
      * @param field The name of the field whose value to set
      * @param value The new value of the field.
-     * @throws IllegalArgumentException if the given field is null or an empty string.
+     * @throws IllegalArgumentException if the given field is null or does not exists.
      */
     public void setField(String field, String value){
-        if (field == null || field.isEmpty()){
+        if (field == null || !fields.containsKey(field)) {
             throw new IllegalArgumentException("Invalid field name");
         }
         fields.put(field, value);
@@ -46,6 +57,7 @@ public class Extension {
      * Provide a unmodifiable view on the entries in this schema as a map.
      * @return The Entries of this schema as an map.
      */
+    @JsonAnyGetter
     public Map<String, String> getAllFields(){
         return Collections.unmodifiableMap(fields);
     }
