@@ -23,7 +23,8 @@
 
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Java class for address complex type.

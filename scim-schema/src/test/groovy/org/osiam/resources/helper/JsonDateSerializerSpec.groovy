@@ -1,7 +1,7 @@
 package org.osiam.resources.helper
 
-import org.codehaus.jackson.JsonGenerator
-import org.codehaus.jackson.map.SerializerProvider
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.databind.SerializerProvider
 import spock.lang.Specification
 
 /**

@@ -23,7 +23,7 @@
 
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.HashSet;
 import java.util.Set;

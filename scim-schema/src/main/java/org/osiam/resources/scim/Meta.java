@@ -23,7 +23,7 @@
 
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.osiam.resources.helper.JsonDateSerializer;
 
 import java.util.Date;

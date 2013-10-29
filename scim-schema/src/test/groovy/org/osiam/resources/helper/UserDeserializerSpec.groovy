@@ -1,7 +1,7 @@
 package org.osiam.resources.helper
 
-import org.codehaus.jackson.JsonProcessingException
-import org.codehaus.jackson.map.JsonMappingException
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.User
 import org.osiam.test.util.JsonFixturesHelper

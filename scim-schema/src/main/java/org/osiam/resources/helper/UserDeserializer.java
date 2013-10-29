@@ -3,16 +3,12 @@ package org.osiam.resources.helper;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonLocation;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.deser.std.StdDeserializer;
-import org.codehaus.jackson.type.JavaType;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.osiam.resources.scim.Constants;
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.User;
@@ -31,9 +27,9 @@ public class UserDeserializer extends StdDeserializer<User> {
     public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode rootNode = jp.readValueAsTree();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        User user = mapper.readValue(rootNode, User.class);
+        User user = mapper.readValue(rootNode.toString(), User.class);
 
         if (user.getSchemas().size() == 1) {
             return user;
@@ -50,7 +46,7 @@ public class UserDeserializer extends StdDeserializer<User> {
             if (extensionNode == null) {
                 throw new JsonParseException("Registered extension not present.", JsonLocation.NA);
             }
-            Map<String, String> map = mapper.readValue(extensionNode, new TypeReference<Map<String, String>>() {
+            Map<String, String> map = mapper.readValue(extensionNode.toString(), new TypeReference<Map<String, String>>() {
             });
             builder.addExtension(urn, new Extension(map));
         }
