@@ -23,17 +23,10 @@
 
 package org.osiam.resources.scim;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import org.codehaus.jackson.annotate.JsonAnyGetter;
-import org.codehaus.jackson.annotate.JsonUnwrapped;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.BeanSerializer;
+import java.util.*;
 
 
 /**
@@ -255,6 +248,7 @@ public class User extends CoreResource {
 
     /**
      * Provides an unmodifiable view of the extensions as a map
+     *
      * @return an unmodifiable view of the extensions
      */
     @JsonAnyGetter
@@ -264,10 +258,11 @@ public class User extends CoreResource {
 
     /**
      * Provides the extension with the given URN
+     *
      * @param urn The URN of the extension
      * @return The extension for the given URN
      * @throws IllegalArgumentException If urn is null or empty
-     * @throws NoSuchElementException If extension with given urn is not available
+     * @throws NoSuchElementException   If extension with given urn is not available
      */
     public Extension getExtension(String urn) {
         if (urn == null || urn.isEmpty()) {
@@ -308,7 +303,7 @@ public class User extends CoreResource {
         /**
          * This class is for generating the output of an User. It does not copy the password.
          *
-         * @param user
+         * @param user The user to prepare for output
          * @return new (filtered) {@link User} object
          */
         public static User generateForOutput(User user) {
@@ -322,13 +317,16 @@ public class User extends CoreResource {
         }
 
         public Builder(String userName) {
-            if (userName == null || userName.isEmpty()) { throw new IllegalArgumentException("userName must not be null or empty."); }
+            if (userName == null || userName.isEmpty()) {
+                throw new IllegalArgumentException("userName must not be null or empty.");
+            }
             this.userName = userName;
         }
 
-        public Builder() {}
+        public Builder() {
+        }
 
-        public Builder(User user){
+        public Builder(User user) {
             this.userName = user.userName;
             this.name = user.name;
             this.displayName = user.displayName;
@@ -341,7 +339,7 @@ public class User extends CoreResource {
             this.timezone = user.timezone;
             this.active = user.active;
             this.password = user.password;
-            this.emails = user.emails != null ? user.emails: this.emails;
+            this.emails = user.emails != null ? user.emails : this.emails;
             this.phoneNumbers = user.phoneNumbers != null ? user.phoneNumbers : this.phoneNumbers;
             this.ims = user.ims != null ? user.ims : this.ims;
             this.photos = user.photos != null ? user.photos : this.photos;

@@ -17,23 +17,23 @@
 
 package org.osiam.resources.scim
 
-import org.codehaus.jackson.map.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.osiam.test.util.JsonFixturesHelper
 
 import spock.lang.Specification
 import spock.lang.Unroll;
 
 class UserJsonSpec extends Specification {
-    
+
     private final static ObjectMapper mapper = new ObjectMapper()
-    
+
     @Unroll
     def 'A #userType User is correctly serialized' () {
         when:
             def result = mapper.writeValueAsString(user)
         then:
             result == expectedJson
-            
+
         where:
             userType   | expectedJson                          | user
             'simple'   | JsonFixturesHelper.JSON_SIMPLE_USER   | JsonFixturesHelper.mapSimpleUser()

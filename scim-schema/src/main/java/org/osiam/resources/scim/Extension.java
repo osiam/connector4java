@@ -1,11 +1,11 @@
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import org.codehaus.jackson.annotate.JsonAnyGetter;
 
 /**
  * The extension class models a deserialized view of schema extensions as specified by the scim 2.0 specification.
