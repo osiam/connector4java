@@ -10,6 +10,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -18,11 +23,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.module.SimpleModule;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
@@ -67,7 +67,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
                 .addDeserializer(User.class, new UserDeserializer(User.class));
         mapper.registerModule(userDeserializerModule);
-        
+
         contentType = ContentType.create("application/json");
         webResource = builder.getWebResource();
         type = (Class<T>)
@@ -80,11 +80,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     public URI getUri() {
     	return webResource.getURI();
     }
-    	
+
     protected String getEndpoint(){
     	return endpoint;
     }
-   
+
     protected T getResource(String id, AccessToken accessToken) {
         ensureIdIsNotNull(id);
         ensureAccessTokenIsNotNull(accessToken);
@@ -136,7 +136,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
         ensureAccessTokenIsNotNull(accessToken);
-        
+
         final InputStream queryResult;
         try {
             HttpGet realWebResource = createRealWebResource(accessToken);
@@ -192,7 +192,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected String getErrorMessageForbidden(AccessToken accessToken, String process){
     	return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
     }
-    
+
     protected String getErrorMessageUnauthorized(HttpResponse httpResponse) throws IOException {
         return getErrorMessage(httpResponse, "You are not authorized to access OSIAM. Please make sure your access token is valid");
     }
@@ -322,7 +322,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         ensureResourceIsNotNull(resource);
         ensureAccessTokenIsNotNull(accessToken);
     	ensureIdIsNotNull(id);
-        
+
         final T returnResource;
         InputStream content = null;
         try {
@@ -371,19 +371,19 @@ abstract class AbstractOsiamService<T extends CoreResource> {
 			} catch (Exception ignore) {/* if fails we don't care */}
         }
     }
-    
+
     private void ensureResourceIsNotNull(T resource){
         if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given " + typeName + " can't be null.");
         }
     }
-    
+
     private void ensureAccessTokenIsNotNull(AccessToken accessToken){
         if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
         }
     }
-    
+
     private void ensureIdIsNotNull(String id){
         if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
             throw new IllegalArgumentException("The given id can't be null.");

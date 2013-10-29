@@ -22,8 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.entity.ContentType;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,13 +47,13 @@ public class OsiamUserMeTest {
 
     final static private String COUNTRY = "Germany";
     final static private String ENDPOINT = "http://localhost:9090/osiam-server/";
-    final static private String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";  
+    final static private String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String URL_BASE = "/osiam-server//Users";
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
     private User singleUserResult;
-    
+
     OsiamUserService service;
 
     @Before
@@ -74,14 +74,14 @@ public class OsiamUserMeTest {
         thenPhoneNumbersAreDeserializedCorrectly();
         thenBasicValuesAreDeserializedCorrectly();
     }
-    
+
     @Test
     public void me_user_has_valid_values() throws Exception {
         givenAccessTokenForMeIsValid();
         whenMeIsLookedUp();
         thenReturnedUserMatchesExpectations();
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void accessToken_is_null_by_getting_me_user_raises_exception() throws Exception {
         givenIDisEmpty();
@@ -89,21 +89,21 @@ public class OsiamUserMeTest {
         whenMeIsLookedUp();
         fail("Exception expected");
     }
-    
+
     @Test(expected = UnauthorizedException.class)
     public void invalid_access_token_by_getting_me_user_raises_exception() throws Exception {
         givenAccessTokenForMeIsInvalid();
         whenMeIsLookedUp();
         fail("Exception expected");
     }
-    
+
     @Test(expected = UnauthorizedException.class)
     public void expired_access_token_by_getting_me_user_raises_exception() throws Exception {
         givenAccessTokenForMeHasExpired();
         whenMeIsLookedUp();
         fail("Exception expected");
     }
-    
+
     private void givenAnAccessToken() throws IOException {
         this.accessToken = tokenProvider.valid_access_token();
     }
@@ -118,11 +118,11 @@ public class OsiamUserMeTest {
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("user_" + USER_ID + ".json")));
     }
-    
+
     private void whenMeIsLookedUp() {
         singleUserResult = service.getMe(accessToken);
     }
-    
+
     private void givenIDisEmpty() {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
@@ -130,31 +130,31 @@ public class OsiamUserMeTest {
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_all_users.json")));
     }
-    
+
     private void givenAccessTokenForMeIsInvalid() {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
-    
+
     private void givenAccessTokenForMeHasExpired() {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_UNAUTHORIZED)));
     }
-    
+
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/me"))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
-    
+
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
-    
+
     private void thenMetaDataWasDeserializedCorrectly() throws ParseException {
         Meta deserializedMeta = singleUserResult.getMeta();
         Date expectedCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2011-08-01 20:29:49");
@@ -165,7 +165,7 @@ public class OsiamUserMeTest {
         assertEquals(null, deserializedMeta.getVersion());
         assertEquals("User", deserializedMeta.getResourceType());
     }
-    
+
     public void thenAddressIsDeserializedCorrectly() throws Exception {
         List<Address> addresses = singleUserResult.getAddresses();
         assertEquals(1, addresses.size());
@@ -177,7 +177,7 @@ public class OsiamUserMeTest {
         assertEquals(COUNTRY, address.getRegion());
         assertEquals(COUNTRY, address.getLocality());
     }
-    
+
     public void thenPhoneNumbersAreDeserializedCorrectly() {
 
         List<MultiValuedAttribute> phonenumbers = singleUserResult.getPhoneNumbers();
@@ -198,7 +198,7 @@ public class OsiamUserMeTest {
         assertEquals("Dr.", singleUserResult.getTitle());
         assertEquals("bjensen", singleUserResult.getUserName());
     }
-    
+
     private void thenReturnedUserMatchesExpectations() throws Exception {
 
         User expectedUser = get_expected_user();
@@ -219,7 +219,7 @@ public class OsiamUserMeTest {
         assertEquals(expectedUser.getUserType(), singleUserResult.getUserType());
         assertEquals(expectedUser.isActive(), singleUserResult.isActive());
     }
-    
+
     private void assertEqualsEmailList(List<MultiValuedAttribute> expected, List<MultiValuedAttribute> actual) {
         if (expected == null && actual == null) {
             return;
@@ -244,7 +244,7 @@ public class OsiamUserMeTest {
         assertEquals(expected.getHonorificPrefix(), actual.getHonorificPrefix());
         assertEquals(expected.getHonorificSuffix(), actual.getHonorificSuffix());
     }
-    
+
     private User get_expected_user() throws Exception {
         Reader reader = null;
         StringBuilder jsonUser = null;
