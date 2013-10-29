@@ -22,15 +22,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.Assert;
 import org.apache.http.entity.ContentType;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class OsiamUserServiceTest {
     private final static String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
     private final static String endpoint = "http://localhost:9090/osiam-server/";
     private final static String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
-    
+
     private String searchedID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -99,7 +98,7 @@ public class OsiamUserServiceTest {
         whenSingleIDisLookedUp();
         thenReturnedUserMatchesExpectations();
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void id_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenIDisEmpty();
@@ -378,7 +377,7 @@ public class OsiamUserServiceTest {
         assertEquals(numberOfUsers, queryResult.getTotalResults());
         assertEquals(numberOfUsers, queryResult.getResources().size());
     }
-    
+
     private void thenNumberOfAllUsersIs(int numberOfUsers) {
         assertEquals(numberOfUsers, allUsers.size());
     }

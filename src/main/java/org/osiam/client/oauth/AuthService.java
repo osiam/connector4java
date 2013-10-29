@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -32,7 +33,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
@@ -101,13 +101,13 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         		authHeader
         	};
     }
-        
+
     private String encodeClientCredentials(String clientId, String clientSecret) {
         String clientCredentials = clientId + ":" + clientSecret;
         clientCredentials = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
         return clientCredentials;
     }
-    
+
     private void buildBody() {
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         nameValuePairs.add(new BasicNameValuePair("scope", scopes));
@@ -124,14 +124,14 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
         }
     }
-    
+
     /**
      * Provide an {@link AccessToken} for the given parameters of this service.
      *
      * @return a valid AccessToken
-     * @throws org.osiam.client.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *                               If the Service is unable to connect to the configured OAuth2 service.
-     * @throws org.osiam.client.UnauthorizedException If the configured credentials for this service are not permitted
+     * @throws UnauthorizedException If the configured credentials for this service are not permitted
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
@@ -197,11 +197,11 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      */
     public URI getRedirectLoginUri() {
     	if(grantType != GrantType.AUTHORIZATION_CODE){// NOSONAR - false-positive from clover; if-expression is correct
-    		throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE 
+    		throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE
     				+ " to be able to use this method.");
     	}
     	URI returnUri;
-     	try {		
+     	try {
             returnUri =  new URIBuilder().setPath(getFinalEndpoint())
             		.addParameter("client_id", clientId)
             		.addParameter("response_type", "code")
@@ -212,15 +212,15 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 			throw new ConnectionInitializationException("Unable to create redirect URI", e);
 		}
     	return returnUri;
-    }  
-    
+    }
+
     /**
      * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}.
-     * If the User acepted your request for the needed data you will get an access token. 
+     * If the User acepted your request for the needed data you will get an access token.
      * If the User denied your request a {@link ForbiddenException} will be thrown.
-     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a 
+     * If the {@linkplain HttpResponse} does not contain a value named "code" or "error" a
      * {@linkplain InvalidAttributeException} will be thrown
-     * @param authCodeResponse response given from the OSIAM server. 
+     * @param authCodeResponse response given from the OSIAM server.
      * For more information please look at the wiki at github
      * @return a valid AccessToken
      * @throws org.osiam.client.exception.ForbiddenException in case the User had denied you the wanted data
@@ -248,14 +248,14 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 		}
     	return retrieveAccessToken(authCode);
     }
-    
+
     /**
      * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
-     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. 
+     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow.
      * For more information please look at the wiki at github
      * @return a valid AccessToken
-     * @throws org.osiam.exception.client.ConflictException in case the given authCode could not be exchanged against a access token
-     * @throws org.osiam.exception.client.ConnectionInitializationException
+     * @throws ConflictException in case the given authCode could not be exchanged against a access token
+     * @throws ConnectionInitializationException
      *                               If the Service is unable to connect to the configured OAuth2 service.
      * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
@@ -272,9 +272,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             response = httpclient.execute(realWebResource);
             httpStatus = response.getStatusLine().getStatusCode();
         }catch(IOException e){
-        	throw new ConnectionInitializationException("Unable to setup connection", e); 
+        	throw new ConnectionInitializationException("Unable to setup connection", e);
         }
-        
+
         if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
             String errorMessage;
             switch (httpStatus) {
@@ -288,8 +288,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         return getAccessToken(response);
-    }  
-    
+    }
+
     private AccessToken getAccessToken(HttpResponse response){
         final AccessToken accessToken;
         try {
@@ -299,9 +299,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to retrieve access token: IOException", e);
         }
-        return accessToken;	
+        return accessToken;
     }
-    
+
     private String getFinalEndpoint(){
     	String finalEndpoint = endpoint;
     	if(grantType.equals(GrantType.AUTHORIZATION_CODE)){// NOSONAR - we check before that the grantType is not null
@@ -311,7 +311,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     	}
     	return finalEndpoint;
     }
-    
+
     private HttpPost getWebRessourceToEchangeAuthCode(String authCode){
     	 HttpPost realWebResource = new HttpPost(endpoint + "/oauth/token");
          String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
@@ -321,7 +321,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          nameValuePairs.add(new BasicNameValuePair("code", authCode));
          nameValuePairs.add(new BasicNameValuePair("grant_type", "authorization_code"));
          nameValuePairs.add(new BasicNameValuePair("redirect_uri", clientRedirectUri));
-         
+
          try{
          	realWebResource.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
          }catch(UnsupportedEncodingException e){
@@ -329,7 +329,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          }
          return realWebResource;
     }
-    
+
     /**
      * The Builder class is used to construct instances of the {@link AuthService}.
      */
@@ -337,7 +337,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 
         private String clientId;
         private String clientSecret;
-        private GrantType grantType;      
+        private GrantType grantType;
         private String scopes;
         private String endpoint;
         private String password;
@@ -355,14 +355,14 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         /**
-         * Use the given {@link Scope} to for the request. 
+         * Use the given {@link Scope} to for the request.
          * @param scope the needed scope
          * @param scopes the needed scopes
          * @return The builder itself
          */
         public Builder setScope(Scope scope, Scope... scopes){
-        	Set<Scope> scopeSet = new HashSet<>(); 
-        	
+        	Set<Scope> scopeSet = new HashSet<>();
+
         	scopeSet.add(scope);
         	for (Scope actScope: scopes) {
 				scopeSet.add(actScope);
@@ -379,9 +379,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         	}
         	return this;
         }
-        
+
         /**
-         * The needed access token scopes as String like 'GET PATCH' 
+         * The needed access token scopes as String like 'GET PATCH'
          * @param scope the needed scopes
          * @return The builder itself
          */
@@ -389,9 +389,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         	this.scopes = scope;
         	return this;
         }
-        
+
         /**
-         * Use the given {@link GrantType} to for the request. 
+         * Use the given {@link GrantType} to for the request.
          *
          * @param grantType of the requested AuthCode
          * @return The builder itself
@@ -411,7 +411,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             this.clientId = clientId;
             return this;
         }
-        
+
         /**
          * Add a Client redirect URI to the OAuth2 request
          *
@@ -422,7 +422,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 			this.clientRedirectUri = clientRedirectUri;
             return this;
         }
-        
+
         /**
          * Add a clientSecret to the OAuth2 request
          *
@@ -465,7 +465,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             ensureAllNeededParameterAreCorrect();
             return new AuthService(this);
         }
-        
+
         private void ensureAllNeededParameterAreCorrect(){// NOSONAR - this is a test method the Cyclomatic Complexity can be over 10.
             if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
                 throw new IllegalArgumentException("The provided client credentials are incomplete.");

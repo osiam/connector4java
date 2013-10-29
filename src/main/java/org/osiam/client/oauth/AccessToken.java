@@ -3,10 +3,11 @@ package org.osiam.client.oauth;
  * for licensing see the file license.txt.
  */
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Objects of this type  represent an access token. Access tokens are granted by the OSIAM server
@@ -93,7 +94,7 @@ public class AccessToken {
         if (this == o) {  // NOSONAR - false-positive from clover; if-expression is correct
             return true;
         }
-        
+
         if (o == null || getClass() != o.getClass()) {  // NOSONAR - false-positive from clover; if-expression is correct
             return false;
         }
@@ -115,7 +116,7 @@ public class AccessToken {
         if (!type.equals(that.type)) { // NOSONAR - false-positive from clover; if-expression is correct
             return false;
         }
-        
+
         return this.isExpired() == that.isExpired();
     }
 

@@ -26,9 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -179,7 +179,7 @@ public class OsiamConnectorTest {
     	givenAConfiguredServiceWithoutEndpoint();
     	when_token_is_requested();
     }
-    
+
     @Test (expected = InvalidAttributeException.class)
     public void request_me_user_without_setting_endpint_raises_exception(){
     	givenAConfiguredServiceWithoutResourceEndpoint();
@@ -187,7 +187,7 @@ public class OsiamConnectorTest {
     	when_token_is_requested();
     	when_me_user_is_requested();
     }
-    
+
     private void givenUserIDcanBeFound() {
         stubFor(givenUserIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
@@ -502,7 +502,7 @@ public class OsiamConnectorTest {
                 .setScope(Scope.GET)
                 .build();
     }
-    
+
     private void givenAConfiguredServiceWithoutEndpoint() {
         oConnector = new OsiamConnector.Builder()
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
@@ -513,7 +513,7 @@ public class OsiamConnectorTest {
                 .setScope(Scope.GET)
                 .build();
     }
-    
+
     private void givenAConfiguredServiceWithoutResourceEndpoint() {
         oConnector = new OsiamConnector.Builder()
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
@@ -536,7 +536,7 @@ public class OsiamConnectorTest {
     private void when_token_is_requested() {
         accessToken = oConnector.retrieveAccessToken();
     }
-    
+
     private void when_me_user_is_requested() {
         oConnector.getMe(accessToken);
     }

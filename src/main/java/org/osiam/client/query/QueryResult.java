@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.osiam.resources.scim.CoreResource;
 
 /**
  * The Query result for the search for Users or Groups
- * 
+ *
  * @param <T> User.class or Group.class
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -27,7 +27,7 @@ public class QueryResult<T extends CoreResource> {
     private List<T> resources = new ArrayList<>();
 
     /**
-     * 
+     *
      * @return the total number of all found resources
      */
     public int getTotalResults() {
@@ -35,7 +35,7 @@ public class QueryResult<T extends CoreResource> {
     }
 
     /**
-     * 
+     *
      * @return the number of Items per Page
      */
     public int getItemsPerPage() {
@@ -43,7 +43,7 @@ public class QueryResult<T extends CoreResource> {
     }
 
     /**
-     * 
+     *
      * @return the start index of the actual QueryResult
      */
     public int getStartIndex() {
@@ -51,7 +51,7 @@ public class QueryResult<T extends CoreResource> {
     }
 
     /**
-     * 
+     *
      * @return the schema of the actual Result
      */
     public List<String> getSchemas() {
@@ -59,8 +59,8 @@ public class QueryResult<T extends CoreResource> {
     }
 
     /**
-     * 
-     * @return a list of Users or Groups that have been found 
+     *
+     * @return a list of Users or Groups that have been found
      */
     public List<T> getResources() {
         return Collections.unmodifiableList(resources);
