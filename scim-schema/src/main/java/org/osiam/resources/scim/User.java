@@ -457,6 +457,13 @@ public class User extends CoreResource {
             return this;
         }
 
+        public Builder addExtensions(Map<String, Extension> extensions) {
+            for(Map.Entry<String, Extension> entry : extensions.entrySet()) {
+                this.addExtension(entry.getKey(), entry.getValue());
+            }
+            return this;
+        }
+
         public Builder addExtension(String urn, Extension extension) {
             extensions.put(urn, extension);
             schemas.add(urn);
