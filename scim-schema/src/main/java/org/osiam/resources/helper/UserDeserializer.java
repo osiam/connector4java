@@ -28,9 +28,10 @@ public class UserDeserializer extends StdDeserializer<User> {
         JsonNode rootNode = jp.readValueAsTree();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
         User user = mapper.readValue(rootNode.toString(), User.class);
-
+        if (user.getSchemas() == null){
+            throw new JsonMappingException("Required field Schema is missing");
+        }
         if (user.getSchemas().size() == 1) {
             return user;
         }

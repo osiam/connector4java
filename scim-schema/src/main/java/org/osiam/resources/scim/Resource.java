@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +36,7 @@ public abstract class Resource {
 
     private String id;
     private Meta meta;
+    @JsonProperty(required = true)
     private Set<String> schemas;
 
     protected Resource(){}
