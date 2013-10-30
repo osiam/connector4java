@@ -1,6 +1,7 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +12,9 @@ import java.util.NoSuchElementException;
  * The extension class models a deserialized view of schema extensions as specified by the scim 2.0 specification.
  */
 public class Extension {
+    
+    @JsonIgnore
+    private String urn;
 
     private Map<String, String> fields = new HashMap<>();
 
@@ -20,9 +24,19 @@ public class Extension {
     public Extension () {
     }
 
-    public Extension(Map<String, String> fields) {
+    public Extension(String urn, Map<String, String> fields) {
+        this.urn = urn;
         this.fields = new HashMap<>(fields);
     }
+    
+    /**
+     * Returns the URN of this extension.
+     * @return The URN
+     */
+    public String getUrn() {
+        return urn;
+    }
+    
     /**
      * Return the value for the field with a given name
      * @param field The name of the field to retrieve the value of.
