@@ -49,7 +49,7 @@ public class UserDeserializer extends StdDeserializer<User> {
             }
             Map<String, String> map = mapper.readValue(extensionNode.toString(), new TypeReference<Map<String, String>>() {
             });
-            builder.addExtension(urn, new Extension(map));
+            builder.addExtension(urn, new Extension(urn, map));
         }
         return builder.build();
     }

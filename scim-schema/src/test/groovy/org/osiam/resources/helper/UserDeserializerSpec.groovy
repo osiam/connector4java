@@ -10,7 +10,7 @@ import spock.lang.Unroll
 
 class UserDeserializerSpec extends Specification {
 
-    def 'Return an User Instance'() {
+    def 'Return a User Instance'() {
         when:
         User user = JsonFixturesHelper.mapExtendedUser()
         then:
