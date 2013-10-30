@@ -105,4 +105,20 @@ class ExtensionSpec extends Specification {
         then:
         !extension.fields.containsKey(FIELD_INJECTED)
     }
+    
+    def 'isFieldPresent should return true when field is present'() {
+        given:
+        def extension = new Extension(URN, [(FIELD): VALUE])
+        
+        expect:
+        extension.isFieldPresent(FIELD) == true
+    }
+    
+    def 'isFieldPresent should return false when field is not present'() {
+        given:
+        def extension = new Extension(URN, [(FIELD): VALUE])
+        
+        expect:
+        extension.isFieldPresent(FIELD_INJECTED) == false
+    }
 }
