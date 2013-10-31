@@ -16,10 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -326,7 +323,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         final T returnResource;
         InputStream content = null;
         try {
-            HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id);
+            HttpPut realWebResource = new HttpPut(webResource.getURI() + "/" + id);
             realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
