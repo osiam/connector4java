@@ -48,7 +48,7 @@ public class User extends CoreResource {
     private String locale;
     private String timezone;
     private Boolean active;
-    private String password;
+    private String password = "";
     private List<MultiValuedAttribute> emails = new ArrayList<>();
     private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
     private List<MultiValuedAttribute> ims = new ArrayList<>();
@@ -278,7 +278,7 @@ public class User extends CoreResource {
 
     public static class Builder extends CoreResource.Builder {
         private String userName;
-        private String password;
+        private String password = "";
         private Boolean active;
         private String timezone;
         private String locale;
@@ -456,7 +456,7 @@ public class User extends CoreResource {
         }
 
         public Builder addExtensions(Map<String, Extension> extensions) {
-            for(Map.Entry<String, Extension> entry : extensions.entrySet()) {
+            for (Map.Entry<String, Extension> entry : extensions.entrySet()) {
                 this.addExtension(entry.getKey(), entry.getValue());
             }
             return this;
