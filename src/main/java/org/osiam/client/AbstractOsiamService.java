@@ -3,13 +3,6 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,13 +13,7 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.NotFoundException;
-import org.osiam.client.exception.OsiamErrorMessage;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
@@ -34,13 +21,14 @@ import org.osiam.resources.helper.UserDeserializer;
 import org.osiam.resources.scim.CoreResource;
 import org.osiam.resources.scim.User;
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_CONFLICT;
-import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import static org.apache.http.HttpStatus.*;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the
@@ -75,16 +63,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     public URI getUri() {
-    	return webResource.getURI();
+        return webResource.getURI();
     }
 
-    protected String getEndpoint(){
-    	return endpoint;
+    protected String getEndpoint() {
+        return endpoint;
     }
 
     protected T getResource(String id, AccessToken accessToken) {
-        ensureIdIsNotNull(id);
-        ensureAccessTokenIsNotNull(accessToken);
+        ensureReferenceIsNotNull(id, "The given id can't be null.");
+        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
 
         final T resource;
         InputStream content = null;
@@ -106,7 +94,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                         throw new NoResultException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = getErrorMessageForbidden(accessToken, "get");
+                        errorMessage = getErrorMessageForbidden(accessToken, "get");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -120,10 +108,10 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             return resource;
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
-        }finally{
-        	try {
-				content.close();
-			} catch (Exception ignore) {/* if fails we don't care */}
+        } finally {
+            try {
+                content.close();
+            } catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
@@ -132,7 +120,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected QueryResult<T> searchResources(String queryString, AccessToken accessToken) {
-        ensureAccessTokenIsNotNull(accessToken);
+        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
 
         final InputStream queryResult;
         try {
@@ -150,7 +138,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = getErrorMessageForbidden(accessToken, "get");
+                        errorMessage = getErrorMessageForbidden(accessToken, "get");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -183,11 +171,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected T mapSingleResourceResponse(InputStream content) throws IOException {
-	    return mapper.readValue(content, type);
+        return mapper.readValue(content, type);
     }
 
-    protected String getErrorMessageForbidden(AccessToken accessToken, String process){
-    	return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
+    protected String getErrorMessageForbidden(AccessToken accessToken, String process) {
+        return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
     }
 
     protected String getErrorMessageUnauthorized(HttpResponse httpResponse) throws IOException {
@@ -201,15 +189,15 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) throws IOException {
         InputStream content = httpResponse.getEntity().getContent();
         String errorMessage;
-        try{
+        try {
             OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
             errorMessage = error.getDescription();
-        } catch (Exception e){    // NOSONAR - we catch everything
+        } catch (Exception e) {    // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
-        }finally{
-        	content.close();
+        } finally {
+            content.close();
         }
-        if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
+        if (errorMessage == null) {// NOSONAR - false-positive from clover; if-expression is correct
             errorMessage = defaultErrorMessage;
         }
         return errorMessage;
@@ -228,8 +216,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected void deleteResource(String id, AccessToken accessToken) {
-        ensureIdIsNotNull(id);
-        ensureAccessTokenIsNotNull(accessToken);
+        ensureReferenceIsNotNull(id, "The given id can't be null.");
+        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
 
         try {
             URI uri = new URI(webResource.getURI() + "/" + id);
@@ -250,11 +238,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                         throw new NoResultException(errorMessage);
-                    case  SC_CONFLICT:
+                    case SC_CONFLICT:
                         errorMessage = getErrorMessage(response, "Unable to delete: " + response.getStatusLine().getReasonPhrase());
                         throw new ConflictException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = getErrorMessageForbidden(accessToken, "delete");
+                        errorMessage = getErrorMessageForbidden(accessToken, "delete");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -267,8 +255,8 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected T createResource(T resource, AccessToken accessToken) {
-        ensureResourceIsNotNull(resource);
-        ensureAccessTokenIsNotNull(accessToken);
+        ensureReferenceIsNotNull(resource, "The given " + typeName + " can't be null.");
+        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
 
         final T returnResource;
         InputStream content = null;
@@ -290,11 +278,11 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_UNAUTHORIZED:
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
-                    case  SC_CONFLICT:
+                    case SC_CONFLICT:
                         errorMessage = getErrorMessage(response, "Unable to save");
                         throw new ConflictException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = getErrorMessageForbidden(accessToken, "create");
+                        errorMessage = getErrorMessageForbidden(accessToken, "create");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -308,22 +296,34 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             return returnResource;
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
-        }finally{
-        	try {
-				content.close();
-			} catch (Exception ignore) {/* if fails we don't care */}
+        } finally {
+            try {
+                content.close();
+            } catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
-    protected T updateResource(String id, T resource , AccessToken accessToken){
-        ensureResourceIsNotNull(resource);
-        ensureAccessTokenIsNotNull(accessToken);
-    	ensureIdIsNotNull(id);
+    protected T updateResource(String id, T resource, AccessToken accessToken) {
+        HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id);
+        return modifyResource(id, resource, accessToken, realWebResource);
+
+    }
+
+    protected T replaceResource(String id, T resource, AccessToken accessToken) {
+        HttpPut realWebResource = new HttpPut(webResource.getURI() + "/" + id);
+        return modifyResource(id, resource, accessToken, realWebResource);
+    }
+
+
+    private T modifyResource(String id, T resource, AccessToken accessToken, HttpEntityEnclosingRequestBase realWebResource) {
+        ensureReferenceIsNotNull(resource, "The given " + typeName + " can't be null.");
+        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
+        ensureReferenceIsNotNull(id, "The given id can't be null.");
 
         final T returnResource;
         InputStream content = null;
+
         try {
-            HttpPut realWebResource = new HttpPut(webResource.getURI() + "/" + id);
             realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             String userAsString = mapper.writeValueAsString(resource);
@@ -338,17 +338,17 @@ abstract class AbstractOsiamService<T extends CoreResource> {
                     case SC_UNAUTHORIZED:
                         errorMessage = getErrorMessageUnauthorized(response);
                         throw new UnauthorizedException(errorMessage);
-                    case  SC_BAD_REQUEST:
+                    case SC_BAD_REQUEST:
                         errorMessage = getErrorMessage(response, "Wrong " + typeName + ". Unable to update");
                         throw new ConflictException(errorMessage);
-                    case  SC_CONFLICT:
+                    case SC_CONFLICT:
                         errorMessage = getErrorMessage(response, typeName + " with Conflicts. Unable to update");
                         throw new ConflictException(errorMessage);
-                    case  SC_NOT_FOUND:
+                    case SC_NOT_FOUND:
                         errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id + " could be found to be updated.");
                         throw new NotFoundException(errorMessage);
                     case SC_FORBIDDEN:
-                    	errorMessage = getErrorMessageForbidden(accessToken, "update");
+                        errorMessage = getErrorMessageForbidden(accessToken, "update");
                         throw new ForbiddenException(errorMessage);
                     default:
                         errorMessage = getErrorMessageDefault(response, httpStatus);
@@ -362,28 +362,16 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             return returnResource;
         } catch (IOException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e); // NOSONAR - its ok to have this message several times
-        }finally{
-        	try {
-				content.close();
-			} catch (Exception ignore) {/* if fails we don't care */}
+        } finally {
+            try {
+                content.close();
+            } catch (Exception ignore) {/* if fails we don't care */}
         }
     }
 
-    private void ensureResourceIsNotNull(T resource){
-        if (resource == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given " + typeName + " can't be null.");
-        }
-    }
-
-    private void ensureAccessTokenIsNotNull(AccessToken accessToken){
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given accessToken can't be null."); // NOSONAR - false-positive from clover; it's ok if message occurs several times
-        }
-    }
-
-    private void ensureIdIsNotNull(String id){
-        if (id == null) { // NOSONAR - false-positive from clover; if-expression is correct
-            throw new IllegalArgumentException("The given id can't be null.");
+    private void ensureReferenceIsNotNull(Object reference, String message) {
+        if (reference == null) {
+            throw new IllegalArgumentException(message);
         }
     }
 
