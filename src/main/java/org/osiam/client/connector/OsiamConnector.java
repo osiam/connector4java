@@ -448,6 +448,10 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return userService().updateUser(id, updateUser, accessToken);
     }
 
+    public User updateUser(User user , AccessToken accessToken){
+        return userService().updateUser(user, accessToken);
+    }
+
     /**
      * update the group of the given id with the values given in the Group Object.
      * For more detailed information how to set new field. Update Fields or to delete Fields please look in the wiki

@@ -80,10 +80,10 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
         try {
             DefaultHttpClient httpclient = new DefaultHttpClient();
-            
+
             HttpGet realWebresource = createRealWebResource(accessToken);
             realWebresource.setURI(new URI(getMeWebResource().getURI().toString()));
-            
+
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -132,10 +132,10 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
             try {
                 DefaultHttpClient httpclient = new DefaultHttpClient();
-                
+
                 HttpGet realWebresource = createRealWebResource(accessToken);
                 realWebresource.setURI(new URI(getUri() + "/me"));
-                
+
                 HttpResponse response = httpclient.execute(realWebresource);
                 int httpStatus = response.getStatusLine().getStatusCode();
 
@@ -165,7 +165,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
                 throw new ConnectionInitializationException("Unable to setup connection", e);
             }
         }
-        
+
     protected HttpGet getMeWebResource() {
         HttpGet webResource;
         try {
@@ -177,11 +177,11 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         }
         return webResource;
     }
-    
-    
-    
+
+
+
     /**
-     * Retrieve a list of the of all {@link User} resources saved in the OSIAM service. 
+     * Retrieve a list of the of all {@link User} resources saved in the OSIAM service.
      * If you need to have all User but the number is very big, this method can be slow.
      * In this case you can also use Query.Builder with no filter to split the number of User returned
      *
@@ -279,6 +279,23 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             throw new IllegalArgumentException("The given updateUser can't be null.");
         }
         return updateResource(id, updateUser.getScimConformUpdateUser(), accessToken);
+    }
+
+    /**
+     *
+     * @param user
+     * @param accessToken
+     * @return
+     */
+    public User updateUser(User user,AccessToken accessToken){
+        if (user == null){
+            throw new IllegalArgumentException("The given User can't be null.");
+        }
+        if (user.getId() == null || user.getId().isEmpty()){
+            throw new IllegalArgumentException("The given User ID can't be null or empty.");
+        }
+        return updateResource(user.getId(), user, accessToken);
+
     }
     /**
      * The Builder class is used to construct instances of the {@link OsiamUserService}
