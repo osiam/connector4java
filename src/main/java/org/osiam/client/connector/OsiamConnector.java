@@ -452,6 +452,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return userService().updateUser(user, accessToken);
     }
 
+    public User replaceUser(User user , AccessToken accessToken){
+        return userService().replaceUser(user, accessToken);
+    }
     /**
      * update the group of the given id with the values given in the Group Object.
      * For more detailed information how to set new field. Update Fields or to delete Fields please look in the wiki
@@ -471,6 +474,13 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return groupService().updateGroup(id, updateGroup, accessToken);
     }
 
+    public Group updateGroup(String id, Group group , AccessToken accessToken){
+        return groupService().updateGroup(id, group, accessToken);
+    }
+
+    public Group replaceGroup(String id, Group group , AccessToken accessToken){
+        return groupService().updateGroup(id, group, accessToken);
+    }
     /**
      * The Builder class is used to construct instances of the {@link OsiamConnector}.
      */

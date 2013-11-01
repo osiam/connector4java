@@ -39,7 +39,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder}
      * to construct one.
      *
-     * @param userWebResource a valid WebResource to connect to a given OSIAM server
+     * @param builder a Builder to build the service from
      */
     private OsiamUserService(Builder builder) {
         super(builder);
@@ -185,7 +185,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * If you need to have all User but the number is very big, this method can be slow.
      * In this case you can also use Query.Builder with no filter to split the number of User returned
      *
-     * @param accessToken
+     * @param accessToken A valid AccessToken
      * @return a list of all Users
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
@@ -282,10 +282,10 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     *
-     * @param user
-     * @param accessToken
-     * @return
+     * Updates only the given fields of the User and leaves the omitted fields untouched.
+     * @param user A User object with the values to update filled in
+     * @param accessToken A valid AccessToken
+     * @return The updated User as seen by the server
      */
     public User updateUser(User user,AccessToken accessToken){
         if (user == null){
@@ -297,6 +297,24 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         return updateResource(user.getId(), user, accessToken);
 
     }
+
+    /**
+     * Replaces the User with the given User. Any field set in the original User but not in the
+     * given User will be removed.
+     * @param user A User object to replace the given User with
+     * @param accessToken A valid AccessToken
+     * @return The replaced User as seen by the server
+     */
+    public User replaceUser(User user, AccessToken accessToken){
+        if (user == null){
+            throw new IllegalArgumentException("The given User can't be null.");
+        }
+        if (user.getId() == null || user.getId().isEmpty()){
+            throw new IllegalArgumentException("The given User ID can't be null or empty.");
+        }
+        return replaceResource(user.getId(), user, accessToken);
+    }
+
     /**
      * The Builder class is used to construct instances of the {@link OsiamUserService}
      */
