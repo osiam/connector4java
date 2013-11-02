@@ -448,8 +448,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return userService().updateUser(id, updateUser, accessToken);
     }
 
-    public User updateUser(User user , AccessToken accessToken){
-        return userService().updateUser(user, accessToken);
+    public User updateUser(String uuid, User user , AccessToken accessToken){
+        return userService().updateUser(uuid, user, accessToken);
     }
 
     public User replaceUser(User user , AccessToken accessToken){

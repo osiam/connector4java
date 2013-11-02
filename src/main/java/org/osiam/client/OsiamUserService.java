@@ -283,18 +283,19 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
     /**
      * Updates only the given fields of the User and leaves the omitted fields untouched.
+     * @param uuid The UUID of the User to update 
      * @param user A User object with the values to update filled in
      * @param accessToken A valid AccessToken
      * @return The updated User as seen by the server
      */
-    public User updateUser(User user,AccessToken accessToken){
+    public User updateUser(String uuid, User user,AccessToken accessToken){
         if (user == null){
             throw new IllegalArgumentException("The given User can't be null.");
         }
-        if (user.getId() == null || user.getId().isEmpty()){
+        if (uuid == null || uuid.isEmpty()){
             throw new IllegalArgumentException("The given User ID can't be null or empty.");
         }
-        return updateResource(user.getId(), user, accessToken);
+        return updateResource(uuid, user, accessToken);
 
     }
 
