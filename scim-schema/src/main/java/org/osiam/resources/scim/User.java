@@ -301,10 +301,11 @@ public class User extends CoreResource {
         private Map<String, Extension> extensions = new HashMap<>();
 
         /**
-         * This class is for generating the output of an User. It does not copy the password.
+         * This class is for generating the output of an User. It does not copy the password. If null is passed in,
+         * it returns null.
          *
          * @param user The user to prepare for output
-         * @return new (filtered) {@link User} object
+         * @return new (filtered) {@link User} object or null, if null was passed in.
          */
         public static User generateForOutput(User user) {
             if (user == null) {

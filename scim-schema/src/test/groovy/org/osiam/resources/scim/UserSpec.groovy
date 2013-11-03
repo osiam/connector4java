@@ -35,7 +35,6 @@ class UserSpec extends Specification {
     def "default constructor should be present due to json mappings"() {
         when:
         def user = new User()
-
         then:
         user != null
     }
@@ -132,6 +131,11 @@ class UserSpec extends Specification {
         user.externalId == builder.externalId
         user.meta == builder.meta
         user.extensions == builder.extensions
+    }
+
+    def "prepareForOutput should return null if null is passed in as parameter"() {
+        expect:
+        User.Builder.generateForOutput(null) == null
     }
 
     def "generateForOutput should remove the password"() {
