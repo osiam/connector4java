@@ -74,14 +74,19 @@ class UserSpec extends Specification {
 
     }
 
-    def "using null for userName raises exception"() {
+    @Unroll
+    def "using #parameter for userName raises exception"() {
         when:
-        new User.Builder(null)
+        new User.Builder(parameter)
+
         then:
         def e = thrown(IllegalArgumentException)
         e.message == "userName must not be null or empty."
-    }
 
+        where:
+        parameter << [null, '']
+
+    }
 
     def "should generate a user based on builder"() {
         given:
