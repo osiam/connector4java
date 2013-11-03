@@ -35,7 +35,6 @@ class UserSpec extends Specification {
     def "default constructor should be present due to json mappings"() {
         when:
         def user = new User()
-
         then:
         user != null
     }
@@ -75,14 +74,19 @@ class UserSpec extends Specification {
 
     }
 
-    def "using null for userName raises exception"() {
+    @Unroll
+    def "using #parameter for userName raises exception"() {
         when:
-        new User.Builder(null)
+        new User.Builder(parameter)
+
         then:
         def e = thrown(IllegalArgumentException)
         e.message == "userName must not be null or empty."
-    }
 
+        where:
+        parameter << [null, '']
+
+    }
 
     def "should generate a user based on builder"() {
         given:
@@ -132,6 +136,11 @@ class UserSpec extends Specification {
         user.externalId == builder.externalId
         user.meta == builder.meta
         user.extensions == builder.extensions
+    }
+
+    def "prepareForOutput should return null if null is passed in as parameter"() {
+        expect:
+        User.Builder.generateForOutput(null) == null
     }
 
     def "generateForOutput should remove the password"() {
@@ -230,6 +239,32 @@ class UserSpec extends Specification {
         user.x509Certificates.get(0) == generalAttribute
     }
 
+    @Unroll
+    def 'creating a user with copy builder copies #field field if present'() {
+        given:
+        def user = new User.Builder('user').build()
+
+        when:
+        user[(field)] = value
+        def copiedUser = new User.Builder(user).build()
+
+        then:
+        copiedUser[(field)] == value
+
+        where:
+        field              | value
+        'emails'           | [new MultiValuedAttribute.Builder().build()]
+        'phoneNumbers'     | [new MultiValuedAttribute.Builder().build()]
+        'ims'              | [new MultiValuedAttribute.Builder().build()]
+        'photos'           | [new MultiValuedAttribute.Builder().build()]
+        'addresses'        | [new Address.Builder().build()]
+        'groups'           | [new MultiValuedAttribute.Builder().build()]
+        'entitlements'     | [new MultiValuedAttribute.Builder().build()]
+        'roles'            | [new MultiValuedAttribute.Builder().build()]
+        'x509Certificates' | [new MultiValuedAttribute.Builder().build()]
+        'extensions'       | [(EXTENSION_URN): (EXTENSION_EMPTY)]
+    }
+
     def 'enriching extension using the getter raises exception'() {
         given:
         def user = new User.Builder("test2").build()
@@ -278,6 +313,17 @@ class UserSpec extends Specification {
                 .build()
         expect:
         user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
+    }
+
+    def 'extensions can be added in bulk'() {
+        given:
+        def user = new User.Builder("test")
+                .addExtensions([(EXTENSION_URN): EXTENSION_EMPTY])
+                .build()
+
+        expect:
+        user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
+
     }
 
     @Unroll
