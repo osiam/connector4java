@@ -289,6 +289,17 @@ class UserSpec extends Specification {
         user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
     }
 
+    def 'extensions can be added in bulk'() {
+        given:
+        def user = new User.Builder("test")
+                .addExtensions([(EXTENSION_URN): EXTENSION_EMPTY])
+                .build()
+
+        expect:
+        user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
+
+    }
+
     @Unroll
     def 'retrieving extension with #testCase urn raises exception'() {
         given:
