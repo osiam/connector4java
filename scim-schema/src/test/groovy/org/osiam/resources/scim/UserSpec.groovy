@@ -239,6 +239,32 @@ class UserSpec extends Specification {
         user.x509Certificates.get(0) == generalAttribute
     }
 
+    @Unroll
+    def 'creating a user with copy builder copies #field field if present'() {
+        given:
+        def user = new User.Builder('user').build()
+
+        when:
+        user[(field)] = value
+        def copiedUser = new User.Builder(user).build()
+
+        then:
+        copiedUser[(field)] == value
+
+        where:
+        field              | value
+        'emails'           | [new MultiValuedAttribute.Builder().build()]
+        'phoneNumbers'     | [new MultiValuedAttribute.Builder().build()]
+        'ims'              | [new MultiValuedAttribute.Builder().build()]
+        'photos'           | [new MultiValuedAttribute.Builder().build()]
+        'addresses'        | [new Address.Builder().build()]
+        'groups'           | [new MultiValuedAttribute.Builder().build()]
+        'entitlements'     | [new MultiValuedAttribute.Builder().build()]
+        'roles'            | [new MultiValuedAttribute.Builder().build()]
+        'x509Certificates' | [new MultiValuedAttribute.Builder().build()]
+        'extensions'       | [(EXTENSION_URN): (EXTENSION_EMPTY)]
+    }
+
     def 'enriching extension using the getter raises exception'() {
         given:
         def user = new User.Builder("test2").build()
