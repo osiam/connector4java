@@ -265,6 +265,32 @@ class UserSpec extends Specification {
         'extensions'       | [(EXTENSION_URN): (EXTENSION_EMPTY)]
     }
 
+    @Unroll
+    def 'creating a user with copy builder initializes #field empty if missing in original'() {
+        given:
+        def user = new User.Builder('user').build()
+
+        when:
+        user[(field)] = value
+        def copiedUser = new User.Builder(user).build()
+
+        then:
+        copiedUser[(field)] == value
+
+        where:
+        field              | value
+        'emails'           | []
+        'phoneNumbers'     | []
+        'ims'              | []
+        'photos'           | []
+        'addresses'        | []
+        'groups'           | []
+        'entitlements'     | []
+        'roles'            | []
+        'x509Certificates' | []
+        'extensions'       | [:]
+    }
+
     def 'enriching extension using the getter raises exception'() {
         given:
         def user = new User.Builder("test2").build()
