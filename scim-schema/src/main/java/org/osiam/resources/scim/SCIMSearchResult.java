@@ -1,19 +1,12 @@
 package org.osiam.resources.scim;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created with IntelliJ IDEA.
- * User: phil
- * Date: 5/16/13
- * Time: 4:12 PM
- * To change this template use File | Settings | File Templates.
- */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class SCIMSearchResult<T> {
 

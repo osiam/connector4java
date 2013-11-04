@@ -38,7 +38,7 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>0.30-SNAPSHOT</version>
+    <version>0.31-SNAPSHOT</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
@@ -52,6 +52,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
+        <jackson.version>2.2.3</jackson.version>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 
         <sonar.core.codeCoveragePlugin>cobertura</sonar.core.codeCoveragePlugin>
@@ -83,9 +84,9 @@
     <dependencies>
         <!-- JSON -->
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.9</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Used to convert ISO DateTime Strings to Date and vice versa (APACHE 2 License)-->

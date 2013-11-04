@@ -10,10 +10,12 @@ class ExtensionSpec extends Specification {
 
     static def FIELD_INJECTED = 'injected'
     static def VALUE_INJECTED = 'iwasinjected'
+    
+    static def URN = 'irrelevant'
 
     def 'Query for existing field returns value'() {
         given:
-        def extension = new Extension([(FIELD): VALUE])
+        def extension = new Extension(URN, [(FIELD): VALUE])
         expect:
         extension.getField(FIELD) == VALUE
     }
@@ -64,7 +66,7 @@ class ExtensionSpec extends Specification {
 
     def 'setting an existing field changes the field value'() {
         given:
-        def extension = new Extension([(FIELD): VALUE])
+        def extension = new Extension(URN, [(FIELD): VALUE])
         def newValue = "new value"
         when:
         extension.setField(FIELD, newValue)
@@ -74,7 +76,7 @@ class ExtensionSpec extends Specification {
 
     def 'getAllFields returns a map of all the fields'() {
         given:
-        def extension = new Extension([(FIELD): VALUE, (VALUE): FIELD])
+        def extension = new Extension(URN, [(FIELD): VALUE, (VALUE): FIELD])
         when:
         def result = extension.allFields
         then:
@@ -85,7 +87,7 @@ class ExtensionSpec extends Specification {
 
     def 'getAllFields returns a immutable map'() {
         given:
-        def extension = new Extension([(FIELD): VALUE])
+        def extension = new Extension(URN, [(FIELD): VALUE])
         def result = extension.getAllFields()
         when:
         result[FIELD] = FIELD
@@ -96,11 +98,27 @@ class ExtensionSpec extends Specification {
     def 'the constructor creates a copy of its parameter'() {
         given:
         def map = [(FIELD): VALUE, (VALUE): FIELD]
-        def extension = new Extension(map)
+        def extension = new Extension(URN, map)
         when:
         map[FIELD_INJECTED] = VALUE_INJECTED
 
         then:
         !extension.fields.containsKey(FIELD_INJECTED)
+    }
+    
+    def 'isFieldPresent should return true when field is present'() {
+        given:
+        def extension = new Extension(URN, [(FIELD): VALUE])
+        
+        expect:
+        extension.isFieldPresent(FIELD) == true
+    }
+    
+    def 'isFieldPresent should return false when field is not present'() {
+        given:
+        def extension = new Extension(URN, [(FIELD): VALUE])
+        
+        expect:
+        extension.isFieldPresent(FIELD_INJECTED) == false
     }
 }
