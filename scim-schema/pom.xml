@@ -116,6 +116,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <!-- extension needed for integration deployment -->
