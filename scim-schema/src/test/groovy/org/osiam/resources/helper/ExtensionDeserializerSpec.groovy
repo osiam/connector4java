@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import org.osiam.resources.scim.Extension
-import org.osiam.resources.scim.extension.FieldType
+import org.osiam.resources.scim.ExtensionFieldType
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -54,10 +54,10 @@ class ExtensionDeserializerSpec extends Specification {
 
         where:
         type              | json                  | result
-        FieldType.STRING  | '{"key" : "example"}' | 'example'
-        FieldType.INTEGER | '{"key" : 123}'       | 123G
-        FieldType.DECIMAL | '{"key" : 12.3}'      | 12.3G
-        FieldType.BOOLEAN | '{"key" : true}'      | true
+        ExtensionFieldType.STRING  | '{"key" : "example"}' | 'example'
+        ExtensionFieldType.INTEGER | '{"key" : 123}'       | 123G
+        ExtensionFieldType.DECIMAL | '{"key" : 12.3}'      | 12.3G
+        ExtensionFieldType.BOOLEAN | '{"key" : true}'      | true
 
     }
 

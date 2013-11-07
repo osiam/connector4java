@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.User
-import org.osiam.resources.scim.extension.FieldType
+import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.test.util.JsonFixturesHelper
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -68,11 +68,11 @@ class UserDeserializerSpec extends Specification {
 
         where:
         fieldType           |fieldName      | fieldValue
-        FieldType.STRING    | 'keyString'    | 'example'
-        FieldType.BOOLEAN   | 'keyBoolean'   | true
-        FieldType.INTEGER   | 'keyInteger'   | 123
-        FieldType.DECIMAL   | 'keyDecimal'   | 123.456
-        FieldType.BINARY    | 'keyBinary'    | [
+        ExtensionFieldType.STRING    | 'keyString'    | 'example'
+        ExtensionFieldType.BOOLEAN   | 'keyBoolean'   | true
+        ExtensionFieldType.INTEGER   | 'keyInteger'   | 123
+        ExtensionFieldType.DECIMAL   | 'keyDecimal'   | 123.456
+        ExtensionFieldType.BINARY    | 'keyBinary'    | [
             101,
             120,
             97,
@@ -80,8 +80,8 @@ class UserDeserializerSpec extends Specification {
             112,
             108,
             101] as byte[]
-        FieldType.REFERENCE | 'keyReference' | new URI('https://example.com/Users/28')
-        FieldType.DATE_TIME | 'keyDateTime'  | createDate(2011, 7, 1, 18, 29, 49)
+        ExtensionFieldType.REFERENCE | 'keyReference' | new URI('https://example.com/Users/28')
+        ExtensionFieldType.DATE_TIME | 'keyDateTime'  | createDate(2011, 7, 1, 18, 29, 49)
     }
 
     def 'Extension schema registered but missing field raises exception'() {
