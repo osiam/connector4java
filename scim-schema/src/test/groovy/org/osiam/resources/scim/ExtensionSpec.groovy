@@ -1,6 +1,8 @@
 package org.osiam.resources.scim
 
+import org.osiam.resources.scim.Extension.Field;
 import org.osiam.resources.scim.extension.FieldType
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -14,9 +16,6 @@ class ExtensionSpec extends Specification {
     static def URN = 'irrelevant'
 
     def extension
-
-
-
 
     def 'Query for existing field returns value'() {
         given:
@@ -127,6 +126,33 @@ class ExtensionSpec extends Specification {
 
         then:
         thrown(IllegalArgumentException)
+    }
+    
+    def 'getAllFields returns a map of all the fields'() {
+        given:
+
+        Extension extension = new Extension(URN)
+        extension.addOrUpdateField(FIELD, VALUE)
+        extension.addOrUpdateField(VALUE, FIELD)
+        when:
+        def result = extension.allFields
+        then:
+        result.size() == 2
+        result[FIELD] == new Field(DEFAULT_FIELD_TYPE, VALUE)
+        result[VALUE] == new Field(DEFAULT_FIELD_TYPE, FIELD)
+    }
+
+    def 'getAllFields returns an immutable map'() {
+        given:
+        Extension extension = new Extension(URN)
+        extension.addOrUpdateField(FIELD, VALUE)
+        def result = extension.getAllFields()
+        
+        when:
+        result[FIELD] = FIELD
+        
+        then:
+        thrown(UnsupportedOperationException)
     }
 
     def 'isFieldPresent should return true when field is present'() {
