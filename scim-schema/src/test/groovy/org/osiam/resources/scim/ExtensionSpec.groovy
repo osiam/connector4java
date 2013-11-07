@@ -1,8 +1,6 @@
 package org.osiam.resources.scim
 
-import org.osiam.resources.scim.Extension.Field;
-import org.osiam.resources.scim.extension.FieldType
-
+import org.osiam.resources.scim.Extension.Field
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -12,7 +10,7 @@ class ExtensionSpec extends Specification {
     static def VALUE = 'bar'
 
     static def FIELD_INJECTED = 'injected'
-    static def DEFAULT_FIELD_TYPE = FieldType.STRING
+    static def DEFAULT_FIELD_TYPE = ExtensionFieldType.STRING
     static def URN = 'irrelevant'
 
     def extension
@@ -22,7 +20,7 @@ class ExtensionSpec extends Specification {
         extensionWithValue()
 
         expect:
-        extension.getField(FIELD, FieldType.STRING) == VALUE
+        extension.getField(FIELD, ExtensionFieldType.STRING) == VALUE
     }
 
     def 'Query with null field type raises exception'() {
@@ -68,13 +66,13 @@ class ExtensionSpec extends Specification {
 
         where:
         givenFieldType      | givenInputValue                              | expectedOutputValue
-        FieldType.STRING    | 'example'                                    | 'example'
-        FieldType.INTEGER   | 123G                                         | '123'
-        FieldType.DECIMAL   | 12.3G                                        | '12.3'
-        FieldType.BOOLEAN   | true                                         | 'true'
-        FieldType.DATE_TIME | createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
-        FieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[] | 'ZXhhbXBsZQ=='
-        FieldType.REFERENCE | new URI('https://example.com/Users/28')      | 'https://example.com/Users/28'
+        ExtensionFieldType.STRING    | 'example'                                    | 'example'
+        ExtensionFieldType.INTEGER   | 123G                                         | '123'
+        ExtensionFieldType.DECIMAL   | 12.3G                                        | '12.3'
+        ExtensionFieldType.BOOLEAN   | true                                         | 'true'
+        ExtensionFieldType.DATE_TIME | createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
+        ExtensionFieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[] | 'ZXhhbXBsZQ=='
+        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')      | 'https://example.com/Users/28'
     }
 
     @Unroll
@@ -91,13 +89,13 @@ class ExtensionSpec extends Specification {
 
         where:
         givenFieldType      | givenInputValue                              | expectedOutputValue
-        FieldType.STRING    | 'example'                                    | 'example'
-        FieldType.INTEGER   | 123G                                         | '123'
-        FieldType.DECIMAL   | 12.3G                                        | '12.3'
-        FieldType.BOOLEAN   | true                                         | 'true'
-        FieldType.DATE_TIME | createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
-        FieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[] | 'ZXhhbXBsZQ=='
-        FieldType.REFERENCE | new URI('https://example.com/Users/28')      | 'https://example.com/Users/28'
+        ExtensionFieldType.STRING    | 'example'                                    | 'example'
+        ExtensionFieldType.INTEGER   | 123G                                         | '123'
+        ExtensionFieldType.DECIMAL   | 12.3G                                        | '12.3'
+        ExtensionFieldType.BOOLEAN   | true                                         | 'true'
+        ExtensionFieldType.DATE_TIME | createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
+        ExtensionFieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[] | 'ZXhhbXBsZQ=='
+        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')      | 'https://example.com/Users/28'
     }
 
     @Unroll
@@ -127,7 +125,7 @@ class ExtensionSpec extends Specification {
         then:
         thrown(IllegalArgumentException)
     }
-    
+
     def 'getAllFields returns a map of all the fields'() {
         given:
 
@@ -147,10 +145,10 @@ class ExtensionSpec extends Specification {
         Extension extension = new Extension(URN)
         extension.addOrUpdateField(FIELD, VALUE)
         def result = extension.getAllFields()
-        
+
         when:
         result[FIELD] = FIELD
-        
+
         then:
         thrown(UnsupportedOperationException)
     }

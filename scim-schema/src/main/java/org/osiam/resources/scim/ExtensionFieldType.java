@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.resources.scim.extension;
+package org.osiam.resources.scim;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -39,21 +39,21 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * This enum like class represents the valid extension field types. Instances of this class also define methods for
  * converting these types from and to {@link String}.
- * 
+ *
  * @param <T>
- *            the actual type this {@link FieldType} represents
+ *            the actual type this {@link ExtensionFieldType} represents
  */
-public abstract class FieldType<T> {
+public abstract class ExtensionFieldType<T> {
 
     private String name;
 
-    private FieldType(String name) {
+    private ExtensionFieldType(String name) {
         this.name = name;
     }
 
     /**
      * Converts the given {@link String} to the actual type.
-     * 
+     *
      * @param stringValue
      *            the {@link String} value to be converted
      * @return the given {@link String} value converted to the actual Type
@@ -62,7 +62,7 @@ public abstract class FieldType<T> {
 
     /**
      * Converts a value of the actual type to {@link String}.
-     * 
+     *
      * @param value
      *            the value to be converted
      * @return the given value as {@link String}
@@ -70,16 +70,16 @@ public abstract class FieldType<T> {
     public abstract String toString(T value);
 
     /**
-     * Returns the name of the {@link FieldType}
-     * 
-     * @return the name of the {@link FieldType}
+     * Returns the name of the {@link ExtensionFieldType}
+     *
+     * @return the name of the {@link ExtensionFieldType}
      */
     public final String getName() {
         return name;
     }
 
     /**
-     * Returns a string representation of the {@link FieldType} which is its name.
+     * Returns a string representation of the {@link ExtensionFieldType} which is its name.
      */
     @Override
     public String toString() {
@@ -87,15 +87,15 @@ public abstract class FieldType<T> {
     }
 
     /**
-     * Retrieves a {@link FieldType} by its name.
-     * 
+     * Retrieves a {@link ExtensionFieldType} by its name.
+     *
      * @param name
-     *            the name of the {@link FieldType} as it is returned by toString()
-     * @return the {@link FieldType} based on the given name
+     *            the name of the {@link ExtensionFieldType} as it is returned by toString()
+     * @return the {@link ExtensionFieldType} based on the given name
      * @throws IllegalArgumentException
-     *             if there is no {@link FieldType} with the given name
+     *             if there is no {@link ExtensionFieldType} with the given name
      */
-    public static FieldType<?> valueOf(String name) {
+    public static ExtensionFieldType<?> valueOf(String name) {
         switch (name) {
         case "STRING":
             return STRING;
@@ -117,9 +117,9 @@ public abstract class FieldType<T> {
     }
 
     /**
-     * FieldType for the Scim type String (actual type is {@link String})
+     * ExtensionFieldType for the Scim type String (actual type is {@link String})
      */
-    public static final FieldType<String> STRING = new FieldType<String>("STRING") {
+    public static final ExtensionFieldType<String> STRING = new ExtensionFieldType<String>("STRING") {
 
         @Override
         public String fromString(String stringValue) {
@@ -136,9 +136,9 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType for the Scim type Integer (actual type is {@link BigInteger})
+     * ExtensionFieldType for the Scim type Integer (actual type is {@link BigInteger})
      */
-    public static final FieldType<BigInteger> INTEGER = new FieldType<BigInteger>("INTEGER") {
+    public static final ExtensionFieldType<BigInteger> INTEGER = new ExtensionFieldType<BigInteger>("INTEGER") {
 
         @Override
         public BigInteger fromString(String stringValue) {
@@ -146,7 +146,7 @@ public abstract class FieldType<T> {
             try {
                 return new BigInteger(stringValue);
             } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "BigInteger", e); 
+                throw createConversionException(stringValue, "BigInteger", e);
             }
         }
 
@@ -159,9 +159,9 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType for the Scim type Decimal (actual type is {@link BigDecimal})
+     * ExtensionFieldType for the Scim type Decimal (actual type is {@link BigDecimal})
      */
-    public static final FieldType<BigDecimal> DECIMAL = new FieldType<BigDecimal>("DECIMAL") {
+    public static final ExtensionFieldType<BigDecimal> DECIMAL = new ExtensionFieldType<BigDecimal>("DECIMAL") {
 
         @Override
         public BigDecimal fromString(String stringValue) {
@@ -182,9 +182,9 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType for the Scim type Boolean (actual type is {@link Boolean})
+     * ExtensionFieldType for the Scim type Boolean (actual type is {@link Boolean})
      */
-    public static final FieldType<Boolean> BOOLEAN = new FieldType<Boolean>("BOOLEAN") {
+    public static final ExtensionFieldType<Boolean> BOOLEAN = new ExtensionFieldType<Boolean>("BOOLEAN") {
 
         @Override
         public Boolean fromString(String stringValue) {
@@ -205,10 +205,10 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO DateTimeFormat with
+     * ExtensionFieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO DateTimeFormat with
      * the timeZone UTC like '2011-08-01T18:29:49.000Z'
      */
-    public static final FieldType<Date> DATE_TIME = new FieldType<Date>("DATE_TIME") {// NOSONAR - it is ok if the inner class is over 20 characters long
+    public static final ExtensionFieldType<Date> DATE_TIME = new ExtensionFieldType<Date>("DATE_TIME") {// NOSONAR - it is ok if the inner class is over 20 characters long
 
         private DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
 
@@ -232,9 +232,9 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType for the Scim type Binary (actual type is {@code byte[]})
+     * ExtensionFieldType for the Scim type Binary (actual type is {@code byte[]})
      */
-    public static final FieldType<byte[]> BINARY = new FieldType<byte[]>("BINARY") {
+    public static final ExtensionFieldType<byte[]> BINARY = new ExtensionFieldType<byte[]>("BINARY") {
 
         @Override
         public byte[] fromString(String stringValue) {
@@ -255,9 +255,9 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType for the Scim type Reference (actual type is {@link URI})
+     * ExtensionFieldType for the Scim type Reference (actual type is {@link URI})
      */
-    public static final FieldType<URI> REFERENCE = new FieldType<URI>("REFERENCE") {
+    public static final ExtensionFieldType<URI> REFERENCE = new ExtensionFieldType<URI>("REFERENCE") {
 
         @Override
         public URI fromString(String stringValue) {

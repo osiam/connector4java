@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.osiam.resources.scim.Extension;
-import org.osiam.resources.scim.extension.FieldType;
+import org.osiam.resources.scim.ExtensionFieldType;
+import org.osiam.resources.scim.ExtensionFieldType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -63,22 +64,22 @@ class ExtensionDeserializer extends StdDeserializer<Extension> {
 
         String stringValue = entry.getValue().asText();
         if (stringValue.contains(".")) {
-            BigDecimal value = FieldType.DECIMAL.fromString(stringValue);
+            BigDecimal value = ExtensionFieldType.DECIMAL.fromString(stringValue);
             extension.addOrUpdateField(entry.getKey(), value);
         } else {
-            BigInteger value = FieldType.INTEGER.fromString(stringValue);
+            BigInteger value = ExtensionFieldType.INTEGER.fromString(stringValue);
             extension.addOrUpdateField(entry.getKey(), value);
         }
     }
 
 
     private void handleString(Extension extension, Map.Entry<String, JsonNode> entry) {
-        String value = FieldType.STRING.fromString(entry.getValue().asText());
+        String value = ExtensionFieldType.STRING.fromString(entry.getValue().asText());
         extension.addOrUpdateField(entry.getKey(), value);
     }
 
     private void handleBoolean(Extension extension, Map.Entry<String, JsonNode> entry) {
-        Boolean value = FieldType.BOOLEAN.fromString(entry.getValue().asText());
+        Boolean value = ExtensionFieldType.BOOLEAN.fromString(entry.getValue().asText());
         extension.addOrUpdateField(entry.getKey(), value);
     }
 

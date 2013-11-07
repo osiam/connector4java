@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.osiam.resources.scim.extension.FieldType;
+import org.osiam.resources.scim.ExtensionFieldType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Function;
@@ -26,7 +26,7 @@ public class Extension {
             return fieldTypeAndValue.value;
         }
     };
-    
+
     @JsonIgnore
     private String urn;
 
@@ -55,16 +55,16 @@ public class Extension {
      * Return the value for the field with a given name and type.
      *
      * @param field     The name of the field to retrieve the value of.
-     * @param fieldType The type of the field.
+     * @param extensionFieldType The type of the field.
      * @return The value for the field with the given name.
      * @throws NoSuchElementException   if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException if the given field is null or an empty string or if the fieldType is null.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
-    public <T> T getField(String field, FieldType<T> fieldType) {
+    public <T> T getField(String field, ExtensionFieldType<T> extensionFieldType) {
         if (field == null || field.isEmpty()) {
             throw new IllegalArgumentException("Invalid field name");
         }
-        if (fieldType == null) {
+        if (extensionFieldType == null) {
             throw new IllegalArgumentException("Invalid field type");
         }
 
@@ -72,7 +72,7 @@ public class Extension {
             throw new NoSuchElementException("Field " + field + " not valid in this extension");
         }
 
-        return fieldType.fromString(fields.get(field).value);
+        return extensionFieldType.fromString(fields.get(field).value);
     }
 
     /**
@@ -87,38 +87,38 @@ public class Extension {
         if (field == null || !fields.containsKey(field)) {
             throw new IllegalArgumentException("Invalid field name");
         }
-        fields.put(field, new Field(FieldType.STRING, value));
+        fields.put(field, new Field(ExtensionFieldType.STRING, value));
     }
 
     public void addOrUpdateField(String field, String value) {
-        addOrUpdateField(field, value, FieldType.STRING);
+        addOrUpdateField(field, value, ExtensionFieldType.STRING);
     }
 
     public void addOrUpdateField(String field, Boolean value) {
-        addOrUpdateField(field, value, FieldType.BOOLEAN);
+        addOrUpdateField(field, value, ExtensionFieldType.BOOLEAN);
     }
 
     public void addOrUpdateField(String field, byte[] value) {
-        addOrUpdateField(field, value, FieldType.BINARY);
+        addOrUpdateField(field, value, ExtensionFieldType.BINARY);
     }
 
     public void addOrUpdateField(String field, BigInteger value) {
-        addOrUpdateField(field, value, FieldType.INTEGER);
+        addOrUpdateField(field, value, ExtensionFieldType.INTEGER);
     }
 
     public void addOrUpdateField(String field, BigDecimal value) {
-        addOrUpdateField(field, value, FieldType.DECIMAL);
+        addOrUpdateField(field, value, ExtensionFieldType.DECIMAL);
     }
 
     public void addOrUpdateField(String field, Date value) {
-        addOrUpdateField(field, value, FieldType.DATE_TIME);
+        addOrUpdateField(field, value, ExtensionFieldType.DATE_TIME);
     }
 
     public void addOrUpdateField(String field, URI value) {
-        addOrUpdateField(field, value, FieldType.REFERENCE);
+        addOrUpdateField(field, value, ExtensionFieldType.REFERENCE);
     }
 
-    public <T> void addOrUpdateField(String field, T value, FieldType<T> type) {
+    public <T> void addOrUpdateField(String field, T value, ExtensionFieldType<T> type) {
         if (field == null || field.isEmpty()) {
             throw new IllegalArgumentException("Invalid field name");
         }
@@ -149,15 +149,15 @@ public class Extension {
     }
 
     public static final class Field {
-        private final FieldType<?> type;
+        private final ExtensionFieldType<?> type;
         private final String value;
-        
-        public Field(FieldType<?> type, String value) {
+
+        public Field(ExtensionFieldType<?> type, String value) {
             this.type = type;
             this.value = value;
         }
-        
-        public FieldType<?> getType() {
+
+        public ExtensionFieldType<?> getType() {
             return type;
         }
 
@@ -195,6 +195,6 @@ public class Extension {
                 return false;
             return true;
         }
-        
+
     }
 }
