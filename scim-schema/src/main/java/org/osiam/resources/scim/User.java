@@ -23,8 +23,6 @@
 
 package org.osiam.resources.scim;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

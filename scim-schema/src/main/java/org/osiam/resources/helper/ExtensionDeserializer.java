@@ -20,6 +20,7 @@ import java.util.Map;
  */
 class ExtensionDeserializer extends StdDeserializer<Extension> {
 
+    private static final long serialVersionUID = 2581146730706177962L;
 
     private String urn;
 
