@@ -1,12 +1,5 @@
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
-import org.osiam.resources.scim.extension.FieldType;
-
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -15,12 +8,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import javax.annotation.Nonnull;
+
+import org.osiam.resources.scim.extension.FieldType;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
 /**
  * The extension class models a deserialized view of schema extensions as
  * specified by the scim 2.0 specification.
  */
 public class Extension {
 
+    private static final Function<FieldTypeAndValue, String> MAP_FIELDTYPEANDVALUE_TO_STRING = new Function<FieldTypeAndValue, String>() {
+        @Override
+        public String apply(@Nonnull FieldTypeAndValue fieldTypeAndValue) {
+            return fieldTypeAndValue.value;
+        }
+    };
+    
     @JsonIgnore
     private String urn;
 
@@ -130,13 +139,7 @@ public class Extension {
     @JsonAnyGetter
     @Deprecated
     public Map<String, String> getAllFields() {
-        Function<FieldTypeAndValue, String> function = new Function<FieldTypeAndValue, String>() {
-            @Override
-            public String apply(@Nullable org.osiam.resources.scim.Extension.FieldTypeAndValue fieldTypeAndValue) {
-                return fieldTypeAndValue.value;
-            }
-        };
-        return Maps.transformValues(fields, function);
+        return Maps.transformValues(fields, MAP_FIELDTYPEANDVALUE_TO_STRING);
     }
 
     /**
@@ -150,9 +153,9 @@ public class Extension {
         return fields.containsKey(field);
     }
 
-    private static class FieldTypeAndValue {
-        final private FieldType<?> type;
-        final private String value;
+    private static final class FieldTypeAndValue {
+        private final FieldType<?> type;
+        private final String value;
 
         private FieldTypeAndValue(FieldType<?> type, String value) {
             this.type = type;
