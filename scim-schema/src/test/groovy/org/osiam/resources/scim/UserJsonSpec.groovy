@@ -34,14 +34,16 @@ class UserJsonSpec extends Specification {
     @Unroll
     def 'A #userType User is correctly serialized' () {
         when:
-            def result = mapper.writeValueAsString(user)
+            def json = mapper.writeValueAsString(user)
         then:
-            JSONAssert.assertEquals(expectedJson, result, true);
+            println json
+            JSONAssert.assertEquals(expectedJson, json, false);
 
         where:
             userType   | expectedJson                  | user
             'simple'   | jsonFixtures.jsonSimpleUser   | mapSimpleUser()
             'basic'    | jsonFixtures.jsonBasicUser    | mapBasicUser()
+            'extended' | jsonFixtures.jsonExtendedUser | mapExtendedUser()
     }
 
     private User mapBasicUser(){

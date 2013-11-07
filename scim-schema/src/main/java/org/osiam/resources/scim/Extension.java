@@ -133,6 +133,7 @@ public class Extension {
      *
      * @return The Entries of this schema as an map.
      */
+    @JsonIgnore
     public Map<String, Field> getAllFields() {
         return ImmutableMap.copyOf(fields);
     }

@@ -1,13 +1,16 @@
 package org.osiam.resources.helper
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
 import org.osiam.resources.scim.Extension
-import org.osiam.resources.scim.User
 import org.osiam.resources.scim.ExtensionFieldType
+import org.osiam.resources.scim.User
+import org.osiam.test.util.DateHelper
 import org.osiam.test.util.JsonFixturesHelper
+
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
 
 class UserDeserializerSpec extends Specification {
 
@@ -81,7 +84,7 @@ class UserDeserializerSpec extends Specification {
             108,
             101] as byte[]
         ExtensionFieldType.REFERENCE | 'keyReference' | new URI('https://example.com/Users/28')
-        ExtensionFieldType.DATE_TIME | 'keyDateTime'  | createDate(2011, 7, 1, 18, 29, 49)
+        ExtensionFieldType.DATE_TIME | 'keyDateTime'  | DateHelper.createDate(2011, 7, 1, 18, 29, 49)
     }
 
     def 'Extension schema registered but missing field raises exception'() {
@@ -112,14 +115,5 @@ class UserDeserializerSpec extends Specification {
     }
     private User mapWrongFieldExtendedUser(){
         jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUserWithWrongFieldType, User)
-    }
-
-    private def createDate(int year, int month, int date, int hourOfDay, int minute,
-            int second) {
-        Calendar calendar = Calendar.getInstance()
-        calendar.set(Calendar.MILLISECOND, 0)
-        calendar.setTimeZone(TimeZone.getTimeZone(TimeZone.GMT_ID))
-        calendar.set(year, month, date, hourOfDay, minute, second)
-        calendar.getTime()
     }
 }
