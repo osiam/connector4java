@@ -23,10 +23,18 @@
 
 package org.osiam.resources.scim;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.util.*;
+import com.google.common.base.Objects;
 
 
 /**
@@ -340,16 +348,16 @@ public class User extends CoreResource {
             this.timezone = user.timezone;
             this.active = user.active;
             this.password = user.password;
-            this.emails = user.emails != null ? user.emails : this.emails;
-            this.phoneNumbers = user.phoneNumbers != null ? user.phoneNumbers : this.phoneNumbers;
-            this.ims = user.ims != null ? user.ims : this.ims;
-            this.photos = user.photos != null ? user.photos : this.photos;
-            this.addresses = user.addresses != null ? user.addresses : this.addresses;
-            this.groups = user.groups != null ? user.groups : this.groups;
-            this.entitlements = user.entitlements != null ? user.entitlements : this.entitlements;
-            this.roles = user.roles != null ? user.roles : this.roles;
-            this.x509Certificates = user.x509Certificates != null ? user.x509Certificates : this.x509Certificates;
-            this.extensions = user.extensions != null ? user.extensions : this.extensions;
+            this.emails = Objects.firstNonNull(user.emails, this.emails);
+            this.phoneNumbers = Objects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
+            this.ims = Objects.firstNonNull(user.ims, this.ims);
+            this.photos = Objects.firstNonNull(user.photos, this.photos);
+            this.addresses = Objects.firstNonNull(user.addresses, this.addresses);
+            this.groups = Objects.firstNonNull(user.groups, this.groups);
+            this.entitlements = Objects.firstNonNull(user.entitlements, this.entitlements);
+            this.roles = Objects.firstNonNull(user.roles, this.roles);
+            this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
+            this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
             this.externalId = user.getExternalId();
             this.id = user.getId();
             this.meta = user.getMeta();
@@ -473,5 +481,6 @@ public class User extends CoreResource {
         public User build() {
             return new User(this);
         }
+
     }
 }

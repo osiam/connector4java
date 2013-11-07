@@ -146,7 +146,7 @@ public abstract class FieldType<T> {
             try {
                 return new BigInteger(stringValue);
             } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "BigInteger");
+                throw createConversionException(stringValue, "BigInteger", e); 
             }
         }
 
@@ -169,7 +169,7 @@ public abstract class FieldType<T> {
             try {
                 return new BigDecimal(stringValue);
             } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "BigDecimal");
+                throw createConversionException(stringValue, "BigDecimal", e);
             }
         }
 
@@ -190,9 +190,9 @@ public abstract class FieldType<T> {
         public Boolean fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
             try {
-                return new Boolean(stringValue);
+            	return Boolean.valueOf(stringValue);
             } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "Boolean");
+                throw createConversionException(stringValue, "Boolean", e);
             }
         }
 
@@ -208,9 +208,9 @@ public abstract class FieldType<T> {
      * FieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO DateTimeFormat with
      * the timeZone UTC like '2011-08-01T18:29:49.000Z'
      */
-    public static final FieldType<Date> DATE_TIME = new FieldType<Date>("DATE_TIME") {
+    public static final FieldType<Date> DATE_TIME = new FieldType<Date>("DATE_TIME") {// NOSONAR - it is ok if the inner class is over 20 characters long
 
-        DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
+        private DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
 
         @Override
         public Date fromString(String stringValue) {
@@ -219,7 +219,7 @@ public abstract class FieldType<T> {
                 long millis = dateTimeFormatter.parseDateTime(stringValue).getMillis();
                 return new Date(millis);
             } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "Date");
+                throw createConversionException(stringValue, "Date", e);
             }
         }
 
@@ -242,7 +242,7 @@ public abstract class FieldType<T> {
             try {
                 return BaseEncoding.base64().decode(stringValue);
             } catch (IllegalArgumentException e) {
-                throw createConversionException(stringValue, "byte[]");
+                throw createConversionException(stringValue, "byte[]", e);
             }
         }
 
@@ -265,7 +265,7 @@ public abstract class FieldType<T> {
             try {
                 return new URI(stringValue);
             } catch (URISyntaxException e) {
-                throw createConversionException(stringValue, "URI");
+                throw createConversionException(stringValue, "URI", e);
             }
         }
 
@@ -277,9 +277,10 @@ public abstract class FieldType<T> {
 
     };
 
-    protected IllegalArgumentException createConversionException(String stringValue, String targetType) {
+    protected IllegalArgumentException createConversionException(String stringValue, String targetType, Throwable cause) {
+
         return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
-                + ".");
+                + ".", cause);
     }
 
     protected void ensureValueIsNotNull(Object value) {

@@ -15,7 +15,9 @@ import java.io.IOException;
 
 public class UserDeserializer extends StdDeserializer<User> {
 
-    public UserDeserializer(Class<?> valueClass) {
+	private static final long serialVersionUID = 1L;
+
+	public UserDeserializer(Class<?> valueClass) {
         super(valueClass);
     }
 
