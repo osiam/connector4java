@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.Extension.Field;
-import org.osiam.resources.scim.extension.FieldType;
+import org.osiam.resources.scim.ExtensionFieldType;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,19 +48,19 @@ public class ExtensionSerializer extends JsonSerializer<Extension> {
         Map<String, Field> fields = value.getAllFields();
         for (Entry<String, Field> entry : fields.entrySet()) {
             String fieldName = entry.getKey();
-            FieldType<?> fieldType = entry.getValue().getType();
+            ExtensionFieldType<?> fieldType = entry.getValue().getType();
             String rawFieldValue = entry.getValue().getValue();
 
             jgen.writeFieldName(fieldName);
 
-            if (fieldType == FieldType.INTEGER) {
-                BigInteger valueAsBigInteger = FieldType.INTEGER.fromString(rawFieldValue);
+            if (fieldType == ExtensionFieldType.INTEGER) {
+                BigInteger valueAsBigInteger = ExtensionFieldType.INTEGER.fromString(rawFieldValue);
                 jgen.writeNumber(valueAsBigInteger);
-            } else if (fieldType == FieldType.DECIMAL) {
-                BigDecimal valueAsBigDecimal = FieldType.DECIMAL.fromString(rawFieldValue);
+            } else if (fieldType == ExtensionFieldType.DECIMAL) {
+                BigDecimal valueAsBigDecimal = ExtensionFieldType.DECIMAL.fromString(rawFieldValue);
                 jgen.writeNumber(valueAsBigDecimal);
-            } else if (fieldType == FieldType.BOOLEAN) {
-                Boolean valueAsBoolean = FieldType.BOOLEAN.fromString(rawFieldValue);
+            } else if (fieldType == ExtensionFieldType.BOOLEAN) {
+                Boolean valueAsBoolean = ExtensionFieldType.BOOLEAN.fromString(rawFieldValue);
                 jgen.writeBoolean(valueAsBoolean);
             } else {
                 jgen.writeString(rawFieldValue);

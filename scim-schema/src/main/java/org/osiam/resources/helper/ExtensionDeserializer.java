@@ -1,20 +1,20 @@
 package org.osiam.resources.helper;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.osiam.resources.scim.Extension;
+import org.osiam.resources.scim.ExtensionFieldType;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import org.osiam.resources.scim.Extension;
-import org.osiam.resources.scim.ExtensionFieldType;
-import org.osiam.resources.scim.ExtensionFieldType;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * This class is package-private by intention. If you need to use it, something went wrong.

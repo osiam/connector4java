@@ -23,12 +23,13 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.osiam.resources.helper.JsonDateSerializer;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.osiam.resources.helper.JsonDateSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**

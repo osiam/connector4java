@@ -23,10 +23,10 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
