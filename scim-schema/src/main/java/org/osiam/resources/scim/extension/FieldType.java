@@ -37,54 +37,64 @@ import com.google.common.io.BaseEncoding;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * this enum like class is used to define and to convert from/toString all extension fields
- * which are used in the scim User
+ * This enum like class represents the valid extension field types. Instances of this class also define methods for
+ * converting these types from and to {@link String}.
  * 
+ * @param <T>
+ *            the actual type this {@link FieldType} represents
  */
 public abstract class FieldType<T> {
 
-	private String name;
+    private String name;
 
     private FieldType(String name) {
         this.name = name;
     }
 
     /**
-     * converts the given String into the actual FieldType
-     * @param stringValue  value to be converted
-     * @return given String value as the actual Type
+     * Converts the given {@link String} to the actual type.
+     * 
+     * @param stringValue
+     *            the {@link String} value to be converted
+     * @return the given {@link String} value converted to the actual Type
      */
     public abstract T fromString(String stringValue);
 
     /**
+     * Converts a value of the actual type to {@link String}.
      * 
-     * @param value to be converted into a String
-     * @return the given value as String
+     * @param value
+     *            the value to be converted
+     * @return the given value as {@link String}
      */
     public abstract String toString(T value);
 
     /**
+     * Returns the name of the {@link FieldType}
      * 
-     * @return the name of the FieldType
+     * @return the name of the {@link FieldType}
      */
     public final String getName() {
         return name;
     }
 
     /**
-     * the name of the FieldType
+     * Returns a string representation of the {@link FieldType} which is its name.
      */
     @Override
     public String toString() {
         return getName();
     }
-    
-	/**
-	 * 
-	 * @param name name of the FieldType how it is returned by getName()
-	 * @return returns the correct FieldType based on the given name
-	 * @throws IllegalArgumentException if the given name is not recognized
-	 */
+
+    /**
+     * Retrieves a {@link FieldType} by its name.
+     * 
+     * @param name
+     *            the name of the {@link FieldType} as it is returned by toString()
+     * @return the {@link FieldType} based on the given name
+     * @throws IllegalArgumentException
+     *             if there is no {@link FieldType} with the given name
+     */
     public static FieldType<?> valueOf(String name) {
         switch (name) {
         case "STRING":
@@ -107,16 +117,16 @@ public abstract class FieldType<T> {
     }
 
     /**
-     * FieldType of the type String
+     * FieldType for the Scim type String (actual type is {@link String})
      */
     public static final FieldType<String> STRING = new FieldType<String>("STRING") {
-        
+
         @Override
         public String fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
             return stringValue;
         }
-        
+
         @Override
         public String toString(String value) {
             ensureValueIsNotNull(value);
@@ -126,10 +136,10 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType of the type Integer
+     * FieldType for the Scim type Integer (actual type is {@link BigInteger})
      */
     public static final FieldType<BigInteger> INTEGER = new FieldType<BigInteger>("INTEGER") {
-        
+
         @Override
         public BigInteger fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
@@ -149,10 +159,10 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType of the type Decimal like 12345.67
+     * FieldType for the Scim type Decimal (actual type is {@link BigDecimal})
      */
     public static final FieldType<BigDecimal> DECIMAL = new FieldType<BigDecimal>("DECIMAL") {
-        
+
         @Override
         public BigDecimal fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
@@ -172,7 +182,7 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType of the type Boolean
+     * FieldType for the Scim type Boolean (actual type is {@link Boolean})
      */
     public static final FieldType<Boolean> BOOLEAN = new FieldType<Boolean>("BOOLEAN") {
 
@@ -195,8 +205,8 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType of the type DateTime in ISO DateTimeFormat with the timeZone UTC
-     * like '2011-08-01T18:29:49.000Z'
+     * FieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO DateTimeFormat with
+     * the timeZone UTC like '2011-08-01T18:29:49.000Z'
      */
     public static final FieldType<Date> DATE_TIME = new FieldType<Date>("DATE_TIME") {
 
@@ -222,10 +232,10 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType of the type Binary Array
+     * FieldType for the Scim type Binary (actual type is {@code byte[]})
      */
     public static final FieldType<byte[]> BINARY = new FieldType<byte[]>("BINARY") {
-        
+
         @Override
         public byte[] fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
@@ -245,10 +255,10 @@ public abstract class FieldType<T> {
     };
 
     /**
-     * FieldType of the type Reference represented by a URI
+     * FieldType for the Scim type Reference (actual type is {@link URI})
      */
     public static final FieldType<URI> REFERENCE = new FieldType<URI>("REFERENCE") {
-        
+
         @Override
         public URI fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
@@ -266,7 +276,7 @@ public abstract class FieldType<T> {
         }
 
     };
-    
+
     protected IllegalArgumentException createConversionException(String stringValue, String targetType) {
         return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
                 + ".");
