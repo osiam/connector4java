@@ -33,7 +33,7 @@ public class UserDeserializer extends StdDeserializer<User> {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         ExtensionDeserializer deserializer = new ExtensionDeserializer(Extension.class);
-        SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, null))
+        SimpleModule testModule = new SimpleModule("ExtensionDeserializerModule", Version.unknownVersion())
                 .addDeserializer(Extension.class, deserializer);
         mapper.registerModule(testModule);
 
