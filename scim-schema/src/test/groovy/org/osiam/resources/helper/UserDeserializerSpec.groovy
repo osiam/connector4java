@@ -11,16 +11,18 @@ import spock.lang.Unroll
 
 class UserDeserializerSpec extends Specification {
 
+    private JsonFixturesHelper jsonFixtures = new JsonFixturesHelper();
+
     def 'Return a User Instance'() {
         when:
-        User user = JsonFixturesHelper.mapExtendedUser()
+        User user = mapExtendedUser()
         then:
         user instanceof User
     }
 
     def 'A valid basic user is returned'() {
         when:
-        User user = JsonFixturesHelper.mapBasicUser()
+        User user = mapBasicUser()
         then:
         user.getUserName() == 'bjensen'
     }
@@ -28,26 +30,28 @@ class UserDeserializerSpec extends Specification {
     @Unroll
     def 'Deserializing a simple basic user sets #fieldName field not to null'() {
         when:
-        User user = JsonFixturesHelper.mapSimpleUser()
+        User user = mapSimpleUser()
         then:
         user[fieldName] != null
 
         where:
-        fieldName << ['emails',
-                'phoneNumbers',
-                'ims',
-                'photos',
-                'addresses',
-                'groups',
-                'entitlements',
-                'roles',
-                'x509Certificates',
-                'extensions']
+        fieldName << [
+            'emails',
+            'phoneNumbers',
+            'ims',
+            'photos',
+            'addresses',
+            'groups',
+            'entitlements',
+            'roles',
+            'x509Certificates',
+            'extensions'
+        ]
     }
 
     def 'Extension gets deserialized correctly'() {
         when:
-        User user = JsonFixturesHelper.mapExtendedUser()
+        User user = mapExtendedUser()
         then:
         user.getAllExtensions().size() == 1
         user.getAllExtensions().entrySet().first().value instanceof Extension
@@ -56,29 +60,66 @@ class UserDeserializerSpec extends Specification {
     @Unroll
     def 'Value #fieldName is deserialized correctly'() {
         when:
-        def user = JsonFixturesHelper.mapExtendedUser()
+        def user = mapExtendedUser()
         def extension = user.getExtension(JsonFixturesHelper.ENTERPRISE_URN)
+
         then:
-        extension.getField(fieldName, FieldType.STRING) == fieldValue
+        extension.getField(fieldName, fieldType) == fieldValue
+
         where:
-        fieldName        | fieldValue
-        'employeeNumber' | '701984'
-        'organization'   | 'Universal Studios'
-        'department'     | 'Tour Operations'
+        fieldType           |fieldName      | fieldValue
+        FieldType.STRING    | 'keyString'    | 'example'
+        FieldType.BOOLEAN   | 'keyBoolean'   | true
+        FieldType.INTEGER   | 'keyInteger'   | 123
+        FieldType.DECIMAL   | 'keyDecimal'   | 123.456
+        FieldType.BINARY    | 'keyBinary'    | [
+            101,
+            120,
+            97,
+            109,
+            112,
+            108,
+            101] as byte[]
+        FieldType.REFERENCE | 'keyReference' | new URI('https://example.com/Users/28')
+        FieldType.DATE_TIME | 'keyDateTime'  | createDate(2011, 7, 1, 18, 29, 49)
     }
 
     def 'Extension schema registered but missing field raises exception'() {
         when:
-        JsonFixturesHelper.mapInvalidExtendedUser()
+        mapInvalidExtendedUser()
         then:
         thrown(JsonProcessingException)
     }
 
     def 'Extension of wrong JSON type raises exception'() {
         when:
-        JsonFixturesHelper.mapWrongFieldExtendedUser()
+        mapWrongFieldExtendedUser()
         then:
         thrown(JsonMappingException)
     }
 
+    private User mapBasicUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonBasicUser, User)
+    }
+    private User mapSimpleUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonSimpleUser, User)
+    }
+    private User mapExtendedUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUser, User)
+    }
+    private User mapInvalidExtendedUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUserWithoutExtensionData, User)
+    }
+    private User mapWrongFieldExtendedUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUserWithWrongFieldType, User)
+    }
+
+    private def createDate(int year, int month, int date, int hourOfDay, int minute,
+            int second) {
+        Calendar calendar = Calendar.getInstance()
+        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.setTimeZone(TimeZone.getTimeZone(TimeZone.GMT_ID))
+        calendar.set(year, month, date, hourOfDay, minute, second)
+        calendar.getTime()
+    }
 }

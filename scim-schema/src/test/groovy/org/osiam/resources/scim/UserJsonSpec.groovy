@@ -17,14 +17,18 @@
 
 package org.osiam.resources.scim
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.osiam.test.util.JsonFixturesHelper
+import org.skyscreamer.jsonassert.JSONAssert
 
 import spock.lang.Specification
-import spock.lang.Unroll;
+import spock.lang.Unroll
+
+import com.fasterxml.jackson.databind.ObjectMapper
 
 class UserJsonSpec extends Specification {
 
+    private static JsonFixturesHelper jsonFixtures = new JsonFixturesHelper();
+    
     private final static ObjectMapper mapper = new ObjectMapper()
 
     @Unroll
@@ -32,13 +36,22 @@ class UserJsonSpec extends Specification {
         when:
             def result = mapper.writeValueAsString(user)
         then:
-            result == expectedJson
+            JSONAssert.assertEquals(expectedJson, result, true);
 
         where:
-            userType   | expectedJson                          | user
-            'simple'   | JsonFixturesHelper.JSON_SIMPLE_USER   | JsonFixturesHelper.mapSimpleUser()
-            'basic'    | JsonFixturesHelper.JSON_BASIC_USER    | JsonFixturesHelper.mapBasicUser()
-            'extended' | JsonFixturesHelper.JSON_EXTENDED_USER | JsonFixturesHelper.mapExtendedUser()
+            userType   | expectedJson                    | user
+            'simple'   | jsonFixtures.jsonSimpleUser   | mapSimpleUser()
+            'basic'    | jsonFixtures.jsonBasicUser    | mapBasicUser()
+            'extended' | jsonFixtures.jsonExtendedUser | mapExtendedUser()
     }
 
+    private User mapBasicUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonBasicUser, User)
+    }
+    private User mapSimpleUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonSimpleUser, User)
+    }
+    private User mapExtendedUser(){
+        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUser, User)
+    }
 }

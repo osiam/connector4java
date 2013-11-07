@@ -10,10 +10,9 @@ import java.util.NoSuchElementException;
 
 import org.osiam.resources.scim.extension.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Function;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * The extension class models a deserialized view of schema extensions as
@@ -21,9 +20,9 @@ import com.google.common.collect.Maps;
  */
 public class Extension {
 
-    private static final Function<FieldTypeAndValue, String> MAP_FIELDTYPEANDVALUE_TO_STRING = new Function<FieldTypeAndValue, String>() {
+    private static final Function<Field, String> MAP_FIELDTYPEANDVALUE_TO_STRING = new Function<Field, String>() {
         @Override
-        public String apply(FieldTypeAndValue fieldTypeAndValue) {
+        public String apply(Field fieldTypeAndValue) {
             return fieldTypeAndValue.value;
         }
     };
@@ -31,7 +30,7 @@ public class Extension {
     @JsonIgnore
     private String urn;
 
-    private Map<String, FieldTypeAndValue> fields = new HashMap<>();
+    private Map<String, Field> fields = new HashMap<>();
 
     /**
      * Default constructor for Jackson
@@ -88,7 +87,7 @@ public class Extension {
         if (field == null || !fields.containsKey(field)) {
             throw new IllegalArgumentException("Invalid field name");
         }
-        fields.put(field, new FieldTypeAndValue(FieldType.STRING, value));
+        fields.put(field, new Field(FieldType.STRING, value));
     }
 
     public void addOrUpdateField(String field, String value) {
@@ -126,7 +125,7 @@ public class Extension {
         if (value == null) {
             throw new IllegalArgumentException("Invalid value");
         }
-        fields.put(field, new FieldTypeAndValue(type, type.toString(value)));
+        fields.put(field, new Field(type, type.toString(value)));
     }
 
     /**
@@ -134,10 +133,8 @@ public class Extension {
      *
      * @return The Entries of this schema as an map.
      */
-    @JsonAnyGetter
-    @Deprecated
-    public Map<String, String> getAllFields() {
-        return Maps.transformValues(fields, MAP_FIELDTYPEANDVALUE_TO_STRING);
+    public Map<String, Field> getAllFields() {
+        return ImmutableMap.copyOf(fields);
     }
 
     /**
@@ -151,13 +148,53 @@ public class Extension {
         return fields.containsKey(field);
     }
 
-    private static final class FieldTypeAndValue {
+    public static final class Field {
         private final FieldType<?> type;
         private final String value;
-
-        private FieldTypeAndValue(FieldType<?> type, String value) {
+        
+        public Field(FieldType<?> type, String value) {
             this.type = type;
             this.value = value;
         }
+        
+        public FieldType<?> getType() {
+            return type;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Field other = (Field) obj;
+            if (type == null) {
+                if (other.type != null)
+                    return false;
+            } else if (!type.equals(other.type))
+                return false;
+            if (value == null) {
+                if (other.value != null)
+                    return false;
+            } else if (!value.equals(other.value))
+                return false;
+            return true;
+        }
+        
     }
 }
