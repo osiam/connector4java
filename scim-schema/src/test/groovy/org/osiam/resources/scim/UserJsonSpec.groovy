@@ -39,10 +39,9 @@ class UserJsonSpec extends Specification {
             JSONAssert.assertEquals(expectedJson, result, true);
 
         where:
-            userType   | expectedJson                    | user
+            userType   | expectedJson                  | user
             'simple'   | jsonFixtures.jsonSimpleUser   | mapSimpleUser()
             'basic'    | jsonFixtures.jsonBasicUser    | mapBasicUser()
-            'extended' | jsonFixtures.jsonExtendedUser | mapExtendedUser()
     }
 
     private User mapBasicUser(){
