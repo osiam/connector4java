@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Nonnull;
-
 import org.osiam.resources.scim.extension.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -25,7 +23,7 @@ public class Extension {
 
     private static final Function<FieldTypeAndValue, String> MAP_FIELDTYPEANDVALUE_TO_STRING = new Function<FieldTypeAndValue, String>() {
         @Override
-        public String apply(@Nonnull FieldTypeAndValue fieldTypeAndValue) {
+        public String apply(FieldTypeAndValue fieldTypeAndValue) {
             return fieldTypeAndValue.value;
         }
     };
