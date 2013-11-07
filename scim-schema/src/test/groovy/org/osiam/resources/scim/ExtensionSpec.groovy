@@ -9,12 +9,12 @@ import spock.lang.Unroll
 
 class ExtensionSpec extends Specification {
 
-    static def FIELD = 'foo'
-    static def VALUE = 'bar'
+    static String FIELD = 'foo'
+    static String VALUE = 'bar'
 
-    static def FIELD_INJECTED = 'injected'
-    static def DEFAULT_FIELD_TYPE = ExtensionFieldType.STRING
-    static def URN = 'irrelevant'
+    static String FIELD_INJECTED = 'injected'
+    static ExtensionFieldType DEFAULT_FIELD_TYPE = ExtensionFieldType.STRING
+    static String URN = 'irrelevant'
 
     def extension
 
@@ -129,7 +129,7 @@ class ExtensionSpec extends Specification {
         thrown(IllegalArgumentException)
     }
 
-    def 'getAllFields returns a map of all the fields'() {
+    def 'getAllFields returns a map of all the fields including their type'() {
         given:
 
         Extension extension = new Extension(URN)
