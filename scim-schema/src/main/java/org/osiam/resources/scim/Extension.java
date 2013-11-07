@@ -8,16 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.osiam.resources.scim.ExtensionFieldType;
+import org.osiam.resources.helper.ExtensionSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+
 
 /**
  * The extension class models a deserialized view of schema extensions as
  * specified by the scim 2.0 specification.
  */
+@JsonSerialize(using = ExtensionSerializer.class)
 public class Extension {
 
     private static final Function<Field, String> MAP_FIELDTYPEANDVALUE_TO_STRING = new Function<Field, String>() {
