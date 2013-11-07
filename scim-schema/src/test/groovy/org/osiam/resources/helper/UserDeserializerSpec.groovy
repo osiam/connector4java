@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.User
+import org.osiam.resources.scim.extension.FieldType
 import org.osiam.test.util.JsonFixturesHelper
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -58,7 +59,7 @@ class UserDeserializerSpec extends Specification {
         def user = JsonFixturesHelper.mapExtendedUser()
         def extension = user.getExtension(JsonFixturesHelper.ENTERPRISE_URN)
         then:
-        extension.getField(fieldName) == fieldValue
+        extension.getField(fieldName, FieldType.STRING) == fieldValue
         where:
         fieldName        | fieldValue
         'employeeNumber' | '701984'
