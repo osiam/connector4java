@@ -32,14 +32,15 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class MultiValuedAttribute {
 
-    private Object value;
+    private String value;
     private String display;
     private Boolean primary;
     private String type;
     private String operation;
 
     //JSON Serializing
-    public MultiValuedAttribute(){}
+    public MultiValuedAttribute() {
+    }
 
     protected MultiValuedAttribute(Builder builder) {
         this.value = builder.value;
@@ -49,15 +50,15 @@ public class MultiValuedAttribute {
         this.operation = builder.operation;
     }
 
-    public static class Builder{
+    public static class Builder {
 
-        private Object value;
+        private String value;
         private String display;
         private Boolean primary;
         private String type;
         private String operation;
 
-        public Builder setValue(Object value) {
+        public Builder setValue(String value) {
             this.value = value;
             return this;
         }
@@ -82,7 +83,7 @@ public class MultiValuedAttribute {
             return this;
         }
 
-        public MultiValuedAttribute build(){
+        public MultiValuedAttribute build() {
             return new MultiValuedAttribute(this);
         }
     }
@@ -90,10 +91,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the value property.
      *
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *
+     * @return possible object is
+     *         {@link Object }
      */
     public Object getValue() {
         return value;
@@ -102,10 +101,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the display property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getDisplay() {
         return display;
@@ -114,10 +111,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the primary property.
      *
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *
+     * @return possible object is
+     *         {@link Boolean }
      */
     public Boolean isPrimary() {
         return primary;
@@ -126,10 +121,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the type property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getType() {
         return type;
@@ -138,10 +131,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the operation property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getOperation() {
         return operation;
