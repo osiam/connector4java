@@ -1,4 +1,4 @@
-package org.osiam.resources.scim.extension
+package org.osiam.resources.scim
 
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.test.util.DateHelper
@@ -6,7 +6,7 @@ import org.osiam.test.util.DateHelper
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class FieldTypeSpec extends Specification {
+class ExtensionFieldTypeSpec extends Specification {
 
     @Unroll
     def 'getName on FieldType.#givenTypeInstance returns #expectedTypeName'() {

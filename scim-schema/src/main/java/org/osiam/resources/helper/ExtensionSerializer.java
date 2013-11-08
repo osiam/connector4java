@@ -40,8 +40,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 public class ExtensionSerializer extends JsonSerializer<Extension> {
 
     @Override
-    public void serialize(Extension value, JsonGenerator jgen, SerializerProvider provider) throws IOException,
-            JsonProcessingException {
+    public void serialize(Extension value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 
         jgen.writeStartObject();
 
