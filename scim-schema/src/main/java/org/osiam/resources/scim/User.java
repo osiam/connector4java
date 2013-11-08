@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.osiam.resources.scim.Resource.Builder;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
@@ -475,6 +477,21 @@ public class User extends CoreResource {
             return this;
         }
 
+        public Builder setMeta(Meta meta) {
+            super.meta = meta;
+            return this;
+        }
+        
+        public Builder setExternalId(String externalId) {
+            super.externalId = externalId;
+            return this;
+        }
+        
+        public Builder setId(String id) {
+            super.id = id;
+            return this;
+        }
+        
         @Override
         public User build() {
             return new User(this);
