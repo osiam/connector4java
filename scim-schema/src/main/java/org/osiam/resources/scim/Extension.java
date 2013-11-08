@@ -8,24 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.osiam.resources.scim.ExtensionFieldType;
+import org.osiam.resources.helper.ExtensionSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.base.Function;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
+
 
 /**
  * The extension class models a deserialized view of schema extensions as
  * specified by the scim 2.0 specification.
  */
+@JsonSerialize(using = ExtensionSerializer.class)
 public class Extension {
-
-    private static final Function<Field, String> MAP_FIELDTYPEANDVALUE_TO_STRING = new Function<Field, String>() {
-        @Override
-        public String apply(Field fieldTypeAndValue) {
-            return fieldTypeAndValue.value;
-        }
-    };
 
     @JsonIgnore
     private String urn;
@@ -133,6 +128,7 @@ public class Extension {
      *
      * @return The Entries of this schema as an map.
      */
+    @JsonIgnore
     public Map<String, Field> getAllFields() {
         return ImmutableMap.copyOf(fields);
     }
@@ -176,23 +172,30 @@ public class Extension {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             Field other = (Field) obj;
             if (type == null) {
-                if (other.type != null)
+                if (other.type != null) {
                     return false;
-            } else if (!type.equals(other.type))
+                }
+            } else if (!type.equals(other.type)) {
                 return false;
+            }
             if (value == null) {
-                if (other.value != null)
+                if (other.value != null) {
                     return false;
-            } else if (!value.equals(other.value))
+                }
+            } else if (!value.equals(other.value)) {
                 return false;
+            }
             return true;
         }
 

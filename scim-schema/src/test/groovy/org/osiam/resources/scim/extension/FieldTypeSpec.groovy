@@ -1,6 +1,8 @@
 package org.osiam.resources.scim.extension
 
 import org.osiam.resources.scim.ExtensionFieldType
+import org.osiam.test.util.DateHelper
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -39,7 +41,7 @@ class FieldTypeSpec extends Specification {
         ExtensionFieldType.INTEGER    | '123'                          | 123G
         ExtensionFieldType.DECIMAL    | '12.3'                         | 12.3G
         ExtensionFieldType.BOOLEAN    | 'true'                         | true
-        ExtensionFieldType.DATE_TIME  | '2011-08-01T18:29:49.000Z'     | createDate(2011, 7, 1, 18, 29, 49)
+        ExtensionFieldType.DATE_TIME  | '2011-08-01T18:29:49.000Z'     | DateHelper.createDate(2011, 7, 1, 18, 29, 49)
         ExtensionFieldType.BINARY     | 'ZXhhbXBsZQ=='                 | [101, 120, 97, 109, 112, 108, 101] as byte[]
         ExtensionFieldType.REFERENCE  | 'https://example.com/Users/28' | new URI('https://example.com/Users/28')
     }
@@ -114,7 +116,7 @@ class FieldTypeSpec extends Specification {
         ExtensionFieldType.INTEGER    | 123G                                         | '123'
         ExtensionFieldType.DECIMAL    | 12.3G                                        | '12.3'
         ExtensionFieldType.BOOLEAN    | true                                         | 'true'
-        ExtensionFieldType.DATE_TIME  | createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
+        ExtensionFieldType.DATE_TIME  | DateHelper.createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
         ExtensionFieldType.BINARY     | [101, 120, 97, 109, 112, 108, 101] as byte[] | 'ZXhhbXBsZQ=='
         ExtensionFieldType.REFERENCE  | new URI('https://example.com/Users/28')      | 'https://example.com/Users/28'
     }
@@ -147,14 +149,5 @@ class FieldTypeSpec extends Specification {
 
         then:
         thrown(IllegalArgumentException)
-    }
-
-    private def createDate(int year, int month, int date, int hourOfDay, int minute,
-                          int second) {
-        Calendar calendar = Calendar.getInstance()
-        calendar.set(Calendar.MILLISECOND, 0)
-        calendar.setTimeZone(TimeZone.getTimeZone(TimeZone.GMT_ID))
-        calendar.set(year, month, date, hourOfDay, minute, second)
-        calendar.getTime()
     }
 }

@@ -1,17 +1,22 @@
 package org.osiam.resources.helper;
 
-import com.fasterxml.jackson.core.JsonLocation;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import java.io.IOException;
+
 import org.osiam.resources.scim.Constants;
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.User;
 
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class UserDeserializer extends StdDeserializer<User> {
 
@@ -28,7 +33,7 @@ public class UserDeserializer extends StdDeserializer<User> {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         ExtensionDeserializer deserializer = new ExtensionDeserializer(Extension.class);
-        SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, null))
+        SimpleModule testModule = new SimpleModule("ExtensionDeserializerModule", Version.unknownVersion())
                 .addDeserializer(Extension.class, deserializer);
         mapper.registerModule(testModule);
 
