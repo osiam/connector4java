@@ -92,9 +92,9 @@ public class MultiValuedAttribute {
      * Gets the value of the value property.
      *
      * @return possible object is
-     *         {@link Object }
+     *         {@link String }
      */
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
