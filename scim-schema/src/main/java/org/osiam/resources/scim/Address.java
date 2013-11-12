@@ -24,6 +24,8 @@
 package org.osiam.resources.scim;
 
 
+import org.osiam.resources.scim.MultiValuedAttribute.Builder;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -148,6 +150,11 @@ public class Address extends MultiValuedAttribute {
 
         public Builder setCountry(String country) {
             this.country = country;
+            return this;
+        }
+        
+        public Builder setPrimary(Boolean primary) {
+            super.primary = primary;
             return this;
         }
 

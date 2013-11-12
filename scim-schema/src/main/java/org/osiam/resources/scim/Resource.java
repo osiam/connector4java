@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public abstract class Resource {
 
     private String id;
-    private Meta meta;
+    protected Meta meta;
     @JsonProperty(required = true)
     private Set<String> schemas;
 
