@@ -26,6 +26,8 @@ package org.osiam.resources.scim;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.osiam.resources.scim.CoreResource.Builder;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
@@ -68,6 +70,21 @@ public class Group extends CoreResource{
             return this;
         }
 
+        public Builder setId(String id) {
+            super.id = id;
+            return this;
+        }
+        
+        public Builder setMeta(Meta meta) {
+            super.meta = meta;
+            return this;
+        }
+        
+        public Builder setExternalId(String externalId) {
+            super.externalId = externalId;
+            return this;
+        }
+        
         public Builder setMembers(Set<MultiValuedAttribute> members) {
             this.members = members;
             return this;
