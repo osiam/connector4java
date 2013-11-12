@@ -23,18 +23,20 @@
 
 package org.osiam.resources.scim;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.io.BaseEncoding;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * This enum like class represents the valid extension field types. Instances of this class also define methods for

@@ -222,6 +222,37 @@ public class Extension {
         return fields.containsKey(field);
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((fields == null) ? 0 : fields.hashCode());
+        result = prime * result + ((urn == null) ? 0 : urn.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Extension other = (Extension) obj;
+        if (fields == null) {
+            if (other.fields != null)
+                return false;
+        } else if (!fields.equals(other.fields))
+            return false;
+        if (urn == null) {
+            if (other.urn != null)
+                return false;
+        } else if (!urn.equals(other.urn))
+            return false;
+        return true;
+    }
+
     /**
      * This class represents a field of an extension with its type and value. Instances of this class are immutable.
      */
