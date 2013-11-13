@@ -26,19 +26,18 @@ package org.osiam.resources.scim;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.osiam.resources.scim.CoreResource.Builder;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 /**
  * Java class for Group complex type.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class Group extends CoreResource{
 
     private String displayName;
-    private Set<MultiValuedAttribute> members;
+    private Set<MemberRef> members;
 
     //JSON Serializing
     public Group(){}
@@ -53,7 +52,7 @@ public class Group extends CoreResource{
     public static class Builder extends CoreResource.Builder{
 
         private String displayName;
-        private Set<MultiValuedAttribute> members = new HashSet<>();
+        private Set<MemberRef> members = new HashSet<>();
 
         public Builder(){}
 
@@ -85,7 +84,7 @@ public class Group extends CoreResource{
             return this;
         }
         
-        public Builder setMembers(Set<MultiValuedAttribute> members) {
+        public Builder setMembers(Set<MemberRef> members) {
             this.members = members;
             return this;
         }
@@ -107,7 +106,7 @@ public class Group extends CoreResource{
         return displayName;
     }
 
-    public Set<MultiValuedAttribute> getMembers() {
+    public Set<MemberRef> getMembers() {
         return members;
     }
 
