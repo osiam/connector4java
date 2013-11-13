@@ -24,12 +24,13 @@
 package org.osiam.resources.scim;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Java class for multiValuedAttribute complex type.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class MultiValuedAttribute {
 
     private String value;
