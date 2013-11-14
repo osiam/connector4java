@@ -23,24 +23,25 @@
 
 package org.osiam.resources.scim;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
  * Java class for Group complex type.
  */
 @JsonInclude(Include.NON_EMPTY)
-public class Group extends CoreResource{
+public class Group extends CoreResource {
 
     private String displayName;
-    private Set<MemberRef> members;
+    private Set<MemberRef> members = new HashSet<>();
 
     //JSON Serializing
-    public Group(){}
+    public Group() {
+    }
 
 
     public Group(Builder builder) {
@@ -49,12 +50,27 @@ public class Group extends CoreResource{
         this.members = builder.members;
     }
 
-    public static class Builder extends CoreResource.Builder{
+    /**
+     * Gets the value of the displayName property.
+     *
+     * @return possible object is
+     *         {@link String }
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public Set<MemberRef> getMembers() {
+        return members;
+    }
+
+    public static class Builder extends CoreResource.Builder {
 
         private String displayName;
         private Set<MemberRef> members = new HashSet<>();
 
-        public Builder(){}
+        public Builder() {
+        }
 
         public Builder(Group group) {
             id = group.getId();
@@ -73,41 +89,24 @@ public class Group extends CoreResource{
             super.id = id;
             return this;
         }
-        
+
         public Builder setMeta(Meta meta) {
             super.meta = meta;
             return this;
         }
-        
+
         public Builder setExternalId(String externalId) {
             super.externalId = externalId;
             return this;
         }
-        
+
         public Builder setMembers(Set<MemberRef> members) {
             this.members = members;
             return this;
         }
 
-        public Group build(){
+        public Group build() {
             return new Group(this);
         }
     }
-
-    /**
-     * Gets the value of the displayName property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public Set<MemberRef> getMembers() {
-        return members;
-    }
-
 }
