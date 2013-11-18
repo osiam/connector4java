@@ -1,5 +1,7 @@
 package org.osiam.resources.helper
 
+import java.nio.ByteBuffer
+
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.test.util.DateHelper
@@ -32,13 +34,13 @@ class ExtensionSerializerSpec  extends Specification{
         JSONAssert.assertEquals(expectedJson, mapper.writeValueAsString(extension), false);
 
         where:
-        type                         | givenValue                                    | expectedJson
-        ExtensionFieldType.STRING    | 'example'                                     | '{"key" : "example"}'
-        ExtensionFieldType.INTEGER   | 123G                                          | '{"key" : 123}'
-        ExtensionFieldType.DECIMAL   | 12.3G                                         | '{"key" : 12.3}'
-        ExtensionFieldType.BOOLEAN   | true                                          | '{"key" : true}'
-        ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22) | '{"key" : "2008-01-23T04:56:22.000Z"}'
-        ExtensionFieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[]  | '{"key" : "ZXhhbXBsZQ=="}'
-        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')       | '{"key" : "https://example.com/Users/28"}'
+        type                         | givenValue                                                     | expectedJson
+        ExtensionFieldType.STRING    | 'example'                                                      | '{"key" : "example"}'
+        ExtensionFieldType.INTEGER   | 123G                                                           | '{"key" : 123}'
+        ExtensionFieldType.DECIMAL   | 12.3G                                                          | '{"key" : 12.3}'
+        ExtensionFieldType.BOOLEAN   | true                                                           | '{"key" : true}'
+        ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22)                  | '{"key" : "2008-01-23T04:56:22.000Z"}'
+        ExtensionFieldType.BINARY    | ByteBuffer.wrap([101, 120, 97, 109, 112, 108, 101] as byte[])  | '{"key" : "ZXhhbXBsZQ=="}'
+        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')                        | '{"key" : "https://example.com/Users/28"}'
     }
 }

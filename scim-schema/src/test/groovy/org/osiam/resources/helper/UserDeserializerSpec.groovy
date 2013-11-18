@@ -1,5 +1,7 @@
 package org.osiam.resources.helper
 
+import java.nio.ByteBuffer;
+
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
@@ -70,19 +72,19 @@ class UserDeserializerSpec extends Specification {
         extension.getField(fieldName, fieldType) == fieldValue
 
         where:
-        fieldType           |fieldName      | fieldValue
+        fieldType                    |fieldName       | fieldValue
         ExtensionFieldType.STRING    | 'keyString'    | 'example'
         ExtensionFieldType.BOOLEAN   | 'keyBoolean'   | true
         ExtensionFieldType.INTEGER   | 'keyInteger'   | 123
         ExtensionFieldType.DECIMAL   | 'keyDecimal'   | 123.456
-        ExtensionFieldType.BINARY    | 'keyBinary'    | [
+        ExtensionFieldType.BINARY    | 'keyBinary'    | ByteBuffer.wrap([
             101,
             120,
             97,
             109,
             112,
             108,
-            101] as byte[]
+            101] as byte[])
         ExtensionFieldType.REFERENCE | 'keyReference' | new URI('https://example.com/Users/28')
         ExtensionFieldType.DATE_TIME | 'keyDateTime'  | DateHelper.createDate(2011, 7, 1, 18, 29, 49)
     }

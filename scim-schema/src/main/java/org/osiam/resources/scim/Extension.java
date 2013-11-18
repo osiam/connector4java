@@ -3,6 +3,7 @@ package org.osiam.resources.scim;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -128,7 +129,7 @@ public class Extension {
      * @param value
      *            the new value
      */
-    public void addOrUpdateField(String fieldName, byte[] value) {
+    public void addOrUpdateField(String fieldName, ByteBuffer value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.BINARY);
     }
 
