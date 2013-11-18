@@ -32,7 +32,7 @@
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>OSIAM Connector 4 Java</name>
     <packaging>jar</packaging>
 
