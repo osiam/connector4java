@@ -1,5 +1,7 @@
 package org.osiam.resources.scim
 
+import java.nio.ByteBuffer;
+
 import org.osiam.resources.scim.Extension.Field
 import org.osiam.test.util.DateHelper
 
@@ -74,7 +76,7 @@ class ExtensionSpec extends Specification {
         ExtensionFieldType.DECIMAL   | 12.3G                                         | '12.3'
         ExtensionFieldType.BOOLEAN   | true                                          | 'true'
         ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22) | '2008-01-23T04:56:22.000Z'
-        ExtensionFieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[]  | 'ZXhhbXBsZQ=='
+        ExtensionFieldType.BINARY    | ByteBuffer.wrap([101, 120, 97, 109, 112, 108, 101] as byte[]) | 'ZXhhbXBsZQ=='
         ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')       | 'https://example.com/Users/28'
     }
 
@@ -91,14 +93,14 @@ class ExtensionSpec extends Specification {
         extension.fields[FIELD].type == givenFieldType
 
         where:
-        givenFieldType      | givenInputValue                              | expectedOutputValue
-        ExtensionFieldType.STRING    | 'example'                                    | 'example'
-        ExtensionFieldType.INTEGER   | 123G                                         | '123'
-        ExtensionFieldType.DECIMAL   | 12.3G                                        | '12.3'
-        ExtensionFieldType.BOOLEAN   | true                                         | 'true'
-        ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22)           | '2008-01-23T04:56:22.000Z'
-        ExtensionFieldType.BINARY    | [101, 120, 97, 109, 112, 108, 101] as byte[] | 'ZXhhbXBsZQ=='
-        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')      | 'https://example.com/Users/28'
+        givenFieldType      | givenInputValue                                                        | expectedOutputValue
+        ExtensionFieldType.STRING    | 'example'                                                     | 'example'
+        ExtensionFieldType.INTEGER   | 123G                                                          | '123'
+        ExtensionFieldType.DECIMAL   | 12.3G                                                         | '12.3'
+        ExtensionFieldType.BOOLEAN   | true                                                          | 'true'
+        ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22)                 | '2008-01-23T04:56:22.000Z'
+        ExtensionFieldType.BINARY    | ByteBuffer.wrap([101, 120, 97, 109, 112, 108, 101] as byte[]) | 'ZXhhbXBsZQ=='
+        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')                       | 'https://example.com/Users/28'
     }
 
     @Unroll

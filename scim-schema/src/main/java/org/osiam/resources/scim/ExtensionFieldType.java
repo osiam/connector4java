@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -236,22 +237,22 @@ public abstract class ExtensionFieldType<T> {
     /**
      * ExtensionFieldType for the Scim type Binary (actual type is {@code byte[]})
      */
-    public static final ExtensionFieldType<byte[]> BINARY = new ExtensionFieldType<byte[]>("BINARY") {
+    public static final ExtensionFieldType<ByteBuffer> BINARY = new ExtensionFieldType<ByteBuffer>("BINARY") {
 
         @Override
-        public byte[] fromString(String stringValue) {
+        public ByteBuffer fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
             try {
-                return BaseEncoding.base64().decode(stringValue);
+                return ByteBuffer.wrap(BaseEncoding.base64().decode(stringValue));
             } catch (IllegalArgumentException e) {
                 throw createConversionException(stringValue, "byte[]", e);
             }
         }
 
         @Override
-        public String toString(byte[] value) {
+        public String toString(ByteBuffer value) {
             ensureValueIsNotNull(value);
-            return BaseEncoding.base64().encode(value);
+            return BaseEncoding.base64().encode(value.array());
         }
 
     };
