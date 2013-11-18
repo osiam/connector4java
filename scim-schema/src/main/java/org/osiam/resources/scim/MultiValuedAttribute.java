@@ -24,22 +24,24 @@
 package org.osiam.resources.scim;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Java class for multiValuedAttribute complex type.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class MultiValuedAttribute {
 
-    private Object value;
+    private String value;
     private String display;
     private Boolean primary;
     private String type;
     private String operation;
 
     //JSON Serializing
-    public MultiValuedAttribute(){}
+    public MultiValuedAttribute() {
+    }
 
     protected MultiValuedAttribute(Builder builder) {
         this.value = builder.value;
@@ -49,15 +51,15 @@ public class MultiValuedAttribute {
         this.operation = builder.operation;
     }
 
-    public static class Builder{
+    public static class Builder {
 
-        private Object value;
+        private String value;
         private String display;
-        private Boolean primary;
+        protected Boolean primary;
         private String type;
         private String operation;
 
-        public Builder setValue(Object value) {
+        public Builder setValue(String value) {
             this.value = value;
             return this;
         }
@@ -82,7 +84,7 @@ public class MultiValuedAttribute {
             return this;
         }
 
-        public MultiValuedAttribute build(){
+        public MultiValuedAttribute build() {
             return new MultiValuedAttribute(this);
         }
     }
@@ -90,22 +92,18 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the value property.
      *
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *
+     * @return possible object is
+     *         {@link String }
      */
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
     /**
      * Gets the value of the display property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getDisplay() {
         return display;
@@ -114,10 +112,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the primary property.
      *
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *
+     * @return possible object is
+     *         {@link Boolean }
      */
     public Boolean isPrimary() {
         return primary;
@@ -126,10 +122,8 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the type property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getType() {
         return type;
@@ -138,13 +132,73 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the operation property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getOperation() {
         return operation;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((display == null) ? 0 : display.hashCode());
+        result = prime * result + ((operation == null) ? 0 : operation.hashCode());
+        result = prime * result + ((primary == null) ? 0 : primary.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MultiValuedAttribute other = (MultiValuedAttribute) obj;
+        if (display == null) {
+            if (other.display != null) {
+                return false;
+            }
+        } else if (!display.equals(other.display)) {
+            return false;
+        }
+        if (operation == null) {
+            if (other.operation != null) {
+                return false;
+            }
+        } else if (!operation.equals(other.operation)) {
+            return false;
+        }
+        if (primary == null) {
+            if (other.primary != null) {
+                return false;
+            }
+        } else if (!primary.equals(other.primary)) {
+            return false;
+        }
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
+            return false;
+        }
+        if (value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -42,7 +42,8 @@ public class Name {
     /**
      * needed for json serializing
      */
-    public Name() {}
+    public Name() {
+    }
 
     private Name(Builder builder) {
         this.formatted = builder.formatted;
@@ -158,4 +159,46 @@ public class Name {
         return honorificSuffix;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Name other = (Name) o;
+
+        if (familyName != null ? !familyName.equals(other.familyName) : other.familyName != null) {
+            return false;
+        }
+        if (formatted != null ? !formatted.equals(other.formatted) : other.formatted != null) {
+            return false;
+        }
+        if (givenName != null ? !givenName.equals(other.givenName) : other.givenName != null) {
+            return false;
+        }
+        if (honorificPrefix != null ? !honorificPrefix.equals(other.honorificPrefix) : other.honorificPrefix != null) {
+            return false;
+        }
+        if (honorificSuffix != null ? !honorificSuffix.equals(other.honorificSuffix) : other.honorificSuffix != null) {
+            return false;
+        }
+        if (middleName != null ? !middleName.equals(other.middleName) : other.middleName != null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = formatted != null ? formatted.hashCode() : 0;
+        result = 31 * result + (familyName != null ? familyName.hashCode() : 0);
+        result = 31 * result + (givenName != null ? givenName.hashCode() : 0);
+        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
+        result = 31 * result + (honorificPrefix != null ? honorificPrefix.hashCode() : 0);
+        result = 31 * result + (honorificSuffix != null ? honorificSuffix.hashCode() : 0);
+        return result;
+    }
 }
