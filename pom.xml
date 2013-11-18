@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>scim-schema</artifactId>
-            <version>0.31-SNAPSHOT</version>
+            <version>0.31</version>
         </dependency>
         <!-- Used for access token retrieval -->
         <dependency>
@@ -214,7 +214,7 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-            
+
             <!-- Surefire: will execute all unit tests including Spock specs and will ignore system tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -227,7 +227,7 @@
                     </includes>
                 </configuration>
             </plugin>
-            
+
         </plugins>
 
         <!-- override sonatype parent pom settings by default -->
