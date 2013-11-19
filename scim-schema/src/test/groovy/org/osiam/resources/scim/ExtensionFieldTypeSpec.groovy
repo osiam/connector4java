@@ -60,8 +60,8 @@ class ExtensionFieldTypeSpec extends Specification {
         ExtensionFieldType.INTEGER    | 'illegal'
         ExtensionFieldType.DECIMAL    | 'illegal'
         ExtensionFieldType.DATE_TIME  | 'illegal'
-        ExtensionFieldType.BINARY     | '!@#$%^&*()_+'
-        ExtensionFieldType.REFERENCE  | '!@#$%^&*()_+'
+        ExtensionFieldType.BINARY     | '!@#$%^&*()_+' // 'illegal' is a valid base64
+        ExtensionFieldType.REFERENCE  | '!@#$%^&*()_+' // 'illegal' is a valid URI
     }
 
     @Unroll
