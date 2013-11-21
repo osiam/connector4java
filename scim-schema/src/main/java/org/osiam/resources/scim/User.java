@@ -29,8 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import org.osiam.resources.scim.Resource.Builder;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -464,16 +463,16 @@ public class User extends CoreResource {
             return this;
         }
 
-        public Builder addExtensions(Map<String, Extension> extensions) {
-            for (Map.Entry<String, Extension> entry : extensions.entrySet()) {
-                this.addExtension(entry.getKey(), entry.getValue());
+        public Builder addExtensions(Set<Extension> extensions) {
+            for (Extension entry : extensions) {
+                this.addExtension(entry);
             }
             return this;
         }
 
-        public Builder addExtension(String urn, Extension extension) {
-            extensions.put(urn, extension);
-            schemas.add(urn);
+        public Builder addExtension(Extension extension) {
+            extensions.put(extension.getUrn(), extension);
+            schemas.add(extension.getUrn());
             return this;
         }
 

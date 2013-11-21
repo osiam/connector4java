@@ -59,7 +59,7 @@ public class UserDeserializer extends StdDeserializer<User> {
 
             deserializer.setUrn(urn);
             Extension extension = mapper.readValue(extensionNode.toString(), Extension.class);
-            builder.addExtension(urn, extension);
+            builder.addExtension(extension);
 
         }
         return builder.build();
