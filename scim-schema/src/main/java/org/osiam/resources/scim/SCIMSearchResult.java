@@ -1,5 +1,6 @@
 package org.osiam.resources.scim;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +15,7 @@ public class SCIMSearchResult<T> {
     private long itemsPerPage;
     private long startIndex;
     private Set<String> schemas;
-    private List<T> resources;
+    private List<T> resources = new ArrayList<>();
 
     public SCIMSearchResult() {}
 
