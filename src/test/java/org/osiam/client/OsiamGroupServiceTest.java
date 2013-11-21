@@ -19,13 +19,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
+
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,9 +33,9 @@ import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
+import org.osiam.resources.scim.SCIMSearchResult;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -57,7 +57,7 @@ public class OsiamGroupServiceTest {
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
     private Group singleGroupResult;
-    private QueryResult<Group> queryResult;
+    private SCIMSearchResult<Group> SCIMSearchResult;
     private List<Group> allGroups;
     private OsiamGroupService service;
 
@@ -218,7 +218,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchGroups(queryString, accessToken);
+        SCIMSearchResult = service.searchGroups(queryString, accessToken);
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
@@ -305,9 +305,9 @@ public class OsiamGroupServiceTest {
     }
 
     private void thenReturnedListOfSearchedGroupsIsAsExpected() {
-        assertEquals(1, queryResult.getTotalResults());
-        assertEquals(1, queryResult.getResources().size());
-        assertEquals("test_group01", queryResult.getResources().iterator().next().getDisplayName());
+        assertEquals(1, SCIMSearchResult.getTotalResults());
+        assertEquals(1, SCIMSearchResult.getResources().size());
+        assertEquals("test_group01", SCIMSearchResult.getResources().iterator().next().getDisplayName());
     }
 
     private void thenReturnedListOfAllGroupsIsAsExpected() {

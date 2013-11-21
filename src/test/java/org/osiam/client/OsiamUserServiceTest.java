@@ -27,8 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.Assert;
+
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,14 +37,15 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -66,7 +67,7 @@ public class OsiamUserServiceTest {
 
     private User singleUserResult;
     private Query query;
-    private QueryResult<User> queryResult;
+    private SCIMSearchResult<User> searchResult;
     private List<User> allUsers;
 
     OsiamUserService service;
@@ -341,11 +342,11 @@ public class OsiamUserServiceTest {
     }
 
     private void whenSearchIsUsedByQuery() {
-        queryResult = service.searchUsers(query, accessToken);
+        searchResult = service.searchUsers(query, accessToken);
     }
 
     private void whenSearchIsUsedByString(String queryString) {
-        queryResult = service.searchUsers(queryString, accessToken);
+        searchResult = service.searchUsers(queryString, accessToken);
     }
 
     private void thenQueryStringIsSplitCorrectly() {
@@ -369,13 +370,13 @@ public class OsiamUserServiceTest {
 
 
     private void thenReturnedListOfSearchedUsersIsAsExpected() {
-        assertEquals(1, queryResult.getTotalResults());
-        assertEquals("BarbaraJ.", queryResult.getResources().iterator().next().getDisplayName());
+        assertEquals(1, searchResult.getTotalResults());
+        assertEquals("BarbaraJ.", searchResult.getResources().iterator().next().getDisplayName());
     }
 
     private void thenNumberOfReturnedUsersIs(int numberOfUsers) {
-        assertEquals(numberOfUsers, queryResult.getTotalResults());
-        assertEquals(numberOfUsers, queryResult.getResources().size());
+        assertEquals(numberOfUsers, searchResult.getTotalResults());
+        assertEquals(numberOfUsers, searchResult.getResources().size());
     }
 
     private void thenNumberOfAllUsersIs(int numberOfUsers) {
