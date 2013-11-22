@@ -3,10 +3,10 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import static org.apache.http.HttpStatus.SC_CONFLICT;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
-import static org.apache.http.HttpStatus.SC_CONFLICT;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +25,8 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateUser;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
 /**
@@ -203,14 +203,14 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      *
      * @param queryString The URL encoded string with the query that should be passed to the OSIAM service
      * @param accessToken the OSIAM access token from for the current session
-     * @return a QueryResult Containing a list of all found Users
+     * @return a SCIMSearchResult Containing a list of all found Users
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
      */
-    public QueryResult<User> searchUsers(String queryString, AccessToken accessToken) {
+    public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
         return super.searchResources(queryString, accessToken);
     }
 
@@ -219,13 +219,13 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      *
      * @param query       containing the query to execute.
      * @param accessToken the OSIAM access token from for the current session
-     * @return a QueryResult Containing a list of all found Users
+     * @return a SCIMSearchResult Containing a list of all found Users
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
      */
-    public QueryResult<User> searchUsers(Query query, AccessToken accessToken) {
+    public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
         return super.searchResources(query, accessToken);
     }
 

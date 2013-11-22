@@ -26,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
@@ -38,15 +37,16 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -75,8 +75,8 @@ public class OsiamConnectorTest {
     private String searchedUserID;
     private String searchedGroupId;
     private AccessTokenMockProvider tokenProvider;
-    private QueryResult<User> userQueryResult;
-    private QueryResult<Group> groupQueryResult;
+    private SCIMSearchResult<User> userQueryResult;
+    private SCIMSearchResult<Group> groupQueryResult;
     private List<User> allUsers;
     private List<Group> allGroups;
     private Query query;

@@ -18,10 +18,10 @@ import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
 /**
@@ -201,14 +201,14 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *
      * @param queryString The URL encoded string with the query that should be passed to the OSIAM service
      * @param accessToken the OSIAM access token from for the current session
-     * @return a QueryResult Containing a list of all found Users
+     * @return a SCIMSearchResult Containing a list of all found Users
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
      */
-    public QueryResult<User> searchUsers(String queryString, AccessToken accessToken) {
+    public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
         return userService().searchUsers(queryString, accessToken);
     }
 
@@ -217,13 +217,13 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *
      * @param query       containing the query to execute.
      * @param accessToken the OSIAM access token from for the current session
-     * @return a QueryResult Containing a list of all found Users
+     * @return a SCIMSearchResult Containing a list of all found Users
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
      */
-    public QueryResult<User> searchUsers(Query query, AccessToken accessToken) {
+    public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
         return userService().searchUsers(query, accessToken);
     }
 
@@ -284,14 +284,14 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *
      * @param queryString a string containing the needed search where statement
      * @param accessToken the OSIAM access token from for the current session
-     * @return a QueryResult containing a list of all found Groups
+     * @return a SCIMSearchResult containing a list of all found Groups
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
-    public QueryResult<Group> searchGroups(String queryString, AccessToken accessToken) {
+    public SCIMSearchResult<Group> searchGroups(String queryString, AccessToken accessToken) {
         return groupService().searchGroups(queryString, accessToken);
     }
 
@@ -301,14 +301,14 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *
      * @param query       containing the needed search where statement
      * @param accessToken the OSIAM access token from for the current session
-     * @return a QueryResult containing a list of all found Groups
+     * @return a SCIMSearchResult containing a list of all found Groups
      * @throws org.osiam.client.exception.UnauthorizedException if the request could not be authorized.
      * @throws org.osiam.client.exception.ForbiddenException    if the scope doesn't allow this request
      * @throws org.osiam.client.exception.ConnectionInitializationException
      *                               if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
-    public QueryResult<Group> searchGroups(Query query, AccessToken accessToken) {
+    public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
         return groupService().searchGroups(query, accessToken);
     }
 

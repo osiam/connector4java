@@ -3,14 +3,14 @@ package org.osiam.client;
  * for licensing see the file license.txt.
  */
 
+import java.util.List;
+
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Group;
-
-import java.util.List;
+import org.osiam.resources.scim.SCIMSearchResult;
 
 /**
  * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
@@ -81,7 +81,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      *          if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
-    public QueryResult<Group> searchGroups(String queryString, AccessToken accessToken) {
+    public SCIMSearchResult<Group> searchGroups(String queryString, AccessToken accessToken) {
         return searchResources(queryString, accessToken);
     }
 
@@ -100,7 +100,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      *          if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
-    public QueryResult<Group> searchGroups(Query query, AccessToken accessToken) {
+    public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
         return searchResources(query, accessToken);
     }
 
