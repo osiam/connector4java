@@ -1,5 +1,5 @@
 {
-    "schemas": ["urn:scim:schemas:core:1.0"],
+    "schemas": ["urn:scim:schemas:core:2.0:User"],
     "id": "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4",
     "externalId": "bjensen",
     "meta": {
