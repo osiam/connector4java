@@ -10,7 +10,7 @@ class SchemaRegressionSpec extends Specification {
         def extension1 = new Extension(extension1Urn)
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
         def extension2 = new Extension(extension2Urn)
-        def coreSchemaUrn = Constants.CORE_SCHEMA
+        def coreSchemaUrn = Constants.USER_CORE_SCHEMA
 
         when:
         def userWithExtensions = new User.Builder("test2")

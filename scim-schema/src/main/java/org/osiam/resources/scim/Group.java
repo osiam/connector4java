@@ -26,9 +26,11 @@ package org.osiam.resources.scim;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.osiam.resources.scim.Resource.Builder;
 
 /**
  * Java class for Group complex type.
@@ -39,10 +41,9 @@ public class Group extends CoreResource {
     private String displayName;
     private Set<MemberRef> members = new HashSet<>();
 
-    //JSON Serializing
+    // JSON Serializing
     public Group() {
     }
-
 
     public Group(Builder builder) {
         super(builder);
@@ -52,9 +53,8 @@ public class Group extends CoreResource {
 
     /**
      * Gets the value of the displayName property.
-     *
-     * @return possible object is
-     *         {@link String }
+     * 
+     * @return possible object is {@link String }
      */
     public String getDisplayName() {
         return displayName;
@@ -70,12 +70,12 @@ public class Group extends CoreResource {
         private Set<MemberRef> members = new HashSet<>();
 
         public Builder() {
+            super();
+            this.schemas.add(Constants.GROUP_CORE_SCHEMA);
         }
 
         public Builder(Group group) {
-            id = group.getId();
-            meta = group.getMeta();
-            externalId = group.getExternalId();
+            super(group);
             displayName = group.displayName;
             members = group.members;
         }
@@ -85,18 +85,27 @@ public class Group extends CoreResource {
             return this;
         }
 
+        @Override
         public Builder setId(String id) {
-            super.id = id;
+            super.setId(id);
             return this;
         }
 
+        @Override
         public Builder setMeta(Meta meta) {
-            super.meta = meta;
+            super.setMeta(meta);
             return this;
         }
 
+        @Override
         public Builder setExternalId(String externalId) {
-            super.externalId = externalId;
+            super.setExternalId(externalId);
+            return this;
+        }
+
+        @Override
+        public Builder setSchemas(Set<String> schemas) {
+            super.setSchemas(schemas);
             return this;
         }
 
@@ -105,6 +114,8 @@ public class Group extends CoreResource {
             return this;
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
         public Group build() {
             return new Group(this);
         }

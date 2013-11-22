@@ -24,12 +24,16 @@
 package org.osiam.resources.scim;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import org.osiam.resources.scim.Resource.Builder;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -305,7 +309,7 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
-        private Map<String, Extension> extensions = new HashMap<>();
+        protected Map<String, Extension> extensions = new HashMap<>();
 
         /**
          * This class is for generating the output of an User. It does not copy the password. If null is passed in,
@@ -325,6 +329,7 @@ public class User extends CoreResource {
         }
 
         public Builder(String userName) {
+        	this();
             if (userName == null || userName.isEmpty()) {
                 throw new IllegalArgumentException("userName must not be null or empty.");
             }
@@ -332,9 +337,12 @@ public class User extends CoreResource {
         }
 
         public Builder() {
+            super();
+        	this.schemas.add(Constants.USER_CORE_SCHEMA);
         }
 
         public Builder(User user) {
+            super(user);
             this.userName = user.userName;
             this.name = user.name;
             this.displayName = user.displayName;
@@ -357,10 +365,6 @@ public class User extends CoreResource {
             this.roles = Objects.firstNonNull(user.roles, this.roles);
             this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
             this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
-            this.externalId = user.getExternalId();
-            this.id = user.getId();
-            this.meta = user.getMeta();
-            this.schemas = user.getSchemas();
         }
 
         public Builder setName(Name name) {
@@ -476,25 +480,33 @@ public class User extends CoreResource {
             return this;
         }
 
+        @Override
         public Builder setMeta(Meta meta) {
-            super.meta = meta;
-            return this;
-        }
-        
-        public Builder setExternalId(String externalId) {
-            super.externalId = externalId;
-            return this;
-        }
-        
-        public Builder setId(String id) {
-            super.id = id;
+            super.setMeta(meta);
             return this;
         }
         
         @Override
+        public Builder setExternalId(String externalId) {
+            super.setExternalId(externalId);
+            return this;
+        }
+        
+        @Override
+        public Builder setId(String id) {
+            super.setId(id);
+            return this;
+        }
+        
+        @Override
+        public Builder setSchemas(Set<String> schemas) {
+            super.setSchemas(schemas);
+            return this;
+        }
+
+        @Override
         public User build() {
             return new User(this);
         }
-
     }
 }

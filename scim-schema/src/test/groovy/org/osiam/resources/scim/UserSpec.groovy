@@ -30,7 +30,7 @@ class UserSpec extends Specification {
 
     static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
     static def EXTENSION_EMPTY = new Extension(EXTENSION_URN)
-    static def CORE_SCHEMA_SET = [Constants.CORE_SCHEMA] as Set
+    static def CORE_SCHEMA_SET = [Constants.USER_CORE_SCHEMA] as Set
 
     def "default constructor should be present due to json mappings"() {
         when:
@@ -322,7 +322,8 @@ class UserSpec extends Specification {
         def extension1 = new Extension(extension1Urn)
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
         def extension2 = new Extension(extension2Urn)
-        def coreSchemaUrn = Constants.CORE_SCHEMA
+        def coreSchemaUrn = Constants.USER_CORE_SCHEMA
+        
         when:
         def user = new User.Builder("test2")
                 .addExtension(extension1)

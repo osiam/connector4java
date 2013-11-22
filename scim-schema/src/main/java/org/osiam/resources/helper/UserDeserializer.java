@@ -48,7 +48,7 @@ public class UserDeserializer extends StdDeserializer<User> {
         User.Builder builder = new User.Builder(user);
 
         for (String urn : user.getSchemas()) {
-            if (urn.equals(Constants.CORE_SCHEMA)) {
+            if (urn.equals(Constants.USER_CORE_SCHEMA)) {
                 continue;
             }
 
