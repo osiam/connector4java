@@ -24,8 +24,10 @@
 package org.osiam.resources.scim;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -305,7 +307,7 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
-        private Map<String, Extension> extensions = new HashMap<>();
+        protected Map<String, Extension> extensions = new HashMap<>();
 
         /**
          * This class is for generating the output of an User. It does not copy the password. If null is passed in,
@@ -325,6 +327,7 @@ public class User extends CoreResource {
         }
 
         public Builder(String userName) {
+        	this();
             if (userName == null || userName.isEmpty()) {
                 throw new IllegalArgumentException("userName must not be null or empty.");
             }
@@ -332,6 +335,7 @@ public class User extends CoreResource {
         }
 
         public Builder() {
+        	this.schemas = new HashSet<>(Arrays.asList(Constants.USER_CORE_SCHEMA));
         }
 
         public Builder(User user) {
@@ -360,7 +364,6 @@ public class User extends CoreResource {
             this.externalId = user.getExternalId();
             this.id = user.getId();
             this.meta = user.getMeta();
-            this.schemas = user.getSchemas();
         }
 
         public Builder setName(Name name) {
@@ -491,10 +494,10 @@ public class User extends CoreResource {
             return this;
         }
         
+        @SuppressWarnings("unchecked")
         @Override
         public User build() {
             return new User(this);
         }
-
     }
 }

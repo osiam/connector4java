@@ -26,6 +26,7 @@ package org.osiam.resources.scim;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +43,6 @@ public class Group extends CoreResource {
     //JSON Serializing
     public Group() {
     }
-
 
     public Group(Builder builder) {
         super(builder);
@@ -70,6 +70,7 @@ public class Group extends CoreResource {
         private Set<MemberRef> members = new HashSet<>();
 
         public Builder() {
+        	schemas = new HashSet<>(Arrays.asList(Constants.GROUP_CORE_SCHEMA));
         }
 
         public Builder(Group group) {
@@ -105,7 +106,9 @@ public class Group extends CoreResource {
             return this;
         }
 
-        public Group build() {
+        @SuppressWarnings("unchecked")
+        @Override
+		public Group build() {
             return new Group(this);
         }
     }
