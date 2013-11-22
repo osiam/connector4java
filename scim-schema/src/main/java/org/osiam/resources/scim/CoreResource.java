@@ -41,6 +41,15 @@ public abstract class CoreResource  extends Resource{
     public abstract static class Builder extends Resource.Builder {
         protected String externalId; // NOSONAR - fields are needed in child classes
 
+        public Builder(CoreResource coreResource) {
+            super(coreResource);
+            this.externalId = coreResource.externalId;
+        }
+
+        public Builder() {
+            super();
+        }
+
         public Builder setExternalId(String externalId) {
             this.externalId = externalId;
             return this;

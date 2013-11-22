@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,7 +49,16 @@ public abstract class Resource {
     public abstract static class Builder {
         protected String id; // NOSONAR - fields are needed in child classes
         protected Meta meta; // NOSONAR - fields are needed in child classes
-        protected Set<String> schemas; // NOSONAR - fields are needed in child classes
+        protected Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
+
+        public Builder(Resource resource) {
+            this.id = resource.id;
+            this.meta = resource.meta;
+            this.schemas = resource.schemas;
+        }
+
+        public Builder() {
+        }
 
         public Builder setSchemas(Set<String> schemas) {
             this.schemas = schemas;

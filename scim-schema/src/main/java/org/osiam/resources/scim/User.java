@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.osiam.resources.scim.Resource.Builder;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
@@ -335,10 +337,12 @@ public class User extends CoreResource {
         }
 
         public Builder() {
-        	this.schemas = new HashSet<>(Arrays.asList(Constants.USER_CORE_SCHEMA));
+            super();
+        	this.schemas.add(Constants.USER_CORE_SCHEMA);
         }
 
         public Builder(User user) {
+            super(user);
             this.userName = user.userName;
             this.name = user.name;
             this.displayName = user.displayName;
@@ -361,9 +365,6 @@ public class User extends CoreResource {
             this.roles = Objects.firstNonNull(user.roles, this.roles);
             this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
             this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
-            this.externalId = user.getExternalId();
-            this.id = user.getId();
-            this.meta = user.getMeta();
         }
 
         public Builder setName(Name name) {
@@ -479,22 +480,30 @@ public class User extends CoreResource {
             return this;
         }
 
+        @Override
         public Builder setMeta(Meta meta) {
-            super.meta = meta;
+            super.setMeta(meta);
             return this;
         }
         
+        @Override
         public Builder setExternalId(String externalId) {
-            super.externalId = externalId;
+            super.setExternalId(externalId);
             return this;
         }
         
+        @Override
         public Builder setId(String id) {
-            super.id = id;
+            super.setId(id);
             return this;
         }
         
-        @SuppressWarnings("unchecked")
+        @Override
+        public Builder setSchemas(Set<String> schemas) {
+            super.setSchemas(schemas);
+            return this;
+        }
+
         @Override
         public User build() {
             return new User(this);
