@@ -278,7 +278,9 @@ public abstract class ExtensionFieldType<T> {
     };
 
     protected IllegalArgumentException createConversionException(String stringValue, String targetType, Throwable cause) {
-        return (IllegalArgumentException) createConversionException(stringValue, targetType).initCause(cause);
+        IllegalArgumentException exception = createConversionException(stringValue, targetType);
+        exception.initCause(cause);
+        return exception;
     }
 
     protected IllegalArgumentException createConversionException(String stringValue, String targetType) {
