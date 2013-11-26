@@ -30,8 +30,6 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Date;
 
 import org.joda.time.format.DateTimeFormatter;
@@ -192,11 +190,10 @@ public abstract class ExtensionFieldType<T> {
         @Override
         public Boolean fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
-            try {
-            	return Boolean.valueOf(stringValue);
-            } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "Boolean", e);
-            }
+        	if(!stringValue.equals("true") && !stringValue.equals("false")){
+        		throw createConversionException(stringValue, "Boolean");
+        	}
+        	return Boolean.valueOf(stringValue);
         }
 
         @Override
@@ -281,11 +278,16 @@ public abstract class ExtensionFieldType<T> {
     };
 
     protected IllegalArgumentException createConversionException(String stringValue, String targetType, Throwable cause) {
-
-        return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
-                + ".", cause);
+        IllegalArgumentException exception = createConversionException(stringValue, targetType);
+        exception.initCause(cause);
+        return exception;
     }
 
+    protected IllegalArgumentException createConversionException(String stringValue, String targetType) {
+        return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
+                + ".");
+    }
+    
     protected void ensureValueIsNotNull(Object value) {
         checkArgument(value != null, "The given value cannot be null.");
     }
