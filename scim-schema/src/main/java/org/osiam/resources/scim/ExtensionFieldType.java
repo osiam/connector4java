@@ -280,13 +280,10 @@ public abstract class ExtensionFieldType<T> {
     };
 
     protected IllegalArgumentException createConversionException(String stringValue, String targetType, Throwable cause) {
-
-        return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
-                + ".", cause);
+        return (IllegalArgumentException) createConversionException(stringValue, targetType).initCause(cause);
     }
 
     protected IllegalArgumentException createConversionException(String stringValue, String targetType) {
-
         return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
                 + ".");
     }
