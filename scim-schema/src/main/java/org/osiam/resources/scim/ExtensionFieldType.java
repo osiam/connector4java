@@ -30,8 +30,6 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Date;
 
 import org.joda.time.format.DateTimeFormatter;
