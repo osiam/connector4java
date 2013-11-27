@@ -23,14 +23,11 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.osiam.resources.scim.Resource.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Java class for Group complex type.

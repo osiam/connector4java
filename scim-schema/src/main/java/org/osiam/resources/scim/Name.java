@@ -23,7 +23,6 @@
 
 package org.osiam.resources.scim;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
