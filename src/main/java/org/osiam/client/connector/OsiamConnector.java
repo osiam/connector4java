@@ -93,33 +93,33 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @return a valid AuthService build out of the provided variables
      */
     private AuthService authService() {// NOSONAR - its ok if the Cyclomatic Complexity is > 10
-        if (authService == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (authService == null) {
             AuthService.Builder builder = new AuthService.Builder(getAuthServiceEndPoint());
 
-            if (clientId != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (clientId != null) {
                 builder = builder.setClientId(clientId);
             }
-            if (clientSecret != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (clientSecret != null) {
                 builder = builder.setClientSecret(clientSecret);
             }
-            if (grantType != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (grantType != null) {
                 builder = builder.setGrantType(grantType);
             }
-            if (password != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (password != null) {
                 builder = builder.setPassword(password);
             }
-            if (username != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (username != null) {
                 builder = builder.setUsername(username);
             }
-            if (scope != null && scopes != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (scope != null && scopes != null) {
                 builder = builder.setScope(scope, scopes);
-            } else if (scope != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            } else if (scope != null) {
                 builder = builder.setScope(scope);
             }
-            if (stringScope != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (stringScope != null) {
                 builder = builder.setScope(stringScope);
             }
-            if (clientRedirectUri != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (clientRedirectUri != null) {
                 builder = builder.setClientRedirectUri(clientRedirectUri);
             }
             authService = builder.build();
@@ -162,7 +162,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @return a valid OsiamUserService build out of the provided variables
      */
     private OsiamUserService userService() {
-        if (userService == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (userService == null) {
             userService = new OsiamUserService.Builder(getResourceServiceEndPoint()).build();
         }
         return userService;
@@ -173,7 +173,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @return a valid OsiamGroupService build out of the provided variables
      */
     private OsiamGroupService groupService() {
-        if (groupService == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (groupService == null) {
             groupService = new OsiamGroupService.Builder(getResourceServiceEndPoint()).build();
         }
         return groupService;

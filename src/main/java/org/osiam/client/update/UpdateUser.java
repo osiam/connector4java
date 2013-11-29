@@ -785,74 +785,74 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
-            if(userName != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(userName != null){
                 updateUser = new User.Builder(userName);
             }else{
                 updateUser = new User.Builder();
             }
-            if(nickName != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(nickName != null){
                 updateUser.setNickName(nickName);
             }
-            if(externalId != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(externalId != null){
                 updateUser.setExternalId(externalId);
             }
-            if(locale != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(locale != null){
                 updateUser.setLocale(locale);
             }
-            if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(password != null){
                 updateUser.setPassword(password);
             }
-            if(preferredLanguage != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(preferredLanguage != null){
                 updateUser.setPreferredLanguage(preferredLanguage);
             }
-            if(profileUrl != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(profileUrl != null){
                 updateUser.setProfileUrl(profileUrl);
             }
-            if(timezone != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if(timezone != null) {
                 updateUser.setTimezone(timezone);
             }
-            if(title != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(title != null){
                 updateUser.setTitle(title);
             }
-            if(name != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(name != null){
                 updateUser.setName(name);
             }
-            if(userType != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(userType != null){
                 updateUser.setUserType(userType);
             }
-            if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(displayName != null){
                 updateUser.setDisplayName(displayName);
             }
-            if(active != null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(active != null){
                 updateUser.setActive(active);
             }
-            if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(deleteFields.size() > 0){
                 Meta meta = new Meta.Builder()
                 .setAttributes(deleteFields).build();
                 updateUser.setMeta(meta);
             }
-            if(emails.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(emails.size() > 0){
                 updateUser.setEmails(emails);
             }
-            if(phoneNumbers.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(phoneNumbers.size() > 0){
                 updateUser.setPhoneNumbers(phoneNumbers);
             }
-            if(addresses.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(addresses.size() > 0){
                 updateUser.setAddresses(addresses);
             }
-            if(entitlements.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(entitlements.size() > 0){
                 updateUser.setEntitlements(entitlements);
             }
-            if(ims.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(ims.size() > 0){
                 updateUser.setIms(ims);
             }
-            if(photos.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(photos.size() > 0){
                 updateUser.setPhotos(photos);
             }
-            if(roles.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(roles.size() > 0){
                 updateUser.setRoles(roles);
             }
-            if(certificates.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(certificates.size() > 0){
                 updateUser.setX509Certificates(certificates);
             }
 
