@@ -145,8 +145,8 @@ public class MultiValuedAttribute {
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj) { // NOSONAR - Cyclomatic Complexity can be over 10
+    @Override // NOSONAR - Cyclomatic Complexity can be over 10
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
