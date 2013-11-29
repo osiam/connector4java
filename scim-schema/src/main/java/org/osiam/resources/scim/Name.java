@@ -158,8 +158,8 @@ public class Name {
         return honorificSuffix;
     }
 
-    @Override
-    public boolean equals(Object o) { // NOSONAR - Cyclomatic Complexity can be over 10
+    @Override // NOSONAR - Cyclomatic Complexity can be over 10
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -192,12 +192,14 @@ public class Name {
 
     @Override
     public int hashCode() {
-        int result = formatted != null ? formatted.hashCode() : 0;
-        result = 31 * result + (familyName != null ? familyName.hashCode() : 0);
-        result = 31 * result + (givenName != null ? givenName.hashCode() : 0);
-        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
-        result = 31 * result + (honorificPrefix != null ? honorificPrefix.hashCode() : 0);
-        result = 31 * result + (honorificSuffix != null ? honorificSuffix.hashCode() : 0);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());
+        result = prime * result + ((formatted == null) ? 0 : formatted.hashCode());
+        result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());
+        result = prime * result + ((honorificPrefix == null) ? 0 : honorificPrefix.hashCode());
+        result = prime * result + ((honorificSuffix == null) ? 0 : honorificSuffix.hashCode());
+        result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());
         return result;
     }
 }
