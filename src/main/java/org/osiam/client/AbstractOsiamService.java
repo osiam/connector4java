@@ -88,14 +88,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     protected AbstractOsiamService(@SuppressWarnings("rawtypes") Builder builder) {
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
-        .addDeserializer(User.class, new UserDeserializer(User.class));
+                .addDeserializer(User.class, new UserDeserializer(User.class));
         mapper.registerModule(userDeserializerModule);
 
         contentType = ContentType.create("application/json");
         webResource = builder.getWebResource();
         type = (Class<T>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
-                .getActualTypeArguments()[0];
+                        .getActualTypeArguments()[0];
         typeName = type.getSimpleName();
         endpoint = builder.endpoint;
     }
@@ -442,7 +442,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             this.endpoint = endpoint;
             this.type = (Class<T>)
                     ((ParameterizedType) getClass().getGenericSuperclass())
-                    .getActualTypeArguments()[0];
+                            .getActualTypeArguments()[0];
             typeName = type.getSimpleName();
         }
 
