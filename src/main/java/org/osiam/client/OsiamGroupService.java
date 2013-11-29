@@ -25,7 +25,6 @@ package org.osiam.client;
 
 import java.util.List;
 
-import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.update.UpdateGroup;
@@ -57,11 +56,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @return the group with the given id.
      * @throws org.osiam.client.exception.UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.NoResultException
+     * @throws NoResultException
      *          if no user with the given id can be found
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      */
     public Group getGroup(String id, AccessToken accessToken) {
@@ -75,11 +74,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      *
      * @param accessToken the OSIAM access token for the current session
      * @return a list of all groups
-     * @throws org.osiam.client.exception.UnauthorizedException
+     * @throws UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      */
     public List<Group> getAllGroups(AccessToken accessToken) {
@@ -93,11 +92,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param queryString a string containing the needed search where statement
      * @param accessToken the OSIAM access token from for the current session
      * @return a QueryResult containing a list of all found Groups
-     * @throws org.osiam.client.exception.UnauthorizedException
+     * @throws UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
@@ -112,11 +111,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param query       containing the needed search where statement
      * @param accessToken the OSIAM access token from for the current session
      * @return a QueryResult containing a list of all found Groups
-     * @throws org.osiam.client.exception.UnauthorizedException
+     * @throws UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
@@ -129,15 +128,15 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      *
      * @param id          id of the Group to be deleted
      * @param accessToken the OSIAM access token from for the current session
-     * @throws org.osiam.client.exception.UnauthorizedException
+     * @throws UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.NoResultException
+     * @throws NoResultException
      *          if no group with the given id can be found
-     * @throws org.osiam.client.exception.ConflictException
+     * @throws ConflictException
      *          if the Group could not be deleted
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      */
     public void deleteGroup(String id, AccessToken accessToken) {
@@ -150,13 +149,13 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param group       group to be saved
      * @param accessToken the OSIAM access token from for the current session
      * @return the same group Object like the given but with filled metadata and a new valid id
-     * @throws org.osiam.client.exception.UnauthorizedException
+     * @throws UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.ConflictException
+     * @throws ConflictException
      *          if the Group could not be created
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      */
     public Group createGroup(Group group, AccessToken accessToken) {
@@ -171,15 +170,15 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      * @param updateGroup all Fields that need to be updated
      * @param accessToken the OSIAM access token from for the current session
      * @return the updated group Object
-     * @throws org.osiam.client.exception.UnauthorizedException
+     * @throws UnauthorizedException
      *          if the request could not be authorized.
-     * @throws org.osiam.client.exception.ConflictException
+     * @throws ConflictException
      *          if the Group could not be updated
-     * @throws org.osiam.client.exception.NotFoundException
+     * @throws NotFoundException
      *          if no group with the given id can be found
-     * @throws org.osiam.client.exception.ForbiddenException
+     * @throws ForbiddenException
      *          if the scope doesn't allow this request
-     * @throws org.osiam.client.exception.ConnectionInitializationException
+     * @throws ConnectionInitializationException
      *          if the connection to the given OSIAM service could not be initialized
      * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups</a>
      */
