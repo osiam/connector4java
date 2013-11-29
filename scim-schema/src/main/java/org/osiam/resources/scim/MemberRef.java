@@ -25,7 +25,7 @@ package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class MemberRef extends MultiValuedAttribute {
+public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be constructed by the builder or jackson
 
     @JsonProperty("$ref")
     private String reference;
@@ -53,6 +53,7 @@ public class MemberRef extends MultiValuedAttribute {
             return this;
         }
 
+        @Override
         public MemberRef build() {
             return new MemberRef(this);
         }

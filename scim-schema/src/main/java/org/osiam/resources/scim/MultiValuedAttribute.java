@@ -23,7 +23,6 @@
 
 package org.osiam.resources.scim;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -39,7 +38,7 @@ public class MultiValuedAttribute {
     private String type;
     private String operation;
 
-    //JSON Serializing
+    // JSON Serializing
     public MultiValuedAttribute() {
     }
 
@@ -55,7 +54,7 @@ public class MultiValuedAttribute {
 
         private String value;
         private String display;
-        protected Boolean primary;
+        private Boolean primary;
         private String type;
         private String operation;
 
@@ -92,8 +91,7 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the value property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return possible object is {@link String }
      */
     public String getValue() {
         return value;
@@ -102,8 +100,7 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the display property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return possible object is {@link String }
      */
     public String getDisplay() {
         return display;
@@ -112,8 +109,7 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the primary property.
      *
-     * @return possible object is
-     *         {@link Boolean }
+     * @return possible object is {@link Boolean }
      */
     public Boolean isPrimary() {
         return primary;
@@ -122,8 +118,7 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the type property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return possible object is {@link String }
      */
     public String getType() {
         return type;
@@ -132,8 +127,7 @@ public class MultiValuedAttribute {
     /**
      * Gets the value of the operation property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return possible object is {@link String }
      */
     public String getOperation() {
         return operation;
@@ -152,7 +146,7 @@ public class MultiValuedAttribute {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { // NOSONAR - Cyclomatic Complexity can be over 10
         if (this == obj) {
             return true;
         }

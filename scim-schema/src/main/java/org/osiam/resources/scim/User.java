@@ -304,7 +304,7 @@ public class User extends CoreResource {
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
         private List<MultiValuedAttribute> roles = new ArrayList<>();
         private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
-        protected Map<String, Extension> extensions = new HashMap<>();
+        private Map<String, Extension> extensions = new HashMap<>();
 
         /**
          * This class is for generating the output of an User. It does not copy the password. If null is passed in,
@@ -480,19 +480,19 @@ public class User extends CoreResource {
             super.setMeta(meta);
             return this;
         }
-        
+
         @Override
         public Builder setExternalId(String externalId) {
             super.setExternalId(externalId);
             return this;
         }
-        
+
         @Override
         public Builder setId(String id) {
             super.setId(id);
             return this;
         }
-        
+
         @Override
         public Builder setSchemas(Set<String> schemas) {
             super.setSchemas(schemas);
