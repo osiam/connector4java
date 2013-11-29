@@ -103,7 +103,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      */
     public User getMeBasic(AccessToken accessToken) {
         final User user;
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -116,7 +116,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_OK) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
@@ -160,7 +160,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      */
     public User getMe(AccessToken accessToken) {
         final User user;
-        if (accessToken == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
 
@@ -173,7 +173,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             HttpResponse response = httpclient.execute(realWebresource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_OK) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
@@ -344,7 +344,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      *             if the connection to the given OSIAM service could not be initialized
      */
     public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
-        if (updateUser == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (updateUser == null) {
             throw new IllegalArgumentException("The given updateUser can't be null.");
         }
         return updateResource(id, updateUser.getScimConformUpdateUser(), accessToken);

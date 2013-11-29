@@ -111,29 +111,29 @@ public class AccessToken {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {  // NOSONAR - false-positive from clover; if-expression is correct
+        if (this == o) {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {  // NOSONAR - false-positive from clover; if-expression is correct
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         AccessToken that = (AccessToken) o;
 
-        if (expiresIn != that.expiresIn) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (expiresIn != that.expiresIn) {
             return false;
         }
-        if (!refreshToken.equals(that.refreshToken)) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (!refreshToken.equals(that.refreshToken)) {
             return false;
         }
-        if (!scope.equals(that.scope)) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (!scope.equals(that.scope)) {
             return false;
         }
-        if (!token.equals(that.token)) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (!token.equals(that.token)) {
             return false;
         }
-        if (!type.equals(that.type)) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (!type.equals(that.type)) {
             return false;
         }
 

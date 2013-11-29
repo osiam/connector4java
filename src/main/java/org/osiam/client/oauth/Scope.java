@@ -33,12 +33,12 @@ public enum Scope {
 	,PUT
 	,PATCH
 	,DELETE
-	,ALL{ 
+	,ALL{
 			@Override
 			public String toString(){
 				StringBuilder allScopes = new StringBuilder();
 				for (Scope actScope : Scope.values()) {
-					if(actScope != this){// NOSONAR - false-positive from clover; if-expression is correct
+					if(actScope != this){
 						allScopes.append(" ").append(actScope.toString());
 					}
 				}

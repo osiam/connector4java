@@ -147,20 +147,20 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build() {
-            if (displayName != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (displayName != null) {
                 updateGroup = new Group.Builder().setDisplayName(displayName);
             } else {
                 updateGroup = new Group.Builder();
             }
-            if (externalId != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (externalId != null) {
                 updateGroup.setExternalId(externalId);
             }
-            if (deleteFields.size() > 0) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (deleteFields.size() > 0) {
                 Meta meta = new Meta.Builder()
                         .setAttributes(deleteFields).build();
                 updateGroup.setMeta(meta);
             }
-            if (members.size() > 0) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (members.size() > 0) {
                 updateGroup.setMembers(members);
             }
 

@@ -97,7 +97,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     private HttpResponse performRequest() {
-    	if(post == null){// NOSONAR - false-positive from clover; if-expression is correct
+    	if(post == null){
 	    	buildHead();
 	    	buildBody();
 	    	post = new HttpPost(getFinalEndpoint());
@@ -132,10 +132,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         nameValuePairs.add(new BasicNameValuePair("scope", scopes));
         nameValuePairs.add(new BasicNameValuePair("grant_type", grantType.getUrlParam())); // NOSONAR - we check before that the grantType is not null
-        if(userName != null){// NOSONAR - false-positive from clover; if-expression is correct
+        if(userName != null){
         	nameValuePairs.add(new BasicNameValuePair("username", userName));
         }
-        if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
+        if(password != null){
         	nameValuePairs.add(new BasicNameValuePair("password", password));
         }
         try {
@@ -155,14 +155,14 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      *                               to retrieve an {@link AccessToken}
      */
     public AccessToken retrieveAccessToken() {
-    	if(grantType == GrantType.AUTHORIZATION_CODE){// NOSONAR - false-positive from clover; if-expression is correct
+    	if(grantType == GrantType.AUTHORIZATION_CODE){
     		throw new IllegalAccessError("For the grant type " + GrantType.AUTHORIZATION_CODE
     				+ " you need to retrieve a authentication code first.");
     	}
         HttpResponse response = performRequest();
         int status = response.getStatusLine().getStatusCode();
 
-        if (status != SC_OK) {  // NOSONAR - false-positive from clover; if-expression is correct
+        if (status != SC_OK) {
         	String errorMessage;
         	String defaultMessage;
             switch (status) {
@@ -200,10 +200,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             errorMessage = defaultErrorMessage;
         }finally{
         	try{
-        		if(content != null) { content.close(); }// NOSONAR - false-positive from clover; if-expression is correct
+        		if(content != null) { content.close(); }
         	}catch(IOException notNeeded){/**doesn't matter**/}
         }
-        if(errorMessage == null){// NOSONAR - false-positive from clover; if-expression is correct
+        if(errorMessage == null){
             errorMessage = defaultErrorMessage;
         }
         return errorMessage;
@@ -216,7 +216,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public URI getRedirectLoginUri() {
-    	if(grantType != GrantType.AUTHORIZATION_CODE){// NOSONAR - false-positive from clover; if-expression is correct
+    	if(grantType != GrantType.AUTHORIZATION_CODE){
     		throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE
     				+ " to be able to use this method.");
     	}
@@ -255,15 +255,15 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     	Header header = authCodeResponse.getLastHeader("Location");
 		HeaderElement[] elements = header.getElements();
 		for (HeaderElement actHeaderElement : elements) {
-			if(actHeaderElement.getName().contains("code")){// NOSONAR - false-positive from clover; if-expression is correct
+			if(actHeaderElement.getName().contains("code")){
 				authCode = actHeaderElement.getValue();
 				break;
 			}
-			if(actHeaderElement.getName().contains("error")){// NOSONAR - false-positive from clover; if-expression is correct
+			if(actHeaderElement.getName().contains("error")){
 				throw new ForbiddenException("The user had denied the acces to his data.");
 			}
 		}
-		if(authCode == null){// NOSONAR - false-positive from clover; if-expression is correct
+		if(authCode == null){
 			throw new InvalidAttributeException("Could not find any auth code or error message in the given Response");
 		}
     	return retrieveAccessToken(authCode);
@@ -280,7 +280,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * @see <a href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public AccessToken retrieveAccessToken(String authCode) {
-        if (authCode == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (authCode == null) {
             throw new IllegalArgumentException("The given authentication code can't be null.");
         }
 
@@ -295,7 +295,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         	throw new ConnectionInitializationException("Unable to setup connection", e);
         }
 
-        if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
                 case SC_BAD_REQUEST:
@@ -388,7 +388,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
 				scopeSet.add(actScope);
 			}
 
-        	if(scopeSet.contains(Scope.ALL)){// NOSONAR - false-positive from clover; if-expression is correct
+        	if(scopeSet.contains(Scope.ALL)){
         		this.scopes = Scope.ALL.toString();
         	}else{
         		StringBuilder scopeBuilder = new StringBuilder();
@@ -487,23 +487,23 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         private void ensureAllNeededParameterAreCorrect(){// NOSONAR - this is a test method the Cyclomatic Complexity can be over 10.
-            if (clientId == null || clientSecret == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (clientId == null || clientSecret == null) {
                 throw new IllegalArgumentException("The provided client credentials are incomplete.");
             }
-            if(scopes == null){// NOSONAR - false-positive from clover; if-expression is correct
+            if(scopes == null){
             	throw new IllegalArgumentException("At least one scope needs to be set.");
             }
-            if (grantType == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (grantType == null) {
                 throw new IllegalArgumentException("The grant type is not set.");
             }
-            if (grantType.equals(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS) && (userName == null && password == null)) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (grantType.equals(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS) && (userName == null && password == null)) {
                 throw new IllegalArgumentException("The grant type 'password' requires username and password");
             }
-            if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))// NOSONAR - false-positive from clover; if-expression is correct
-            		&& (userName != null || password != null)) { // NOSONAR - false-positive from clover; if-expression is correct
+            if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))
+            		&& (userName != null || password != null)) {
                 throw new IllegalArgumentException("For the grant type '" + grantType + "' setting of password and username are not allowed.");
             }
-            if (grantType.equals(GrantType.AUTHORIZATION_CODE) && clientRedirectUri == null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (grantType.equals(GrantType.AUTHORIZATION_CODE) && clientRedirectUri == null) {
                 throw new IllegalArgumentException("For the grant type '" + grantType + "' the redirect Uri is needed.");
             }
         }

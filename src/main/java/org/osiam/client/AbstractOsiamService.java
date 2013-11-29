@@ -122,7 +122,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_OK) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
@@ -164,15 +164,14 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         final InputStream queryResult;
         try {
             HttpGet realWebResource = createRealWebResource(accessToken);
-            URI uri = new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString));// NOSONAR
-            // - false-positive from clover; if-expression is correct
-            realWebResource.setURI(uri); // NOSONAR
+            URI uri = new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString));
+            realWebResource.setURI(uri);
 
             httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_OK) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
@@ -206,7 +205,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
     }
 
     protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
-        if (query == null) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (query == null) {
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
         return searchResources(query.toString(), accessToken);
@@ -241,7 +240,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
         } finally {
             content.close();
         }
-        if (errorMessage == null) {// NOSONAR - false-positive from clover; if-expression is correct
+        if (errorMessage == null) {
             errorMessage = defaultErrorMessage;
         }
         return errorMessage;
@@ -273,7 +272,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_OK) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
@@ -317,7 +316,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_CREATED) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_CREATED) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
@@ -378,7 +377,7 @@ abstract class AbstractOsiamService<T extends CoreResource> {
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
-            if (httpStatus != SC_OK) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (httpStatus != SC_OK) {
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
