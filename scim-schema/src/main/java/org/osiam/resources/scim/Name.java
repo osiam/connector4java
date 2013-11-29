@@ -159,7 +159,7 @@ public class Name {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) { // NOSONAR - Cyclomatic Complexity can be over 10
         if (this == o) {
             return true;
         }
