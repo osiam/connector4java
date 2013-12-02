@@ -148,7 +148,7 @@ public class MultiValuedAttribute {
     }
 
     @Override
-    @Generated(value = { "auto generated" })
+    @Generated("eclipse")
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
