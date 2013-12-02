@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim;
 
+import javax.annotation.Generated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -145,7 +147,8 @@ public class MultiValuedAttribute {
         return result;
     }
 
-    @Override // NOSONAR - Cyclomatic Complexity can be over 10
+    @Override
+    @Generated(value = { "auto generated" })
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
