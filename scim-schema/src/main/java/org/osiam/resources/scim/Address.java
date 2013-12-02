@@ -152,9 +152,10 @@ public class Address extends MultiValuedAttribute {
             this.country = country;
             return this;
         }
-        
+
+        @Override
         public Builder setPrimary(Boolean primary) {
-            super.primary = primary;
+            super.setPrimary(primary);
             return this;
         }
 

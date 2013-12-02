@@ -29,8 +29,8 @@ import spock.lang.Unroll
 class UserSpec extends Specification {
 
     static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
-    static def EXTENSION_EMPTY = new Extension([:])
-    static def CORE_SCHEMA_SET = [Constants.CORE_SCHEMA] as Set
+    static def EXTENSION_EMPTY = new Extension(EXTENSION_URN)
+    static def CORE_SCHEMA_SET = [Constants.USER_CORE_SCHEMA] as Set
 
     def "default constructor should be present due to json mappings"() {
         when:
@@ -107,7 +107,7 @@ class UserSpec extends Specification {
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
                 .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
-                .addExtension("urn:org.osiam:schemas:test:1.0:Test", new Extension([:]))
+                .addExtension(new Extension("urn:org.osiam:schemas:test:1.0:Test"))
         when:
         User user = builder.build()
         then:
@@ -177,7 +177,7 @@ class UserSpec extends Specification {
         given:
         def address = new Address.Builder().build()
         def generalAttribute = new MultiValuedAttribute.Builder().build()
-        def extension = new Extension([:])
+        def extension = new Extension("urn:org.osiam:schemas:test:1.0:Test")
 
         User user = new User.Builder("test")
                 .setAddresses([address])
@@ -189,7 +189,7 @@ class UserSpec extends Specification {
                 .setPhotos([generalAttribute])
                 .setRoles([generalAttribute])
                 .setX509Certificates([generalAttribute])
-                .addExtension("urn:org.osiam:schemas:test:1.0:Test", extension)
+                .addExtension(extension)
                 .build()
 
         when:
@@ -303,13 +303,13 @@ class UserSpec extends Specification {
     def 'builder should add a schema to the schema Set for each added extension'() {
         given:
         def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
-        def extension1 = new Extension([:])
+        def extension1 = new Extension(extension1Urn)
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
-        def extension2 = new Extension([:])
+        def extension2 = new Extension(extension2Urn)
         when:
         def user = new User.Builder("test2")
-                .addExtension(extension1Urn, extension1)
-                .addExtension(extension2Urn, extension2)
+                .addExtension(extension1)
+                .addExtension(extension2)
                 .build()
         then:
         user.schemas.contains(extension1Urn)
@@ -319,14 +319,15 @@ class UserSpec extends Specification {
     def 'scim core schema must always be present in schema set when adding extensions'() {
         given:
         def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
-        def extension1 = new Extension([:])
+        def extension1 = new Extension(extension1Urn)
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
-        def extension2 = new Extension([:])
-        def coreSchemaUrn = Constants.CORE_SCHEMA
+        def extension2 = new Extension(extension2Urn)
+        def coreSchemaUrn = Constants.USER_CORE_SCHEMA
+        
         when:
         def user = new User.Builder("test2")
-                .addExtension(extension1Urn, extension1)
-                .addExtension(extension2Urn, extension2)
+                .addExtension(extension1)
+                .addExtension(extension2)
                 .build()
         then:
         user.schemas.contains(coreSchemaUrn)
@@ -335,7 +336,7 @@ class UserSpec extends Specification {
     def 'an added extension can be retrieved'() {
         given:
         def user = new User.Builder("test2")
-                .addExtension(EXTENSION_URN, EXTENSION_EMPTY)
+                .addExtension(EXTENSION_EMPTY)
                 .build()
         expect:
         user.getExtension(EXTENSION_URN) == EXTENSION_EMPTY
@@ -343,8 +344,11 @@ class UserSpec extends Specification {
 
     def 'extensions can be added in bulk'() {
         given:
+        def extensions = new HashSet<Extension>()
+        extensions.add(EXTENSION_EMPTY)
         def user = new User.Builder("test")
-                .addExtensions([(EXTENSION_URN): EXTENSION_EMPTY])
+                //.addExtensions([(EXTENSION_URN): EXTENSION_EMPTY])
+                .addExtensions(extensions)
                 .build()
 
         expect:

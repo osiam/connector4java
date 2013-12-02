@@ -23,7 +23,6 @@
 
 package org.osiam.resources.scim;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public abstract class Resource {
 
     private String id;
-    protected Meta meta;
+    private Meta meta;
     @JsonProperty(required = true)
     private Set<String> schemas;
 
@@ -50,7 +49,16 @@ public abstract class Resource {
     public abstract static class Builder {
         protected String id; // NOSONAR - fields are needed in child classes
         protected Meta meta; // NOSONAR - fields are needed in child classes
-        protected Set<String> schemas = new HashSet<>(Arrays.asList(Constants.CORE_SCHEMA)); // NOSONAR - fields are needed in child classes
+        protected Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
+
+        public Builder(Resource resource) {
+            this.id = resource.id;
+            this.meta = resource.meta;
+            this.schemas = resource.schemas;
+        }
+
+        public Builder() {
+        }
 
         public Builder setSchemas(Set<String> schemas) {
             this.schemas = schemas;
@@ -90,7 +98,13 @@ public abstract class Resource {
         return meta;
     }
 
+    /**
+     * Gets the value of the schemas property.
+     *
+     * @return possible object is
+     *         {@link Set<String> }
+     */
     public Set<String> getSchemas() {
-        return schemas;
+    	return schemas;
     }
 }

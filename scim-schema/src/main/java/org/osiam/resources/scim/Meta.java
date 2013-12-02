@@ -31,7 +31,6 @@ import org.osiam.resources.helper.JsonDateSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-
 /**
  * Java class for meta complex type.
  */
