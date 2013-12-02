@@ -1,8 +1,27 @@
-package org.osiam.client.query;
 /*
- * for licensing see the file license.txt.
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package org.osiam.client.query;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -45,7 +64,7 @@ public class Query {
      * @return The number of Items this Query is configured for.
      */
     public int getCountPerPage() {
-        if (queryStringContainsCount()) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (queryStringContainsCount()) {
             return Integer.parseInt(countMatcher.group(1));
         }
         return DEFAULT_COUNT;
@@ -57,7 +76,7 @@ public class Query {
      * @return The startIndex of this query.
      */
     public int getStartIndex() {
-        if (queryStringContainsIndex()) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (queryStringContainsIndex()) {
             return Integer.parseInt(indexMatcher.group(1));
         }
         return DEFAULT_INDEX;
@@ -70,7 +89,7 @@ public class Query {
      */
     public Query nextPage() {
         String nextIndex = "startIndex=" + (getCountPerPage() + getStartIndex());
-        if (queryStringContainsIndex()) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (queryStringContainsIndex()) {
             return new Query(indexMatcher.replaceFirst(nextIndex));
         }
         return new Query(queryString + "&" + nextIndex);
@@ -83,26 +102,26 @@ public class Query {
      * @throws IllegalStateException in case you are already at the first page
      */
     public Query previousPage() {
-        if(getStartIndex() <= DEFAULT_INDEX){// NOSONAR - false-positive from clover; if-expression is correct
+        if(getStartIndex() <= DEFAULT_INDEX){
         	throw new IllegalStateException("StartIndex < " + DEFAULT_INDEX + " is not possible.");
         }
     	int newIndex = getStartIndex() - getCountPerPage();
-        
-        if (newIndex < DEFAULT_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
+
+        if (newIndex < DEFAULT_INDEX) {
             newIndex = DEFAULT_INDEX;
         }
-        
+
         return new Query(indexMatcher.replaceFirst("startIndex=" + newIndex));
     }
 
 
     @Override
     public boolean equals(Object other) {
-        if (this == other) { // NOSONAR - false-positive from clover; if-expression is correct
+        if (this == other) {
             return true;
         }
-        
-        if (other == null || getClass() != other.getClass()) { // NOSONAR - false-positive from clover; if-expression is correct
+
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
 
@@ -120,6 +139,7 @@ public class Query {
     /**
      * @return The query as a String that can be used in a web request.
      */
+    @Override
     public String toString() {
         return queryString;
     }
@@ -215,7 +235,7 @@ public class Query {
          * @return The Builder with sortBy added.
          */
         public Builder setSortBy(Attribute attribute) {
-            if (!(isAttributeValid(attribute.toString()))) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (!(isAttributeValid(attribute.toString()))) {
                 throw new InvalidAttributeException("Sorting for this attribute is not supported");//TODO
             }
             sortBy = attribute.toString();
@@ -229,7 +249,7 @@ public class Query {
          */
         public Query build()  {
             StringBuilder builder = new StringBuilder();
-            if (filter != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (filter != null) {
                 try{
                 ensureQueryParamIsSeparated(builder);
                 builder.append("filter=")
@@ -238,23 +258,23 @@ public class Query {
                     throw new RuntimeException(e);  // NOSONAR - The UnsupportedEncodingException will in real time "never" happen and if yes a runtime exception will catch the problem
                 }
             }
-            if (sortBy != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (sortBy != null) {
                 ensureQueryParamIsSeparated(builder);
                 builder.append("sortBy=")
                         .append(sortBy);
             }
-            if (sortOrder != null) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (sortOrder != null) {
                 ensureQueryParamIsSeparated(builder);
                 builder.append("sortOrder=")
                         .append(sortOrder);
 
             }
-            if (countPerPage != DEFAULT_COUNT) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (countPerPage != DEFAULT_COUNT) {
                 ensureQueryParamIsSeparated(builder);
                 builder.append("count=")
                         .append(countPerPage);
             }
-            if (startIndex != DEFAULT_INDEX) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (startIndex != DEFAULT_INDEX) {
                 ensureQueryParamIsSeparated(builder);
                 builder.append("startIndex=")
                         .append(startIndex);
@@ -263,7 +283,7 @@ public class Query {
         }
 
         private void ensureQueryParamIsSeparated(StringBuilder builder) {
-            if (builder.length() != 0) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (builder.length() != 0) {
                 builder.append("&");
             }
         }
@@ -274,28 +294,28 @@ public class Query {
 
         private static boolean isAttributeValid(String attribute, Class<?> clazz) {
             String compositeField = "";
-            if (attribute.contains(".")) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (attribute.contains(".")) {
                 compositeField = attribute.substring(attribute.indexOf('.') + 1);
             }
-            if (attribute.startsWith("meta.")) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (attribute.startsWith("meta.")) {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Meta.class);
             }
-            if (attribute.startsWith("emails.")) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (attribute.startsWith("emails.")) {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.MultiValuedAttribute.class);
             }
-            if (attribute.startsWith("name.")) { // NOSONAR - false-positive from clover; if-expression is correct
+            if (attribute.startsWith("name.")) {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);
             }
 
             List<String> fields = getAllClassFields(clazz);
-            if(fields.contains(attribute)){// NOSONAR - false-positive from clover; if-expression is correct
+            if(fields.contains(attribute)){
             	return true;
             }
             return false;
         }
     }
 
-    
+
     private static List<String> getAllClassFields(Class<?> clazz){
     	ArrayList<String> fields = new ArrayList<>();
         for (Field actField : clazz.getDeclaredFields()) {
@@ -304,9 +324,9 @@ public class Query {
     	addFieldsFromSuperClass(fields, clazz.getSuperclass());
     	return fields;
     }
-    
+
     private static void addFieldsFromSuperClass(List<String> fields, Class<?> clazz){
-        if(clazz == null){// NOSONAR - false-positive from clover; if-expression is correct
+        if(clazz == null){
         	return;
         }
     	for (Field actField : clazz.getDeclaredFields()) {
@@ -401,12 +421,13 @@ public class Query {
          * provides all appended Comparisons as String
          * @return the build together filter
          */
+        @Override
         public String toString(){
             return filterBuilder.toString();
         }
 
         private Filter query(Comparison comparison) {
-            if (!(isAttributeValid(comparison))) {  // NOSONAR - false-positive from clover; if-expression is correct
+            if (!(isAttributeValid(comparison))) {
                 throw new InvalidAttributeException("Querying for this attribute is not supported");
             }
 

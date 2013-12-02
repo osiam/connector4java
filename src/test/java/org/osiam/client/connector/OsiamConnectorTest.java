@@ -1,7 +1,27 @@
-package org.osiam.client.connector;
 /*
- * for licensing see the file license.txt.
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+package org.osiam.client.connector;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -26,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
@@ -38,15 +57,16 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -75,8 +95,8 @@ public class OsiamConnectorTest {
     private String searchedUserID;
     private String searchedGroupId;
     private AccessTokenMockProvider tokenProvider;
-    private QueryResult<User> userQueryResult;
-    private QueryResult<Group> groupQueryResult;
+    private SCIMSearchResult<User> userQueryResult;
+    private SCIMSearchResult<Group> groupQueryResult;
     private List<User> allUsers;
     private List<Group> allGroups;
     private Query query;

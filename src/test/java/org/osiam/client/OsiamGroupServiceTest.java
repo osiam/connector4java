@@ -1,7 +1,27 @@
-package org.osiam.client;
 /*
- * for licensing see the file license.txt.
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+package org.osiam.client;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -19,13 +39,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
+
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,9 +53,9 @@ import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
+import org.osiam.resources.scim.SCIMSearchResult;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -57,7 +77,7 @@ public class OsiamGroupServiceTest {
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
     private Group singleGroupResult;
-    private QueryResult<Group> queryResult;
+    private SCIMSearchResult<Group> SCIMSearchResult;
     private List<Group> allGroups;
     private OsiamGroupService service;
 
@@ -218,7 +238,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchGroups(queryString, accessToken);
+        SCIMSearchResult = service.searchGroups(queryString, accessToken);
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
@@ -305,9 +325,9 @@ public class OsiamGroupServiceTest {
     }
 
     private void thenReturnedListOfSearchedGroupsIsAsExpected() {
-        assertEquals(1, queryResult.getTotalResults());
-        assertEquals(1, queryResult.getResources().size());
-        assertEquals("test_group01", queryResult.getResources().iterator().next().getDisplayName());
+        assertEquals(1, SCIMSearchResult.getTotalResults());
+        assertEquals(1, SCIMSearchResult.getResources().size());
+        assertEquals("test_group01", SCIMSearchResult.getResources().iterator().next().getDisplayName());
     }
 
     private void thenReturnedListOfAllGroupsIsAsExpected() {

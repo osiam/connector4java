@@ -1,7 +1,27 @@
-package org.osiam.client.update;
 /*
- * for licensing see the file license.txt.
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+package org.osiam.client.update;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,19 +59,19 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
      */
     public static class Builder{
 
-    	private String userName;
-    	private String nickName;
-    	private String externalId;
-    	private String locale;
-    	private String password;
-    	private String preferredLanguage;
-    	private String profileUrl;
-    	private String timezone;
-    	private String title;
-    	private Name name;
-    	private String userType;
-    	private String displayName;
-    	private Boolean active;
+        private String userName;
+        private String nickName;
+        private String externalId;
+        private String locale;
+        private String password;
+        private String preferredLanguage;
+        private String profileUrl;
+        private String timezone;
+        private String title;
+        private Name name;
+        private String userType;
+        private String displayName;
+        private Boolean active;
         private User.Builder updateUser = null;
         private Set<String> deleteFields = new HashSet<>();
         private List<MultiValuedAttribute> emails = new ArrayList<>();
@@ -68,19 +88,19 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         public Builder(){
         }
 
-//start username
+        //start username
         /**
          * updates the nickName of a existing user
          * @param nickName the new nickName
          * @return The builder itself
          */
         public Builder updateUserName(String userName){
-        	this.userName = userName;
+            this.userName = userName;
             return this;
         }
         //end username
 
-//start address
+        //start address
         /**
          * adds a new address to the existing addresses of a existing user
          * @param address the new address
@@ -97,13 +117,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteAddress(Address address){
-        /*	TODO korrekte Adresse ist nicht in version 0.22 sondern nur 0.23-SNAPSHORT vom scim schema vorhanden
+            /*	TODO korrekte Adresse ist nicht in version 0.22 sondern nur 0.23-SNAPSHORT vom scim schema vorhanden
             Address deleteAddress = new Address.Builder(address)
             		.setOperation(DELETE)
             		.build();
 
-        	addresses.add(deleteAddress);
-        	*/
+        	addresses.add(deleteAddress);*/
+
             return this;
         }
 
@@ -112,8 +132,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteAddresses(){
-        	deleteFields.add("addresses");
-        	return this;
+            deleteFields.add("addresses");
+            return this;
         }
 
         /**
@@ -123,13 +143,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateAddress(Address oldAttribute, Address newAttribute){
-        	deleteAddress(oldAttribute);
-        	addAddress(newAttribute);
-        	return this;
+            deleteAddress(oldAttribute);
+            addAddress(newAttribute);
+            return this;
         }
         //end address
 
-//start Nickname
+        //start Nickname
         /**
          * deletes the nickName of a existing user
          * @return The builder itself
@@ -150,7 +170,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end Nickname
 
-//start ExternalID
+        //start ExternalID
         /**
          * delete the external Id of a existing user
          * @return The builder itself
@@ -166,12 +186,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateExternalId(String externalId){
-        	this.externalId = externalId;
+            this.externalId = externalId;
             return this;
         }
         //end ExternalID
 
-//start local
+        //start local
         /**
          * delete the local value of a existing user
          * @return The builder itself
@@ -192,7 +212,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end local
 
-//start password
+        //start password
         /**
          * updates the password of a existing user
          * @param password new password
@@ -204,7 +224,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end password
 
-//start preferredLanguage
+        //start preferredLanguage
         /**
          * delete the preferred Language of a existing user
          * @return The builder itself
@@ -220,12 +240,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updatePreferredLanguage(String preferredLanguage){
-        	this.preferredLanguage = preferredLanguage;
+            this.preferredLanguage = preferredLanguage;
             return this;
         }
         //end preferredLanguage
 
-//start ProfileUrl
+        //start ProfileUrl
         /**
          * deletes the profil Url of a existing user
          * @return The builder itself
@@ -241,12 +261,12 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateProfileUrl(String profileUrl){
-        	this.profileUrl = profileUrl;
+            this.profileUrl = profileUrl;
             return this;
         }
         //end ProfileUrl
 
-//start timezone
+        //start timezone
         /**
          * deletes the timezone of a existing user
          * @return The builder itself
@@ -267,7 +287,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end timezone
 
-//start title
+        //start title
         /**
          * deletes the title of a existing user
          * @return The builder itself
@@ -288,7 +308,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end title
 
-//start name
+        //start name
         /**
          * deletes the name of a existing user
          * @return The builder itself
@@ -309,7 +329,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end name
 
-//start UserType
+        //start UserType
         /**
          * deletes the user type of a existing user
          * @return The builder itself
@@ -330,7 +350,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end UserType
 
-//start DisplayName
+        //start DisplayName
         /**
          * deletes the display name of a existing user
          * @return The builder itself
@@ -351,7 +371,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end DisplayName
 
-//start email
+        //start email
         /**
          * deletes all emails of a existing user
          * @return The builder itself
@@ -367,11 +387,11 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteEmail(MultiValuedAttribute email){
-        	MultiValuedAttribute deleteEmail = new MultiValuedAttribute.Builder()
-        		.setValue(email.getValue())
-        		.setType(email.getType())
-        		.setOperation(DELETE).build();
-        	emails.add(deleteEmail);
+            MultiValuedAttribute deleteEmail = new MultiValuedAttribute.Builder()
+            .setValue(email.getValue())
+            .setType(email.getType())
+            .setOperation(DELETE).build();
+            emails.add(deleteEmail);
             return this;
         }
 
@@ -393,13 +413,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateEmail(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deleteEmail(oldAttribute);
-        	addEmail(newAttribute);
-        	return this;
+            deleteEmail(oldAttribute);
+            addEmail(newAttribute);
+            return this;
         }
         //end email
 
-//start certificates
+        //start certificates
         /**
          * deletes all X509Certificates of a existing user
          * @return The builder itself
@@ -416,8 +436,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          */
         public Builder deleteX509Certificate(MultiValuedAttribute certificate){
             MultiValuedAttribute deleteCertificates = new MultiValuedAttribute.Builder()
-            		.setValue(certificate.getValue())
-                    .setOperation(DELETE).build();
+            .setValue(certificate.getValue())
+            .setOperation(DELETE).build();
             certificates.add(deleteCertificates);
             return this;
         }
@@ -429,7 +449,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder addX509Certificate(MultiValuedAttribute certificate){
-        	certificates.add(certificate);
+            certificates.add(certificate);
             return this;
         }
 
@@ -440,13 +460,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateX509Certificate(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deleteX509Certificate(oldAttribute);
-        	addX509Certificate(newAttribute);
-        	return this;
+            deleteX509Certificate(oldAttribute);
+            addX509Certificate(newAttribute);
+            return this;
         }
         //end certificates
 
-//start roles
+        //start roles
         /**
          * deletes all roles of a existing user
          * @return The builder itself
@@ -463,8 +483,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          */
         public Builder deleteRole(MultiValuedAttribute role){
             MultiValuedAttribute deleteRole = new MultiValuedAttribute.Builder()
-            		.setValue(role.getValue())
-                    .setOperation(DELETE).build();
+            .setValue(role.getValue())
+            .setOperation(DELETE).build();
             roles.add(deleteRole);
             return this;
         }
@@ -476,8 +496,8 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          */
         public Builder deleteRole(String role){
             MultiValuedAttribute deleteRole = new MultiValuedAttribute.Builder()
-            		.setValue(role)
-                    .setOperation(DELETE).build();
+            .setValue(role)
+            .setOperation(DELETE).build();
             roles.add(deleteRole);
             return this;
         }
@@ -500,13 +520,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateRole(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deleteRole(oldAttribute);
-        	addRole(newAttribute);
-        	return this;
+            deleteRole(oldAttribute);
+            addRole(newAttribute);
+            return this;
         }
         //end roles
 
-//start ims
+        //start ims
         /**
          * deletes all ims of a existing user
          * @return The builder itself
@@ -522,10 +542,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteIms(MultiValuedAttribute ims){
-        	MultiValuedAttribute deleteIms = new MultiValuedAttribute.Builder()
-        			.setValue(ims.getValue())
-        			.setType(ims.getType())
-                    .setOperation(DELETE).build();
+            MultiValuedAttribute deleteIms = new MultiValuedAttribute.Builder()
+            .setValue(ims.getValue())
+            .setType(ims.getType())
+            .setOperation(DELETE).build();
             this.ims.add(deleteIms);
             return this;
         }
@@ -548,13 +568,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateIms(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deleteIms(oldAttribute);
-        	addIms(newAttribute);
-        	return this;
+            deleteIms(oldAttribute);
+            addIms(newAttribute);
+            return this;
         }
         //end ims
 
-//start phonenumbers
+        //start phonenumbers
         /**
          * adds or updates a phoneNumber to an existing user
          * if the .getValue() already exists a update will be done. If not a new one will be added
@@ -572,10 +592,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deletePhoneNumber(MultiValuedAttribute phoneNumber){
-        	MultiValuedAttribute deletePhoneNumber = new MultiValuedAttribute.Builder()
-        			.setValue(phoneNumber.getValue())
-        			.setType(phoneNumber.getType())
-                    .setOperation(DELETE).build();
+            MultiValuedAttribute deletePhoneNumber = new MultiValuedAttribute.Builder()
+            .setValue(phoneNumber.getValue())
+            .setType(phoneNumber.getType())
+            .setOperation(DELETE).build();
             phoneNumbers.add(deletePhoneNumber);
             return this;
         }
@@ -595,13 +615,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updatePhoneNumber(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deletePhoneNumber(oldAttribute);
-        	addPhoneNumber(newAttribute);
-        	return this;
+            deletePhoneNumber(oldAttribute);
+            addPhoneNumber(newAttribute);
+            return this;
         }
         //end phonenumbers
 
-//start photos
+        //start photos
         /**
          * adds or updates a photo to an existing user
          * if the .getValue() already exists a update will be done. If not a new one will be added
@@ -619,11 +639,11 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deletePhoto(MultiValuedAttribute photo){
-        	MultiValuedAttribute deletePhoto = new MultiValuedAttribute.Builder()
-        			.setValue(photo.getValue())
-        			.setType(photo.getType())
-                    .setOperation(DELETE)
-                    .build();
+            MultiValuedAttribute deletePhoto = new MultiValuedAttribute.Builder()
+            .setValue(photo.getValue())
+            .setType(photo.getType())
+            .setOperation(DELETE)
+            .build();
             photos.add(deletePhoto);
             return this;
         }
@@ -643,13 +663,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updatePhotos(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deletePhoto(oldAttribute);
-        	addPhoto(newAttribute);
-        	return this;
+            deletePhoto(oldAttribute);
+            addPhoto(newAttribute);
+            return this;
         }
         //end photos
 
-//start entitlement
+        //start entitlement
         /**
          * deletes all entitlements of a existing user
          * @return The builder itself
@@ -665,11 +685,11 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteEntitlement(MultiValuedAttribute entitlement){
-        	MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
-        			.setValue(entitlement.getValue())
-        			.setType(entitlement.getType())
-                    .setOperation(DELETE)
-                    .build();
+            MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
+            .setValue(entitlement.getValue())
+            .setType(entitlement.getType())
+            .setOperation(DELETE)
+            .build();
             entitlements.add(deleteEntitlement);
             return this;
         }
@@ -681,7 +701,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder addEntitlement(MultiValuedAttribute entitlement){
-        	entitlements.add(entitlement);
+            entitlements.add(entitlement);
             return this;
         }
 
@@ -692,13 +712,13 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder updateEntitlement(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute){
-        	deleteEntitlement(oldAttribute);
-        	addEntitlement(newAttribute);
-        	return this;
+            deleteEntitlement(oldAttribute);
+            addEntitlement(newAttribute);
+            return this;
         }
         //end entitlement
 
-//start group
+        //start group
         /**
          * deletes all group memberships of a existing user
          * @return The builder itself
@@ -715,9 +735,9 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteGroup(String groupId){
-        	MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-                    .setValue(groupId)
-                    .setOperation(DELETE).build();
+            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
+            .setValue(groupId)
+            .setOperation(DELETE).build();
             groups.add(deleteGroup);
             return this;
         }
@@ -728,9 +748,9 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteGroup(MultiValuedAttribute groupRef){
-        	MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-        			.setValue(groupRef.getValue())
-                    .setOperation(DELETE).build();
+            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
+            .setValue(groupRef.getValue())
+            .setOperation(DELETE).build();
             groups.add(deleteGroup);
             return this;
         }
@@ -742,20 +762,20 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder addGroupMembership(MultiValuedAttribute groupMembership){
-        	groups.add(groupMembership);
+            groups.add(groupMembership);
             return this;
         }
         //end group
 
-//start active
+        //start active
         /**
          * updates the active status of a existing User to the given value
          * @param activ new active status
          * @return The builder itself
          */
         public Builder updateActive(boolean active){
-        	this.active = active;
-        	return this;
+            this.active = active;
+            return this;
         }
         //end activ
 
@@ -765,75 +785,75 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
-        	if(userName != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser = new User.Builder(userName);
-        	}else{
-        		updateUser = new User.Builder();
-        	}
-        	if(nickName != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setNickName(nickName);
-        	}
-        	if(externalId != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setExternalId(externalId);
-        	}
-        	if(locale != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setLocale(locale);
-        	}
-        	if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setPassword(password);
-        	}
-        	if(preferredLanguage != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setPreferredLanguage(preferredLanguage);
-        	}
-        	if(profileUrl != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setProfileUrl(profileUrl);
-        	}
-        	if(timezone != null) {// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setTimezone(timezone);
-        	}
-        	if(title != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setTitle(title);
-        	}
-        	if(name != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setName(name);
-        	}
-        	if(userType != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setUserType(userType);
-        	}
-        	if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setDisplayName(displayName);
-        	}
-        	if(active != null){// NOSONAR - false-positive from clover; if-expression is correct
-        		updateUser.setActive(active);
-        	}
-            if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(userName != null){
+                updateUser = new User.Builder(userName);
+            }else{
+                updateUser = new User.Builder();
+            }
+            if(nickName != null){
+                updateUser.setNickName(nickName);
+            }
+            if(externalId != null){
+                updateUser.setExternalId(externalId);
+            }
+            if(locale != null){
+                updateUser.setLocale(locale);
+            }
+            if(password != null){
+                updateUser.setPassword(password);
+            }
+            if(preferredLanguage != null){
+                updateUser.setPreferredLanguage(preferredLanguage);
+            }
+            if(profileUrl != null){
+                updateUser.setProfileUrl(profileUrl);
+            }
+            if(timezone != null) {
+                updateUser.setTimezone(timezone);
+            }
+            if(title != null){
+                updateUser.setTitle(title);
+            }
+            if(name != null){
+                updateUser.setName(name);
+            }
+            if(userType != null){
+                updateUser.setUserType(userType);
+            }
+            if(displayName != null){
+                updateUser.setDisplayName(displayName);
+            }
+            if(active != null){
+                updateUser.setActive(active);
+            }
+            if(deleteFields.size() > 0){
                 Meta meta = new Meta.Builder()
-                        .setAttributes(deleteFields).build();
+                .setAttributes(deleteFields).build();
                 updateUser.setMeta(meta);
             }
-            if(emails.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
+            if(emails.size() > 0){
                 updateUser.setEmails(emails);
             }
-            if(phoneNumbers.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setPhoneNumbers(phoneNumbers);
+            if(phoneNumbers.size() > 0){
+                updateUser.setPhoneNumbers(phoneNumbers);
             }
-            if(addresses.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setAddresses(addresses);
+            if(addresses.size() > 0){
+                updateUser.setAddresses(addresses);
             }
-            if(entitlements.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setEntitlements(entitlements);
+            if(entitlements.size() > 0){
+                updateUser.setEntitlements(entitlements);
             }
-            if(ims.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setIms(ims);
+            if(ims.size() > 0){
+                updateUser.setIms(ims);
             }
-            if(photos.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setPhotos(photos);
+            if(photos.size() > 0){
+                updateUser.setPhotos(photos);
             }
-            if(roles.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setRoles(roles);
+            if(roles.size() > 0){
+                updateUser.setRoles(roles);
             }
-            if(certificates.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
-            	updateUser.setX509Certificates(certificates);
+            if(certificates.size() > 0){
+                updateUser.setX509Certificates(certificates);
             }
 
             return new UpdateUser(this);
