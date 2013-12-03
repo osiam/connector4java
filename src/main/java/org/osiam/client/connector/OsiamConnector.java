@@ -29,6 +29,7 @@ import org.apache.http.HttpResponse;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.minimalUser.BasicUser;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
@@ -273,12 +274,12 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @throws ConnectionInitializationException
      *             if no connection to the given OSIAM services could be initialized
      */
-    public User getMe(AccessToken accessToken) {
-        return userService().getMe(accessToken);
+    public User getCurrentUser(AccessToken accessToken) {
+        return userService().getCurrentUser(accessToken);
     }
 
-    public User getMeBasic(AccessToken accessToken) {
-        return userService().getMeBasic(accessToken);
+    public BasicUser getCurrentUserBasic(AccessToken accessToken) {
+        return userService().getCurrentUserBasic(accessToken);
     }
 
     /**

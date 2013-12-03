@@ -53,6 +53,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.AccessTokenMockProvider;
 import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.minimalUser.BasicUser;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -75,7 +76,7 @@ public class OsiamConnectorTest {
     private final static String ENDPOINT = "http://localhost:9090/";
     static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server/";
     private static final String URL_BASE_USERS = "/osiam-resource-server//Users";
-    private static final String URL_BASE_ME = "/osiam-server//me";
+    private static final String URL_BASE_ME = "/osiam-resource-server//me";
     private static final String URL_BASE_GROUPS = "/osiam-resource-server//Groups";
     private final static String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
@@ -92,6 +93,7 @@ public class OsiamConnectorTest {
 
     private AccessToken accessToken;
     private User singleUserResult;
+    private BasicUser singleBasicUserResult;
     private String searchedUserID;
     private String searchedGroupId;
     private AccessTokenMockProvider tokenProvider;
@@ -108,7 +110,7 @@ public class OsiamConnectorTest {
     @Before
     public void setUp() throws Exception {
         oConnector = new OsiamConnector.Builder()
-        		.setEndpoint(ENDPOINT)
+                .setEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
@@ -158,9 +160,16 @@ public class OsiamConnectorTest {
     }
 
     @Test
-    public void getMe_is_transferred_correctly() throws Exception {
-        givenAccessTokenForMeIsValid();
-        whenMeIsLookedUp();
+    public void getCurrentUserBasic_is_transferred_correctly() throws Exception {
+        givenAccessTokenForCurrentUserBasicIsValid();
+        whenCurrentBasicUserIsLookedUp();
+        thenReturnedBasicUserMatchesExpectations();
+    }
+
+    @Test
+    public void getCurrentUser_is_transferred_correctly() throws Exception {
+        givenAccessTokenForCurrentUserIsValid();
+        whenCurrentUserIsLookedUp();
         thenReturnedUserMatchesExpectations();
     }
 
@@ -194,18 +203,18 @@ public class OsiamConnectorTest {
         then_access_token_is_valid();
     }
 
-    @Test (expected = InvalidAttributeException.class)
-    public void request_access_token_without_setting_endpoint_raises_exception(){
-    	givenAConfiguredServiceWithoutEndpoint();
-    	when_token_is_requested();
+    @Test(expected = InvalidAttributeException.class)
+    public void request_access_token_without_setting_endpoint_raises_exception() {
+        givenAConfiguredServiceWithoutEndpoint();
+        when_token_is_requested();
     }
 
-    @Test (expected = InvalidAttributeException.class)
-    public void request_me_user_without_setting_endpint_raises_exception(){
-    	givenAConfiguredServiceWithoutResourceEndpoint();
-    	given_oauth_server_issues_access_token();
-    	when_token_is_requested();
-    	when_me_user_is_requested();
+    @Test(expected = InvalidAttributeException.class)
+    public void request_me_user_without_setting_endpint_raises_exception() {
+        givenAConfiguredServiceWithoutResourceEndpoint();
+        given_oauth_server_issues_access_token();
+        when_token_is_requested();
+        when_me_user_is_requested();
     }
 
     private void givenUserIDcanBeFound() {
@@ -359,26 +368,36 @@ public class OsiamConnectorTest {
     }
 
     private void thenQueryStringIsSplitCorrectly() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE_USERS + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
+        verify(getRequestedFor(
+                urlEqualTo(URL_BASE_USERS + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
-    private void givenAccessTokenForMeIsValid() {
+    private void givenAccessTokenForCurrentUserBasicIsValid() {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + userIdString + ".json")));
+                        .withBodyFile("user_me.json")));
+    }
+
+    private void givenAccessTokenForCurrentUserIsValid() {
+        givenAccessTokenForCurrentUserBasicIsValid();
+        givenUserIDcanBeFound();
     }
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE_USERS + "/me"))
+        return get(urlEqualTo(URL_BASE_ME))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
-    private void whenMeIsLookedUp() {
-        singleUserResult = oConnector.getMe(accessToken);
+    private void whenCurrentBasicUserIsLookedUp() {
+        singleBasicUserResult = oConnector.getCurrentUserBasic(accessToken);
+    }
+
+    private void whenCurrentUserIsLookedUp() {
+        singleUserResult = oConnector.getCurrentUser(accessToken);
     }
 
     private void thenReturnedUserMatchesExpectations() throws Exception {
@@ -402,6 +421,13 @@ public class OsiamConnectorTest {
         assertEquals(expectedUser.isActive(), singleUserResult.isActive());
     }
 
+    private void thenReturnedBasicUserMatchesExpectations() throws Exception {
+
+        BasicUser expectedUser = get_expected_basic_user();
+
+        assertEquals(expectedUser, singleBasicUserResult);
+    }
+
     private User get_expected_user() throws Exception {
         Reader reader = null;
         StringBuilder jsonUser = null;
@@ -409,8 +435,9 @@ public class OsiamConnectorTest {
         try {
             reader = new FileReader("src/test/resources/__files/user_" + userIdString + ".json");
             jsonUser = new StringBuilder();
-            for (int c; (c = reader.read()) != -1; )
+            for (int c; (c = reader.read()) != -1;) {
                 jsonUser.append((char) c);
+            }
         } finally {
             try {
                 reader.close();
@@ -419,6 +446,27 @@ public class OsiamConnectorTest {
         }
 
         expectedUser = new ObjectMapper().readValue(jsonUser.toString(), User.class);
+        return expectedUser;
+    }
+
+    private BasicUser get_expected_basic_user() throws Exception {
+        Reader reader = null;
+        StringBuilder jsonUser = null;
+        BasicUser expectedUser;
+        try {
+            reader = new FileReader("src/test/resources/__files/user_me.json");
+            jsonUser = new StringBuilder();
+            for (int c; (c = reader.read()) != -1;) {
+                jsonUser.append((char) c);
+            }
+        } finally {
+            try {
+                reader.close();
+            } catch (Exception e) {
+            }
+        }
+
+        expectedUser = new ObjectMapper().readValue(jsonUser.toString(), BasicUser.class);
         return expectedUser;
     }
 
@@ -513,7 +561,7 @@ public class OsiamConnectorTest {
 
     private void given_a_correctly_configured_auth_service() {
         oConnector = new OsiamConnector.Builder()
-        		.setEndpoint(ENDPOINT)
+                .setEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
@@ -558,7 +606,7 @@ public class OsiamConnectorTest {
     }
 
     private void when_me_user_is_requested() {
-        oConnector.getMe(accessToken);
+        oConnector.getCurrentUser(accessToken);
     }
 
     private void then_access_token_is_valid() throws Exception {

@@ -36,24 +36,21 @@ import static org.junit.Assert.fail;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.minimalUser.BasicUser;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -68,10 +65,13 @@ public class OsiamUserMeTest {
     final static private String ENDPOINT = "http://localhost:9090/osiam-server/";
     final static private String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String URL_BASE = "/osiam-server//Users";
+    private static final String URL_BASE_USERS = "/osiam-server//Users";
+    private static final String URL_BASE_ME = "/osiam-server//me";
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
     private User singleUserResult;
+    private BasicUser singleBasicUserResult;
 
     OsiamUserService service;
 
@@ -84,20 +84,16 @@ public class OsiamUserMeTest {
     }
 
     @Test
-    public void me_user_is_returned() throws Exception {
-        givenAccessTokenForMeIsValid();
-        whenMeIsLookedUp();
-        thenReturnedUserHasID(USER_ID);
-        thenMetaDataWasDeserializedCorrectly();
-        thenAddressIsDeserializedCorrectly();
-        thenPhoneNumbersAreDeserializedCorrectly();
-        thenBasicValuesAreDeserializedCorrectly();
+    public void getCurrentUserBasic_is_transferred_correctly() throws Exception {
+        givenAccessTokenForCurrentUserBasicIsValid();
+        whenCurrentBasicUserIsLookedUp();
+        thenReturnedBasicUserMatchesExpectations();
     }
 
     @Test
-    public void me_user_has_valid_values() throws Exception {
-        givenAccessTokenForMeIsValid();
-        whenMeIsLookedUp();
+    public void getCurrentUser_is_transferred_correctly() throws Exception {
+        givenAccessTokenForCurrentUserIsValid();
+        whenCurrentUserIsLookedUp();
         thenReturnedUserMatchesExpectations();
     }
 
@@ -127,19 +123,8 @@ public class OsiamUserMeTest {
         this.accessToken = tokenProvider.valid_access_token();
     }
 
-    private void thenReturnedUserHasID(String id) {
-        assertEquals(id, singleUserResult.getId());
-    }
-    private void givenAccessTokenForMeIsValid() {
-        stubFor(givenMeIsLookedUp(accessToken)
-                .willReturn(aResponse()
-                        .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("user_" + USER_ID + ".json")));
-    }
-
     private void whenMeIsLookedUp() {
-        singleUserResult = service.getMe(accessToken);
+        singleUserResult = service.getCurrentUser(accessToken);
     }
 
     private void givenIDisEmpty() {
@@ -163,7 +148,7 @@ public class OsiamUserMeTest {
     }
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE + "/me"))
+        return get(urlEqualTo(URL_BASE_ME))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
@@ -172,17 +157,6 @@ public class OsiamUserMeTest {
         return get(urlEqualTo(URL_BASE + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
-    }
-
-    private void thenMetaDataWasDeserializedCorrectly() throws ParseException {
-        Meta deserializedMeta = singleUserResult.getMeta();
-        Date expectedCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2011-08-01 20:29:49");
-
-        assertEquals(expectedCreated, deserializedMeta.getCreated());
-        assertEquals(expectedCreated, deserializedMeta.getLastModified());
-        assertEquals("https://example.com/v1/Users/2819c223...", deserializedMeta.getLocation());
-        assertEquals(null, deserializedMeta.getVersion());
-        assertEquals("User", deserializedMeta.getResourceType());
     }
 
     public void thenAddressIsDeserializedCorrectly() throws Exception {
@@ -271,8 +245,9 @@ public class OsiamUserMeTest {
         try {
             reader = new FileReader("src/test/resources/__files/user_" + USER_ID + ".json");
             jsonUser = new StringBuilder();
-            for (int c; (c = reader.read()) != -1; )
+            for (int c; (c = reader.read()) != -1; ) {
                 jsonUser.append((char) c);
+            }
         } finally {
             try {
                 reader.close();
@@ -281,6 +256,64 @@ public class OsiamUserMeTest {
         }
 
         expectedUser = new ObjectMapper().readValue(jsonUser.toString(), User.class);
+        return expectedUser;
+    }
+
+    private void givenAccessTokenForCurrentUserBasicIsValid() {
+        stubFor(givenMeIsLookedUp(accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withBodyFile("user_me.json")));
+    }
+
+    private void givenAccessTokenForCurrentUserIsValid() {
+        givenAccessTokenForCurrentUserBasicIsValid();
+        stubFor(givenUserIDisLookedUp(USER_ID, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_OK)
+                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withBodyFile("user_" + USER_ID + ".json")));
+    }
+
+    private MappingBuilder givenUserIDisLookedUp(String id, AccessToken accessToken) {
+        return get(urlEqualTo(URL_BASE_USERS + "/" + id))
+                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
+    }
+
+    private void whenCurrentBasicUserIsLookedUp() {
+        singleBasicUserResult = service.getCurrentUserBasic(accessToken);
+    }
+
+    private void whenCurrentUserIsLookedUp() {
+        singleUserResult = service.getCurrentUser(accessToken);
+    }
+
+    private void thenReturnedBasicUserMatchesExpectations() throws Exception {
+
+        BasicUser expectedUser = get_expected_basic_user();
+        assertEquals(expectedUser, singleBasicUserResult);
+    }
+
+    private BasicUser get_expected_basic_user() throws Exception {
+        Reader reader = null;
+        StringBuilder jsonUser = null;
+        BasicUser expectedUser;
+        try {
+            reader = new FileReader("src/test/resources/__files/user_me.json");
+            jsonUser = new StringBuilder();
+            for (int c; (c = reader.read()) != -1;) {
+                jsonUser.append((char) c);
+            }
+        } finally {
+            try {
+                reader.close();
+            } catch (Exception e) {
+            }
+        }
+
+        expectedUser = new ObjectMapper().readValue(jsonUser.toString(), BasicUser.class);
         return expectedUser;
     }
 
