@@ -40,14 +40,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class BasicUser {
 
     private String id;
-    private String name = "";
+    private String name;
     @JsonProperty("first_name")
-    private String firstName = "";
+    private String firstName;
     @JsonProperty("last_name")
-    private String lastName = "";
-    private String userName = "";
-    private String email = "";
-    private String locale = "";
+    private String lastName;
+    private String userName;
+    private String email;
+    private String locale;
     @JsonProperty("updated_time")
     @JsonSerialize(using = JsonDateSerializer.class)
     private Date updatedTime;
@@ -68,6 +68,9 @@ public class BasicUser {
      * @return the formatted name property
      */
     public String getName() {
+        if(name == null){
+            name = "";
+        }
         return name;
     }
 
@@ -76,6 +79,9 @@ public class BasicUser {
      * @return the given name of the User
      */
     public String getFirstName(){
+        if(firstName == null){
+            firstName = "";
+        }
         return firstName;
     }
 
@@ -84,6 +90,9 @@ public class BasicUser {
      * @return the last name of the User
      */
     public String getLastName(){
+        if(lastName == null){
+            lastName = "";
+        }
         return lastName;
     }
 
@@ -92,6 +101,9 @@ public class BasicUser {
      * @return the primary email address of the user
      */
     public String getEmail(){
+        if(email == null){
+            email = "";
+        }
         return email;
     }
     /**
@@ -115,6 +127,9 @@ public class BasicUser {
      * @return the local setting of the user
      */
     public String getLocale() {
+        if(locale == null){
+            locale = "";
+        }
         return locale;
     }
 
