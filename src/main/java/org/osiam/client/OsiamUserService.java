@@ -94,7 +94,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     /**
      * Retrieve the basic User data as BasicUser Object from the User who holds the given access token.
      * Not to be used for the grant Client-Credentials
-     * If only the basic Data like the userName, Name, primary emailadress is needed use this methode since it is more
+     * If only the basic Data like the userName, Name, primary emailaddress is needed use this methode since it is more
      * performant as the getCurrentUser(...) method
      * @param accessToken
      *            the OSIAM access token from for the current session
