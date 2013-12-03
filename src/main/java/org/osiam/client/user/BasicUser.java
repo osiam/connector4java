@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.minimalUser;
+package org.osiam.client.user;
 
 import java.util.Date;
 
