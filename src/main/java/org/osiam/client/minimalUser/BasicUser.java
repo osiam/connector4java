@@ -32,9 +32,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * <p>Java class for User complex type.
- * <p/>
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * represents the basic Data of a scim User
+ *
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonIgnoreProperties({"link", "gender", "timezone", "verified"})
@@ -53,27 +52,37 @@ public class BasicUser {
     @JsonSerialize(using = JsonDateSerializer.class)
     private Date updatedTime;
 
-    public BasicUser() {
+    private BasicUser() {
     }
 
+    /**
+     *
+     * @return the id of the User
+     */
     public String getId(){
         return id;
     }
 
     /**
-     * Gets the formatted name property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the formatted name property
      */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return the given name of the User
+     */
     public String getFirstName(){
         return firstName;
     }
 
+    /**
+     *
+     * @return the last name of the User
+     */
     public String getLastName(){
         return lastName;
     }
@@ -86,24 +95,24 @@ public class BasicUser {
         return email;
     }
     /**
-     * Gets the value of the userName property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the userName of the User
      */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     *
+     * @return the date where the USer was last updated
+     */
     public Date getUpdatedTime(){
         return updatedTime;
     }
 
     /**
-     * Gets the value of the locale property.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the local setting of the user
      */
     public String getLocale() {
         return locale;

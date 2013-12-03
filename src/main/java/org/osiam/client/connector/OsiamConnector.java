@@ -263,7 +263,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
 
     /**
      * Retrieve the User who holds the given access token. Not to be used for the grant Client-Credentials
-     *
+     * If only the basic Data like the userName, Name, primary emailadress is needed use the methode getCurrentUserBasic(...)
+     * since it is more performant as this one
      * @param accessToken
      *            the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -278,6 +279,21 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return userService().getCurrentUser(accessToken);
     }
 
+    /**
+     * Retrieve the basic User data as BasicUser Object from the User who holds the given access token.
+     * Not to be used for the grant Client-Credentials
+     * If only the basic Data like the userName, Name, primary emailadress is needed use this methode since it is more
+     * performant as the getCurrentUser(...) method
+     * @param accessToken
+     *            the OSIAM access token from for the current session
+     * @return the actual logged in user
+     * @throws UnauthorizedException
+     *             if the request could not be authorized.
+     * @throws ForbiddenException
+     *             if the scope doesn't allow this request
+     * @throws ConnectionInitializationException
+     *             if no connection to the given OSIAM services could be initialized
+     */
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
         return userService().getCurrentUserBasic(accessToken);
     }
