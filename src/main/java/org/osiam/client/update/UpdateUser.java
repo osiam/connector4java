@@ -91,7 +91,11 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         //start username
         /**
          * updates the nickName of a existing user
-         * @param nickName the new nickName
+<<<<<<< Updated upstream
+         * @param userName the new user name
+=======
+         * @param userName the new nickName
+>>>>>>> Stashed changes
          * @return The builder itself
          */
         public Builder updateUserName(String userName){
@@ -770,7 +774,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         //start active
         /**
          * updates the active status of a existing User to the given value
-         * @param activ new active status
+         * @param active new active status
          * @return The builder itself
          */
         public Builder updateActive(boolean active){
@@ -785,48 +789,48 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
-            if(userName != null){
-                updateUser = new User.Builder(userName);
-            }else{
+        	if(userName == null || userName.isEmpty()){
                 updateUser = new User.Builder();
-            }
-            if(nickName != null){
-                updateUser.setNickName(nickName);
-            }
-            if(externalId != null){
-                updateUser.setExternalId(externalId);
-            }
-            if(locale != null){
-                updateUser.setLocale(locale);
-            }
-            if(password != null){
-                updateUser.setPassword(password);
-            }
-            if(preferredLanguage != null){
-                updateUser.setPreferredLanguage(preferredLanguage);
-            }
-            if(profileUrl != null){
-                updateUser.setProfileUrl(profileUrl);
-            }
-            if(timezone != null) {
-                updateUser.setTimezone(timezone);
-            }
-            if(title != null){
-                updateUser.setTitle(title);
-            }
-            if(name != null){
-                updateUser.setName(name);
-            }
-            if(userType != null){
-                updateUser.setUserType(userType);
-            }
-            if(displayName != null){
-                updateUser.setDisplayName(displayName);
-            }
-            if(active != null){
-                updateUser.setActive(active);
-            }
-            if(deleteFields.size() > 0){
+        	}else{
+                updateUser = new User.Builder(userName);
+        	}
+        	if(nickName != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setNickName(nickName);
+        	}
+        	if(externalId != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setExternalId(externalId);
+        	}
+        	if(locale != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setLocale(locale);
+        	}
+        	if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setPassword(password);
+        	}
+        	if(preferredLanguage != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setPreferredLanguage(preferredLanguage);
+        	}
+        	if(profileUrl != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setProfileUrl(profileUrl);
+        	}
+        	if(timezone != null) {// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setTimezone(timezone);
+        	}
+        	if(title != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setTitle(title);
+        	}
+        	if(name != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setName(name);
+        	}
+        	if(userType != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setUserType(userType);
+        	}
+        	if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setDisplayName(displayName);
+        	}
+        	if(active != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setActive(active);
+        	}
+            if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 Meta meta = new Meta.Builder()
                 .setAttributes(deleteFields).build();
                 updateUser.setMeta(meta);
