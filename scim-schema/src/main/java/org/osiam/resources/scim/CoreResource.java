@@ -26,45 +26,59 @@ package org.osiam.resources.scim;
 /**
  * Java class for CoreResource complex type.
  */
-public abstract class CoreResource  extends Resource{
+public abstract class CoreResource extends Resource {
 
     private String externalId;
 
-    public CoreResource() {}
+    protected CoreResource() {
+    }
 
-
-    public CoreResource(Builder builder) {
+    protected CoreResource(Builder builder) {
         super(builder);
         this.externalId = builder.externalId;
     }
 
-    public abstract static class Builder extends Resource.Builder {
-        protected String externalId; // NOSONAR - fields are needed in child classes
-
-        public Builder(CoreResource coreResource) {
-            super(coreResource);
-            this.externalId = coreResource.externalId;
-        }
-
-        public Builder() {
-            super();
-        }
-
-        public Builder setExternalId(String externalId) {
-            this.externalId = externalId;
-            return this;
-        }
-    }
-
     /**
-     * Gets the value of the externalId property.
+     * Gets the external Id of the resource.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
+     * <p>
+     * For more information please look at <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5.1">SCIM core schema 2.0, section 5.1</a>
+     * </p>
+     *
+     * @return the externalId
      *
      */
     public String getExternalId() {
         return externalId;
+    }
+
+    /**
+     * Abstract builder class that subclass builder inherit from.
+     */
+    public abstract static class Builder extends Resource.Builder {
+        private String externalId;
+
+        protected Builder(CoreResource coreResource) {
+            super(coreResource);
+            this.externalId = coreResource.externalId;
+        }
+
+        protected Builder() {
+            super();
+        }
+
+        /**
+         * Gets the external id (See {@link CoreResource#getExternalId()}).
+         *
+         * @param externalId
+         *            the xternalId
+         *
+         * @return the builder itself
+         */
+        public Builder setExternalId(String externalId) {
+            this.externalId = externalId;
+            return this;
+        }
     }
 }

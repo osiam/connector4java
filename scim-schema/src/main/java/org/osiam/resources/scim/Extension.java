@@ -39,7 +39,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * This class represents a schema extension as specified by the Scim 2.0 specification.
+ * This class represents a schema extension.
+ *
+ * <p>
+ * For more detailed information please look at the <a
+ * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-4">SCIM core schema 2.0, section 4</a>
+ * </p>
  */
 @JsonSerialize(using = ExtensionSerializer.class)
 public class Extension {

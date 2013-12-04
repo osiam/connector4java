@@ -68,7 +68,7 @@ class UserSpec extends Specification {
         def schemas = ["urn:wtf", "urn:hajo"] as Set
         User oldUser = new User.Builder("username").setSchemas(schemas).build()
         when:
-        User user = User.Builder.generateForOutput(oldUser);
+        User user = User.Builder.generateForOutput(oldUser)
         then:
         user.schemas == oldUser.schemas
 
@@ -91,6 +91,7 @@ class UserSpec extends Specification {
     def "should generate a user based on builder"() {
         given:
         def multivalueAttribute = new MultiValuedAttribute.Builder().build()
+        def meta = new Meta.Builder().build()
 
         def builder = new User.Builder("test").setActive(true)
                 .setDisplayName("display")
@@ -106,7 +107,9 @@ class UserSpec extends Specification {
                 .setEntitlements([multivalueAttribute] as List)
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
-                .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
+                .setId('id')
+                .setMeta(meta)
+                .setExternalId('external')
                 .addExtension(new Extension("urn:org.osiam:schemas:test:1.0:Test"))
         when:
         User user = builder.build()
@@ -132,9 +135,9 @@ class UserSpec extends Specification {
         user.userType == builder.userType
         user.x509Certificates == builder.x509Certificates
         user.userName == builder.userName
-        user.id == builder.id
-        user.externalId == builder.externalId
-        user.meta == builder.meta
+        user.id == 'id'
+        user.meta == meta
+        user.externalId == 'external'
         user.extensions == builder.extensions
     }
 
@@ -323,7 +326,7 @@ class UserSpec extends Specification {
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
         def extension2 = new Extension(extension2Urn)
         def coreSchemaUrn = Constants.USER_CORE_SCHEMA
-        
+
         when:
         def user = new User.Builder("test2")
                 .addExtension(extension1)
