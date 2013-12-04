@@ -103,24 +103,6 @@ public class Extension {
     }
 
     /**
-     * Update the field with the given name to the given value.
-     *
-     * @param field
-     *            The name of the field whose value to set
-     * @param value
-     *            The new value of the field.
-     * @throws IllegalArgumentException
-     *             if the given field is null or does not exists.
-     */
-    @Deprecated
-    public void setField(String field, String value) {
-        if (field == null || !fields.containsKey(field)) {
-            throw new IllegalArgumentException("Invalid field name");
-        }
-        fields.put(field, new Field(ExtensionFieldType.STRING, value));
-    }
-
-    /**
      * Adds or updates the field specified by the given field name with the given value.
      *
      * @param fieldName
