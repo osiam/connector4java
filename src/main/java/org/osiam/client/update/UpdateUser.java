@@ -76,7 +76,6 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         private Set<String> deleteFields = new HashSet<>();
         private List<MultiValuedAttribute> emails = new ArrayList<>();
         private List<MultiValuedAttribute> ims = new ArrayList<>();
-        private List<MultiValuedAttribute> groups = new ArrayList<>();
         private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
         private List<Address> addresses = new ArrayList<>();
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
@@ -91,11 +90,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         //start username
         /**
          * updates the nickName of a existing user
-<<<<<<< Updated upstream
          * @param userName the new user name
-=======
-         * @param userName the new nickName
->>>>>>> Stashed changes
          * @return The builder itself
          */
         public Builder updateUserName(String userName){
@@ -721,55 +716,6 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
             return this;
         }
         //end entitlement
-
-        //start group
-        /**
-         * deletes all group memberships of a existing user
-         * @return The builder itself
-         */
-        public Builder deleteGroups(){
-            deleteFields.add("groups");
-            return this;
-        }
-
-
-        /**
-         * removes the membership of in the given group of a existing user
-         * @param groupId membership to be removed
-         * @return The builder itself
-         */
-        public Builder deleteGroup(String groupId){
-            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-            .setValue(groupId)
-            .setOperation(DELETE).build();
-            groups.add(deleteGroup);
-            return this;
-        }
-
-        /**
-         * removes the membership of in the given group of a existing user
-         * @param groupRef membership to be removed
-         * @return The builder itself
-         */
-        public Builder deleteGroup(MultiValuedAttribute groupRef){
-            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-            .setValue(groupRef.getValue())
-            .setOperation(DELETE).build();
-            groups.add(deleteGroup);
-            return this;
-        }
-
-        /**
-         * adds or updates an group membership of an existing user
-         * if the .getValue() already exists a update will be done. If not a new one will be added
-         * @param groupMembership updated group membership
-         * @return The builder itself
-         */
-        public Builder addGroupMembership(MultiValuedAttribute groupMembership){
-            groups.add(groupMembership);
-            return this;
-        }
-        //end group
 
         //start active
         /**
