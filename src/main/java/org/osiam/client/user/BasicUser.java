@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-@JsonIgnoreProperties({"link", "gender", "timezone", "verified"})
+@JsonIgnoreProperties({ "link", "gender", "timezone", "verified" })
 public class BasicUser {
 
     private String id;
@@ -56,78 +56,89 @@ public class BasicUser {
     }
 
     /**
+     * Gets the id of the User
      *
      * @return the id of the User
      */
-    public String getId(){
+    public String getId() {
         return id;
     }
 
     /**
+     * Gets the formatted name property
      *
-     * @return the formatted name property
+     * @return the formatted name
      */
     public String getName() {
-        if(name == null){
+        if (name == null) {
             name = "";
         }
         return name;
     }
 
     /**
+     * Gets the given name of the {@link User}
      *
-     * @return the given name of the User
+     * @return the given name
      */
-    public String getFirstName(){
-        if(firstName == null){
+    public String getFirstName() {
+        if (firstName == null) {
             firstName = "";
         }
         return firstName;
     }
 
     /**
+     * Gets the last name of the {@link User}
      *
-     * @return the last name of the User
+     * @return the last name
      */
-    public String getLastName(){
-        if(lastName == null){
+    public String getLastName() {
+        if (lastName == null) {
             lastName = "";
         }
         return lastName;
     }
 
     /**
+     * Gets the primary email address of the {@link User}
      *
-     * @return the primary email address of the user
+     * @return the primary email address
      */
-    public String getEmail(){
-        if(email == null){
+    public String getEmail() {
+        if (email == null) {
             email = "";
         }
         return email;
     }
+
     /**
+     * Gets the userName of the {@link User}
      *
-     * @return the userName of the User
+     * @return the userName
      */
     public String getUserName() {
         return userName;
     }
 
     /**
+     * Gets the date where the {@link User} was last updated
      *
-     * @return the date where the USer was last updated
+     * @return the last updated date
      */
-    public Date getUpdatedTime(){
+    public Date getUpdatedTime() {
         return updatedTime;
     }
 
     /**
+     * Used to indicate the User's default location for purposes of localizing items such as currency, date time format,
+     * numerical representations, etc. A locale value is a concatenation of the ISO 639-1 two letter language code, an
+     * underscore, and the ISO 3166-1 2 letter country code; e.g., 'en_US' specifies the language English and country US
      *
-     * @return the local setting of the user
+     * @return the local setting of the {@link User}
      */
     public String getLocale() {
-        if(locale == null){
+        if (locale == null) {
             locale = "";
         }
         return locale;
