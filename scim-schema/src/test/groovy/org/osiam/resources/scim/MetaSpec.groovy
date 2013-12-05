@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim
 
+import org.junit.Before
+
 import spock.lang.Specification
 
 class MetaSpec extends Specification {
@@ -62,7 +64,6 @@ class MetaSpec extends Specification {
         then:
         meta.created.time == createdOn
         meta.lastModified.time == lastModified
-
     }
 
     def "should contain location and version"() {
@@ -75,7 +76,6 @@ class MetaSpec extends Specification {
         then:
         meta.location == "dunno"
         meta.version == "version??"
-
     }
 
     def "attributes should should be ebale to get enriched"() {
@@ -89,7 +89,6 @@ class MetaSpec extends Specification {
         meta.getAttributes().add("hallo")
         then:
         meta.getAttributes().size() == 1
-
     }
 
     def "should contain resourceType"() {
@@ -99,15 +98,27 @@ class MetaSpec extends Specification {
         meta.getResourceType() == "rt"
     }
 
-    def "should be able to set location without the builder"() {
+    def 'creating a new MetaBuilder based on a old one is equals to the given'(){
         given:
         def meta = new Meta.Builder()
                 .setLocation("dunno")
+                .setVersion("version??")
+                .setAttributes(['a', 'b'] as Set)
+                .setResourceType('resourceType')
                 .build()
+
         when:
-        meta.setLocation("know")
+        Meta newMeta = new Meta.Builder(meta).build()
 
         then:
-        meta.getLocation() == "know"
+        newMeta == meta
+    }
+
+    def 'creating a new Meta.Builder with a given null raises exception'(){
+        when:
+        new Meta.Builder(null)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 }
