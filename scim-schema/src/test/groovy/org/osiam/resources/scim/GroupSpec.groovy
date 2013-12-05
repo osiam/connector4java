@@ -85,4 +85,12 @@ class GroupSpec extends Specification {
         group.id == result.id
     }
 
+    def 'when creating a resource with an null a exception will be thrown'(){
+        when:
+        new Group.Builder(null)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
 }

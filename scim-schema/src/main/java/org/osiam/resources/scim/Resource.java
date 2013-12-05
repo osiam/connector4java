@@ -52,6 +52,9 @@ public abstract class Resource {
         protected Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
 
         public Builder(Resource resource) {
+            if(resource == null){
+                throw new IllegalArgumentException("The given ressource can't be null");
+            }
             this.id = resource.id;
             this.meta = resource.meta;
             this.schemas = resource.schemas;
