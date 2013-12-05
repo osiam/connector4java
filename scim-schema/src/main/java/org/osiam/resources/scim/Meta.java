@@ -79,14 +79,6 @@ public class Meta {
         /**
          * Will set created to given value and lastModified to System.currentTime
          */
-        public Builder(Date created) {
-            this.created = created != null ? new Date(created.getTime()) : null;
-            this.lastModified = new Date(System.currentTimeMillis());
-        }
-
-        /**
-         * Will set created to given value and lastModified to System.currentTime
-         */
         public Builder(Date created, Date lastModified) {
             this.created = created != null ? new Date(created.getTime()) : null;
             this.lastModified = lastModified != null ? new Date(lastModified.getTime()) : null;
