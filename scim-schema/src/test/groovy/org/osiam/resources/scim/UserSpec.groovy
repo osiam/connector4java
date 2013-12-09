@@ -291,4 +291,12 @@ class UserSpec extends Specification {
         'invalid' | EXTENSION_URN | NoSuchElementException
     }
 
+    def 'using the copy-of builder with null as parameter raises exception'() {
+        when:
+        new User.Builder(null)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
 }
