@@ -85,7 +85,7 @@ class GroupSpec extends Specification {
         group.id == result.id
     }
 
-    def 'when creating a resource with an null a exception will be thrown'(){
+    def 'using the copy-of builder with null as parameter raises exception'() {
         when:
         new Group.Builder(null)
 
