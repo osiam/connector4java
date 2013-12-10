@@ -23,17 +23,11 @@
 
 package org.osiam.resources.scim;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
+
+import java.util.*;
 
 /**
  * <p>Java class for User complex type.
@@ -41,7 +35,7 @@ import com.google.common.base.Objects;
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class User extends CoreResource {
+public class User extends Resource {
 
     private String userName;
     private Name name;
@@ -282,7 +276,7 @@ public class User extends CoreResource {
         return extensions.get(urn);
     }
 
-    public static class Builder extends CoreResource.Builder {
+    public static class Builder extends Resource.Builder {
         private String userName;
         private String password = "";
         private Boolean active;
