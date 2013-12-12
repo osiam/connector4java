@@ -35,7 +35,7 @@ import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.Comparison;
-import org.osiam.resources.scim.CoreResource;
+import org.osiam.resources.scim.Resource;
 
 /**
  * This class represents a query as it is run against the OSIAM service.
@@ -157,7 +157,7 @@ public class Query {
      */
     public static final class Builder {
 
-        private Class<? extends CoreResource> clazz;
+        private Class<? extends Resource> clazz;
         private String filter;
         private String sortBy;
         private SortOrder sortOrder;
@@ -169,7 +169,7 @@ public class Query {
          *
          * @param clazz The class of Resources to query for.
          */
-        public Builder(Class<? extends CoreResource> clazz) {
+        public Builder(Class<? extends Resource> clazz) {
             this.clazz = clazz;
         }
 
