@@ -69,7 +69,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     @SuppressWarnings("unchecked")
     protected AbstractOsiamService(@SuppressWarnings("rawtypes") Builder builder) {
         mapper = new ObjectMapper();
-        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
+        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
                 .addDeserializer(User.class, new UserDeserializer(User.class));
         mapper.registerModule(userDeserializerModule);
 
