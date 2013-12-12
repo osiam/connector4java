@@ -23,17 +23,17 @@
 
 package org.osiam.resources.scim;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Java class for Group complex type.
  */
 @JsonInclude(Include.NON_EMPTY)
-public class Group extends CoreResource {
+public class Group extends Resource {
 
     private String displayName;
     private Set<MemberRef> members = new HashSet<>();
@@ -50,7 +50,7 @@ public class Group extends CoreResource {
 
     /**
      * Gets the value of the displayName property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getDisplayName() {
@@ -61,7 +61,7 @@ public class Group extends CoreResource {
         return members;
     }
 
-    public static class Builder extends CoreResource.Builder {
+    public static class Builder extends Resource.Builder {
 
         private String displayName;
         private Set<MemberRef> members = new HashSet<>();

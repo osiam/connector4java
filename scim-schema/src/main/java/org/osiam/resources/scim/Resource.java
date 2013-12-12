@@ -23,10 +23,10 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Java class for Resource complex type.
@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public abstract class Resource {
 
     private String id;
+    private String externalId;
     private Meta meta;
     @JsonProperty(required = true)
     private Set<String> schemas;
@@ -42,6 +43,7 @@ public abstract class Resource {
 
     protected Resource(Builder builder) {
         this.id = builder.id;
+        this.externalId = builder.externalId;
         this.meta = builder.meta;
         this.schemas = builder.schemas;
     }
@@ -50,12 +52,14 @@ public abstract class Resource {
         protected String id; // NOSONAR - fields are needed in child classes
         protected Meta meta; // NOSONAR - fields are needed in child classes
         protected Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
+        protected String externalId; // NOSONAR - fields are needed in child classes
 
         public Builder(Resource resource) {
             if(resource == null){
-                throw new IllegalArgumentException("The given ressource can't be null");
+                throw new IllegalArgumentException("The given resource must not be null");
             }
             this.id = resource.id;
+            this.externalId = resource.externalId;
             this.meta = resource.meta;
             this.schemas = resource.schemas;
         }
@@ -70,6 +74,11 @@ public abstract class Resource {
 
         public Builder setId(String id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder setExternalId(String externalId) {
+            this.externalId = externalId;
             return this;
         }
 
@@ -89,6 +98,16 @@ public abstract class Resource {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Gets the value of the externalId property.
+     *
+     * @return possible object is
+     * {@link String }
+     */
+    public String getExternalId() {
+        return externalId;
     }
 
     /**
