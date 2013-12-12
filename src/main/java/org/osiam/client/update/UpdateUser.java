@@ -76,7 +76,6 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         private Set<String> deleteFields = new HashSet<>();
         private List<MultiValuedAttribute> emails = new ArrayList<>();
         private List<MultiValuedAttribute> ims = new ArrayList<>();
-        private List<MultiValuedAttribute> groups = new ArrayList<>();
         private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
         private List<Address> addresses = new ArrayList<>();
         private List<MultiValuedAttribute> entitlements = new ArrayList<>();
@@ -91,7 +90,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         //start username
         /**
          * updates the nickName of a existing user
-         * @param nickName the new nickName
+         * @param userName the new user name
          * @return The builder itself
          */
         public Builder updateUserName(String userName){
@@ -117,13 +116,7 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return The builder itself
          */
         public Builder deleteAddress(Address address){
-            /*	TODO korrekte Adresse ist nicht in version 0.22 sondern nur 0.23-SNAPSHORT vom scim schema vorhanden
-            Address deleteAddress = new Address.Builder(address)
-            		.setOperation(DELETE)
-            		.build();
-
-        	addresses.add(deleteAddress);*/
-
+            // TODO: implement when scim schema is updated
             return this;
         }
 
@@ -718,59 +711,10 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
         }
         //end entitlement
 
-        //start group
-        /**
-         * deletes all group memberships of a existing user
-         * @return The builder itself
-         */
-        public Builder deleteGroups(){
-            deleteFields.add("groups");
-            return this;
-        }
-
-
-        /**
-         * removes the membership of in the given group of a existing user
-         * @param groupId membership to be removed
-         * @return The builder itself
-         */
-        public Builder deleteGroup(String groupId){
-            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-            .setValue(groupId)
-            .setOperation(DELETE).build();
-            groups.add(deleteGroup);
-            return this;
-        }
-
-        /**
-         * removes the membership of in the given group of a existing user
-         * @param groupRef membership to be removed
-         * @return The builder itself
-         */
-        public Builder deleteGroup(MultiValuedAttribute groupRef){
-            MultiValuedAttribute deleteGroup = new MultiValuedAttribute.Builder()
-            .setValue(groupRef.getValue())
-            .setOperation(DELETE).build();
-            groups.add(deleteGroup);
-            return this;
-        }
-
-        /**
-         * adds or updates an group membership of an existing user
-         * if the .getValue() already exists a update will be done. If not a new one will be added
-         * @param groupMembership updated group membership
-         * @return The builder itself
-         */
-        public Builder addGroupMembership(MultiValuedAttribute groupMembership){
-            groups.add(groupMembership);
-            return this;
-        }
-        //end group
-
         //start active
         /**
          * updates the active status of a existing User to the given value
-         * @param activ new active status
+         * @param active new active status
          * @return The builder itself
          */
         public Builder updateActive(boolean active){
@@ -785,48 +729,48 @@ public final class UpdateUser{// NOSONAR - Builder constructs instances of this 
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build(){// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
-            if(userName != null){
-                updateUser = new User.Builder(userName);
-            }else{
+        	if(userName == null || userName.isEmpty()){
                 updateUser = new User.Builder();
-            }
-            if(nickName != null){
-                updateUser.setNickName(nickName);
-            }
-            if(externalId != null){
-                updateUser.setExternalId(externalId);
-            }
-            if(locale != null){
-                updateUser.setLocale(locale);
-            }
-            if(password != null){
-                updateUser.setPassword(password);
-            }
-            if(preferredLanguage != null){
-                updateUser.setPreferredLanguage(preferredLanguage);
-            }
-            if(profileUrl != null){
-                updateUser.setProfileUrl(profileUrl);
-            }
-            if(timezone != null) {
-                updateUser.setTimezone(timezone);
-            }
-            if(title != null){
-                updateUser.setTitle(title);
-            }
-            if(name != null){
-                updateUser.setName(name);
-            }
-            if(userType != null){
-                updateUser.setUserType(userType);
-            }
-            if(displayName != null){
-                updateUser.setDisplayName(displayName);
-            }
-            if(active != null){
-                updateUser.setActive(active);
-            }
-            if(deleteFields.size() > 0){
+        	}else{
+                updateUser = new User.Builder(userName);
+        	}
+        	if(nickName != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setNickName(nickName);
+        	}
+        	if(externalId != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setExternalId(externalId);
+        	}
+        	if(locale != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setLocale(locale);
+        	}
+        	if(password != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setPassword(password);
+        	}
+        	if(preferredLanguage != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setPreferredLanguage(preferredLanguage);
+        	}
+        	if(profileUrl != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setProfileUrl(profileUrl);
+        	}
+        	if(timezone != null) {// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setTimezone(timezone);
+        	}
+        	if(title != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setTitle(title);
+        	}
+        	if(name != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setName(name);
+        	}
+        	if(userType != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setUserType(userType);
+        	}
+        	if(displayName != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setDisplayName(displayName);
+        	}
+        	if(active != null){// NOSONAR - false-positive from clover; if-expression is correct
+        		updateUser.setActive(active);
+        	}
+            if(deleteFields.size() > 0){// NOSONAR - false-positive from clover; if-expression is correct
                 Meta meta = new Meta.Builder()
                 .setAttributes(deleteFields).build();
                 updateUser.setMeta(meta);
