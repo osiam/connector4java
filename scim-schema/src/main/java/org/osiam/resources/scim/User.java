@@ -33,7 +33,7 @@ import java.util.*;
  * User resources are meant to enable expression of common User informations. With the core attributes it should be
  * possible to express most user data. If more information need to be saved in a user object the user extension can be
  * used to store all customized data.
- *
+ * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -100,12 +100,12 @@ public class User extends Resource {
 
     /**
      * Gets the unique identifier for the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the user name
      */
     public String getUserName() {
@@ -114,12 +114,12 @@ public class User extends Resource {
 
     /**
      * Gets the components of the User's real name.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the real {@link Name} of the {@link User}
      */
     public Name getName() {
@@ -128,12 +128,12 @@ public class User extends Resource {
 
     /**
      * Gets the name of the User, suitable for display to end-users.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the display name of the {@link User}
      */
     public String getDisplayName() {
@@ -142,12 +142,12 @@ public class User extends Resource {
 
     /**
      * Gets the casual way to address the user in real life,
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the nickname of the {@link User}
      */
     public String getNickName() {
@@ -156,12 +156,12 @@ public class User extends Resource {
 
     /**
      * Gets a fully qualified URL to a page representing the User's online profile.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the progile URL of the {@link User}
      */
     public String getProfileUrl() {
@@ -170,7 +170,7 @@ public class User extends Resource {
 
     /**
      * The user's title, such as "Vice President."
-     *
+     * 
      * @return the title of the {@link User}
      */
     public String getTitle() {
@@ -179,12 +179,12 @@ public class User extends Resource {
 
     /**
      * Gets the type of the {@link User}
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the type of the {@link User}
      */
     public String getUserType() {
@@ -193,12 +193,12 @@ public class User extends Resource {
 
     /**
      * Gets the preferred written or spoken language of the User in ISO 3166-1 alpha 2 format, e.g. "DE" or "US".
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the preferred language of the {@link User}
      */
     public String getPreferredLanguage() {
@@ -207,12 +207,12 @@ public class User extends Resource {
 
     /**
      * Gets the default location of the User in ISO 639-1 two letter language code, e.g. 'de_DE' or 'en_US'
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the default location of the {@link User}
      */
     public String getLocale() {
@@ -221,12 +221,12 @@ public class User extends Resource {
 
     /**
      * Gets the User's time zone in the "Olson" timezone database format
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the time zone of the {@link User}
      */
     public String getTimezone() {
@@ -235,12 +235,12 @@ public class User extends Resource {
 
     /**
      * Gets a Boolean that indicates the User's administrative status.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the active status of the {@link User}
      */
     public Boolean isActive() {
@@ -249,12 +249,12 @@ public class User extends Resource {
 
     /**
      * Gets the password from the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the password of the {@link User}
      */
     public String getPassword() {
@@ -263,13 +263,13 @@ public class User extends Resource {
 
     /**
      * Gets all E-mail addresses for the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return the email addresses of the {@link User}
      */
     public List<MultiValuedAttribute> getEmails() {
@@ -278,13 +278,13 @@ public class User extends Resource {
 
     /**
      * Gets the phone numbers for the user.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return the phone numbers of the {@link User}
      */
     public List<MultiValuedAttribute> getPhoneNumbers() {
@@ -293,13 +293,13 @@ public class User extends Resource {
 
     /**
      * Gets the instant messaging address for the user.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return the ims of the {@link User}
      */
     public List<MultiValuedAttribute> getIms() {
@@ -308,13 +308,13 @@ public class User extends Resource {
 
     /**
      * Gets the URL's of the photos of the user.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return the photo URL's of the {@link User}
      */
     public List<MultiValuedAttribute> getPhotos() {
@@ -323,13 +323,13 @@ public class User extends Resource {
 
     /**
      * Gets the physical mailing addresses for this user.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return the addresses of the {@link User}
      */
     public List<Address> getAddresses() {
@@ -338,13 +338,13 @@ public class User extends Resource {
 
     /**
      * Gets a list of groups that the user belongs to.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return a list of all {@link Group}s where the {@link User} is a member of
      */
     public List<MultiValuedAttribute> getGroups() {
@@ -353,13 +353,13 @@ public class User extends Resource {
 
     /**
      * Gets a list of entitlements for the user that represent a thing the User has.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return a list of all entitlements of the {@link User}
      */
     public List<MultiValuedAttribute> getEntitlements() {
@@ -368,13 +368,13 @@ public class User extends Resource {
 
     /**
      * Gets a list of roles for the user that collectively represent who the User is.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return a list of the roles of the {@link User}
      */
     public List<MultiValuedAttribute> getRoles() {
@@ -383,13 +383,13 @@ public class User extends Resource {
 
     /**
      * Gets a list of certificates issued to the user. Values are Binary and DER encoded x509.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
-     *
+     * 
      * @return a list of the certificates of the {@link User}
      */
     public List<MultiValuedAttribute> getX509Certificates() {
@@ -398,7 +398,7 @@ public class User extends Resource {
 
     /**
      * Provides an unmodifiable view of all additional {@link Extension} fields of the user
-     *
+     * 
      * @return an unmodifiable view of the extensions
      */
     @JsonAnyGetter
@@ -408,7 +408,7 @@ public class User extends Resource {
 
     /**
      * Provides the {@link Extension} with the given URN
-     *
+     * 
      * @param urn
      *            The URN of the extension
      * @return The extension for the given URN
@@ -458,7 +458,7 @@ public class User extends Resource {
 
         /**
          * Constructs a new builder by with a set userName
-         *
+         * 
          * @param userName
          *            Unique identifier for the User (See {@link User#getUserName()})
          */
@@ -480,7 +480,7 @@ public class User extends Resource {
 
         /**
          * Constructs a new builder by copying all values from the given {@link User}
-         *
+         * 
          * @param user
          *            a old {@link User}
          */
@@ -512,7 +512,7 @@ public class User extends Resource {
 
         /**
          * Sets the components of the {@link User}'s real name (See {@link User#getName()}).
-         *
+         * 
          * @param name
          *            the name object of the {@link User}
          * @return the builder itself
@@ -524,7 +524,7 @@ public class User extends Resource {
 
         /**
          * Sets the display name (See {@link User#getDisplayName()}).
-         *
+         * 
          * @param displayName
          *            the display name of the {@link User}
          * @return the builder itself
@@ -536,7 +536,7 @@ public class User extends Resource {
 
         /**
          * Sets the nick name (See {@link User#getNickName()}).
-         *
+         * 
          * @param nickName
          *            the nick name of the {@link User}
          * @return the builder itself
@@ -548,7 +548,7 @@ public class User extends Resource {
 
         /**
          * Sets the profile URL (See {@link User#getProfileUrl()}).
-         *
+         * 
          * @param profileUrl
          *            the profil URL of the {@link User}
          * @return the builder itself
@@ -560,7 +560,7 @@ public class User extends Resource {
 
         /**
          * Sets the user's title (See {@link User#getTitle()}).
-         *
+         * 
          * @param title
          *            the title of the {@link User}
          * @return the builder itself
@@ -572,7 +572,7 @@ public class User extends Resource {
 
         /**
          * Sets the user type (See {@link User#getUserType()}).
-         *
+         * 
          * @param userType
          *            the type of the {@link User}
          * @return the builder itself
@@ -584,7 +584,7 @@ public class User extends Resource {
 
         /**
          * Sets the preferred language of the USer (See {@link User#getPreferredLanguage()}).
-         *
+         * 
          * @param preferredLanguage
          *            sets the preferred language of the {@link User}
          * @return the builder itself
@@ -596,7 +596,7 @@ public class User extends Resource {
 
         /**
          * Sets the default location of the User (See {@link User#getLocale()}).
-         *
+         * 
          * @param locale
          *            sets the local of the {@link User}
          * @return the builder itself
@@ -608,7 +608,7 @@ public class User extends Resource {
 
         /**
          * Sets the User's time zone (See {@link User#getTimezone()}).
-         *
+         * 
          * @param timezone
          *            sets the time zone of the {@link User}
          * @return the builder itself
@@ -620,7 +620,7 @@ public class User extends Resource {
 
         /**
          * Sets a Boolean value indicating the User's administrative status. (See {@link User#isActive()})
-         *
+         * 
          * @param active
          *            the active status of the {@link User}
          * @return the builder itself
@@ -632,7 +632,7 @@ public class User extends Resource {
 
         /**
          * Sets the User's clear text password (See {@link User#getPassword()}).
-         *
+         * 
          * @param password
          *            the password as clear text
          * @return the builder itself
@@ -644,7 +644,7 @@ public class User extends Resource {
 
         /**
          * Sets the E-mail addresses for the User (See {@link User#getEmails()}).
-         *
+         * 
          * @param emails
          *            the emails as Set
          * @return the builder itself
@@ -656,7 +656,7 @@ public class User extends Resource {
 
         /**
          * Sets the phone numbers for the User (See {@link User#getPhoneNumbers()}).
-         *
+         * 
          * @param phoneNumbers
          *            the phone numbers of the the {@link User}
          * @return the builder itself
@@ -668,7 +668,7 @@ public class User extends Resource {
 
         /**
          * Sets the instant messaging addresses for the User (See {@link User#getIms()}).
-         *
+         * 
          * @param ims
          *            a list of the ims of the {@link User}
          * @return the builder itself
@@ -680,7 +680,7 @@ public class User extends Resource {
 
         /**
          * Sets the URL's of photo's of the User (See {@link User#getPhotos()}).
-         *
+         * 
          * @param photos
          *            the photos of the {@link User}
          * @return the builder itself
@@ -692,7 +692,7 @@ public class User extends Resource {
 
         /**
          * Sets the physical mailing addresses for this User (See {@link User#getAddresses()}).
-         *
+         * 
          * @param addresses
          *            a list of the addresses of the {@link User}
          * @return the builder itself
@@ -704,7 +704,7 @@ public class User extends Resource {
 
         /**
          * Sets a list of groups that the user belongs to (See {@link User#getGroups()})
-         *
+         * 
          * @param groups
          *            groups of the User
          * @return the builder itself
@@ -716,7 +716,7 @@ public class User extends Resource {
 
         /**
          * Sets a list of entitlements for the User (See {@link User#getEntitlements()}).
-         *
+         * 
          * @param entitlements
          *            the entitlements of the {@link User}
          * @return the builder itself
@@ -728,7 +728,7 @@ public class User extends Resource {
 
         /**
          * Sets a list of roles for the User (See {@link User#getRoles()}).
-         *
+         * 
          * @param roles
          *            a list of roles
          * @return the builder itself
@@ -740,7 +740,7 @@ public class User extends Resource {
 
         /**
          * Sets a list of certificates issued to the User (See {@link User#getX509Certificates()}).
-         *
+         * 
          * @param x509Certificates
          *            the certificates of the {@link User}
          * @return the builder itself
@@ -752,7 +752,7 @@ public class User extends Resource {
 
         /**
          * Sets a List of Extension to the User (See {@link User#getAllExtensions()}).
-         *
+         * 
          * @param extensions
          *            a list of extensions
          * @return the builder itself
@@ -766,7 +766,7 @@ public class User extends Resource {
 
         /**
          * Sets a Extension to the User (See {@link User#getExtension(String)}).
-         *
+         * 
          * @param extension
          *            a single Extension
          * @return the builder itself

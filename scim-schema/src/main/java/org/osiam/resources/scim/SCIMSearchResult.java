@@ -34,13 +34,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * A class that holds all information from a search request
  *
- * @param <T>
- *            {@link User} or {@link Group}
- *
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02">SCIM core schema 2.0</a>
  * </p>
+ *
+ * @param <T>
+ *            {@link User} or {@link Group}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class SCIMSearchResult<T> {

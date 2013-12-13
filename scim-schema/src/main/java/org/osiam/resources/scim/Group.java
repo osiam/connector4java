@@ -31,7 +31,7 @@ import java.util.Set;
 
 /**
  * This class represent a Group resource.
- *
+ * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
@@ -57,7 +57,7 @@ public class Group extends Resource {
 
     /**
      * Gets the human readable name of this {@link Group}.
-     *
+     * 
      * @return the display name
      */
     public String getDisplayName() {
@@ -66,12 +66,12 @@ public class Group extends Resource {
 
     /**
      * Gets the list of members of this Group.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
      * </p>
-     *
+     * 
      * @return the list of Members as a Set
      */
     public Set<MemberRef> getMembers() {
@@ -93,7 +93,7 @@ public class Group extends Resource {
 
         /**
          * Constructs a new builder by copying all values from the given {@link Group}
-         *
+         * 
          * @param group
          *            {@link Group} to be copied from
          */
@@ -105,7 +105,7 @@ public class Group extends Resource {
 
         /**
          * Sets the display name (See {@link Group#getDisplayName()}).
-         *
+         * 
          * @param displayName
          *            the display name
          * @return the builder itself
@@ -141,7 +141,7 @@ public class Group extends Resource {
 
         /**
          * Sets the list of members as {@link Set} (See {@link Group#getMembers()}).
-         *
+         * 
          * @param members
          *            the set of members
          * @return the builder itself

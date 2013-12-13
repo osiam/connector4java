@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * This class represents the User's real name.
- *
+ * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -61,12 +61,12 @@ public class Name {
 
     /**
      * Gets the full name, including all middle names, titles, and suffixes as appropriate, formatted for display.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the formatted name
      */
     public String getFormatted() {
@@ -75,12 +75,12 @@ public class Name {
 
     /**
      * Gets the family name of the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the family name
      */
     public String getFamilyName() {
@@ -89,12 +89,12 @@ public class Name {
 
     /**
      * Gets the given (first) name of the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the given name
      */
     public String getGivenName() {
@@ -103,12 +103,12 @@ public class Name {
 
     /**
      * Gets the middle name(s) of the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the middle name
      */
     public String getMiddleName() {
@@ -117,12 +117,12 @@ public class Name {
 
     /**
      * Gets the honorific prefix(es) of the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the honorific prefix
      */
     public String getHonorificPrefix() {
@@ -131,12 +131,12 @@ public class Name {
 
     /**
      * Gets the honorific suffix(es) of the User.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     *
+     * 
      * @return the honorific sufix
      */
     public String getHonorificSuffix() {
@@ -156,7 +156,7 @@ public class Name {
 
         /**
          * Sets the full name (See {@link Name#getFormatted()}).
-         *
+         * 
          * @param formatted
          *            the formatted name
          * @return the builder itself
@@ -168,7 +168,7 @@ public class Name {
 
         /**
          * Sets the family name of the User (See {@link Name#getFamilyName()}).
-         *
+         * 
          * @param familyName
          *            the family name
          * @return the builder itself
@@ -180,7 +180,7 @@ public class Name {
 
         /**
          * Sets the given name of the User (See {@link Name#getGivenName()}).
-         *
+         * 
          * @param givenName
          *            the given name
          * @return the builder itself
@@ -192,7 +192,7 @@ public class Name {
 
         /**
          * Sets the middle name(s) of the User (See {@link Name#getMiddleName()}).
-         *
+         * 
          * @param middleName
          *            the middle name
          * @return the builder itself
@@ -204,7 +204,7 @@ public class Name {
 
         /**
          * Sets the honorific prefix(es) of the User (See {@link Name#getHonorificPrefix()}).
-         *
+         * 
          * @param honorificPrefix
          *            the honorific prefix
          * @return the builder itself
@@ -216,7 +216,7 @@ public class Name {
 
         /**
          * Sets the honorific suffix(es) of the User (See {@link Name#getHonorificSuffix()}).
-         *
+         * 
          * @param honorificSuffix
          *            the honorific suffix
          * @return the builder itself
@@ -228,7 +228,7 @@ public class Name {
 
         /**
          * Builds a Name Object with the given parameters
-         *
+         * 
          * @return The complete Name Object
          */
         public Name build() {

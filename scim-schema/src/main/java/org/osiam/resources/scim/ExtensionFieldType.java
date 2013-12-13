@@ -190,10 +190,10 @@ public abstract class ExtensionFieldType<T> {
         @Override
         public Boolean fromString(String stringValue) {
             ensureValueIsNotNull(stringValue);
-        	if(!stringValue.equals("true") && !stringValue.equals("false")){
-        		throw createConversionException(stringValue, "Boolean");
-        	}
-        	return Boolean.valueOf(stringValue);
+            if (!stringValue.equals("true") && !stringValue.equals("false")) {
+                throw createConversionException(stringValue, "Boolean");
+            }
+            return Boolean.valueOf(stringValue);
         }
 
         @Override
@@ -205,10 +205,11 @@ public abstract class ExtensionFieldType<T> {
     };
 
     /**
-     * ExtensionFieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO DateTimeFormat with
-     * the timeZone UTC like '2011-08-01T18:29:49.000Z'
+     * ExtensionFieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO
+     * DateTimeFormat with the timeZone UTC like '2011-08-01T18:29:49.000Z'
      */
-    public static final ExtensionFieldType<Date> DATE_TIME = new ExtensionFieldType<Date>("DATE_TIME") {// NOSONAR - it is ok if the inner class is over 20 characters long
+    public static final ExtensionFieldType<Date> DATE_TIME = new ExtensionFieldType<Date>("DATE_TIME") { // NOSONAR -
+        // it is ok if the inner class is over 20 characters long
 
         private DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
 

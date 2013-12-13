@@ -91,7 +91,6 @@ public final class Enterprise { // NOSONAR - this class is instantiable with the
         }
     }
 
-
     public String getEmployeeNumber() {
         return employeeNumber;
     }

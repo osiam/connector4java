@@ -54,7 +54,7 @@ public abstract class Resource {
 
     /**
      * Gets the Id of the resource.
-     *
+     * 
      * @return the id of the resource
      */
     public String getId() {
@@ -63,14 +63,15 @@ public abstract class Resource {
 
     /**
      * Gets the external Id of the resource.
-     *
+     * 
      * <p>
      * For more information please look at <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5.1">SCIM core schema 2.0, section 5.1</a>
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5.1">SCIM core schema 2.0, section
+     * 5.1</a>
      * </p>
-     *
+     * 
      * @return the externalId
-     *
+     * 
      */
     public String getExternalId() {
         return externalId;
@@ -78,7 +79,7 @@ public abstract class Resource {
 
     /**
      * Gets the meta attribute
-     *
+     * 
      * @return the meta
      */
     public Meta getMeta() {
@@ -87,7 +88,7 @@ public abstract class Resource {
 
     /**
      * Gets the list of defined schemas
-     *
+     * 
      * @return a the list of schemas as a {@link Set}
      */
     public Set<String> getSchemas() {
@@ -104,7 +105,7 @@ public abstract class Resource {
         protected String externalId; // NOSONAR - fields are needed in child classes
 
         public Builder(Resource resource) {
-            if(resource == null){
+            if (resource == null) {
                 throw new IllegalArgumentException("The given resource must not be null");
             }
             this.id = resource.id;
@@ -118,7 +119,7 @@ public abstract class Resource {
 
         /**
          * sets the schemas of the Resource
-         *
+         * 
          * @param schemas
          *            actual schemas
          * @return the builder itself
@@ -130,7 +131,7 @@ public abstract class Resource {
 
         /**
          * Sets the id of the resource.
-         *
+         * 
          * @param id
          *            if of the resource
          * @return the builder itself
@@ -142,10 +143,10 @@ public abstract class Resource {
 
         /**
          * Sets the external id (See {@link Resource#getExternalId()}).
-         *
+         * 
          * @param externalId
          *            the external id
-         *
+         * 
          * @return the builder itself
          */
         public Builder setExternalId(String externalId) {
@@ -155,7 +156,7 @@ public abstract class Resource {
 
         /**
          * Sets the meta data
-         *
+         * 
          * @param meta
          *            the meta object
          * @return the builder itself
@@ -167,7 +168,7 @@ public abstract class Resource {
 
         /**
          * Builds the Object of the Builder
-         *
+         * 
          * @return a new main Object of the Builder
          */
         public abstract <T> T build();

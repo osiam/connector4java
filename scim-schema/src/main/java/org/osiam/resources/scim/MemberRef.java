@@ -26,9 +26,9 @@ package org.osiam.resources.scim;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- *
+ * 
  * This class represents a {@link User} or a {@link Group} which are members of an actual {@link Group}
- *
+ * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
@@ -52,12 +52,12 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
 
     /**
      * Gets the reference to the actual SCIM Resource.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
      * </p>
-     *
+     * 
      * @return the reference of the actual resource
      */
     public String getReference() {
@@ -72,7 +72,7 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
 
         /**
          * Sets the reference (See {@link MemberRef#getReference()}).
-         *
+         * 
          * @param reference
          *            the scim conform reference to the member
          * @return the builder itself

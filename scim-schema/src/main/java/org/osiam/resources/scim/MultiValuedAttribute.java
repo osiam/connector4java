@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * This class represents a multi valued attribute.
- *
+ * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
@@ -59,13 +59,13 @@ public class MultiValuedAttribute {
 
     /**
      * Gets the attribute's significant value; e.g., the e-mail address, phone number etc.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     *
+     * 
      * @return the value of the actual multi value attribute
      */
     public String getValue() {
@@ -74,13 +74,13 @@ public class MultiValuedAttribute {
 
     /**
      * Gets the human readable name, primarily used for display purposes.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     *
+     * 
      * @return the display attribute
      */
     public String getDisplay() {
@@ -89,13 +89,13 @@ public class MultiValuedAttribute {
 
     /**
      * Gets a Boolean value indicating the 'primary' or preferred attribute value for this attribute.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     *
+     * 
      * @return the primary attribute
      */
     public Boolean isPrimary() {
@@ -104,13 +104,13 @@ public class MultiValuedAttribute {
 
     /**
      * Gets the type of the attribute.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     *
+     * 
      * @return the actual type
      */
     public String getType() {
@@ -119,13 +119,13 @@ public class MultiValuedAttribute {
 
     /**
      * Gets the operation applied during a PATCH request.
-     *
+     * 
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     *
+     * 
      * @return the operation
      */
     public String getOperation() {
@@ -145,7 +145,7 @@ public class MultiValuedAttribute {
 
         /**
          * Sets the attribute's significant value (See {@link MultiValuedAttribute#getValue()}).
-         *
+         * 
          * @param value
          *            the value attribute
          * @return the builder itself
@@ -157,7 +157,7 @@ public class MultiValuedAttribute {
 
         /**
          * Sets the human readable name (See {@link MultiValuedAttribute#getDisplay()}).
-         *
+         * 
          * @param display
          *            a human readable name
          * @return the builder itself
@@ -169,7 +169,7 @@ public class MultiValuedAttribute {
 
         /**
          * Sets the primary attribute (See {@link MultiValuedAttribute#isPrimary()}).
-         *
+         * 
          * @param the
          *            primary attribute
          * @return the builder itself
@@ -181,7 +181,7 @@ public class MultiValuedAttribute {
 
         /**
          * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         *
+         * 
          * @param type
          *            the type of the attribute
          * @return the builder itself
@@ -193,7 +193,7 @@ public class MultiValuedAttribute {
 
         /**
          * Sets the operation (See {@link MultiValuedAttribute#getOperation()}).
-         *
+         * 
          * @param operation
          *            only "delete" is supported at the moment
          * @return the builder itself
@@ -205,7 +205,7 @@ public class MultiValuedAttribute {
 
         /**
          * Builds a MultiValuedAttribute Object with the given parameters
-         *
+         * 
          * @return a new MultiValuedAttribute Object
          */
         public MultiValuedAttribute build() {
