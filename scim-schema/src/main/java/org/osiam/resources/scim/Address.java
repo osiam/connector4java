@@ -26,10 +26,10 @@ package org.osiam.resources.scim;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * A physical mailing address for this User
+ * A physical mailing address for a User
  * <p>
  * For more detailed information please look at the <a
- * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02">SCIM core schema 2.0</a>
+ * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0</a>
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)

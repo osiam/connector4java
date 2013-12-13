@@ -432,7 +432,7 @@ public class User extends Resource {
     /**
      * Builder class that is used to build {@link User} instances
      */
-public static class Builder extends Resource.Builder {
+    public static class Builder extends Resource.Builder {
         private String userName;
         private String password = "";
         private Boolean active;

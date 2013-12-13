@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Java class for multiValuedAttribute complex type.
+ * This class represents a multi valued attribute.
  *
  * <p>
  * For more detailed information please look at the <a
@@ -118,7 +118,7 @@ public class MultiValuedAttribute {
     }
 
     /**
-     * Gets the actual operation.
+     * Gets the operation applied during a PATCH request.
      *
      * <p>
      * For more detailed information please look at the <a
@@ -126,72 +126,10 @@ public class MultiValuedAttribute {
      * 3.2</a>
      * </p>
      *
-     * @return the actual wanted operation
+     * @return the operation
      */
     public String getOperation() {
         return operation;
-    }
-
-    @Override
-    public final int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((display == null) ? 0 : display.hashCode());
-        result = prime * result + ((operation == null) ? 0 : operation.hashCode());
-        result = prime * result + ((primary == null) ? 0 : primary.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
-    }
-
-    @Override
-    public final boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MultiValuedAttribute other = (MultiValuedAttribute) obj;
-        if (display == null) {
-            if (other.display != null) {
-                return false;
-            }
-        } else if (!display.equals(other.display)) {
-            return false;
-        }
-        if (operation == null) {
-            if (other.operation != null) {
-                return false;
-            }
-        } else if (!operation.equals(other.operation)) {
-            return false;
-        }
-        if (primary == null) {
-            if (other.primary != null) {
-                return false;
-            }
-        } else if (!primary.equals(other.primary)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -275,4 +213,65 @@ public class MultiValuedAttribute {
         }
     }
 
+    @Override
+    public final int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((display == null) ? 0 : display.hashCode());
+        result = prime * result + ((operation == null) ? 0 : operation.hashCode());
+        result = prime * result + ((primary == null) ? 0 : primary.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MultiValuedAttribute other = (MultiValuedAttribute) obj;
+        if (display == null) {
+            if (other.display != null) {
+                return false;
+            }
+        } else if (!display.equals(other.display)) {
+            return false;
+        }
+        if (operation == null) {
+            if (other.operation != null) {
+                return false;
+            }
+        } else if (!operation.equals(other.operation)) {
+            return false;
+        }
+        if (primary == null) {
+            if (other.primary != null) {
+                return false;
+            }
+        } else if (!primary.equals(other.primary)) {
+            return false;
+        }
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
+            return false;
+        }
+        if (value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
+        }
+        return true;
+    }
 }

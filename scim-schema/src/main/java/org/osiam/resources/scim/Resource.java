@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Java class for Resource complex type.
+ * This class represents a SCIM Resource and is the base class for {@link User}s and {@link Group}s.
  */
 public abstract class Resource {
 
@@ -53,7 +53,7 @@ public abstract class Resource {
     }
 
     /**
-     * Gets the value of the id property.
+     * Gets the Id of the resource.
      *
      * @return the id of the resource
      */
@@ -77,7 +77,7 @@ public abstract class Resource {
     }
 
     /**
-     * Gets the value of the meta property.
+     * Gets the meta attribute
      *
      * @return the meta
      */
@@ -86,9 +86,9 @@ public abstract class Resource {
     }
 
     /**
-     * Gets a set of all containing schemas
+     * Gets the list of defined schemas
      *
-     * @return a set of schemas
+     * @return a the list of schemas as a {@link Set}
      */
     public Set<String> getSchemas() {
         return schemas;
@@ -117,7 +117,7 @@ public abstract class Resource {
         }
 
         /**
-         * sets the schemas of the Resource. Only be set by the Osiam Server
+         * sets the schemas of the Resource
          *
          * @param schemas
          *            actual schemas
@@ -129,7 +129,7 @@ public abstract class Resource {
         }
 
         /**
-         * Sets the id of the resource. Only be set by the Osiam Server
+         * Sets the id of the resource.
          *
          * @param id
          *            if of the resource
@@ -154,7 +154,7 @@ public abstract class Resource {
         }
 
         /**
-         * Sets the meta object of the actual resource
+         * Sets the meta data
          *
          * @param meta
          *            the meta object

@@ -140,7 +140,7 @@ public class Group extends Resource {
         }
 
         /**
-         * Sets the list of members as Set (See {@link Group#getMembers()}).
+         * Sets the list of members as {@link Set} (See {@link Group#getMembers()}).
          *
          * @param members
          *            the set of members
@@ -151,7 +151,6 @@ public class Group extends Resource {
             return this;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public Group build() {
             return new Group(this);

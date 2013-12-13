@@ -81,17 +81,6 @@ public class Meta {
     }
 
     /**
-     * it needs to be deleted after the builder has the possibility to accept old Meta Object it is only needed by the
-     * server at the moment
-     *
-     * @param location
-     */
-    @Deprecated
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    /**
      * Gets the version of the Resource being returned.
      *
      * <p>

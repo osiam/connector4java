@@ -232,7 +232,7 @@ public abstract class ExtensionFieldType<T> {
     };
 
     /**
-     * ExtensionFieldType for the Scim type Binary (actual type is {@code byte[]})
+     * ExtensionFieldType for the Scim type Binary (actual type is {@link ByteBuffer})
      */
     public static final ExtensionFieldType<ByteBuffer> BINARY = new ExtensionFieldType<ByteBuffer>("BINARY") {
 
@@ -287,7 +287,7 @@ public abstract class ExtensionFieldType<T> {
         return new IllegalArgumentException("The value " + stringValue + " cannot be converted into a " + targetType
                 + ".");
     }
-    
+
     protected void ensureValueIsNotNull(Object value) {
         checkArgument(value != null, "The given value cannot be null.");
     }
