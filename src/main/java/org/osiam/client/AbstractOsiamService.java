@@ -186,50 +186,6 @@ abstract class AbstractOsiamService<T extends Resource> {
         return searchResources(query.toString(), accessToken);
     }
 
-    protected T mapSingleResourceResponse(InputStream content) throws IOException {
-        return mapper.readValue(content, type);
-    }
-
-    protected String getErrorMessageForbidden(AccessToken accessToken, String process) {
-        return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
-    }
-
-    protected String getErrorMessageUnauthorized(HttpResponse httpResponse) {
-        return getErrorMessage(httpResponse,
-                "You are not authorized to access OSIAM. Please make sure your access token is valid");
-    }
-
-    protected String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
-        return getErrorMessage(httpResponse,
-                String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
-    }
-
-    protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
-        String errorMessage;
-        try (InputStream content = httpResponse.getEntity().getContent()) {
-            OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
-            errorMessage = error.getDescription();
-        } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = defaultErrorMessage;
-        }
-        if (errorMessage == null) {
-            errorMessage = defaultErrorMessage;
-        }
-        return errorMessage;
-    }
-
-    protected HttpGet createRealWebResource(AccessToken accessToken) {
-        HttpGet realWebResource;
-        try {
-            realWebResource = (HttpGet) webResource.clone();
-            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
-            return realWebResource;
-        } catch (CloneNotSupportedException ignore) {
-            // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!"); // NOSONAR - this exception should never be thrown
-        }
-    }
-
     protected void deleteResource(String id, AccessToken accessToken) {
         ensureReferenceIsNotNull(id, "The given id can't be null.");
         ensureAccessTokenIsNotNull(accessToken);
@@ -379,6 +335,51 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
     }
+
+    protected T mapSingleResourceResponse(InputStream content) throws IOException {
+        return mapper.readValue(content, type);
+    }
+
+    protected String getErrorMessageForbidden(AccessToken accessToken, String process) {
+        return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
+    }
+
+    protected String getErrorMessageUnauthorized(HttpResponse httpResponse) {
+        return getErrorMessage(httpResponse,
+                "You are not authorized to access OSIAM. Please make sure your access token is valid");
+    }
+
+    protected String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
+        return getErrorMessage(httpResponse,
+                String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+    }
+
+    protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
+        String errorMessage;
+        try (InputStream content = httpResponse.getEntity().getContent()) {
+            OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
+            errorMessage = error.getDescription();
+        } catch (Exception e) { // NOSONAR - we catch everything
+            errorMessage = defaultErrorMessage;
+        }
+        if (errorMessage == null) {
+            errorMessage = defaultErrorMessage;
+        }
+        return errorMessage;
+    }
+
+    protected HttpGet createRealWebResource(AccessToken accessToken) {
+        HttpGet realWebResource;
+        try {
+            realWebResource = (HttpGet) webResource.clone();
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+            return realWebResource;
+        } catch (CloneNotSupportedException ignore) {
+            // safe to ignore - HttpGet implements Cloneable!
+            throw new RuntimeException("This should not happen!"); // NOSONAR - this exception should never be thrown
+        }
+    }
+
 
     private void ensureAccessTokenIsNotNull(AccessToken accessToken) {
         ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
