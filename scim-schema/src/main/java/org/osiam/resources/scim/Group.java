@@ -30,7 +30,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Java class for Group complex type.
+ * This class represent a Group resource.
+ *
+ * <p>
+ * For more detailed information please look at the <a
+ * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+ * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
 public class Group extends Resource {
@@ -38,29 +43,44 @@ public class Group extends Resource {
     private String displayName;
     private Set<MemberRef> members = new HashSet<>();
 
-    // JSON Serializing
-    public Group() {
+    /**
+     * Default constructor for Jackson
+     */
+    private Group() {
     }
 
-    public Group(Builder builder) {
+    private Group(Builder builder) {
         super(builder);
         this.displayName = builder.displayName;
         this.members = builder.members;
     }
 
     /**
-     * Gets the value of the displayName property.
+     * Gets the human readable name of this {@link Group}.
      *
-     * @return possible object is {@link String }
+     * @return the display name
      */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Gets the list of members of this Group.
+     *
+     * <p>
+     * For more detailed information please look at the <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+     * </p>
+     *
+     * @return the list of Members as a Set
+     */
     public Set<MemberRef> getMembers() {
         return members;
     }
 
+    /**
+     * Builder class that is used to build {@link Group} instances
+     */
     public static class Builder extends Resource.Builder {
 
         private String displayName;
@@ -71,12 +91,25 @@ public class Group extends Resource {
             this.schemas.add(Constants.GROUP_CORE_SCHEMA);
         }
 
+        /**
+         * Constructs a new builder by copying all values from the given {@link Group}
+         *
+         * @param group
+         *            {@link Group} to be copied from
+         */
         public Builder(Group group) {
             super(group);
             displayName = group.displayName;
             members = group.members;
         }
 
+        /**
+         * Sets the display name (See {@link Group#getDisplayName()}).
+         *
+         * @param displayName
+         *            the display name
+         * @return the builder itself
+         */
         public Builder setDisplayName(String displayName) {
             this.displayName = displayName;
             return this;
@@ -106,6 +139,13 @@ public class Group extends Resource {
             return this;
         }
 
+        /**
+         * Sets the list of members as Set (See {@link Group#getMembers()}).
+         *
+         * @param members
+         *            the set of members
+         * @return the builder itself
+         */
         public Builder setMembers(Set<MemberRef> members) {
             this.members = members;
             return this;

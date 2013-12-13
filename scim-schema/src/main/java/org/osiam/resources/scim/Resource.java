@@ -39,7 +39,11 @@ public abstract class Resource {
     @JsonProperty(required = true)
     private Set<String> schemas;
 
-    protected Resource(){}
+    /**
+     * Default constructor for Jackson
+     */
+    protected Resource() {
+    }
 
     protected Resource(Builder builder) {
         this.id = builder.id;
@@ -48,9 +52,54 @@ public abstract class Resource {
         this.schemas = builder.schemas;
     }
 
+    /**
+     * Gets the value of the id property.
+     *
+     * @return the id of the resource
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Gets the external Id of the resource.
+     *
+     * <p>
+     * For more information please look at <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5.1">SCIM core schema 2.0, section 5.1</a>
+     * </p>
+     *
+     * @return the externalId
+     *
+     */
+    public String getExternalId() {
+        return externalId;
+    }
+
+    /**
+     * Gets the value of the meta property.
+     *
+     * @return the meta
+     */
+    public Meta getMeta() {
+        return meta;
+    }
+
+    /**
+     * Gets a set of all containing schemas
+     *
+     * @return a set of schemas
+     */
+    public Set<String> getSchemas() {
+        return schemas;
+    }
+
+    /**
+     * The Builder class is used to construct instances of the {@link Resource}
+     */
     public abstract static class Builder {
-        protected String id; // NOSONAR - fields are needed in child classes
-        protected Meta meta; // NOSONAR - fields are needed in child classes
+        private String id;
+        private Meta meta;
         protected Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
         protected String externalId; // NOSONAR - fields are needed in child classes
 
@@ -67,66 +116,61 @@ public abstract class Resource {
         public Builder() {
         }
 
+        /**
+         * sets the schemas of the Resource. Only be set by the Osiam Server
+         *
+         * @param schemas
+         *            actual schemas
+         * @return the builder itself
+         */
         public Builder setSchemas(Set<String> schemas) {
             this.schemas = schemas;
             return this;
         }
 
+        /**
+         * Sets the id of the resource. Only be set by the Osiam Server
+         *
+         * @param id
+         *            if of the resource
+         * @return the builder itself
+         */
         public Builder setId(String id) {
             this.id = id;
             return this;
         }
 
+        /**
+         * Sets the external id (See {@link Resource#getExternalId()}).
+         *
+         * @param externalId
+         *            the external id
+         *
+         * @return the builder itself
+         */
         public Builder setExternalId(String externalId) {
             this.externalId = externalId;
             return this;
         }
 
+        /**
+         * Sets the meta object of the actual resource
+         *
+         * @param meta
+         *            the meta object
+         * @return the builder itself
+         */
         public Builder setMeta(Meta meta) {
             this.meta = meta;
             return this;
         }
 
+        /**
+         * Builds the Object of the Builder
+         *
+         * @return a new main Object of the Builder
+         */
         public abstract <T> T build();
     }
 
-    /**
-     * Gets the value of the id property.
-     *
-     * @return possible object is
-     *         {@link String }
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Gets the value of the externalId property.
-     *
-     * @return possible object is
-     * {@link String }
-     */
-    public String getExternalId() {
-        return externalId;
-    }
-
-    /**
-     * Gets the value of the meta property.
-     *
-     * @return possible object is
-     *         {@link Meta }
-     */
-    public Meta getMeta() {
-        return meta;
-    }
-
-    /**
-     * Gets the value of the schemas property.
-     *
-     * @return possible object is
-     *         {@link Set<String> }
-     */
-    public Set<String> getSchemas() {
-    	return schemas;
-    }
 }

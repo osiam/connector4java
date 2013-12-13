@@ -81,6 +81,7 @@ class UserSpec extends Specification {
     def "should generate a user based on builder"() {
         given:
         def multivalueAttribute = new MultiValuedAttribute.Builder().build()
+        def meta = new Meta.Builder().build()
 
         def builder = new User.Builder("test").setActive(true)
                 .setDisplayName("display")
@@ -96,7 +97,9 @@ class UserSpec extends Specification {
                 .setEntitlements([multivalueAttribute] as List)
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
-                .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
+                .setId('id')
+                .setMeta(meta)
+                .setExternalId('external')
                 .addExtension(new Extension("urn:org.osiam:schemas:test:1.0:Test"))
         when:
         User user = builder.build()
@@ -122,9 +125,9 @@ class UserSpec extends Specification {
         user.userType == builder.userType
         user.x509Certificates == builder.x509Certificates
         user.userName == builder.userName
-        user.id == builder.id
-        user.externalId == builder.externalId
-        user.meta == builder.meta
+        user.id == 'id'
+        user.meta == meta
+        user.externalId == 'external'
         user.extensions == builder.extensions
     }
 
