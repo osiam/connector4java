@@ -23,15 +23,17 @@
 
 package org.osiam.client.exception;
 
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+
 /**
  * Thrown if the current session is not authorized to access the OSIAM service,
  * For example if the access token expired.
  */
-public class UnauthorizedException extends RuntimeException {
+public class UnauthorizedException extends OsiamClientConnectionException {
 
     private static final long serialVersionUID = 1L;
 
     public UnauthorizedException(String message) {
-        super(message);
+        super(SC_UNAUTHORIZED, message);
     }
 }

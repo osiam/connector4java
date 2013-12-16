@@ -23,14 +23,14 @@
 
 package org.osiam.client.exception;
 
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+
 /**
  * Thrown when a User or a Group you want to update doesn't exist
  */
-public class NotFoundException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
+public class NotFoundException extends OsiamClientConnectionException {
 
     public NotFoundException(String message) {
-        super(message);
+        super(SC_NOT_FOUND, message);
     }
 }

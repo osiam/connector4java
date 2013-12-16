@@ -23,14 +23,16 @@
 
 package org.osiam.client.exception;
 
+import org.apache.http.HttpStatus;
+
 /**
  * Thrown if a conflict happens while creating/deleting/modify a User or a Group
  */
-public class ConflictException extends RuntimeException {
+public class ConflictException extends OsiamClientConnectionException {
 
     private static final long serialVersionUID = 1L;
 
     public ConflictException(String message) {
-        super(message);
+        super(HttpStatus.SC_CONFLICT, message);
     }
 }

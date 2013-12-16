@@ -26,7 +26,7 @@ package org.osiam.client.exception;
 /**
  * Thrown when a invalid attribute is set to one of the Builder
  */
-public class InvalidAttributeException extends RuntimeException {
+public class InvalidAttributeException extends OsiamClientException {
     private static final long serialVersionUID = 1L;
 
     public InvalidAttributeException(String message) {
