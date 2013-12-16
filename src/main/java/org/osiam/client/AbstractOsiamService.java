@@ -149,15 +149,19 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "get");
-                throw new ForbiddenException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamClientConnectionException(httpStatus, errorMessage);
+                case SC_UNAUTHORIZED:
+                    errorMessage = getErrorMessageUnauthorized(response);
+                    throw new UnauthorizedException(errorMessage);
+                case SC_FORBIDDEN:
+                    errorMessage = getErrorMessageForbidden(accessToken, "get");
+                    throw new ForbiddenException(errorMessage);
+                case SC_CONFLICT:
+                    errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString + "': "
+                            + response.getStatusLine().getReasonPhrase());
+                    throw new ConflictException(errorMessage);
+                default:
+                    errorMessage = getErrorMessageDefault(response, httpStatus);
+                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
             }
         }
 
