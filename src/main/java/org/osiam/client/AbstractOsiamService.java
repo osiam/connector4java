@@ -113,7 +113,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 throw new ForbiddenException(errorMessage);
             default:
                 errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamClientConnectionException(httpStatus, errorMessage);
+                throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
 
@@ -161,7 +161,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                     throw new ConflictException(errorMessage);
                 default:
                     errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
+                    throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
 
@@ -218,7 +218,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 throw new ForbiddenException(errorMessage);
             default:
                 errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamClientConnectionException(httpStatus, errorMessage);
+                throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
     }
@@ -257,7 +257,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 throw new ForbiddenException(errorMessage);
             default:
                 errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamClientConnectionException(httpStatus, errorMessage);
+                throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
 
@@ -320,7 +320,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 throw new ForbiddenException(errorMessage);
             default:
                 errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamClientConnectionException(httpStatus, errorMessage);
+                throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
 

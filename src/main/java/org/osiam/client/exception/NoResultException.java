@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus;
 /**
  * Thrown when a query for a given ID doesn't return any results.
  */
-public class NoResultException extends OsiamClientConnectionException {
+public class NoResultException extends OsiamRequestException {
 
     private static final long serialVersionUID = 8535399822195998601L;
 

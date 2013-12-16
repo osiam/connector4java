@@ -29,7 +29,7 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
  * Thrown if the current session is not authorized to access the OSIAM service,
  * For example if the access token expired.
  */
-public class UnauthorizedException extends OsiamClientConnectionException {
+public class UnauthorizedException extends OsiamRequestException {
 
     private static final long serialVersionUID = 7037114804034472920L;
 

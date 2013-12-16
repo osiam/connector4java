@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus;
 /**
  * Thrown when the user has not the right
  */
-public class ForbiddenException extends OsiamClientConnectionException {
+public class ForbiddenException extends OsiamRequestException {
 
     private static final long serialVersionUID = -5860470569792754059L;
 

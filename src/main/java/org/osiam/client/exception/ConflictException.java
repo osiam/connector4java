@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus;
 /**
  * Thrown if a conflict happens while creating/deleting/modify a User or a Group
  */
-public class ConflictException extends OsiamClientConnectionException {
+public class ConflictException extends OsiamRequestException {
 
     private static final long serialVersionUID = 3074419628958027761L;
 

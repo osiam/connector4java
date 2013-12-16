@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus;
 /**
  * Thrown when a User or a Group you want to update doesn't exist
  */
-public class NotFoundException extends OsiamClientConnectionException {
+public class NotFoundException extends OsiamRequestException {
 
     private static final long serialVersionUID = -2430176323217168498L;
 
