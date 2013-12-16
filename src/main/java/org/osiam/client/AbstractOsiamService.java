@@ -83,14 +83,6 @@ abstract class AbstractOsiamService<T extends Resource> {
         endpoint = builder.endpoint;
     }
 
-    public URI getUri() {
-        return webResource.getURI();
-    }
-
-    protected String getEndpoint() {
-        return endpoint;
-    }
-
     protected T getResource(String id, AccessToken accessToken) {
         ensureReferenceIsNotNull(id, "The given id can't be null.");
         ensureAccessTokenIsNotNull(accessToken);
@@ -110,18 +102,18 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessageUnauthorized(response);
-                    throw new UnauthorizedException(errorMessage);
-                case SC_NOT_FOUND:
-                    errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
-                    throw new NoResultException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = getErrorMessageForbidden(accessToken, "get");
-                    throw new ForbiddenException(errorMessage);
-                default:
-                    errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
+            case SC_UNAUTHORIZED:
+                errorMessage = getErrorMessageUnauthorized(response);
+                throw new UnauthorizedException(errorMessage);
+            case SC_NOT_FOUND:
+                errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
+                throw new NoResultException(errorMessage);
+            case SC_FORBIDDEN:
+                errorMessage = getErrorMessageForbidden(accessToken, "get");
+                throw new ForbiddenException(errorMessage);
+            default:
+                errorMessage = getErrorMessageDefault(response, httpStatus);
+                throw new OsiamClientConnectionException(httpStatus, errorMessage);
             }
         }
 
@@ -157,15 +149,15 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessageUnauthorized(response);
-                    throw new UnauthorizedException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = getErrorMessageForbidden(accessToken, "get");
-                    throw new ForbiddenException(errorMessage);
-                default:
-                    errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
+            case SC_UNAUTHORIZED:
+                errorMessage = getErrorMessageUnauthorized(response);
+                throw new UnauthorizedException(errorMessage);
+            case SC_FORBIDDEN:
+                errorMessage = getErrorMessageForbidden(accessToken, "get");
+                throw new ForbiddenException(errorMessage);
+            default:
+                errorMessage = getErrorMessageDefault(response, httpStatus);
+                throw new OsiamClientConnectionException(httpStatus, errorMessage);
             }
         }
 
@@ -207,22 +199,22 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessageUnauthorized(response);
-                    throw new UnauthorizedException(errorMessage);
-                case SC_NOT_FOUND:
-                    errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
-                    throw new NoResultException(errorMessage);
-                case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, "Unable to delete: "
-                            + response.getStatusLine().getReasonPhrase());
-                    throw new ConflictException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = getErrorMessageForbidden(accessToken, "delete");
-                    throw new ForbiddenException(errorMessage);
-                default:
-                    errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
+            case SC_UNAUTHORIZED:
+                errorMessage = getErrorMessageUnauthorized(response);
+                throw new UnauthorizedException(errorMessage);
+            case SC_NOT_FOUND:
+                errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
+                throw new NoResultException(errorMessage);
+            case SC_CONFLICT:
+                errorMessage = getErrorMessage(response, "Unable to delete: "
+                        + response.getStatusLine().getReasonPhrase());
+                throw new ConflictException(errorMessage);
+            case SC_FORBIDDEN:
+                errorMessage = getErrorMessageForbidden(accessToken, "delete");
+                throw new ForbiddenException(errorMessage);
+            default:
+                errorMessage = getErrorMessageDefault(response, httpStatus);
+                throw new OsiamClientConnectionException(httpStatus, errorMessage);
             }
         }
     }
@@ -250,18 +242,18 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_CREATED) {
             String errorMessage;
             switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessageUnauthorized(response);
-                    throw new UnauthorizedException(errorMessage);
-                case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, "Unable to save");
-                    throw new ConflictException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = getErrorMessageForbidden(accessToken, "create");
-                    throw new ForbiddenException(errorMessage);
-                default:
-                    errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
+            case SC_UNAUTHORIZED:
+                errorMessage = getErrorMessageUnauthorized(response);
+                throw new UnauthorizedException(errorMessage);
+            case SC_CONFLICT:
+                errorMessage = getErrorMessage(response, "Unable to save");
+                throw new ConflictException(errorMessage);
+            case SC_FORBIDDEN:
+                errorMessage = getErrorMessageForbidden(accessToken, "create");
+                throw new ForbiddenException(errorMessage);
+            default:
+                errorMessage = getErrorMessageDefault(response, httpStatus);
+                throw new OsiamClientConnectionException(httpStatus, errorMessage);
             }
         }
 
@@ -275,7 +267,6 @@ abstract class AbstractOsiamService<T extends Resource> {
     protected T updateResource(String id, T resource, AccessToken accessToken) {
         HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id);
         return modifyResource(id, resource, accessToken, realWebResource);
-
     }
 
     protected T replaceResource(String id, T resource, AccessToken accessToken) {
@@ -284,7 +275,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     private T modifyResource(String id, T resource, AccessToken accessToken,
-                             HttpEntityEnclosingRequestBase realWebResource) {
+            HttpEntityEnclosingRequestBase realWebResource) {
         ensureReferenceIsNotNull(resource, "The given " + typeName + " can't be null.");
         ensureAccessTokenIsNotNull(accessToken);
         ensureReferenceIsNotNull(id, "The given id can't be null.");
@@ -307,25 +298,25 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessageUnauthorized(response);
-                    throw new UnauthorizedException(errorMessage);
-                case SC_BAD_REQUEST:
-                    errorMessage = getErrorMessage(response, "Wrong " + typeName + ". Unable to update");
-                    throw new ConflictException(errorMessage);
-                case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, typeName + " with Conflicts. Unable to update");
-                    throw new ConflictException(errorMessage);
-                case SC_NOT_FOUND:
-                    errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id
-                            + " could be found to be updated.");
-                    throw new NotFoundException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = getErrorMessageForbidden(accessToken, "update");
-                    throw new ForbiddenException(errorMessage);
-                default:
-                    errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamClientConnectionException(httpStatus, errorMessage);
+            case SC_UNAUTHORIZED:
+                errorMessage = getErrorMessageUnauthorized(response);
+                throw new UnauthorizedException(errorMessage);
+            case SC_BAD_REQUEST:
+                errorMessage = getErrorMessage(response, "Wrong " + typeName + ". Unable to update");
+                throw new ConflictException(errorMessage);
+            case SC_CONFLICT:
+                errorMessage = getErrorMessage(response, typeName + " with Conflicts. Unable to update");
+                throw new ConflictException(errorMessage);
+            case SC_NOT_FOUND:
+                errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id
+                        + " could be found to be updated.");
+                throw new NotFoundException(errorMessage);
+            case SC_FORBIDDEN:
+                errorMessage = getErrorMessageForbidden(accessToken, "update");
+                throw new ForbiddenException(errorMessage);
+            default:
+                errorMessage = getErrorMessageDefault(response, httpStatus);
+                throw new OsiamClientConnectionException(httpStatus, errorMessage);
             }
         }
 
@@ -336,20 +327,30 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected T mapSingleResourceResponse(InputStream content) throws IOException {
-        return mapper.readValue(content, type);
+    private void ensureAccessTokenIsNotNull(AccessToken accessToken) {
+        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
     }
 
-    protected String getErrorMessageForbidden(AccessToken accessToken, String process) {
+    private void ensureReferenceIsNotNull(Object reference, String message) {
+        if (reference == null) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    protected String getEndpoint() {
+        return endpoint;
+    }
+
+    private String getErrorMessageForbidden(AccessToken accessToken, String process) {
         return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
     }
 
-    protected String getErrorMessageUnauthorized(HttpResponse httpResponse) {
+    private String getErrorMessageUnauthorized(HttpResponse httpResponse) {
         return getErrorMessage(httpResponse,
                 "You are not authorized to access OSIAM. Please make sure your access token is valid");
     }
 
-    protected String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
+    private String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
         return getErrorMessage(httpResponse,
                 String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
     }
@@ -368,6 +369,10 @@ abstract class AbstractOsiamService<T extends Resource> {
         return errorMessage;
     }
 
+    protected T mapSingleResourceResponse(InputStream content) throws IOException {
+        return mapper.readValue(content, type);
+    }
+
     protected HttpGet createRealWebResource(AccessToken accessToken) {
         HttpGet realWebResource;
         try {
@@ -379,18 +384,6 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new RuntimeException("This should not happen!"); // NOSONAR - this exception should never be thrown
         }
     }
-
-
-    private void ensureAccessTokenIsNotNull(AccessToken accessToken) {
-        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
-    }
-
-    private void ensureReferenceIsNotNull(Object reference, String message) {
-        if (reference == null) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
 
     protected static class Builder<T> {
         private String endpoint;
