@@ -314,7 +314,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             case SC_NOT_FOUND:
                 errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id
                         + " could be found to be updated.");
-                throw new NotFoundException(errorMessage);
+                throw new NoResultException(errorMessage);
             case SC_FORBIDDEN:
                 errorMessage = getErrorMessageForbidden(accessToken, "update");
                 throw new ForbiddenException(errorMessage);
