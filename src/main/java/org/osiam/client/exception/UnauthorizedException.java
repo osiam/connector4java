@@ -31,7 +31,7 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
  */
 public class UnauthorizedException extends OsiamClientConnectionException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7037114804034472920L;
 
     public UnauthorizedException(String message) {
         super(SC_UNAUTHORIZED, message);

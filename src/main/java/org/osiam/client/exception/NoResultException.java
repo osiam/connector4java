@@ -30,6 +30,8 @@ import org.apache.http.HttpStatus;
  */
 public class NoResultException extends OsiamClientConnectionException {
 
+    private static final long serialVersionUID = 8535399822195998601L;
+
     public NoResultException(String message) {
         super(HttpStatus.SC_NOT_FOUND, message);
     }

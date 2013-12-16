@@ -30,7 +30,7 @@ import org.apache.http.HttpStatus;
  */
 public class ConflictException extends OsiamClientConnectionException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3074419628958027761L;
 
     public ConflictException(String message) {
         super(HttpStatus.SC_CONFLICT, message);
