@@ -51,7 +51,6 @@ public class UserQueryBuilderTest {
     private static final StringAttribute VALID_EMAIL_ATTR = User_.Emails.value;
     private static final String IRRELEVANT = "irrelevant";
     private static final String IRRELEVANT_EMAIL_TYPE = "other";
-    private static final String IRRELEVANT_FIELD = "members.invalid";
     private static final int START_INDEX = 5;
     private static final int COUNT_PER_PAGE = 7;
     private static final String FILTER = "filter=";
@@ -167,13 +166,6 @@ public class UserQueryBuilderTest {
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " le \"" + dateNowString + "\""));
     }
 
-    @Test(expected = InvalidAttributeException.class)
-    public void exception_raised_when_nested_attr_is_not_valid() {
-        StringAttribute stringAttribute = new StringAttribute(IRRELEVANT_FIELD);
-        filter = new Query.Filter(User.class, stringAttribute.contains(IRRELEVANT));
-        queryBuilder.setFilter(filter);
-    }
-
     @Test
     public void sort_order_ascending() {
         queryBuilder.setSortOrder(SortOrder.ASCENDING);
@@ -268,34 +260,6 @@ public class UserQueryBuilderTest {
                 + " eq \"" + IRRELEVANT + "\")") + "&sortBy=" + DEFAULT_ATTR + "&sortOrder=" + SortOrder.ASCENDING.toString()
                 + "&count=" + COUNT_PER_PAGE + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_sort_by_added(){
-        StringAttribute stringAttribute = new StringAttribute(IRRELEVANT_FIELD);
-        queryBuilder.setSortBy(stringAttribute);
-        fail("Exception excpected");
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_filter_added(){
-        StringAttribute stringAttribute = new StringAttribute(IRRELEVANT_FIELD);
-        new Query.Filter(User.class, stringAttribute.contains(IRRELEVANT));
-        fail("Exception excpected");
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_and_added(){
-        StringAttribute stringAttribute = new StringAttribute(IRRELEVANT_FIELD);
-        new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(stringAttribute.contains(IRRELEVANT));
-        fail("Exception excpected");
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_or_added(){
-        StringAttribute stringAttribute = new StringAttribute(IRRELEVANT_FIELD);
-        new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).or(stringAttribute.contains(IRRELEVANT));
-        fail("Exception excpected");
     }
 
     @Test

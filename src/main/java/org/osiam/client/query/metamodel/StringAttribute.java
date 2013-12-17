@@ -28,7 +28,7 @@ package org.osiam.client.query.metamodel;
  */
 public class StringAttribute extends Attribute{
 
-    public StringAttribute(String value){
+    StringAttribute(String value){
         this.value = value;
     }
 

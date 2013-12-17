@@ -347,7 +347,7 @@ public class Query {
         private Class<?> clazz;
         private StringBuilder filterBuilder;
 
-        //TODO this constructor is only valid for the not operator
+        //TODO this constructor is only valid for the not operator. Will be changed when revising the connector api.
         /**
          * The Constructor for the not operator of the Filter, will create invalid queries for other operators.
          *
