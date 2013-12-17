@@ -51,5 +51,6 @@ public abstract class Group_ {
     public abstract static class Members {
         public static final StringAttribute value = new StringAttribute("members.value");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
         public static final StringAttribute type = new StringAttribute("members.type");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+        public static final StringAttribute display = new StringAttribute("members.display");  // NOSONAR constance name doesn't has to be like '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
     }
 }

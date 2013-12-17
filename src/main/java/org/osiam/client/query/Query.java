@@ -35,6 +35,7 @@ import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.Comparison;
+import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.Resource;
 
 /**
@@ -306,6 +307,9 @@ public class Query {
             if (attribute.startsWith("name.")) {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);
             }
+            if (attribute.startsWith("groups.") || attribute.startsWith("members.")) {
+                return isAttributeValid(compositeField, org.osiam.resources.scim.MemberRef.class);
+            }
 
             List<String> fields = getAllClassFields(clazz);
             if(fields.contains(attribute)){
@@ -334,6 +338,7 @@ public class Query {
         }
     	addFieldsFromSuperClass(fields, clazz.getSuperclass());
     }
+
     /**
      * A Filter is used to produce filter criteria for the query.
      */
@@ -341,6 +346,17 @@ public class Query {
 
         private Class<?> clazz;
         private StringBuilder filterBuilder;
+
+        //TODO this constructor is only valid for the not operator. Will be changed when revising the connector api.
+        /**
+         * The Constructor for the not operator of the Filter, will create invalid queries for other operators.
+         *
+         * @param clazz The class of Resources to filter for.
+         */
+        public Filter(Class<?> clazz) {
+            filterBuilder = new StringBuilder();
+            this.clazz = clazz;
+        }
 
         /**
          * The Constructor of the Filter
@@ -385,7 +401,11 @@ public class Query {
          * @return The Builder with the inner filter added.
          */
         public Filter and(Filter innerFilter) {
-            filterBuilder.append(" and (").append(innerFilter.toString()).append(")");
+            if (innerFilter.toString().startsWith("not (")) {
+                filterBuilder.append(" and ").append(innerFilter.toString());
+            } else {
+                filterBuilder.append(" and (").append(innerFilter.toString()).append(")");
+            }
             return this;
         }
 
@@ -408,7 +428,34 @@ public class Query {
          * @return The Builder with the inner filter added.
          */
         public Filter or(Filter innerFilter) {
-            filterBuilder.append(" or (").append(innerFilter.toString()).append(")");
+            if (innerFilter.toString().startsWith("not (")) {
+                filterBuilder.append(" or ").append(innerFilter.toString());
+            } else {
+                filterBuilder.append(" or (").append(innerFilter.toString()).append(")");
+            }
+            return this;
+        }
+
+        /**
+         * Appends the not operator to the filter and adds the given parameter into ( ... )
+         * @param comparison A filter string with valid attribute, operator and value to search for
+         * @return The Builder with the filter added.
+         * @throws org.osiam.client.exception.InvalidAttributeException if the given attribute is not valid for a query
+         */
+        public Filter not(Comparison comparison) {
+            filterBuilder.append("not (");
+            query(comparison);
+            filterBuilder.append(")");
+            return this;
+        }
+
+        /**
+         * Appends the not operator to the filter and adds the query of the given Builder into ( ... )
+         * @param innerFilter the inner filter
+         * @return The Builder with the inner filter added.
+         */
+        public Filter not(Filter innerFilter) {
+            filterBuilder.append("not (").append(innerFilter.toString()).append(")");
             return this;
         }
 

@@ -1,5 +1,4 @@
-/*
- * Copyright (C) 2013 tarent AG
+/* Copyright (C) 2013 tarent AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -20,6 +19,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 
 package org.osiam.client.query;
 
@@ -51,7 +51,6 @@ public class UserQueryBuilderTest {
     private static final StringAttribute VALID_EMAIL_ATTR = User_.Emails.value;
     private static final String IRRELEVANT = "irrelevant";
     private static final String IRRELEVANT_EMAIL_TYPE = "other";
-    private static final StringAttribute IRRELEVANT_FIELD = Group_.Members.value;
     private static final int START_INDEX = 5;
     private static final int COUNT_PER_PAGE = 7;
     private static final String FILTER = "filter=";
@@ -167,12 +166,6 @@ public class UserQueryBuilderTest {
         buildStringMeetsExpectation(FILTER + encodeExpectedString(VALID_META_ATTR + " le \"" + dateNowString + "\""));
     }
 
-    @Test(expected = InvalidAttributeException.class)
-    public void exception_raised_when_nested_attr_is_not_valid() {
-        filter = new Query.Filter(User.class, IRRELEVANT_FIELD.contains(IRRELEVANT));
-        queryBuilder.setFilter(filter);
-    }
-
     @Test
     public void sort_order_ascending() {
         queryBuilder.setSortOrder(SortOrder.ASCENDING);
@@ -267,30 +260,6 @@ public class UserQueryBuilderTest {
                 + " eq \"" + IRRELEVANT + "\")") + "&sortBy=" + DEFAULT_ATTR + "&sortOrder=" + SortOrder.ASCENDING.toString()
                 + "&count=" + COUNT_PER_PAGE + "&startIndex=" + START_INDEX;
         buildStringMeetsExpectation(exceptedQuery);
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_sort_by_added(){
-        queryBuilder.setSortBy(IRRELEVANT_FIELD);
-        fail("Exception excpected");
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_filter_added(){
-        new Query.Filter(User.class, IRRELEVANT_FIELD.contains(IRRELEVANT));
-        fail("Exception excpected");
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_and_added(){
-        new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).and(IRRELEVANT_FIELD.contains(IRRELEVANT));
-        fail("Exception excpected");
-    }
-
-    @Test (expected = InvalidAttributeException.class)
-    public void invalid_attribut_to_or_added(){
-        new Query.Filter(User.class, DEFAULT_ATTR.contains(IRRELEVANT)).or(IRRELEVANT_FIELD.contains(IRRELEVANT));
-        fail("Exception excpected");
     }
 
     @Test
