@@ -60,7 +60,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
     /**
      * Gets the full mailing address, formatted for display or use with a mailing label.
-     * 
+     *
      * @return the formatted address
      */
     public String getFormatted() {
@@ -69,7 +69,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
     /**
      * Gets the full street address, which may include house number, street name, etc.
-     * 
+     *
      * @return the street address
      */
     public String getStreetAddress() {
@@ -78,7 +78,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
     /**
      * Gets the city or locality
-     * 
+     *
      * @return the city or locality
      */
     public String getLocality() {
@@ -87,7 +87,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
     /**
      * Gets the state or region
-     * 
+     *
      * @return region the region
      */
     public String getRegion() {
@@ -96,7 +96,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
     /**
      * Gets the postal code
-     * 
+     *
      * @return postalCode the postal code
      */
     public String getPostalCode() {
@@ -105,7 +105,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
     /**
      * Gets the country name in ISO 3166-1 alpha 2 format, e.g. "DE" or "US".
-     * 
+     *
      * @return the country
      */
     public String getCountry() {
@@ -123,12 +123,30 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
         private String postalCode;
         private String country;
 
+        public Builder() {
+            super();
+        }
+
+        public Builder(Address address) {
+            this();
+            formatted = address.formatted;
+            streetAddress = address.streetAddress;
+            locality = address.locality;
+            region = address.region;
+            postalCode = address.postalCode;
+            country = address.country;
+
+            // TODO: add copy-of constructor in MultiValuedAttribute.Builder and remove these lines
+            setPrimary(address.isPrimary());
+            setType(address.getType());
+        }
+
         /**
          * Sets the full mailing address (See {@link Address#getFormatted()}).
-         * 
+         *
          * @param formatted
          *            the formatted address
-         * 
+         *
          * @return the builder itself
          */
         public Builder setFormatted(String formatted) {
@@ -138,10 +156,10 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
         /**
          * Sets the full street address component, (See {@link Address#getStreetAddress()}).
-         * 
+         *
          * @param streetAddress
          *            the street address
-         * 
+         *
          * @return the builder itself
          */
         public Builder setStreetAddress(String streetAddress) {
@@ -151,10 +169,10 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
         /**
          * Sets the city or locality.
-         * 
+         *
          * @param locality
          *            the locality
-         * 
+         *
          * @return the builder itself
          */
         public Builder setLocality(String locality) {
@@ -164,10 +182,10 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
         /**
          * Sets the state or region.
-         * 
+         *
          * @param region
          *            the region
-         * 
+         *
          * @return the builder itself
          */
         public Builder setRegion(String region) {
@@ -177,10 +195,10 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
         /**
          * Sets the postal code
-         * 
+         *
          * @param postalCode
          *            the postal code
-         * 
+         *
          * @return the builder itself
          */
         public Builder setPostalCode(String postalCode) {
@@ -190,10 +208,10 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
 
         /**
          * Sets the country name (See {@link Address#getCountry()}).
-         * 
+         *
          * @param country
          *            the country
-         * 
+         *
          * @return the builder itself
          */
         public Builder setCountry(String country) {
@@ -204,6 +222,12 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
         @Override
         public Builder setPrimary(Boolean primary) {
             super.setPrimary(primary);
+            return this;
+        }
+
+        @Override
+        public Builder setOperation(String operation) {
+            super.setOperation(operation);
             return this;
         }
 
