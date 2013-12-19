@@ -96,6 +96,14 @@ public class AccessToken {
         return scope;
     }
 
+    /**
+     * Retrieve the refresh token for this access token
+     * @return The refresh token as String
+     */
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
     @Override
     public String toString() {
         StringBuilder returnToken = new StringBuilder();
@@ -104,6 +112,7 @@ public class AccessToken {
                 append(", token_type = ").append(type).
                 append(", scope = ").append(scope).
                 append(", expired = ").append(isExpired()).
+                append(", refresh_token = ").append(refreshToken).
                 append("]");
 
         return returnToken.toString();
