@@ -96,14 +96,13 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         clientRedirectUri = builder.clientRedirectUri;
     }
 
-    private HttpResponse performRequest() {
-    	if(post == null){
-	    	buildHead();
-	    	buildBody();
-	    	post = new HttpPost(getFinalEndpoint());
-	        post.setHeaders(headers);
-	        post.setEntity(body);
-    	}
+    private HttpResponse performRequest(AccessToken... accessTokens) {
+        buildHead();
+        buildBody(accessTokens);
+        post = new HttpPost(getFinalEndpoint());
+        post.setHeaders(headers);
+        post.setEntity(body);
+
         HttpClient defaultHttpClient = new DefaultHttpClient();
         final HttpResponse response;
         try {
@@ -128,16 +127,21 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         return clientCredentials;
     }
 
-    private void buildBody() {
+    private void buildBody(AccessToken... accessTokens) {
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         nameValuePairs.add(new BasicNameValuePair("scope", scopes));
         nameValuePairs.add(new BasicNameValuePair("grant_type", grantType.getUrlParam())); // NOSONAR - we check before that the grantType is not null
-        if(userName != null){
-        	nameValuePairs.add(new BasicNameValuePair("username", userName));
+        if(grantType != GrantType.REFRESH_TOKEN) {
+            if(userName != null){
+                nameValuePairs.add(new BasicNameValuePair("username", userName));
+            }
+            if(password != null){
+                nameValuePairs.add(new BasicNameValuePair("password", password));
+            }
+        } else if (grantType == GrantType.REFRESH_TOKEN && accessTokens.length != 0) {
+            nameValuePairs.add(new BasicNameValuePair("refresh_token", accessTokens[0].getRefreshToken()));
         }
-        if(password != null){
-        	nameValuePairs.add(new BasicNameValuePair("password", password));
-        }
+
         try {
             body = new UrlEncodedFormEntity(nameValuePairs);
         } catch (UnsupportedEncodingException e) {
@@ -162,6 +166,12 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         HttpResponse response = performRequest();
         int status = response.getStatusLine().getStatusCode();
 
+        checkAndHandleHttpStatus(response, status);
+
+        return getAccessToken(response);
+    }
+
+    private void checkAndHandleHttpStatus(HttpResponse response, int status) {
         if (status != SC_OK) {
         	String errorMessage;
         	String defaultMessage;
@@ -184,8 +194,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
                     throw new ConnectionInitializationException(errorMessage);
             }
         }
-
-        return getAccessToken(response);
     }
 
     private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
@@ -285,11 +293,11 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
 
         HttpPost realWebResource = getWebRessourceToEchangeAuthCode(authCode);
-        DefaultHttpClient httpclient = new DefaultHttpClient();
+        DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse response;
-        int httpStatus = 0;
+        int httpStatus;
         try{
-            response = httpclient.execute(realWebResource);
+            response = httpClient.execute(realWebResource);
             httpStatus = response.getStatusLine().getStatusCode();
         }catch(IOException e){
         	throw new ConnectionInitializationException("Unable to setup connection", e);
@@ -348,6 +356,24 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          	throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
          }
          return realWebResource;
+    }
+
+    public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] scopes) {
+        if (scopes.length != 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for(Scope scope : scopes) {
+                stringBuilder.append(" ").append(scope.toString());
+            }
+            this.scopes = stringBuilder.toString().trim();
+        }
+        this.grantType = GrantType.REFRESH_TOKEN;
+
+        HttpResponse response = performRequest(accessToken);
+        int status = response.getStatusLine().getStatusCode();
+
+        checkAndHandleHttpStatus(response, status);
+
+        return getAccessToken(response);
     }
 
     /**
