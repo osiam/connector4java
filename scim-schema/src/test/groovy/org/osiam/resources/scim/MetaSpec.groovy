@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim
 
+import org.junit.Before
+
 import spock.lang.Specification
 
 class MetaSpec extends Specification {
@@ -39,38 +41,15 @@ class MetaSpec extends Specification {
         given:
         def oldSysTime = System.currentTimeMillis()
         when:
-        def meta = new Meta.Builder().build();
+        def meta = new Meta.Builder().build()
         then:
         meta.created >= meta.lastModified
         meta.created.time >= oldSysTime
     }
 
-    def "should be able to create without explicit last modified"() {
-        given:
-        def oldSysTime = System.currentTimeMillis()
-        def createdOn = oldSysTime - 2342
-        when:
-        def meta = new Meta.Builder(new Date(createdOn)).build();
-        then:
-        meta.created != meta.lastModified
-        meta.created.time == createdOn
-        meta.lastModified.time >= oldSysTime
-    }
-
-    def "should be able to set created to null without exception"() {
-        given:
-        def oldSysTime = System.currentTimeMillis()
-        when:
-        def meta = new Meta.Builder(null).build();
-        then:
-        meta.created != meta.lastModified
-        meta.created == null
-        meta.lastModified.time >= oldSysTime
-    }
-
     def "should be able to set created and last modified to null without exception"() {
         when:
-        def meta = new Meta.Builder(null, null).build();
+        def meta = new Meta.Builder(null, null).build()
         then:
         meta.created == null
         meta.lastModified == null
@@ -81,11 +60,10 @@ class MetaSpec extends Specification {
         def lastModified = System.currentTimeMillis() + 2342
         def createdOn = System.currentTimeMillis() - 2342
         when:
-        def meta = new Meta.Builder(new Date(createdOn), new Date(lastModified)).build();
+        def meta = new Meta.Builder(new Date(createdOn), new Date(lastModified)).build()
         then:
         meta.created.time == createdOn
         meta.lastModified.time == lastModified
-
     }
 
     def "should contain location and version"() {
@@ -94,11 +72,10 @@ class MetaSpec extends Specification {
                 .setLocation("dunno")
                 .setVersion("version??")
                 .setAttributes(new HashSet<String>())
-                .build();
+                .build()
         then:
         meta.location == "dunno"
         meta.version == "version??"
-
     }
 
     def "attributes should should be ebale to get enriched"() {
@@ -106,31 +83,42 @@ class MetaSpec extends Specification {
         def meta = new Meta.Builder()
                 .setLocation("dunno")
                 .setVersion("version??")
-                .build();
+                .build()
 
         when:
         meta.getAttributes().add("hallo")
         then:
         meta.getAttributes().size() == 1
-
     }
 
     def "should contain resourceType"() {
         when:
-        def meta = new Meta.Builder().setResourceType("rt").build();
+        def meta = new Meta.Builder().setResourceType("rt").build()
         then:
         meta.getResourceType() == "rt"
     }
 
-    def "should be able to set location without the builder"() {
+    def 'creating a new MetaBuilder based on a old one is equals to the given'(){
         given:
         def meta = new Meta.Builder()
                 .setLocation("dunno")
-                .build();
+                .setVersion("version??")
+                .setAttributes(['a', 'b'] as Set)
+                .setResourceType('resourceType')
+                .build()
+
         when:
-        meta.setLocation("know")
+        Meta newMeta = new Meta.Builder(meta).build()
 
         then:
-        meta.getLocation() == "know"
+        newMeta == meta
+    }
+
+    def 'creating a new Meta.Builder with a given null raises exception'(){
+        when:
+        new Meta.Builder(null)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 }

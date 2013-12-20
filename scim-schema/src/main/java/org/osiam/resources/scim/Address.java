@@ -23,16 +23,17 @@
 
 package org.osiam.resources.scim;
 
-
-import org.osiam.resources.scim.MultiValuedAttribute.Builder;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * Java class for address complex type.
+ * A physical mailing address for a User
+ * <p>
+ * For more detailed information please look at the <a
+ * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0</a>
+ * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class Address extends MultiValuedAttribute {
+public class Address extends MultiValuedAttribute { // NOSONAR - Builder constructs instances of this class
 
     private String formatted;
     private String streetAddress;
@@ -41,7 +42,10 @@ public class Address extends MultiValuedAttribute {
     private String postalCode;
     private String country;
 
-    public Address() {
+    /**
+     * Default constructor for Jackson
+     */
+    private Address() {
     }
 
     private Address(Builder builder) {
@@ -52,69 +56,65 @@ public class Address extends MultiValuedAttribute {
         this.region = builder.region;
         this.postalCode = builder.postalCode;
         this.country = builder.country;
-
     }
 
     /**
-     * Gets the value of the formatted property.
+     * Gets the full mailing address, formatted for display or use with a mailing label.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the formatted address
      */
     public String getFormatted() {
         return formatted;
     }
 
     /**
-     * Gets the value of the streetAddress property.
+     * Gets the full street address, which may include house number, street name, etc.
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the street address
      */
     public String getStreetAddress() {
         return streetAddress;
     }
 
     /**
-     * Gets the value of the locality property.
+     * Gets the city or locality
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the city or locality
      */
     public String getLocality() {
         return locality;
     }
 
     /**
-     * Gets the value of the region property.
+     * Gets the state or region
      *
-     * @return possible object is
-     *         {@link String }
+     * @return region the region
      */
     public String getRegion() {
         return region;
     }
 
     /**
-     * Gets the value of the postalCode property.
+     * Gets the postal code
      *
-     * @return possible object is
-     *         {@link String }
+     * @return postalCode the postal code
      */
     public String getPostalCode() {
         return postalCode;
     }
 
     /**
-     * Gets the value of the country property.
+     * Gets the country name in ISO 3166-1 alpha 2 format, e.g. "DE" or "US".
      *
-     * @return possible object is
-     *         {@link String }
+     * @return the country
      */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Builder class that is used to build {@link Address} instances
+     */
     public static class Builder extends MultiValuedAttribute.Builder {
         private String formatted;
         private String streetAddress;
@@ -123,31 +123,97 @@ public class Address extends MultiValuedAttribute {
         private String postalCode;
         private String country;
 
+        public Builder() {
+            super();
+        }
+
+        public Builder(Address address) {
+            this();
+            formatted = address.formatted;
+            streetAddress = address.streetAddress;
+            locality = address.locality;
+            region = address.region;
+            postalCode = address.postalCode;
+            country = address.country;
+
+            // TODO: add copy-of constructor in MultiValuedAttribute.Builder and remove these lines
+            setPrimary(address.isPrimary());
+            setType(address.getType());
+        }
+
+        /**
+         * Sets the full mailing address (See {@link Address#getFormatted()}).
+         *
+         * @param formatted
+         *            the formatted address
+         *
+         * @return the builder itself
+         */
         public Builder setFormatted(String formatted) {
             this.formatted = formatted;
             return this;
         }
 
+        /**
+         * Sets the full street address component, (See {@link Address#getStreetAddress()}).
+         *
+         * @param streetAddress
+         *            the street address
+         *
+         * @return the builder itself
+         */
         public Builder setStreetAddress(String streetAddress) {
             this.streetAddress = streetAddress;
             return this;
         }
 
+        /**
+         * Sets the city or locality.
+         *
+         * @param locality
+         *            the locality
+         *
+         * @return the builder itself
+         */
         public Builder setLocality(String locality) {
             this.locality = locality;
             return this;
         }
 
+        /**
+         * Sets the state or region.
+         *
+         * @param region
+         *            the region
+         *
+         * @return the builder itself
+         */
         public Builder setRegion(String region) {
             this.region = region;
             return this;
         }
 
+        /**
+         * Sets the postal code
+         *
+         * @param postalCode
+         *            the postal code
+         *
+         * @return the builder itself
+         */
         public Builder setPostalCode(String postalCode) {
             this.postalCode = postalCode;
             return this;
         }
 
+        /**
+         * Sets the country name (See {@link Address#getCountry()}).
+         *
+         * @param country
+         *            the country
+         *
+         * @return the builder itself
+         */
         public Builder setCountry(String country) {
             this.country = country;
             return this;
@@ -160,10 +226,15 @@ public class Address extends MultiValuedAttribute {
         }
 
         @Override
+        public Builder setOperation(String operation) {
+            super.setOperation(operation);
+            return this;
+        }
+
+        @Override
         public Address build() {
             return new Address(this);
         }
-
 
     }
 }

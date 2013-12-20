@@ -64,16 +64,6 @@ class UserSpec extends Specification {
 
     }
 
-    def "generateForOutput should copy schemas"() {
-        def schemas = ["urn:wtf", "urn:hajo"] as Set
-        User oldUser = new User.Builder("username").setSchemas(schemas).build()
-        when:
-        User user = User.Builder.generateForOutput(oldUser);
-        then:
-        user.schemas == oldUser.schemas
-
-    }
-
     @Unroll
     def "using #parameter for userName raises exception"() {
         when:
@@ -91,6 +81,7 @@ class UserSpec extends Specification {
     def "should generate a user based on builder"() {
         given:
         def multivalueAttribute = new MultiValuedAttribute.Builder().build()
+        def meta = new Meta.Builder().build()
 
         def builder = new User.Builder("test").setActive(true)
                 .setDisplayName("display")
@@ -106,7 +97,9 @@ class UserSpec extends Specification {
                 .setEntitlements([multivalueAttribute] as List)
                 .setRoles([multivalueAttribute] as List)
                 .setX509Certificates([multivalueAttribute] as List)
-                .setExternalId("externalid").setId("id").setMeta(new Meta.Builder().build())
+                .setId('id')
+                .setMeta(meta)
+                .setExternalId('external')
                 .addExtension(new Extension("urn:org.osiam:schemas:test:1.0:Test"))
         when:
         User user = builder.build()
@@ -132,83 +125,11 @@ class UserSpec extends Specification {
         user.userType == builder.userType
         user.x509Certificates == builder.x509Certificates
         user.userName == builder.userName
-        user.id == builder.id
-        user.externalId == builder.externalId
-        user.meta == builder.meta
+        user.id == 'id'
+        user.meta == meta
+        user.externalId == 'external'
         user.extensions == builder.extensions
     }
-
-    def "prepareForOutput should return null if null is passed in as parameter"() {
-        expect:
-        User.Builder.generateForOutput(null) == null
-    }
-
-    def "generateForOutput should remove the password"() {
-        given:
-        User user = new User.Builder("test")
-                .setPassword("password")
-                .build()
-        when:
-        User clonedUser = User.Builder.generateForOutput(user)
-        then:
-        clonedUser.password == null
-    }
-
-    def "should set empty collections for pretty output"() {
-        given:
-        User user = new User.Builder("test").build()
-        when:
-        User clonedUser = User.Builder.generateForOutput(user)
-        then:
-        clonedUser.addresses.empty
-        clonedUser.emails.empty
-        clonedUser.entitlements.empty
-        clonedUser.groups.empty
-        clonedUser.ims.empty
-        clonedUser.phoneNumbers.empty
-        clonedUser.photos.empty
-        clonedUser.roles.empty
-        clonedUser.x509Certificates.empty
-        // clonedUser.extensions.empty does not work
-        clonedUser.extensions.size() == 0
-    }
-
-    def "generateForOutput should copy collections from original user"() {
-        given:
-        def address = new Address.Builder().build()
-        def generalAttribute = new MultiValuedAttribute.Builder().build()
-        def extension = new Extension("urn:org.osiam:schemas:test:1.0:Test")
-
-        User user = new User.Builder("test")
-                .setAddresses([address])
-                .setEmails([generalAttribute])
-                .setEntitlements([generalAttribute])
-                .setGroups([generalAttribute])
-                .setIms([generalAttribute])
-                .setPhoneNumbers([generalAttribute])
-                .setPhotos([generalAttribute])
-                .setRoles([generalAttribute])
-                .setX509Certificates([generalAttribute])
-                .addExtension(extension)
-                .build()
-
-        when:
-        User clonedUser = User.Builder.generateForOutput(user)
-        then:
-        clonedUser.addresses.get(0) == address
-        clonedUser.emails.get(0) == generalAttribute
-        clonedUser.entitlements.get(0) == generalAttribute
-        clonedUser.groups.get(0) == generalAttribute
-        clonedUser.ims.get(0) == generalAttribute
-        clonedUser.phoneNumbers.get(0) == generalAttribute
-        clonedUser.photos.get(0) == generalAttribute
-        clonedUser.roles.get(0) == generalAttribute
-        clonedUser.x509Certificates.get(0) == generalAttribute
-
-        clonedUser.extensions.containsKey("urn:org.osiam:schemas:test:1.0:Test")
-        clonedUser.extensions.get("urn:org.osiam:schemas:test:1.0:Test") == extension
-    }
-
 
     def "should be able to enrich addresses, emails, entitlements, groups, phone-numbers, photos, roles and certificates"() {
         given:
@@ -323,7 +244,7 @@ class UserSpec extends Specification {
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
         def extension2 = new Extension(extension2Urn)
         def coreSchemaUrn = Constants.USER_CORE_SCHEMA
-        
+
         when:
         def user = new User.Builder("test2")
                 .addExtension(extension1)
@@ -371,6 +292,14 @@ class UserSpec extends Specification {
         'null'    | null          | IllegalArgumentException
         'empty'   | ''            | IllegalArgumentException
         'invalid' | EXTENSION_URN | NoSuchElementException
+    }
+
+    def 'using the copy-of builder with null as parameter raises exception'() {
+        when:
+        new User.Builder(null)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 
 }

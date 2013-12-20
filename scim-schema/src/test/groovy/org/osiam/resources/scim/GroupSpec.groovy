@@ -85,4 +85,12 @@ class GroupSpec extends Specification {
         group.id == result.id
     }
 
+    def 'using the copy-of builder with null as parameter raises exception'() {
+        when:
+        new Group.Builder(null)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
 }

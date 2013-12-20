@@ -23,13 +23,16 @@
 
 package org.osiam.resources.scim;
 
-import javax.annotation.Generated;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Java class for multiValuedAttribute complex type.
+ * This class represents a multi valued attribute.
+ * 
+ * <p>
+ * For more detailed information please look at the <a
+ * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
+ * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
 public class MultiValuedAttribute {
@@ -40,8 +43,10 @@ public class MultiValuedAttribute {
     private String type;
     private String operation;
 
-    // JSON Serializing
-    public MultiValuedAttribute() {
+    /**
+     * Default constructor for Jackson
+     */
+    protected MultiValuedAttribute() {
     }
 
     protected MultiValuedAttribute(Builder builder) {
@@ -52,6 +57,84 @@ public class MultiValuedAttribute {
         this.operation = builder.operation;
     }
 
+    /**
+     * Gets the attribute's significant value; e.g., the e-mail address, phone number etc.
+     * 
+     * <p>
+     * For more detailed information please look at the <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
+     * 3.2</a>
+     * </p>
+     * 
+     * @return the value of the actual multi value attribute
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Gets the human readable name, primarily used for display purposes.
+     * 
+     * <p>
+     * For more detailed information please look at the <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
+     * 3.2</a>
+     * </p>
+     * 
+     * @return the display attribute
+     */
+    public String getDisplay() {
+        return display;
+    }
+
+    /**
+     * Gets a Boolean value indicating the 'primary' or preferred attribute value for this attribute.
+     * 
+     * <p>
+     * For more detailed information please look at the <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
+     * 3.2</a>
+     * </p>
+     * 
+     * @return the primary attribute
+     */
+    public Boolean isPrimary() {
+        return primary;
+    }
+
+    /**
+     * Gets the type of the attribute.
+     * 
+     * <p>
+     * For more detailed information please look at the <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
+     * 3.2</a>
+     * </p>
+     * 
+     * @return the actual type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Gets the operation applied during a PATCH request.
+     * 
+     * <p>
+     * For more detailed information please look at the <a
+     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
+     * 3.2</a>
+     * </p>
+     * 
+     * @return the operation
+     */
+    public String getOperation() {
+        return operation;
+    }
+
+    /**
+     * Builder class that is used to build {@link MultiValuedAttribute} instances
+     */
     public static class Builder {
 
         private String value;
@@ -60,79 +143,74 @@ public class MultiValuedAttribute {
         private String type;
         private String operation;
 
+        /**
+         * Sets the attribute's significant value (See {@link MultiValuedAttribute#getValue()}).
+         * 
+         * @param value
+         *            the value attribute
+         * @return the builder itself
+         */
         public Builder setValue(String value) {
             this.value = value;
             return this;
         }
 
+        /**
+         * Sets the human readable name (See {@link MultiValuedAttribute#getDisplay()}).
+         * 
+         * @param display
+         *            a human readable name
+         * @return the builder itself
+         */
         public Builder setDisplay(String display) {
             this.display = display;
             return this;
         }
 
+        /**
+         * Sets the primary attribute (See {@link MultiValuedAttribute#isPrimary()}).
+         * 
+         * @param the
+         *            primary attribute
+         * @return the builder itself
+         */
         public Builder setPrimary(Boolean primary) {
             this.primary = primary;
             return this;
         }
 
+        /**
+         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
+         * 
+         * @param type
+         *            the type of the attribute
+         * @return the builder itself
+         */
         public Builder setType(String type) {
             this.type = type;
             return this;
         }
 
+        /**
+         * Sets the operation (See {@link MultiValuedAttribute#getOperation()}).
+         * 
+         * @param operation
+         *            only "delete" is supported at the moment
+         * @return the builder itself
+         */
         public Builder setOperation(String operation) {
             this.operation = operation;
             return this;
         }
 
+        /**
+         * Builds a MultiValuedAttribute Object with the given parameters
+         * 
+         * @return a new MultiValuedAttribute Object
+         */
         public MultiValuedAttribute build() {
             return new MultiValuedAttribute(this);
         }
-    }
-
-    /**
-     * Gets the value of the value property.
-     *
-     * @return possible object is {@link String }
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Gets the value of the display property.
-     *
-     * @return possible object is {@link String }
-     */
-    public String getDisplay() {
-        return display;
-    }
-
-    /**
-     * Gets the value of the primary property.
-     *
-     * @return possible object is {@link Boolean }
-     */
-    public Boolean isPrimary() {
-        return primary;
-    }
-
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Gets the value of the operation property.
-     *
-     * @return possible object is {@link String }
-     */
-    public String getOperation() {
-        return operation;
     }
 
     @Override
@@ -196,5 +274,4 @@ public class MultiValuedAttribute {
         }
         return true;
     }
-
 }

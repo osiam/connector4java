@@ -33,6 +33,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
+/**
+ * Jackson serializer for {@link Date}
+ */
 public class JsonDateSerializer extends JsonSerializer<Date> {
 
     private final DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
