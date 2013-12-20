@@ -23,14 +23,16 @@
 
 package org.osiam.client.exception;
 
+import org.apache.http.HttpStatus;
+
 /**
  * Thrown when a query for a given ID doesn't return any results.
  */
-public class NoResultException extends RuntimeException {
+public class NoResultException extends OsiamRequestException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8535399822195998601L;
 
     public NoResultException(String message) {
-        super(message);
+        super(HttpStatus.SC_NOT_FOUND, message);
     }
 }

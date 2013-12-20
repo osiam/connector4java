@@ -36,6 +36,7 @@ import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.client.update.UpdateUser;
+import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
@@ -261,8 +262,9 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     }
 
     /**
-     * Retrieve the User who holds the given access token. Not to be used for the grant Client-Credentials
-     *
+     * Retrieves the User who holds the given access token. Not to be used for the grant Client-Credentials
+     * If only the basic Data like the userName, Name, primary email address is needed use the methode getCurrentUserBasic(...)
+     * since it is more performant as this one
      * @param accessToken
      *            the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -273,12 +275,27 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      * @throws ConnectionInitializationException
      *             if no connection to the given OSIAM services could be initialized
      */
-    public User getMe(AccessToken accessToken) {
-        return userService().getMe(accessToken);
+    public User getCurrentUser(AccessToken accessToken) {
+        return userService().getCurrentUser(accessToken);
     }
 
-    public User getMeBasic(AccessToken accessToken) {
-        return userService().getMeBasic(accessToken);
+    /**
+     * Retrieves the basic User data as BasicUser Object from the User who holds the given access token.
+     * Not to be used for the grant Client-Credentials
+     * If only the basic Data like the userName, Name, primary email address is needed use this methode since it is more
+     * performant as the getCurrentUser(...) method
+     * @param accessToken
+     *            the OSIAM access token from for the current session
+     * @return the actual logged in user
+     * @throws UnauthorizedException
+     *             if the request could not be authorized.
+     * @throws ForbiddenException
+     *             if the scope doesn't allow this request
+     * @throws ConnectionInitializationException
+     *             if no connection to the given OSIAM services could be initialized
+     */
+    public BasicUser getCurrentUserBasic(AccessToken accessToken) {
+        return userService().getCurrentUserBasic(accessToken);
     }
 
     /**
@@ -377,6 +394,16 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      */
     public AccessToken retrieveAccessToken() {
         return authService().retrieveAccessToken();
+    }
+
+    /**
+     * Provides a new and refreshed access token by getting the refresh token from the given access token.
+     * @param accessToken the access token to be refreshed
+     * @param scopes an optional parameter if the scope of the token should be changed. Otherwise the scopes of the old token are used.
+     * @return the new access token with the refreshed lifetime
+     */
+    public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
+        return authService.refreshAccessToken(accessToken, scopes);
     }
 
     /**

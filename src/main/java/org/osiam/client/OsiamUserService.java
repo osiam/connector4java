@@ -45,8 +45,11 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.update.UpdateUser;
+import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
@@ -89,8 +92,10 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * Retrieve the User who holds the given access token. Not to be used for the grant Client-Credentials
-     *
+     * Retrieve the basic User data as BasicUser Object from the User who holds the given access token.
+     * Not to be used for the grant Client-Credentials
+     * If only the basic Data like the userName, Name, primary emailaddress is needed use this methode since it is more
+     * performant as the getCurrentUser(...) method
      * @param accessToken
      *            the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -101,8 +106,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @throws ConnectionInitializationException
      *             if no connection to the given OSIAM services could be initialized
      */
-    public User getMeBasic(AccessToken accessToken) {
-        final User user;
+    public BasicUser getCurrentUserBasic(AccessToken accessToken) {
         if (accessToken == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
@@ -137,9 +141,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             }
 
             InputStream content = response.getEntity().getContent();
-            user = mapSingleResourceResponse(content);
+            BasicUser basicUser = new ObjectMapper().readValue(content, BasicUser.class);
 
-            return user;
+            return basicUser;
         } catch (IOException | URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection", e);
         }
@@ -147,7 +151,8 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
     /**
      * Retrieve the User who holds the given access token. Not to be used for the grant Client-Credentials
-     *
+     * If only the basic Data like the userName, Name, primary emailadress is needed use the methode getCurrentUserBasic(...)
+     * since it is more performant as this one
      * @param accessToken
      *            the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -158,48 +163,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * @throws ConnectionInitializationException
      *             if no connection to the given OSIAM services could be initialized
      */
-    public User getMe(AccessToken accessToken) {
-        final User user;
-        if (accessToken == null) {
-            throw new IllegalArgumentException("The given accessToken can't be null.");
-        }
-
-        try {
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-
-            HttpGet realWebresource = createRealWebResource(accessToken);
-            realWebresource.setURI(new URI(getUri() + "/me"));
-
-            HttpResponse response = httpclient.execute(realWebresource);
-            int httpStatus = response.getStatusLine().getStatusCode();
-
-            if (httpStatus != SC_OK) {
-                String errorMessage;
-                switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessage(response,
-                            "You are not authorized to access OSIAM. Please make sure your access token is valid");
-                    throw new UnauthorizedException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to retrieve the actual User.";
-                    throw new ForbiddenException(errorMessage);
-                case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, "Unable to retrieve the actual User.");
-                    throw new ConflictException(errorMessage);
-                default:
-                    errorMessage = getErrorMessage(response,
-                            String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
-                    throw new ConnectionInitializationException(errorMessage);
-                }
-            }
-
-            InputStream content = response.getEntity().getContent();
-            user = mapSingleResourceResponse(content);
-
-            return user;
-        } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
-        }
+    public User getCurrentUser(AccessToken accessToken) {
+        BasicUser basicUser = getCurrentUserBasic(accessToken);
+        return getResource(basicUser.getId(), accessToken);
     }
 
     protected HttpGet getMeWebResource() {

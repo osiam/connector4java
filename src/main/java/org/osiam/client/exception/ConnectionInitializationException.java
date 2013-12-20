@@ -26,9 +26,9 @@ package org.osiam.client.exception;
 /**
  * Thrown if a connection to the OSIAM service can not be created.
  */
-public class ConnectionInitializationException extends RuntimeException {
+public class ConnectionInitializationException extends OsiamClientException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6114330785799547036L;
 
     public ConnectionInitializationException(String message) {
         super(message);

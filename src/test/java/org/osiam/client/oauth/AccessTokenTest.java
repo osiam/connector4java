@@ -40,6 +40,7 @@ public class AccessTokenTest {
 
     private final static String TOKEN = "c5d116cb-2758-4e7c-9aca-4a115bc4f19e";
     private final static String TOKEN_TYPE = "bearer";
+    private final static String REFRESH_TOKEN = "c5d116cb-5568-4e7c-9aca-4a115bc4f19e";
     private AccessTokenMockProvider tokenProvider;
     private AccessToken accessToken;
 
@@ -66,7 +67,7 @@ public class AccessTokenTest {
     @Test
     public void toString_behaves_as_expected() throws IOException {
         given_a_valid_access_token();
-        String builder = "[access_token = " + TOKEN + ", token_type = " + TOKEN_TYPE + ", scope = DELETE GET PATCH POST PUT" + ", expired = false]";
+        String builder = "[access_token = " + TOKEN + ", token_type = " + TOKEN_TYPE + ", scope = DELETE GET PATCH POST PUT" + ", expired = false, refresh_token = " + REFRESH_TOKEN + "]";
         assertEquals(builder, accessToken.toString());
     }
 

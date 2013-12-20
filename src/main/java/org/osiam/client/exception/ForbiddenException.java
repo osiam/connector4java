@@ -23,14 +23,16 @@
 
 package org.osiam.client.exception;
 
+import org.apache.http.HttpStatus;
+
 /**
  * Thrown when the user has not the right
  */
-public class ForbiddenException extends RuntimeException {
+public class ForbiddenException extends OsiamRequestException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5860470569792754059L;
 
     public ForbiddenException(String message) {
-        super(message);
+        super(HttpStatus.SC_FORBIDDEN, message);
     }
 }
