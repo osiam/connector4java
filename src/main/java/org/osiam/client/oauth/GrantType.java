@@ -42,7 +42,13 @@ public enum GrantType {
 	 * for this GrantType the user name and the user password are not allowed
 	 * If you set one of these a exception will be thrown
 	 */
-   , CLIENT_CREDENTIALS("client_credentials");
+   , CLIENT_CREDENTIALS("client_credentials"),
+    /**
+     * This grant type has the purpose to refresh an existing access token.
+     * This means you get a new access token with the configured lifetime.
+     * Refreshing is not allowed with the client credentials grant.
+     */
+     REFRESH_TOKEN("refresh_token");
 
     private String urlParam;
 
