@@ -399,7 +399,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
     /**
      * Provides a new and refreshed access token by getting the refresh token from the given access token.
      * @param accessToken the access token to be refreshed
-     * @param scopes an optinal paramter if the scope of the token should be changed. Null will use the scopes of hte old token.
+     * @param scopes an optional parameter if the scope of the token should be changed. Otherwise the scopes of the old token are used.
      * @return the new access token with the refreshed lifetime
      */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {

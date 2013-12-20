@@ -139,6 +139,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
                 nameValuePairs.add(new BasicNameValuePair("password", password));
             }
         } else if (grantType == GrantType.REFRESH_TOKEN && accessTokens.length != 0) {
+            if (accessTokens[0].getRefreshToken() == null) {
+                throw new ConnectionInitializationException("Unable to perform a refresh_token_grant request without refresh token.");
+            }
             nameValuePairs.add(new BasicNameValuePair("refresh_token", accessTokens[0].getRefreshToken()));
         }
 
