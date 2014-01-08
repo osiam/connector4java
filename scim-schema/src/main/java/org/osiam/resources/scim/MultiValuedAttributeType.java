@@ -30,7 +30,7 @@ public abstract class MultiValuedAttributeType {
 
     protected MultiValuedAttributeType(String value) {
         if (Strings.isNullOrEmpty(value)) {
-            throw new IllegalArgumentException("value must be not null or empty");
+            throw new IllegalArgumentException(String.format("The value of %s can't be null or empty.", getClass().getName()));
         }
         this.value = value;
     }
