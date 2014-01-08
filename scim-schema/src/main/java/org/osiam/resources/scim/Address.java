@@ -206,6 +206,12 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
             return this;
         }
 
+        @Override
+        public Builder setType(String type) {
+            super.setType(type);
+            return this;
+        }
+
         /**
          * Sets the country name (See {@link Address#getCountry()}).
          *
@@ -242,6 +248,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
      * Represents an address type. Canonical values are available as static constants.
      */
     public static class Type extends MultiValuedAttributeType {
+
         public static final Type WORK = new Type("work");
         public static final Type HOME = new Type("home");
         public static final Type OTHER = new Type("other");

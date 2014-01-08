@@ -22,11 +22,16 @@
  */
 package org.osiam.resources.scim;
 
+import com.google.common.base.Strings;
+
 public abstract class MultiValuedAttributeType {
 
     private final String value;
 
     protected MultiValuedAttributeType(String value) {
+        if (Strings.isNullOrEmpty(value)) {
+            throw new IllegalArgumentException(String.format("The value of %s can't be null or empty.", getClass().getName()));
+        }
         this.value = value;
     }
 
