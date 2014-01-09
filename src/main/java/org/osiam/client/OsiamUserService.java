@@ -38,6 +38,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
@@ -70,41 +71,14 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * Retrieve a single User with the given id. If no user for the given id can be found a {@link NoResultException} is
-     * thrown.
-     *
-     * @param id
-     *            the id of the wanted user
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return the user with the given id
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws NoResultException
-     *             if no user with the given id can be found
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
+     * See {@link OsiamConnector#getUser(String, AccessToken)}
      */
     public User getUser(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
     /**
-     * Retrieve the basic User data as BasicUser Object from the User who holds the given access token.
-     * Not to be used for the grant Client-Credentials
-     * If only the basic Data like the userName, Name, primary emailaddress is needed use this methode since it is more
-     * performant as the getCurrentUser(...) method
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return the actual logged in user
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if no connection to the given OSIAM services could be initialized
+     * See {@link OsiamConnector#getCurrentUserBasic(AccessToken)}
      */
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
         if (accessToken == null) {
@@ -150,18 +124,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * Retrieve the User who holds the given access token. Not to be used for the grant Client-Credentials
-     * If only the basic Data like the userName, Name, primary emailadress is needed use the methode getCurrentUserBasic(...)
-     * since it is more performant as this one
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return the actual logged in user
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if no connection to the given OSIAM services could be initialized
+     * See {@link OsiamConnector#getCurrentUser(AccessToken)}
      */
     public User getCurrentUser(AccessToken accessToken) {
         BasicUser basicUser = getCurrentUserBasic(accessToken);
@@ -181,133 +144,42 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * Retrieve a list of the of all {@link User} resources saved in the OSIAM service. If you need to have all User but
-     * the number is very big, this method can be slow. In this case you can also use Query.Builder with no filter to
-     * split the number of User returned
-     *
-     * @param accessToken
-     *            A valid AccessToken
-     * @return a list of all Users
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
+     * See {@link OsiamConnector#getAllUsers(AccessToken)}
      */
     public List<User> getAllUsers(AccessToken accessToken) {
         return super.getAllResources(accessToken);
     }
 
     /**
-     * Search for the existing Users by a given search string. For more detailed information about the possible logical
-     * operators and usable fields please have a look into the wiki.
-     * <p>
-     * <b>Note:</b> The query string should be URL encoded!
-     *
-     * @param queryString
-     *            The URL encoded string with the query that should be passed to the OSIAM service
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return a SCIMSearchResult Containing a list of all found Users
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
-     * @see <a
-     *      href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
+     * See {@link OsiamConnector#searchUsers(String, AccessToken)}
      */
     public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
         return super.searchResources(queryString, accessToken);
     }
 
     /**
-     * Search for existing Users by the given {@link Query}.
-     *
-     * @param query
-     *            containing the query to execute.
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return a SCIMSearchResult Containing a list of all found Users
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
+     * See {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
     public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
         return super.searchResources(query, accessToken);
     }
 
     /**
-     * delete the given {@link User} at the OSIAM DB.
-     *
-     * @param id
-     *            id of the User to be delete
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws NoResultException
-     *             if no user with the given id can be found
-     * @throws ConflictException
-     *             if the User could not be deleted
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
+     * See {@link OsiamConnector#deleteUser(String, AccessToken)}
      */
     public void deleteUser(String id, AccessToken accessToken) {
         deleteResource(id, accessToken);
     }
 
     /**
-     * saves the given {@link User} to the OSIAM DB.
-     *
-     * @param user
-     *            user to be saved
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return the same user Object like the given but with filled metadata and a new valid id
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ConflictException
-     *             if the User could not be created
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
+     * See {@link OsiamConnector#createUser(User, AccessToken)}
      */
     public User createUser(User user, AccessToken accessToken) {
         return createResource(user, accessToken);
     }
 
     /**
-     * update the user of the given id with the values given in the User Object. For more detailed information how to
-     * set new field, update Fields or to delete Fields please look in the wiki
-     *
-     * @param id
-     *            if of the User to be updated
-     * @param updateUser
-     *            all Fields that need to be updated
-     * @param accessToken
-     *            the OSIAM access token from for the current session
-     * @return the updated User Object with all new Fields
-     * @see <a
-     *      href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/connector4java/wiki/Working-with-user</a>
-     * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws ConflictException
-     *             if the User could not be updated
-     * @throws NotFoundException
-     *             if no group with the given id can be found
-     * @throws ForbiddenException
-     *             if the scope doesn't allow this request
-     * @throws ConnectionInitializationException
-     *             if the connection to the given OSIAM service could not be initialized
+     * See {@link OsiamConnector#updateUser(String, UpdateUser, AccessToken)}
      */
     public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
         if (updateUser == null) {
@@ -317,15 +189,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * Updates only the given fields of the User and leaves the omitted fields untouched.
-     *
-     * @param uuid
-     *            The UUID of the User to update
-     * @param user
-     *            A User object with the values to update filled in
-     * @param accessToken
-     *            A valid AccessToken
-     * @return The updated User as seen by the server
+     * See {@link OsiamConnector#updateUser(String, User, AccessToken)}
      */
     public User updateUser(String uuid, User user, AccessToken accessToken) {
         if (user == null) {
@@ -339,14 +203,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * Replaces the User with the given User. Any field set in the original User but not in the given User will be
-     * removed.
-     *
-     * @param user
-     *            A User object to replace the given User with
-     * @param accessToken
-     *            A valid AccessToken
-     * @return The replaced User as seen by the server
+     * See {@link OsiamConnector#replaceUser(User, AccessToken)}
      */
     public User replaceUser(User user, AccessToken accessToken) {
         if (user == null) {
@@ -359,7 +216,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * The Builder class is used to construct instances of the {@link OsiamUserService}
+     * See {@link OsiamConnector.Builder}
      */
     public static class Builder extends AbstractOsiamService.Builder<User> {
 
@@ -375,9 +232,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         }
 
         /**
-         * constructs an OsiamUserService with the given values
-         *
-         * @return a valid OsiamUserService
+         * See {@link OsiamConnector.Builder#build()}
          */
         public OsiamUserService build() {
             return new OsiamUserService(this);
