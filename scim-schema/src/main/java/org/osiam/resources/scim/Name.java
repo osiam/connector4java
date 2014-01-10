@@ -24,10 +24,11 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Strings;
 
 /**
  * This class represents the User's real name.
- * 
+ *
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -50,23 +51,23 @@ public class Name {
     }
 
     private Name(Builder builder) {
-        this.formatted = builder.formatted;
-        this.familyName = builder.familyName;
-        this.givenName = builder.givenName;
-        this.middleName = builder.middleName;
-        this.honorificPrefix = builder.honorificPrefix;
-        this.honorificSuffix = builder.honorificSuffix;
+        formatted = builder.formatted;
+        familyName = builder.familyName;
+        givenName = builder.givenName;
+        middleName = builder.middleName;
+        honorificPrefix = builder.honorificPrefix;
+        honorificSuffix = builder.honorificSuffix;
 
     }
 
     /**
      * Gets the full name, including all middle names, titles, and suffixes as appropriate, formatted for display.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     * 
+     *
      * @return the formatted name
      */
     public String getFormatted() {
@@ -75,12 +76,12 @@ public class Name {
 
     /**
      * Gets the family name of the User.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     * 
+     *
      * @return the family name
      */
     public String getFamilyName() {
@@ -89,12 +90,12 @@ public class Name {
 
     /**
      * Gets the given (first) name of the User.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     * 
+     *
      * @return the given name
      */
     public String getGivenName() {
@@ -103,12 +104,12 @@ public class Name {
 
     /**
      * Gets the middle name(s) of the User.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     * 
+     *
      * @return the middle name
      */
     public String getMiddleName() {
@@ -117,12 +118,12 @@ public class Name {
 
     /**
      * Gets the honorific prefix(es) of the User.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     * 
+     *
      * @return the honorific prefix
      */
     public String getHonorificPrefix() {
@@ -131,16 +132,49 @@ public class Name {
 
     /**
      * Gets the honorific suffix(es) of the User.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
-     * 
+     *
      * @return the honorific sufix
      */
     public String getHonorificSuffix() {
         return honorificSuffix;
+    }
+
+    /**
+     * <p>Checks if this {@link Name} is empty, i.e. all properties are empty or null.</p>
+     *
+     * @return true if all properties are null or empty, else false
+     */
+    public boolean isEmpty() {
+        if(!Strings.isNullOrEmpty(formatted)) {
+            return false;
+        }
+
+        if(!Strings.isNullOrEmpty(familyName)) {
+            return false;
+        }
+
+        if(!Strings.isNullOrEmpty(givenName)) {
+            return false;
+        }
+
+        if(!Strings.isNullOrEmpty(middleName)) {
+            return false;
+        }
+
+        if(!Strings.isNullOrEmpty(honorificPrefix)) {
+            return false;
+        }
+
+        if(!Strings.isNullOrEmpty(honorificSuffix)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -156,7 +190,7 @@ public class Name {
 
         /**
          * Sets the full name (See {@link Name#getFormatted()}).
-         * 
+         *
          * @param formatted
          *            the formatted name
          * @return the builder itself
@@ -168,7 +202,7 @@ public class Name {
 
         /**
          * Sets the family name of the User (See {@link Name#getFamilyName()}).
-         * 
+         *
          * @param familyName
          *            the family name
          * @return the builder itself
@@ -180,7 +214,7 @@ public class Name {
 
         /**
          * Sets the given name of the User (See {@link Name#getGivenName()}).
-         * 
+         *
          * @param givenName
          *            the given name
          * @return the builder itself
@@ -192,7 +226,7 @@ public class Name {
 
         /**
          * Sets the middle name(s) of the User (See {@link Name#getMiddleName()}).
-         * 
+         *
          * @param middleName
          *            the middle name
          * @return the builder itself
@@ -204,7 +238,7 @@ public class Name {
 
         /**
          * Sets the honorific prefix(es) of the User (See {@link Name#getHonorificPrefix()}).
-         * 
+         *
          * @param honorificPrefix
          *            the honorific prefix
          * @return the builder itself
@@ -216,7 +250,7 @@ public class Name {
 
         /**
          * Sets the honorific suffix(es) of the User (See {@link Name#getHonorificSuffix()}).
-         * 
+         *
          * @param honorificSuffix
          *            the honorific suffix
          * @return the builder itself
@@ -228,7 +262,7 @@ public class Name {
 
         /**
          * Builds a Name Object with the given parameters
-         * 
+         *
          * @return The complete Name Object
          */
         public Name build() {
@@ -272,12 +306,12 @@ public class Name {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());
-        result = prime * result + ((formatted == null) ? 0 : formatted.hashCode());
-        result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());
-        result = prime * result + ((honorificPrefix == null) ? 0 : honorificPrefix.hashCode());
-        result = prime * result + ((honorificSuffix == null) ? 0 : honorificSuffix.hashCode());
-        result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());
+        result = prime * result + (familyName == null ? 0 : familyName.hashCode());
+        result = prime * result + (formatted == null ? 0 : formatted.hashCode());
+        result = prime * result + (givenName == null ? 0 : givenName.hashCode());
+        result = prime * result + (honorificPrefix == null ? 0 : honorificPrefix.hashCode());
+        result = prime * result + (honorificSuffix == null ? 0 : honorificSuffix.hashCode());
+        result = prime * result + (middleName == null ? 0 : middleName.hashCode());
         return result;
     }
 }

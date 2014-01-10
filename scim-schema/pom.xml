@@ -35,7 +35,7 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>0.33</version>
+    <version>0.35-SNAPSHOT</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
@@ -123,6 +123,14 @@
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Automated testing of the equals contract. LICENSE: Apache 2.0 according to source -->
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>1.4</version>
             <scope>test</scope>
         </dependency>
 
