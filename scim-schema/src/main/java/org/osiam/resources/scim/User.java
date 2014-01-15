@@ -410,12 +410,12 @@ public class User extends Resource {
      * Provides the {@link Extension} with the given URN
      * 
      * @param urn
-     *            The URN of the extension
+     *        The URN of the extension
      * @return The extension for the given URN
      * @throws IllegalArgumentException
-     *             If urn is null or empty
+     *         If urn is null or empty
      * @throws NoSuchElementException
-     *             If extension with given urn is not available
+     *         If extension with given urn is not available
      */
     public Extension getExtension(String urn) {
         if (urn == null || urn.isEmpty()) {
@@ -460,7 +460,7 @@ public class User extends Resource {
          * Constructs a new builder by with a set userName
          * 
          * @param userName
-         *            Unique identifier for the User (See {@link User#getUserName()})
+         *        Unique identifier for the User (See {@link User#getUserName()})
          */
         public Builder(String userName) {
             this();
@@ -482,7 +482,7 @@ public class User extends Resource {
          * Constructs a new builder by copying all values from the given {@link User}
          * 
          * @param user
-         *            a old {@link User}
+         *        a old {@link User}
          */
         public Builder(User user) {
             super(user);
@@ -514,7 +514,7 @@ public class User extends Resource {
          * Sets the components of the {@link User}'s real name (See {@link User#getName()}).
          * 
          * @param name
-         *            the name object of the {@link User}
+         *        the name object of the {@link User}
          * @return the builder itself
          */
         public Builder setName(Name name) {
@@ -526,7 +526,7 @@ public class User extends Resource {
          * Sets the display name (See {@link User#getDisplayName()}).
          * 
          * @param displayName
-         *            the display name of the {@link User}
+         *        the display name of the {@link User}
          * @return the builder itself
          */
         public Builder setDisplayName(String displayName) {
@@ -538,7 +538,7 @@ public class User extends Resource {
          * Sets the nick name (See {@link User#getNickName()}).
          * 
          * @param nickName
-         *            the nick name of the {@link User}
+         *        the nick name of the {@link User}
          * @return the builder itself
          */
         public Builder setNickName(String nickName) {
@@ -550,7 +550,7 @@ public class User extends Resource {
          * Sets the profile URL (See {@link User#getProfileUrl()}).
          * 
          * @param profileUrl
-         *            the profil URL of the {@link User}
+         *        the profil URL of the {@link User}
          * @return the builder itself
          */
         public Builder setProfileUrl(String profileUrl) {
@@ -562,7 +562,7 @@ public class User extends Resource {
          * Sets the user's title (See {@link User#getTitle()}).
          * 
          * @param title
-         *            the title of the {@link User}
+         *        the title of the {@link User}
          * @return the builder itself
          */
         public Builder setTitle(String title) {
@@ -574,7 +574,7 @@ public class User extends Resource {
          * Sets the user type (See {@link User#getUserType()}).
          * 
          * @param userType
-         *            the type of the {@link User}
+         *        the type of the {@link User}
          * @return the builder itself
          */
         public Builder setUserType(String userType) {
@@ -586,7 +586,7 @@ public class User extends Resource {
          * Sets the preferred language of the USer (See {@link User#getPreferredLanguage()}).
          * 
          * @param preferredLanguage
-         *            sets the preferred language of the {@link User}
+         *        sets the preferred language of the {@link User}
          * @return the builder itself
          */
         public Builder setPreferredLanguage(String preferredLanguage) {
@@ -598,7 +598,7 @@ public class User extends Resource {
          * Sets the default location of the User (See {@link User#getLocale()}).
          * 
          * @param locale
-         *            sets the local of the {@link User}
+         *        sets the local of the {@link User}
          * @return the builder itself
          */
         public Builder setLocale(String locale) {
@@ -610,7 +610,7 @@ public class User extends Resource {
          * Sets the User's time zone (See {@link User#getTimezone()}).
          * 
          * @param timezone
-         *            sets the time zone of the {@link User}
+         *        sets the time zone of the {@link User}
          * @return the builder itself
          */
         public Builder setTimezone(String timezone) {
@@ -622,7 +622,7 @@ public class User extends Resource {
          * Sets a Boolean value indicating the User's administrative status. (See {@link User#isActive()})
          * 
          * @param active
-         *            the active status of the {@link User}
+         *        the active status of the {@link User}
          * @return the builder itself
          */
         public Builder setActive(Boolean active) {
@@ -634,7 +634,7 @@ public class User extends Resource {
          * Sets the User's clear text password (See {@link User#getPassword()}).
          * 
          * @param password
-         *            the password as clear text
+         *        the password as clear text
          * @return the builder itself
          */
         public Builder setPassword(String password) {
@@ -646,7 +646,7 @@ public class User extends Resource {
          * Sets the E-mail addresses for the User (See {@link User#getEmails()}).
          * 
          * @param emails
-         *            the emails as Set
+         *        the emails as Set
          * @return the builder itself
          */
         public Builder setEmails(List<MultiValuedAttribute> emails) {
@@ -658,7 +658,7 @@ public class User extends Resource {
          * Sets the phone numbers for the User (See {@link User#getPhoneNumbers()}).
          * 
          * @param phoneNumbers
-         *            the phone numbers of the the {@link User}
+         *        the phone numbers of the the {@link User}
          * @return the builder itself
          */
         public Builder setPhoneNumbers(List<MultiValuedAttribute> phoneNumbers) {
@@ -670,7 +670,7 @@ public class User extends Resource {
          * Sets the instant messaging addresses for the User (See {@link User#getIms()}).
          * 
          * @param ims
-         *            a list of the ims of the {@link User}
+         *        a list of the ims of the {@link User}
          * @return the builder itself
          */
         public Builder setIms(List<MultiValuedAttribute> ims) {
@@ -682,7 +682,7 @@ public class User extends Resource {
          * Sets the URL's of photo's of the User (See {@link User#getPhotos()}).
          * 
          * @param photos
-         *            the photos of the {@link User}
+         *        the photos of the {@link User}
          * @return the builder itself
          */
         public Builder setPhotos(List<MultiValuedAttribute> photos) {
@@ -694,7 +694,7 @@ public class User extends Resource {
          * Sets the physical mailing addresses for this User (See {@link User#getAddresses()}).
          * 
          * @param addresses
-         *            a list of the addresses of the {@link User}
+         *        a list of the addresses of the {@link User}
          * @return the builder itself
          */
         public Builder setAddresses(List<Address> addresses) {
@@ -706,7 +706,7 @@ public class User extends Resource {
          * Sets a list of groups that the user belongs to (See {@link User#getGroups()})
          * 
          * @param groups
-         *            groups of the User
+         *        groups of the User
          * @return the builder itself
          */
         public Builder setGroups(List<MultiValuedAttribute> groups) {
@@ -718,7 +718,7 @@ public class User extends Resource {
          * Sets a list of entitlements for the User (See {@link User#getEntitlements()}).
          * 
          * @param entitlements
-         *            the entitlements of the {@link User}
+         *        the entitlements of the {@link User}
          * @return the builder itself
          */
         public Builder setEntitlements(List<MultiValuedAttribute> entitlements) {
@@ -730,7 +730,7 @@ public class User extends Resource {
          * Sets a list of roles for the User (See {@link User#getRoles()}).
          * 
          * @param roles
-         *            a list of roles
+         *        a list of roles
          * @return the builder itself
          */
         public Builder setRoles(List<MultiValuedAttribute> roles) {
@@ -742,7 +742,7 @@ public class User extends Resource {
          * Sets a list of certificates issued to the User (See {@link User#getX509Certificates()}).
          * 
          * @param x509Certificates
-         *            the certificates of the {@link User}
+         *        the certificates of the {@link User}
          * @return the builder itself
          */
         public Builder setX509Certificates(List<MultiValuedAttribute> x509Certificates) {
@@ -754,10 +754,13 @@ public class User extends Resource {
          * Sets a List of Extension to the User (See {@link User#getAllExtensions()}).
          * 
          * @param extensions
-         *            a list of extensions
+         *        a list of extensions
          * @return the builder itself
          */
         public Builder addExtensions(Set<Extension> extensions) {
+            if (extensions == null) {
+                throw new IllegalArgumentException("The given extensions can't be null.");
+            }
             for (Extension entry : extensions) {
                 this.addExtension(entry);
             }
@@ -768,10 +771,13 @@ public class User extends Resource {
          * Sets a Extension to the User (See {@link User#getExtension(String)}).
          * 
          * @param extension
-         *            a single Extension
+         *        a single Extension
          * @return the builder itself
          */
         public Builder addExtension(Extension extension) {
+            if (extension == null) {
+                throw new IllegalArgumentException("The given extension can't be null.");
+            }
             extensions.put(extension.getUrn(), extension);
             schemas.add(extension.getUrn());
             return this;
