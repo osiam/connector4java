@@ -31,7 +31,7 @@
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>0.11</version>
+    <version>0.11.2-SNAPSHOT</version>
     <name>OSIAM Connector 4 Java</name>
     <packaging>jar</packaging>
 

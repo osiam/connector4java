@@ -62,9 +62,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     /**
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
      * one.
-     *
+     * 
      * @param builder
-     *            a Builder to build the service from
+     *        a Builder to build the service from
      */
     private OsiamUserService(Builder builder) {
         super(builder);
@@ -88,10 +88,12 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         try {
             DefaultHttpClient httpclient = new DefaultHttpClient();
 
-            HttpGet realWebresource = createRealWebResource(accessToken);
-            realWebresource.setURI(new URI(getMeWebResource().getURI().toString()));
+            URI uri = new URI(getMeWebResource().getURI().toString());
 
-            HttpResponse response = httpclient.execute(realWebresource);
+            HttpGet realWebResource = new HttpGet(uri);
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+
+            HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
 
             if (httpStatus != SC_OK) {
@@ -223,9 +225,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         /**
          * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
          * given endpoint
-         *
+         * 
          * @param endpoint
-         *            The URL at which the OSIAM server lives.
+         *        The URL at which the OSIAM server lives.
          */
         public Builder(String endpoint) {
             super(endpoint);
