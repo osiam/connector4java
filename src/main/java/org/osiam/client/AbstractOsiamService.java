@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
@@ -57,12 +58,12 @@ import static org.apache.http.HttpStatus.*;
 abstract class AbstractOsiamService<T extends Resource> {
 
     private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    private HttpGet webResource;
+    protected final HttpGet webResource;
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
+    protected static final String AUTHORIZATION = "Authorization";
+    protected static final String BEARER = "Bearer ";
     private DefaultHttpClient httpclient;
     private ContentType contentType;
     private String endpoint;
@@ -88,10 +89,12 @@ abstract class AbstractOsiamService<T extends Resource> {
         ensureAccessTokenIsNotNull(accessToken);
         httpclient = new DefaultHttpClient();
 
-        HttpGet realWebResource = createRealWebResource(accessToken);
         HttpResponse response;
         try {
-            realWebResource.setURI(new URI(webResource.getURI() + "/" + id));
+            URI uri = new URI(webResource.getURI() + "/" + id);
+
+            HttpGet realWebResource = new HttpGet(uri);
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
 
             response = httpclient.execute(realWebResource);
         } catch (IOException | URISyntaxException e) {
@@ -134,10 +137,13 @@ abstract class AbstractOsiamService<T extends Resource> {
 
         httpclient = new DefaultHttpClient();
 
-        HttpGet realWebResource = createRealWebResource(accessToken);
         HttpResponse response;
         try {
             URI uri = new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString));
+
+            HttpGet realWebResource = new HttpGet(uri);
+            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+
             realWebResource.setURI(uri);
             response = httpclient.execute(realWebResource);
         } catch (IOException | URISyntaxException e) {
@@ -149,19 +155,20 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (httpStatus != SC_OK) {
             String errorMessage;
             switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessageUnauthorized(response);
-                    throw new UnauthorizedException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = getErrorMessageForbidden(accessToken, "get");
-                    throw new ForbiddenException(errorMessage);
-                case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString + "': "
-                            + response.getStatusLine().getReasonPhrase());
-                    throw new ConflictException(errorMessage);
-                default:
-                    errorMessage = getErrorMessageDefault(response, httpStatus);
-                    throw new OsiamRequestException(httpStatus, errorMessage);
+            case SC_UNAUTHORIZED:
+                errorMessage = getErrorMessageUnauthorized(response);
+                throw new UnauthorizedException(errorMessage);
+            case SC_FORBIDDEN:
+                errorMessage = getErrorMessageForbidden(accessToken, "get");
+                throw new ForbiddenException(errorMessage);
+            case SC_CONFLICT:
+                errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString
+                        + "': "
+                        + response.getStatusLine().getReasonPhrase());
+                throw new ConflictException(errorMessage);
+            default:
+                errorMessage = getErrorMessageDefault(response, httpStatus);
+                throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
 
@@ -375,18 +382,6 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected T mapSingleResourceResponse(InputStream content) throws IOException {
         return mapper.readValue(content, type);
-    }
-
-    protected HttpGet createRealWebResource(AccessToken accessToken) {
-        HttpGet realWebResource;
-        try {
-            realWebResource = (HttpGet) webResource.clone();
-            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
-            return realWebResource;
-        } catch (CloneNotSupportedException ignore) {
-            // safe to ignore - HttpGet implements Cloneable!
-            throw new RuntimeException("This should not happen!"); // NOSONAR - this exception should never be thrown
-        }
     }
 
     protected static class Builder<T> {
