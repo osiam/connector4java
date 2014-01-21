@@ -22,7 +22,75 @@
  */
 package org.osiam.resources.scim;
 
-public class Email {
+public class Email extends MultiValuedAttributeNew
+        implements MultiValuedAttributeWithValue, MultiValuedAttributeWithDisplay {
+
+    private String value;
+    private String display;
+    private Boolean primary;
+    private String type;
+
+    public Email(Builder builder) {
+        super(builder);
+        this.value = builder.value;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String getDisplay() {
+        return display;
+    }
+
+    public static class Builder extends MultiValuedAttributeNew.Builder
+            implements MultiValuedAttributeWithValue.Builder,
+            MultiValuedAttributeWithDisplay.Builder,
+            MultiValuedAttributeWithType.Builder{
+
+        private String value;
+        private String display;
+        private Email.Type type;
+
+        @Override
+        public Email build() {
+            return new Email(this);
+        }
+
+        @Override
+        public Builder setType(
+                Email.Type type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public <T extends org.osiam.resources.scim.MultiValuedAttributeWithDisplay.Builder> T setDisplay(String display) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T extends org.osiam.resources.scim.MultiValuedAttributeWithValue.Builder> T setValue(String value) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T extends MultiValuedAttributeNew> T build() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+
+  
+
+
+
+
+    }
 
     /**
      * Represents an email type. Canonical values are available as static constants.
