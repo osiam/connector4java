@@ -104,15 +104,17 @@ public class Group extends Resource {
         }
 
         /**
-         * Sets the display name (See {@link Group#getDisplayName()}).
+         * Constructs a new builder and sets the display name (See {@link Group#getDisplayName()}).
          * 
          * @param displayName
          *            the display name
-         * @return the builder itself
          */
-        public Builder setDisplayName(String displayName) {
+        public  Builder(String displayName) {
+            this();
+            if (displayName == null) {
+                throw new IllegalArgumentException("The given resource must not be null");
+            }
             this.displayName = displayName;
-            return this;
         }
 
         @Override
