@@ -148,7 +148,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
          */
         public UpdateGroup build() {
             if (displayName != null) {
-                updateGroup = new Group.Builder().setDisplayName(displayName);
+                updateGroup = new Group.Builder(displayName);
             } else {
                 updateGroup = new Group.Builder();
             }
