@@ -63,6 +63,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     private String typeName;
     private ObjectMapper mapper;
     protected static final String AUTHORIZATION = "Authorization";
+    protected static final String ACCEPT = "Accept";
     protected static final String BEARER = "Bearer ";
     private DefaultHttpClient httpclient;
     private ContentType contentType;
@@ -94,7 +95,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             URI uri = new URI(webResource.getURI() + "/" + id);
 
             HttpGet realWebResource = new HttpGet(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
 
             response = httpclient.execute(realWebResource);
         } catch (IOException | URISyntaxException e) {
@@ -142,7 +143,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             URI uri = new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString));
 
             HttpGet realWebResource = new HttpGet(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
 
             realWebResource.setURI(uri);
             response = httpclient.execute(realWebResource);
@@ -199,7 +200,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         try {
             uri = new URI(webResource.getURI() + "/" + id);
             HttpDelete realWebResource = new HttpDelete(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
+            
             response = httpclient.execute(realWebResource);
         } catch (URISyntaxException | IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -235,7 +237,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         ensureAccessTokenIsNotNull(accessToken);
 
         HttpPost realWebResource = new HttpPost(webResource.getURI());
-        realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+        realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
 
         httpclient = new DefaultHttpClient();
 
@@ -291,7 +293,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         ensureAccessTokenIsNotNull(accessToken);
         ensureReferenceIsNotNull(id, "The given id can't be null.");
 
-        realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+        realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
         httpclient = new DefaultHttpClient();
 
         HttpResponse response;
@@ -383,7 +385,13 @@ abstract class AbstractOsiamService<T extends Resource> {
     protected T mapSingleResourceResponse(InputStream content) throws IOException {
         return mapper.readValue(content, type);
     }
-
+    
+    private <R extends HttpRequestBase> R addDefaultHeaderToRequest(R request, AccessToken accessToken) {
+        request.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+        request.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
+        return request;
+    }
+    
     protected static class Builder<T> {
         private String endpoint;
         private Class<T> type;

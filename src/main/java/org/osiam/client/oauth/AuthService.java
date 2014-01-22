@@ -49,6 +49,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -117,7 +118,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private void buildHead() {
         String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
         Header authHeader = new BasicHeader("Authorization", authHeaderValue);
-        Header acceptHeader = new BasicHeader("Accept", "application/json");
+        Header acceptHeader = new BasicHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
         headers = new Header[] {
                 authHeader, acceptHeader
         };
