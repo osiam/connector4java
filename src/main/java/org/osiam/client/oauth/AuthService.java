@@ -39,7 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -59,6 +58,8 @@ import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.OsiamErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
@@ -116,8 +117,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private void buildHead() {
         String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
         Header authHeader = new BasicHeader("Authorization", authHeaderValue);
+        Header acceptHeader = new BasicHeader("Accept", "application/json");
         headers = new Header[]{
-        		authHeader
+        		authHeader, acceptHeader
         	};
     }
 
