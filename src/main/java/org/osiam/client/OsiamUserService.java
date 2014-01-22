@@ -92,6 +92,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
             HttpGet realWebResource = new HttpGet(uri);
             realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
+            realWebResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
 
             HttpResponse response = httpclient.execute(realWebResource);
             int httpStatus = response.getStatusLine().getStatusCode();
@@ -137,7 +138,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         HttpGet webResource;
         try {
             webResource = new HttpGet(new URI(getEndpoint() + "/me"));
-            webResource.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+            webResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
         } catch (URISyntaxException e) {
             throw new ConnectionInitializationException("Unable to setup connection " + getEndpoint() +
                     "is not a valid URI.", e);
