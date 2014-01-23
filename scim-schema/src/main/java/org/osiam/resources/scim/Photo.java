@@ -22,18 +22,84 @@
  */
 package org.osiam.resources.scim;
 
-public class Photo {
+public class Photo extends MultiValuedAttributeNew {
 
-    /**
-     * Represents a photo type. Canonical values are available as static constants.
-     */
-    public static class Type extends MultiValuedAttributeType {
-        public static final Type PHOTO = new Type("photo");
-        public static final Type THUMBNAIL = new Type("thumbnail");
+	public Photo(Builder builder) {
+		super(builder);
+	}
 
-        public Type(String value) {
-            super(value);
-        }
-    }
+	@Override
+	public String getOperation() {
+		return super.getOperation();
+	}
+
+	@Override
+	public String getValue() {
+		return super.getValue();
+	}
+
+	@Override
+	public String getDisplay() {
+		return super.getDisplay();
+	}
+
+	@Override
+	public boolean isPrimary() {
+		return super.isPrimary();
+	}
+
+	@Override
+	protected String getType() {
+		return super.getType();
+	}
+
+	public static class Builder extends
+			MultiValuedAttributeNew.Builder<Photo.Builder> {
+
+		public Builder() {
+			setBuilder(this);
+		}
+
+		@Override
+		public Photo build() {
+			return new Photo(this);
+		}
+
+		@Override
+		public Builder setDisplay(String display) {
+			return super.setDisplay(display);
+
+		}
+
+		@Override
+		public Builder setValue(String value) {
+			return super.setValue(value);
+		}
+
+		// @Override
+		public Builder setType(Type type) {
+			// super.setType(type);
+			return this;
+		}
+
+		@Override
+		public Builder setPrimary(boolean primary) {
+			super.setPrimary(primary);
+			return this;
+		}
+	}
+
+	/**
+	 * Represents a photo type. Canonical values are available as static
+	 * constants.
+	 */
+	public static class Type extends MultiValuedAttributeType {
+		public static final Type PHOTO = new Type("photo");
+		public static final Type THUMBNAIL = new Type("thumbnail");
+
+		public Type(String value) {
+			super(value);
+		}
+	}
 
 }

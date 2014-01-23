@@ -22,15 +22,80 @@
  */
 package org.osiam.resources.scim;
 
-public class Entitlement {
+public class Entitlement extends MultiValuedAttributeNew {
 
-    /**
-     * Represents an entitlement type.
-     */
-    public static class Type extends MultiValuedAttributeType {
-        public Type(String value) {
-            super(value);
-        }
-    }
+	public Entitlement(Builder builder) {
+		super(builder);
+	}
+
+	@Override
+	public String getOperation() {
+		return super.getOperation();
+	}
+
+	@Override
+	public String getValue() {
+		return super.getValue();
+	}
+
+	@Override
+	public String getDisplay() {
+		return super.getDisplay();
+	}
+
+	@Override
+	public boolean isPrimary() {
+		return super.isPrimary();
+	}
+
+	@Override
+	protected String getType() {
+		return super.getType();
+	}
+
+	public static class Builder extends
+			MultiValuedAttributeNew.Builder<Entitlement.Builder> {
+
+		public Builder() {
+			setBuilder(this);
+		}
+
+		@Override
+		public Entitlement build() {
+			return new Entitlement(this);
+		}
+
+		@Override
+		public Builder setDisplay(String display) {
+			return super.setDisplay(display);
+
+		}
+
+		@Override
+		public Builder setValue(String value) {
+			return super.setValue(value);
+		}
+
+		// @Override
+		public Builder setType(Type type) {
+			// super.setType(type);
+			return this;
+		}
+
+		@Override
+		public Builder setPrimary(boolean primary) {
+			super.setPrimary(primary);
+			return this;
+		}
+	}
+
+	/**
+	 * Represents an entitlement type.
+	 */
+	public static class Type extends MultiValuedAttributeType {
+		public Type(String value) {
+			super(value);
+		}
+	}
 
 }

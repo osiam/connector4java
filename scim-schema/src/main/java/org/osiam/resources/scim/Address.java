@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class Address extends MultiValuedAttribute { // NOSONAR - Builder constructs instances of this class
+public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder constructs instances of this class
 
     private String formatted;
     private String streetAddress;
@@ -41,12 +41,6 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
     private String region;
     private String postalCode;
     private String country;
-
-    /**
-     * Default constructor for Jackson
-     */
-    private Address() {
-    }
 
     private Address(Builder builder) {
         super(builder);
@@ -115,7 +109,8 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
     /**
      * Builder class that is used to build {@link Address} instances
      */
-    public static class Builder extends MultiValuedAttribute.Builder {
+    public static class Builder extends MultiValuedAttributeNew.Builder<Address> {
+    	
         private String formatted;
         private String streetAddress;
         private String locality;

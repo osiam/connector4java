@@ -22,80 +22,77 @@
  */
 package org.osiam.resources.scim;
 
-public class Email extends MultiValuedAttributeNew
-        implements MultiValuedAttributeWithValue, MultiValuedAttributeWithDisplay {
-
-    private String value;
-    private String display;
-    private Boolean primary;
-    private String type;
+public class Email extends MultiValuedAttributeNew {
 
     public Email(Builder builder) {
         super(builder);
-        this.value = builder.value;
     }
+    
+	@Override
+	public String getOperation() {
+		return super.getOperation();
+	}
 
-    @Override
-    public String getValue() {
-        return value;
-    }
+	@Override
+	public String getValue() {
+		return super.getValue();
+	}
 
-    @Override
-    public String getDisplay() {
-        return display;
-    }
+	@Override
+	public String getDisplay() {
+		return super.getDisplay();
+	}
 
-    public static class Builder extends MultiValuedAttributeNew.Builder
-            implements MultiValuedAttributeWithValue.Builder,
-            MultiValuedAttributeWithDisplay.Builder,
-            MultiValuedAttributeWithType.Builder{
+	@Override
+	public boolean isPrimary() {
+		return super.isPrimary();
+	}
 
-        private String value;
-        private String display;
-        private Email.Type type;
+	@Override
+	protected String getType() {
+		return super.getType();
+	}
 
-        @Override
-        public Email build() {
-            return new Email(this);
-        }
+	public static class Builder extends
+			MultiValuedAttributeNew.Builder<Email.Builder> {
 
-        @Override
-        public Builder setType(
-                Email.Type type) {
-            this.type = type;
-            return this;
-        }
+		public Builder() {
+			setBuilder(this);
+		}
 
-        @Override
-        public <T extends org.osiam.resources.scim.MultiValuedAttributeWithDisplay.Builder> T setDisplay(String display) {
-            // TODO Auto-generated method stub
-            return null;
-        }
+		@Override
+		public Email build() {
+			return new Email(this);
+		}
 
-        @Override
-        public <T extends org.osiam.resources.scim.MultiValuedAttributeWithValue.Builder> T setValue(String value) {
-            // TODO Auto-generated method stub
-            return null;
-        }
+		@Override
+		public Builder setDisplay(String display) {
+			return super.setDisplay(display);
 
-        @Override
-        public <T extends MultiValuedAttributeNew> T build() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+		}
 
+		@Override
+		public Builder setValue(String value) {
+			return super.setValue(value);
+		}
 
-  
+		// @Override
+		public Builder setType(Type type) {
+			// super.setType(type);
+			return this;
+		}
 
-
-
-
-    }
+		@Override
+		public Builder setPrimary(boolean primary) {
+			super.setPrimary(primary);
+			return this;
+		}
+	}
 
     /**
      * Represents an email type. Canonical values are available as static constants.
      */
-    public static class Type extends MultiValuedAttributeType {
+    public static class Type extends MultiValuedAttributeNew.Type {
         public static final Type WORK = new Type("work");
         public static final Type HOME = new Type("home");
         public static final Type OTHER = new Type("other");

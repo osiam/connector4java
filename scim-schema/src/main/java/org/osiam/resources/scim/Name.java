@@ -57,7 +57,7 @@ public class Name {
         middleName = builder.middleName;
         honorificPrefix = builder.honorificPrefix;
         honorificSuffix = builder.honorificSuffix;
-
+new Email.Builder().
     }
 
     /**

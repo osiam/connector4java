@@ -22,22 +22,88 @@
  */
 package org.osiam.resources.scim;
 
-public class PhoneNumber {
+public class PhoneNumber extends MultiValuedAttributeNew {
 
-    /**
-     * Represents a phone number type. Canonical values are available as static constants.
-     */
-    public static class Type extends MultiValuedAttributeType {
-        public static final Type WORK = new Type("work");
-        public static final Type HOME = new Type("home");
-        public static final Type MOBILE = new Type("mobile");
-        public static final Type FAX = new Type("fax");
-        public static final Type PAGER = new Type("pager");
-        public static final Type OTHER = new Type("other");
+	public PhoneNumber(Builder builder) {
+		super(builder);
+	}
 
-        public Type(String value) {
-            super(value);
-        }
-    }
+	@Override
+	public String getOperation() {
+		return super.getOperation();
+	}
+
+	@Override
+	public String getValue() {
+		return super.getValue();
+	}
+
+	@Override
+	public String getDisplay() {
+		return super.getDisplay();
+	}
+
+	@Override
+	public boolean isPrimary() {
+		return super.isPrimary();
+	}
+
+	@Override
+	protected String getType() {
+		return super.getType();
+	}
+
+	public static class Builder extends
+			MultiValuedAttributeNew.Builder<PhoneNumber.Builder> {
+
+		public Builder() {
+			setBuilder(this);
+		}
+
+		@Override
+		public PhoneNumber build() {
+			return new PhoneNumber(this);
+		}
+
+		@Override
+		public Builder setDisplay(String display) {
+			return super.setDisplay(display);
+
+		}
+
+		@Override
+		public Builder setValue(String value) {
+			return super.setValue(value);
+		}
+
+		// @Override
+		public Builder setType(Type type) {
+			// super.setType(type);
+			return this;
+		}
+
+		@Override
+		public Builder setPrimary(boolean primary) {
+			super.setPrimary(primary);
+			return this;
+		}
+	}
+
+	/**
+	 * Represents a phone number type. Canonical values are available as static
+	 * constants.
+	 */
+	public static class Type extends MultiValuedAttributeType {
+		public static final Type WORK = new Type("work");
+		public static final Type HOME = new Type("home");
+		public static final Type MOBILE = new Type("mobile");
+		public static final Type FAX = new Type("fax");
+		public static final Type PAGER = new Type("pager");
+		public static final Type OTHER = new Type("other");
+
+		public Type(String value) {
+			super(value);
+		}
+	}
 
 }

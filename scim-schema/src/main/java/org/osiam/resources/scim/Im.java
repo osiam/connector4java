@@ -22,24 +22,90 @@
  */
 package org.osiam.resources.scim;
 
-public class Im {
+public class Im extends MultiValuedAttributeNew {
 
-    /**
-     * Represents an IM type. Canonical values are available as static constants.
-     */
-    public static class Type extends MultiValuedAttributeType {
-        public static final Type AIM = new Type("aim");
-        public static final Type GTALK = new Type("gtalk");
-        public static final Type ICQ = new Type("icq");
-        public static final Type XMPP = new Type("xmpp");
-        public static final Type MSN = new Type("msn");
-        public static final Type SKYPE = new Type("skype");
-        public static final Type QQ = new Type("qq");
-        public static final Type YAHOO = new Type("yahoo");
+	public Im(Builder builder) {
+		super(builder);
+	}
 
-        public Type(String value) {
-            super(value);
-        }
-    }
+	@Override
+	public String getOperation() {
+		return super.getOperation();
+	}
+
+	@Override
+	public String getValue() {
+		return super.getValue();
+	}
+
+	@Override
+	public String getDisplay() {
+		return super.getDisplay();
+	}
+
+	@Override
+	public boolean isPrimary() {
+		return super.isPrimary();
+	}
+
+	@Override
+	protected String getType() {
+		return super.getType();
+	}
+
+	public static class Builder extends
+			MultiValuedAttributeNew.Builder<Im.Builder> {
+
+		public Builder() {
+			setBuilder(this);
+		}
+
+		@Override
+		public Im build() {
+			return new Im(this);
+		}
+
+		@Override
+		public Builder setDisplay(String display) {
+			return super.setDisplay(display);
+
+		}
+
+		@Override
+		public Builder setValue(String value) {
+			return super.setValue(value);
+		}
+
+		// @Override
+		public Builder setType(Type type) {
+			// super.setType(type);
+			return this;
+		}
+
+		@Override
+		public Builder setPrimary(boolean primary) {
+			super.setPrimary(primary);
+			return this;
+		}
+	}
+
+	/**
+	 * Represents an IM type. Canonical values are available as static
+	 * constants.
+	 */
+	public static class Type extends MultiValuedAttributeType {
+		public static final Type AIM = new Type("aim");
+		public static final Type GTALK = new Type("gtalk");
+		public static final Type ICQ = new Type("icq");
+		public static final Type XMPP = new Type("xmpp");
+		public static final Type MSN = new Type("msn");
+		public static final Type SKYPE = new Type("skype");
+		public static final Type QQ = new Type("qq");
+		public static final Type YAHOO = new Type("yahoo");
+
+		public Type(String value) {
+			super(value);
+		}
+	}
 
 }
