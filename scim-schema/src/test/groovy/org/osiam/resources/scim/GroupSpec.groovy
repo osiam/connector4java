@@ -23,13 +23,15 @@
 
 package org.osiam.resources.scim
 
+import java.lang.reflect.Member
+
 import spock.lang.Specification
 
 class GroupSpec extends Specification {
 
     def "should be able to generate a group"() {
         given:
-        def multiValueAttribute = new MultiValuedAttribute.Builder().build()
+        def multiValueAttribute = new MemberRef.Builder().build()
         def builder = new Group.Builder("display")
                 .setMembers([multiValueAttribute] as Set)
 
@@ -45,7 +47,7 @@ class GroupSpec extends Specification {
         given:
         def group = new Group.Builder("display").build()
         when:
-        group.members.add(new MultiValuedAttribute.Builder().build())
+        group.members.add(new MemberRef.Builder().build())
 
         then:
         group.members.size() == 1
@@ -56,7 +58,7 @@ class GroupSpec extends Specification {
         def group = new Group.Builder("display").build()
 
         when:
-        group.members.add(new MultiValuedAttribute.Builder().build())
+        group.members.add(new MemberRef.Builder().build())
 
         then:
         group.members != null

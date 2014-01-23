@@ -22,30 +22,24 @@
  */
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 /**
- * This class represents a photo attribute.
+ * This class represents a x509Certificate attribute.
  * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Photo extends MultiValuedAttribute {
-
-    @JsonSerialize
-    private Type type;
+public class X509Certificate extends MultiValuedAttribute {
 
     /**
      * Default constructor for Jackson
      */
-    private Photo() {
+    private X509Certificate() {
     }
 
-    private Photo(Builder builder) {
+    private X509Certificate(Builder builder) {
         super(builder);
-        this.type = builder.type;
     }
 
     @Override
@@ -69,57 +63,9 @@ public class Photo extends MultiValuedAttribute {
     }
 
     /**
-     * Gets the type of the attribute.
-     * 
-     * <p>
-     * For more detailed information please look at the <a href=
-     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
-     * </p>
-     * 
-     * @return
-     * 
-     * @return the actual type
-     */
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Photo other = (Photo) obj;
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Builder class that is used to build {@link Photo} instances
+     * Builder class that is used to build {@link X509Certificate} instances
      */
     public static class Builder extends MultiValuedAttribute.Builder {
-
-        private Type type;
 
         public Builder() {
         }
@@ -127,12 +73,11 @@ public class Photo extends MultiValuedAttribute {
         /**
          * builds an Builder based of the given Attribute
          * 
-         * @param photo
+         * @param x509Certificate
          *        existing Attribute
          */
-        public Builder(Photo photo) {
-            super(photo);
-            type = photo.type;
+        public Builder(X509Certificate x509Certificate) {
+            super(x509Certificate);
         }
 
         @Override
@@ -154,18 +99,6 @@ public class Photo extends MultiValuedAttribute {
             return this;
         }
 
-        /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
-         * @param type
-         *        the type of the attribute
-         * @return the builder itself
-         */
-        public Builder setType(Type type) {
-            this.type = type;
-            return this;
-        }
-
         @Override
         public Builder setPrimary(boolean primary) {
             super.setPrimary(primary);
@@ -173,20 +106,8 @@ public class Photo extends MultiValuedAttribute {
         }
 
         @Override
-        public Photo build() {
-            return new Photo(this);
-        }
-    }
-
-    /**
-     * Represents a photo type. Canonical values are available as static constants.
-     */
-    public static class Type extends MultiValuedAttributeType {
-        public static final Type PHOTO = new Type("photo");
-        public static final Type THUMBNAIL = new Type("thumbnail");
-
-        public Type(String value) {
-            super(value);
+        public X509Certificate build() {
+            return new X509Certificate(this);
         }
     }
 

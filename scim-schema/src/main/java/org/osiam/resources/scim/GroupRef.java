@@ -20,21 +20,19 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * 
- * This class represents a {@link User} or a {@link Group} which are members of an actual {@link Group}
+ * This class represents a Reference of a Group
  * 
  * <p>
  * For more detailed information please look at the <a
- * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+ * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be constructed by the builder or jackson
+public class GroupRef extends MultiValuedAttribute {
 
     @JsonSerialize
     private Type type;
@@ -42,22 +40,12 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
     /**
      * Default constructor for Jackson
      */
-    private MemberRef() {
+    private GroupRef() {
     }
 
-    private MemberRef(Builder builder) {
+    private GroupRef(Builder builder) {
         super(builder);
-        type = builder.type;
-    }
-
-    @Override
-    public String getReference() {
-        return super.getReference();
-    }
-
-    @Override
-    public String getOperation() {
-        return super.getOperation();
+        this.type = builder.type;
     }
 
     @Override
@@ -87,6 +75,11 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
     }
 
     @Override
+    public String getReference() {
+        return super.getReference();
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -105,7 +98,7 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MemberRef other = (MemberRef) obj;
+        GroupRef other = (GroupRef) obj;
         if (type == null) {
             if (other.type != null) {
                 return false;
@@ -117,41 +110,21 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
     }
 
     /**
-     * The Builder class is used to construct instances of the {@link MemberRef}
+     * Builder class that is used to build {@link GroupRef} instances
      */
     public static class Builder extends MultiValuedAttribute.Builder {
 
         private Type type;
 
-        public Builder() {
-        }
-
-        /**
-         * builds an Builder based of the given Attribute
-         * 
-         * @param member
-         *        existing Attribute
-         */
-        private Builder(MemberRef member) {
-            super(member);
-            type = member.type;
-        }
-
         @Override
-        public Builder setReference(String reference) {
-            super.setReference(reference);
+        public Builder setDisplay(String display) {
+            super.setDisplay(display);
             return this;
         }
 
         @Override
         public Builder setValue(String value) {
             super.setValue(value);
-            return this;
-        }
-
-        @Override
-        public Builder setDisplay(String display) {
-            super.setDisplay(display);
             return this;
         }
 
@@ -168,32 +141,34 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
         }
 
         @Override
-        public Builder setOperation(String operation) {
-            super.setOperation(operation);
+        public Builder setReference(String reference) {
+            super.setReference(reference);
             return this;
         }
 
         @Override
-        public MemberRef build() {
-            return new MemberRef(this);
+        public GroupRef build() {
+            return new GroupRef(this);
         }
+
     }
 
     /**
-     * Represents an Member reference type.
+     * Represents an Group reference type.
      */
     public static class Type extends MultiValuedAttributeType {
         /**
-         * indicates that the member is a {@link User}
+         * The User is direct in the actual Group
          */
-        public static final Type USER = new Type("User");
+        public static final Type DIRECT = new Type("direct");
         /**
-         * indicates that the member is a {@link Group}
+         * The User is not direct in the actual Group but in a Group that is in the actual Group
          */
-        public static final Type GROUP = new Type("Group");
+        public static final Type INDIRECT = new Type("indirect");
 
         private Type(String value) {
             super(value);
         }
     }
+
 }

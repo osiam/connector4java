@@ -80,7 +80,9 @@ class UserSpec extends Specification {
 
     def "should generate a user based on builder"() {
         given:
-        def multivalueAttribute = new MultiValuedAttribute.Builder().build()
+        def entitlement = new Entitlement.Builder().build()
+        def role = new Role.Builder().build()
+        def certificate = new X509Certificate.Builder().build()
         def meta = new Meta.Builder().build()
 
         def builder = new User.Builder("test").setActive(true)
@@ -94,9 +96,9 @@ class UserSpec extends Specification {
                 .setTimezone("time")
                 .setTitle("title")
                 .setUserType("userType")
-                .setEntitlements([multivalueAttribute] as List)
-                .setRoles([multivalueAttribute] as List)
-                .setX509Certificates([multivalueAttribute] as List)
+                .setEntitlements([entitlement] as List)
+                .setRoles([role] as List)
+                .setX509Certificates([certificate] as List)
                 .setId('id')
                 .setMeta(meta)
                 .setExternalId('external')
@@ -135,29 +137,36 @@ class UserSpec extends Specification {
         given:
         def user = new User.Builder("test2").build()
         def address = new Address.Builder().build()
-        def generalAttribute = new MultiValuedAttribute.Builder().build()
+        def email = new Email.Builder().build()
+        def entitlement = new Entitlement.Builder().build()
+        def groupRef = new GroupRef.Builder().build()
+        def im = new Im.Builder().build()
+        def phoneNumber = new PhoneNumber.Builder().build()
+        def photo = new Photo.Builder().build()
+        def role = new Role.Builder().build()
+        def certificate = new X509Certificate.Builder().build()
 
         when:
         user.getAddresses().add(address)
-        user.getEmails().add(generalAttribute)
-        user.getEntitlements().add(generalAttribute)
-        user.getGroups().add(generalAttribute)
-        user.getIms().add(generalAttribute)
-        user.getPhoneNumbers().add(generalAttribute)
-        user.getPhotos().add(generalAttribute)
-        user.getRoles().add(generalAttribute)
-        user.getX509Certificates().add(generalAttribute)
+        user.getEmails().add(email)
+        user.getEntitlements().add(entitlement)
+        user.getGroups().add(groupRef)
+        user.getIms().add(im)
+        user.getPhoneNumbers().add(phoneNumber)
+        user.getPhotos().add(photo)
+        user.getRoles().add(role)
+        user.getX509Certificates().add(certificate)
 
         then:
         user.addresses.get(0) == address
-        user.emails.get(0) == generalAttribute
-        user.entitlements.get(0) == generalAttribute
-        user.groups.get(0) == generalAttribute
-        user.ims.get(0) == generalAttribute
-        user.phoneNumbers.get(0) == generalAttribute
-        user.photos.get(0) == generalAttribute
-        user.roles.get(0) == generalAttribute
-        user.x509Certificates.get(0) == generalAttribute
+        user.emails.get(0) == email
+        user.entitlements.get(0) == entitlement
+        user.groups.get(0) == groupRef
+        user.ims.get(0) == im
+        user.phoneNumbers.get(0) == phoneNumber
+        user.photos.get(0) == photo
+        user.roles.get(0) == role
+        user.x509Certificates.get(0) == certificate
     }
 
     @Unroll
@@ -174,15 +183,15 @@ class UserSpec extends Specification {
 
         where:
         field              | value
-        'emails'           | [new MultiValuedAttribute.Builder().build()]
-        'phoneNumbers'     | [new MultiValuedAttribute.Builder().build()]
-        'ims'              | [new MultiValuedAttribute.Builder().build()]
-        'photos'           | [new MultiValuedAttribute.Builder().build()]
+        'emails'           | [new Email.Builder().build()]
+        'phoneNumbers'     | [new PhoneNumber.Builder().build()]
+        'ims'              | [new Im.Builder().build()]
+        'photos'           | [new Photo.Builder().build()]
         'addresses'        | [new Address.Builder().build()]
-        'groups'           | [new MultiValuedAttribute.Builder().build()]
-        'entitlements'     | [new MultiValuedAttribute.Builder().build()]
-        'roles'            | [new MultiValuedAttribute.Builder().build()]
-        'x509Certificates' | [new MultiValuedAttribute.Builder().build()]
+        'groups'           | [new GroupRef.Builder().build()]
+        'entitlements'     | [new Entitlement.Builder().build()]
+        'roles'            | [new Role.Builder().build()]
+        'x509Certificates' | [new X509Certificate.Builder().build()]
         'extensions'       | [(EXTENSION_URN): (EXTENSION_EMPTY)]
     }
 

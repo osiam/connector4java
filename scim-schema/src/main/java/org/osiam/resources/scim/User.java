@@ -54,15 +54,15 @@ public class User extends Resource {
     private String timezone;
     private Boolean active;
     private String password = "";
-    private List<MultiValuedAttribute> emails = new ArrayList<>();
-    private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
-    private List<MultiValuedAttribute> ims = new ArrayList<>();
-    private List<MultiValuedAttribute> photos = new ArrayList<>();
+    private List<Email> emails = new ArrayList<>();
+    private List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    private List<Im> ims = new ArrayList<>();
+    private List<Photo> photos = new ArrayList<>();
     private List<Address> addresses = new ArrayList<>();
-    private List<MultiValuedAttribute> groups = new ArrayList<>();
-    private List<MultiValuedAttribute> entitlements = new ArrayList<>();
-    private List<MultiValuedAttribute> roles = new ArrayList<>();
-    private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
+    private List<GroupRef> groups = new ArrayList<>();
+    private List<Entitlement> entitlements = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
+    private List<X509Certificate> x509Certificates = new ArrayList<>();
     private Map<String, Extension> extensions = new HashMap<>();
 
     /**
@@ -272,7 +272,7 @@ public class User extends Resource {
      * 
      * @return the email addresses of the {@link User}
      */
-    public List<MultiValuedAttribute> getEmails() {
+    public List<Email> getEmails() {
         return emails;
     }
 
@@ -287,7 +287,7 @@ public class User extends Resource {
      * 
      * @return the phone numbers of the {@link User}
      */
-    public List<MultiValuedAttribute> getPhoneNumbers() {
+    public List<PhoneNumber> getPhoneNumbers() {
         return phoneNumbers;
     }
 
@@ -302,7 +302,7 @@ public class User extends Resource {
      * 
      * @return the ims of the {@link User}
      */
-    public List<MultiValuedAttribute> getIms() {
+    public List<Im> getIms() {
         return ims;
     }
 
@@ -317,7 +317,7 @@ public class User extends Resource {
      * 
      * @return the photo URL's of the {@link User}
      */
-    public List<MultiValuedAttribute> getPhotos() {
+    public List<Photo> getPhotos() {
         return photos;
     }
 
@@ -347,7 +347,7 @@ public class User extends Resource {
      * 
      * @return a list of all {@link Group}s where the {@link User} is a member of
      */
-    public List<MultiValuedAttribute> getGroups() {
+    public List<GroupRef> getGroups() {
         return groups;
     }
 
@@ -362,7 +362,7 @@ public class User extends Resource {
      * 
      * @return a list of all entitlements of the {@link User}
      */
-    public List<MultiValuedAttribute> getEntitlements() {
+    public List<Entitlement> getEntitlements() {
         return entitlements;
     }
 
@@ -377,7 +377,7 @@ public class User extends Resource {
      * 
      * @return a list of the roles of the {@link User}
      */
-    public List<MultiValuedAttribute> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
@@ -392,7 +392,7 @@ public class User extends Resource {
      * 
      * @return a list of the certificates of the {@link User}
      */
-    public List<MultiValuedAttribute> getX509Certificates() {
+    public List<X509Certificate> getX509Certificates() {
         return x509Certificates;
     }
 
@@ -445,15 +445,15 @@ public class User extends Resource {
         private String nickName;
         private String displayName;
         private Name name;
-        private List<MultiValuedAttribute> emails = new ArrayList<>();
-        private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
-        private List<MultiValuedAttribute> ims = new ArrayList<>();
-        private List<MultiValuedAttribute> photos = new ArrayList<>();
+        private List<Email> emails = new ArrayList<>();
+        private List<PhoneNumber> phoneNumbers = new ArrayList<>();
+        private List<Im> ims = new ArrayList<>();
+        private List<Photo> photos = new ArrayList<>();
         private List<Address> addresses = new ArrayList<>();
-        private List<MultiValuedAttribute> groups = new ArrayList<>();
-        private List<MultiValuedAttribute> entitlements = new ArrayList<>();
-        private List<MultiValuedAttribute> roles = new ArrayList<>();
-        private List<MultiValuedAttribute> x509Certificates = new ArrayList<>();
+        private List<GroupRef> groups = new ArrayList<>();
+        private List<Entitlement> entitlements = new ArrayList<>();
+        private List<Role> roles = new ArrayList<>();
+        private List<X509Certificate> x509Certificates = new ArrayList<>();
         private Map<String, Extension> extensions = new HashMap<>();
 
         /**
@@ -649,7 +649,7 @@ public class User extends Resource {
          *        the emails as Set
          * @return the builder itself
          */
-        public Builder setEmails(List<MultiValuedAttribute> emails) {
+        public Builder setEmails(List<Email> emails) {
             this.emails = emails;
             return this;
         }
@@ -661,7 +661,7 @@ public class User extends Resource {
          *        the phone numbers of the the {@link User}
          * @return the builder itself
          */
-        public Builder setPhoneNumbers(List<MultiValuedAttribute> phoneNumbers) {
+        public Builder setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
             this.phoneNumbers = phoneNumbers;
             return this;
         }
@@ -673,7 +673,7 @@ public class User extends Resource {
          *        a list of the ims of the {@link User}
          * @return the builder itself
          */
-        public Builder setIms(List<MultiValuedAttribute> ims) {
+        public Builder setIms(List<Im> ims) {
             this.ims = ims;
             return this;
         }
@@ -685,7 +685,7 @@ public class User extends Resource {
          *        the photos of the {@link User}
          * @return the builder itself
          */
-        public Builder setPhotos(List<MultiValuedAttribute> photos) {
+        public Builder setPhotos(List<Photo> photos) {
             this.photos = photos;
             return this;
         }
@@ -709,7 +709,7 @@ public class User extends Resource {
          *        groups of the User
          * @return the builder itself
          */
-        public Builder setGroups(List<MultiValuedAttribute> groups) {
+        public Builder setGroups(List<GroupRef> groups) {
             this.groups = groups;
             return this;
         }
@@ -721,7 +721,7 @@ public class User extends Resource {
          *        the entitlements of the {@link User}
          * @return the builder itself
          */
-        public Builder setEntitlements(List<MultiValuedAttribute> entitlements) {
+        public Builder setEntitlements(List<Entitlement> entitlements) {
             this.entitlements = entitlements;
             return this;
         }
@@ -733,7 +733,7 @@ public class User extends Resource {
          *        a list of roles
          * @return the builder itself
          */
-        public Builder setRoles(List<MultiValuedAttribute> roles) {
+        public Builder setRoles(List<Role> roles) {
             this.roles = roles;
             return this;
         }
@@ -745,7 +745,7 @@ public class User extends Resource {
          *        the certificates of the {@link User}
          * @return the builder itself
          */
-        public Builder setX509Certificates(List<MultiValuedAttribute> x509Certificates) {
+        public Builder setX509Certificates(List<X509Certificate> x509Certificates) {
             this.x509Certificates = x509Certificates;
             return this;
         }

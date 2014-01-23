@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder constructs instances of this class
+public class Address extends MultiValuedAttribute { // NOSONAR - Builder constructs instances of this class
 
     private String formatted;
     private String streetAddress;
@@ -41,6 +41,14 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
     private String region;
     private String postalCode;
     private String country;
+    @JsonSerialize
+    private Type type;
+
+    /**
+     * Default constructor for Jackson
+     */
+    private Address() {
+    }
 
     private Address(Builder builder) {
         super(builder);
@@ -50,11 +58,12 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
         this.region = builder.region;
         this.postalCode = builder.postalCode;
         this.country = builder.country;
+        this.type = builder.type;
     }
 
     /**
      * Gets the full mailing address, formatted for display or use with a mailing label.
-     *
+     * 
      * @return the formatted address
      */
     public String getFormatted() {
@@ -63,7 +72,7 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
     /**
      * Gets the full street address, which may include house number, street name, etc.
-     *
+     * 
      * @return the street address
      */
     public String getStreetAddress() {
@@ -72,7 +81,7 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
     /**
      * Gets the city or locality
-     *
+     * 
      * @return the city or locality
      */
     public String getLocality() {
@@ -81,7 +90,7 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
     /**
      * Gets the state or region
-     *
+     * 
      * @return region the region
      */
     public String getRegion() {
@@ -90,7 +99,7 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
     /**
      * Gets the postal code
-     *
+     * 
      * @return postalCode the postal code
      */
     public String getPostalCode() {
@@ -99,7 +108,7 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
     /**
      * Gets the country name in ISO 3166-1 alpha 2 format, e.g. "DE" or "US".
-     *
+     * 
      * @return the country
      */
     public String getCountry() {
@@ -107,41 +116,148 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
     }
 
     /**
+     * Gets the type of the attribute.
+     * 
+     * <p>
+     * For more detailed information please look at the <a href=
+     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
+     * </p>
+     * 
+     * @return
+     * 
+     * @return the actual type
+     */
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public String getOperation() {
+        return super.getOperation();
+    }
+
+    @Override
+    public boolean isPrimary() {
+        return super.isPrimary();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((formatted == null) ? 0 : formatted.hashCode());
+        result = prime * result + ((locality == null) ? 0 : locality.hashCode());
+        result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
+        result = prime * result + ((region == null) ? 0 : region.hashCode());
+        result = prime * result + ((streetAddress == null) ? 0 : streetAddress.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Address other = (Address) obj;
+        if (country == null) {
+            if (other.country != null) {
+                return false;
+            }
+        } else if (!country.equals(other.country)) {
+            return false;
+        }
+        if (formatted == null) {
+            if (other.formatted != null) {
+                return false;
+            }
+        } else if (!formatted.equals(other.formatted)) {
+            return false;
+        }
+        if (locality == null) {
+            if (other.locality != null) {
+                return false;
+            }
+        } else if (!locality.equals(other.locality)) {
+            return false;
+        }
+        if (postalCode == null) {
+            if (other.postalCode != null) {
+                return false;
+            }
+        } else if (!postalCode.equals(other.postalCode)) {
+            return false;
+        }
+        if (region == null) {
+            if (other.region != null) {
+                return false;
+            }
+        } else if (!region.equals(other.region)) {
+            return false;
+        }
+        if (streetAddress == null) {
+            if (other.streetAddress != null) {
+                return false;
+            }
+        } else if (!streetAddress.equals(other.streetAddress)) {
+            return false;
+        }
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Builder class that is used to build {@link Address} instances
      */
-    public static class Builder extends MultiValuedAttributeNew.Builder<Address> {
-    	
+    public static class Builder extends MultiValuedAttribute.Builder {
+
         private String formatted;
         private String streetAddress;
         private String locality;
         private String region;
         private String postalCode;
         private String country;
+        private Type type;
 
         public Builder() {
-            super();
         }
 
+        /**
+         * builds an Builder based of the given Attribute
+         * 
+         * @param address
+         *        existing Attribute
+         */
         public Builder(Address address) {
-            this();
+            super(address);
             formatted = address.formatted;
             streetAddress = address.streetAddress;
             locality = address.locality;
             region = address.region;
             postalCode = address.postalCode;
             country = address.country;
-
-            // TODO: add copy-of constructor in MultiValuedAttribute.Builder and remove these lines
-            setPrimary(address.isPrimary());
-            setType(address.getType());
+            type = address.type;
         }
 
         /**
          * Sets the full mailing address (See {@link Address#getFormatted()}).
-         *
+         * 
          * @param formatted
-         *            the formatted address
-         *
+         *        the formatted address
+         * 
          * @return the builder itself
          */
         public Builder setFormatted(String formatted) {
@@ -151,10 +267,10 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
         /**
          * Sets the full street address component, (See {@link Address#getStreetAddress()}).
-         *
+         * 
          * @param streetAddress
-         *            the street address
-         *
+         *        the street address
+         * 
          * @return the builder itself
          */
         public Builder setStreetAddress(String streetAddress) {
@@ -164,10 +280,10 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
         /**
          * Sets the city or locality.
-         *
+         * 
          * @param locality
-         *            the locality
-         *
+         *        the locality
+         * 
          * @return the builder itself
          */
         public Builder setLocality(String locality) {
@@ -177,10 +293,10 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
         /**
          * Sets the state or region.
-         *
+         * 
          * @param region
-         *            the region
-         *
+         *        the region
+         * 
          * @return the builder itself
          */
         public Builder setRegion(String region) {
@@ -190,10 +306,10 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
 
         /**
          * Sets the postal code
-         *
+         * 
          * @param postalCode
-         *            the postal code
-         *
+         *        the postal code
+         * 
          * @return the builder itself
          */
         public Builder setPostalCode(String postalCode) {
@@ -201,18 +317,24 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
             return this;
         }
 
-        @Override
-        public Builder setType(String type) {
-            super.setType(type);
+        /**
+         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
+         * 
+         * @param type
+         *        the type of the attribute
+         * @return the builder itself
+         */
+        public Builder setType(Type type) {
+            this.type = type;
             return this;
         }
 
         /**
          * Sets the country name (See {@link Address#getCountry()}).
-         *
+         * 
          * @param country
-         *            the country
-         *
+         *        the country
+         * 
          * @return the builder itself
          */
         public Builder setCountry(String country) {
@@ -221,7 +343,7 @@ public class Address extends MultiValuedAttributeNew { // NOSONAR - Builder cons
         }
 
         @Override
-        public Builder setPrimary(Boolean primary) {
+        public Builder setPrimary(boolean primary) {
             super.setPrimary(primary);
             return this;
         }
