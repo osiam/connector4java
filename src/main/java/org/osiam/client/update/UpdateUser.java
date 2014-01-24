@@ -30,10 +30,16 @@ import java.util.Set;
 
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Entitlement;
+import org.osiam.resources.scim.Im;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.PhoneNumber;
+import org.osiam.resources.scim.Photo;
+import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.X509Certificate;
 
 /**
  * Class to create a UpdateUser Object to update a existing User
@@ -48,7 +54,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
     /**
      * the Scim conform User to be used to update a existing User
-     *
+     * 
      * @return User to update
      */
     public User getScimConformUpdateUser() {
@@ -57,7 +63,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
     /**
      * The Builder is used to construct instances of the {@link UpdateUser}
-     *
+     * 
      */
     public static class Builder {
 
@@ -76,14 +82,14 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         private Boolean active;
         private User.Builder updateUser = null;
         private Set<String> deleteFields = new HashSet<>();
-        private List<MultiValuedAttribute> emails = new ArrayList<>();
-        private List<MultiValuedAttribute> ims = new ArrayList<>();
-        private List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
+        private List<Email> emails = new ArrayList<>();
+        private List<Im> ims = new ArrayList<>();
+        private List<PhoneNumber> phoneNumbers = new ArrayList<>();
         private List<Address> addresses = new ArrayList<>();
-        private List<MultiValuedAttribute> entitlements = new ArrayList<>();
-        private List<MultiValuedAttribute> photos = new ArrayList<>();
-        private List<MultiValuedAttribute> roles = new ArrayList<>();
-        private List<MultiValuedAttribute> certificates = new ArrayList<>();
+        private List<Entitlement> entitlements = new ArrayList<>();
+        private List<Photo> photos = new ArrayList<>();
+        private List<Role> roles = new ArrayList<>();
+        private List<X509Certificate> certificates = new ArrayList<>();
         private static final String DELETE = "delete";
 
         public Builder() {
@@ -92,9 +98,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start username
         /**
          * updates the nickName of a existing user
-         *
+         * 
          * @param userName
-         *            the new user name
+         *        the new user name
          * @return The builder itself
          */
         public Builder updateUserName(String userName) {
@@ -107,9 +113,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start address
         /**
          * adds a new address to the existing addresses of a existing user
-         *
+         * 
          * @param address
-         *            the new address
+         *        the new address
          * @return The builder itself
          */
         public Builder addAddress(Address address) {
@@ -119,9 +125,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given address from the list of existing addresses of a existing user
-         *
+         * 
          * @param address
-         *            address to be deleted
+         *        address to be deleted
          * @return The builder itself
          */
         public Builder deleteAddress(Address address) {
@@ -134,7 +140,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all existing addresses of the a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteAddresses() {
@@ -144,11 +150,11 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Address with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new Address
+         *        new Address
          * @return The builder itself
          */
         public Builder updateAddress(Address oldAttribute, Address newAttribute) {
@@ -162,7 +168,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start Nickname
         /**
          * deletes the nickName of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteNickName() {
@@ -172,9 +178,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the nickName of a existing user
-         *
+         * 
          * @param nickName
-         *            the new nickName
+         *        the new nickName
          * @return The builder itself
          */
         public Builder updateNickName(String nickName) {
@@ -187,7 +193,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start ExternalID
         /**
          * delete the external Id of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteExternalId() {
@@ -197,9 +203,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the external id of a existing user
-         *
+         * 
          * @param externalId
-         *            new external id
+         *        new external id
          * @return The builder itself
          */
         public Builder updateExternalId(String externalId) {
@@ -212,7 +218,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start local
         /**
          * delete the local value of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteLocal() {
@@ -222,9 +228,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the local of a existing user
-         *
+         * 
          * @param locale
-         *            new local
+         *        new local
          * @return The builder itself
          */
         public Builder updateLocale(String locale) {
@@ -237,9 +243,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start password
         /**
          * updates the password of a existing user
-         *
+         * 
          * @param password
-         *            new password
+         *        new password
          * @return The builder itself
          */
         public Builder updatePassword(String password) {
@@ -252,7 +258,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start preferredLanguage
         /**
          * delete the preferred Language of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deletePreferredLanguage() {
@@ -262,9 +268,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the preferred language of a existing user
-         *
+         * 
          * @param preferredLanguage
-         *            new preferred language
+         *        new preferred language
          * @return The builder itself
          */
         public Builder updatePreferredLanguage(String preferredLanguage) {
@@ -277,7 +283,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start ProfileUrl
         /**
          * deletes the profil Url of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteProfileUrl() {
@@ -287,9 +293,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the profil URL of a existing user
-         *
+         * 
          * @param profileUrl
-         *            new profilUrl
+         *        new profilUrl
          * @return The builder itself
          */
         public Builder updateProfileUrl(String profileUrl) {
@@ -302,7 +308,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start timezone
         /**
          * deletes the timezone of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteTimezone() {
@@ -312,9 +318,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the timezone of a existing user
-         *
+         * 
          * @param timezone
-         *            new timeZone
+         *        new timeZone
          * @return The builder itself
          */
         public Builder updateTimezone(String timezone) {
@@ -327,7 +333,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start title
         /**
          * deletes the title of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteTitle() {
@@ -337,9 +343,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the title of a existing user
-         *
+         * 
          * @param title
-         *            new tile
+         *        new tile
          * @return The builder itself
          */
         public Builder updateTitle(String title) {
@@ -352,7 +358,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start name
         /**
          * deletes the name of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteName() {
@@ -362,9 +368,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the name of a existing user
-         *
+         * 
          * @param name
-         *            new Name
+         *        new Name
          * @return The builder itself
          */
         public Builder updateName(Name name) {
@@ -377,7 +383,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start UserType
         /**
          * deletes the user type of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteUserType() {
@@ -387,9 +393,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the user type of a existing user
-         *
+         * 
          * @param userType
-         *            new user type
+         *        new user type
          * @return The builder itself
          */
         public Builder updateUserType(String userType) {
@@ -402,7 +408,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start DisplayName
         /**
          * deletes the display name of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteDisplayName() {
@@ -412,9 +418,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the display name of a existing user
-         *
+         * 
          * @param displayName
-         *            new display name
+         *        new display name
          * @return The builder itself
          */
         public Builder updateDisplayName(String displayName) {
@@ -427,7 +433,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start email
         /**
          * deletes all emails of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteEmails() {
@@ -437,13 +443,13 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given email of a existing user
-         *
+         * 
          * @param email
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deleteEmail(MultiValuedAttribute email) {
-            MultiValuedAttribute deleteEmail = new MultiValuedAttribute.Builder()
+        public Builder deleteEmail(Email email) {
+            Email deleteEmail = new Email.Builder()
                     .setValue(email.getValue())
                     .setType(email.getType())
                     .setOperation(DELETE).build();
@@ -454,26 +460,26 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a emil of an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         *
+         * 
          * @param email
-         *            new email
+         *        new email
          * @return The builder itself
          */
-        public Builder addEmail(MultiValuedAttribute email) {
+        public Builder addEmail(Email email) {
             emails.add(email);
             return this;
         }
 
         /**
          * updates the old Email with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new Email
+         *        new Email
          * @return The builder itself
          */
-        public Builder updateEmail(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updateEmail(Email oldAttribute, Email newAttribute) {
             deleteEmail(oldAttribute);
             addEmail(newAttribute);
             return this;
@@ -484,7 +490,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start certificates
         /**
          * deletes all X509Certificates of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteX509Certificates() {
@@ -494,13 +500,13 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given certificate of a existing user
-         *
+         * 
          * @param certificate
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deleteX509Certificate(MultiValuedAttribute certificate) {
-            MultiValuedAttribute deleteCertificates = new MultiValuedAttribute.Builder()
+        public Builder deleteX509Certificate(X509Certificate certificate) {
+            X509Certificate deleteCertificates = new X509Certificate.Builder()
                     .setValue(certificate.getValue())
                     .setOperation(DELETE).build();
             certificates.add(deleteCertificates);
@@ -510,26 +516,26 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates certificate to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
-         *
+         * 
          * @param certificate
-         *            new certificate
+         *        new certificate
          * @return The builder itself
          */
-        public Builder addX509Certificate(MultiValuedAttribute certificate) {
+        public Builder addX509Certificate(X509Certificate certificate) {
             certificates.add(certificate);
             return this;
         }
 
         /**
          * updates the old X509Certificate with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new X509Certificate
+         *        new X509Certificate
          * @return The builder itself
          */
-        public Builder updateX509Certificate(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updateX509Certificate(X509Certificate oldAttribute, X509Certificate newAttribute) {
             deleteX509Certificate(oldAttribute);
             addX509Certificate(newAttribute);
             return this;
@@ -540,7 +546,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start roles
         /**
          * deletes all roles of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteRoles() {
@@ -550,13 +556,13 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given role of a existing user
-         *
+         * 
          * @param role
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deleteRole(MultiValuedAttribute role) {
-            MultiValuedAttribute deleteRole = new MultiValuedAttribute.Builder()
+        public Builder deleteRole(Role role) {
+            Role deleteRole = new Role.Builder()
                     .setValue(role.getValue())
                     .setOperation(DELETE).build();
             roles.add(deleteRole);
@@ -565,13 +571,13 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given role of a existing user
-         *
+         * 
          * @param role
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
         public Builder deleteRole(String role) {
-            MultiValuedAttribute deleteRole = new MultiValuedAttribute.Builder()
+            Role deleteRole = new Role.Builder()
                     .setValue(role)
                     .setOperation(DELETE).build();
             roles.add(deleteRole);
@@ -581,26 +587,26 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a role of an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         *
+         * 
          * @param role
-         *            new role
+         *        new role
          * @return The builder itself
          */
-        public Builder addRole(MultiValuedAttribute role) {
+        public Builder addRole(Role role) {
             roles.add(role);
             return this;
         }
 
         /**
          * updates the old Role with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new Role
+         *        new Role
          * @return The builder itself
          */
-        public Builder updateRole(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updateRole(Role oldAttribute, Role newAttribute) {
             deleteRole(oldAttribute);
             addRole(newAttribute);
             return this;
@@ -611,7 +617,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start ims
         /**
          * deletes all ims of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteIms() {
@@ -621,13 +627,13 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the ims of a existing user
-         *
+         * 
          * @param ims
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deleteIms(MultiValuedAttribute ims) {
-            MultiValuedAttribute deleteIms = new MultiValuedAttribute.Builder()
+        public Builder deleteIms(Im ims) {
+            Im deleteIms = new Im.Builder()
                     .setValue(ims.getValue())
                     .setType(ims.getType())
                     .setOperation(DELETE).build();
@@ -638,26 +644,26 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a ims to an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         *
+         * 
          * @param ims
-         *            new ims
+         *        new ims
          * @return The builder itself
          */
-        public Builder addIms(MultiValuedAttribute ims) {
+        public Builder addIms(Im ims) {
             this.ims.add(ims);
             return this;
         }
 
         /**
          * updates the old Ims with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new Ims
+         *        new Ims
          * @return The builder itself
          */
-        public Builder updateIms(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updateIms(Im oldAttribute, Im newAttribute) {
             deleteIms(oldAttribute);
             addIms(newAttribute);
             return this;
@@ -669,25 +675,25 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a phoneNumber to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
-         *
+         * 
          * @param phoneNumber
-         *            new phoneNumber
+         *        new phoneNumber
          * @return The builder itself
          */
-        public Builder addPhoneNumber(MultiValuedAttribute phoneNumber) {
+        public Builder addPhoneNumber(PhoneNumber phoneNumber) {
             phoneNumbers.add(phoneNumber);
             return this;
         }
 
         /**
          * deletes the phonenumber of a existing user
-         *
+         * 
          * @param phoneNumber
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deletePhoneNumber(MultiValuedAttribute phoneNumber) {
-            MultiValuedAttribute deletePhoneNumber = new MultiValuedAttribute.Builder()
+        public Builder deletePhoneNumber(PhoneNumber phoneNumber) {
+            PhoneNumber deletePhoneNumber = new PhoneNumber.Builder()
                     .setValue(phoneNumber.getValue())
                     .setType(phoneNumber.getType())
                     .setOperation(DELETE).build();
@@ -697,7 +703,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all phonenumbers of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deletePhoneNumbers() {
@@ -707,14 +713,14 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old PhoneNumber with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new PhoneNumber
+         *        new PhoneNumber
          * @return The builder itself
          */
-        public Builder updatePhoneNumber(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updatePhoneNumber(PhoneNumber oldAttribute, PhoneNumber newAttribute) {
             deletePhoneNumber(oldAttribute);
             addPhoneNumber(newAttribute);
             return this;
@@ -726,25 +732,25 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a photo to an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         *
+         * 
          * @param photo
-         *            new photo
+         *        new photo
          * @return The builder itself
          */
-        public Builder addPhoto(MultiValuedAttribute photo) {
+        public Builder addPhoto(Photo photo) {
             photos.add(photo);
             return this;
         }
 
         /**
          * deletes the photo of a existing user
-         *
+         * 
          * @param photo
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deletePhoto(MultiValuedAttribute photo) {
-            MultiValuedAttribute deletePhoto = new MultiValuedAttribute.Builder()
+        public Builder deletePhoto(Photo photo) {
+            Photo deletePhoto = new Photo.Builder()
                     .setValue(photo.getValue())
                     .setType(photo.getType())
                     .setOperation(DELETE)
@@ -755,7 +761,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all photos of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deletePhotos() {
@@ -765,14 +771,14 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Photo with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new Photo
+         *        new Photo
          * @return The builder itself
          */
-        public Builder updatePhotos(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updatePhotos(Photo oldAttribute, Photo newAttribute) {
             deletePhoto(oldAttribute);
             addPhoto(newAttribute);
             return this;
@@ -783,7 +789,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start entitlement
         /**
          * deletes all entitlements of a existing user
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteEntitlements() {
@@ -793,13 +799,13 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the entitlement of a existing user
-         *
+         * 
          * @param entitlement
-         *            to be deleted
+         *        to be deleted
          * @return The builder itself
          */
-        public Builder deleteEntitlement(MultiValuedAttribute entitlement) {
-            MultiValuedAttribute deleteEntitlement = new MultiValuedAttribute.Builder()
+        public Builder deleteEntitlement(Entitlement entitlement) {
+            Entitlement deleteEntitlement = new Entitlement.Builder()
                     .setValue(entitlement.getValue())
                     .setType(entitlement.getType())
                     .setOperation(DELETE)
@@ -811,26 +817,26 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a entitlement to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
-         *
+         * 
          * @param entitlement
-         *            new entitlement
+         *        new entitlement
          * @return The builder itself
          */
-        public Builder addEntitlement(MultiValuedAttribute entitlement) {
+        public Builder addEntitlement(Entitlement entitlement) {
             entitlements.add(entitlement);
             return this;
         }
 
         /**
          * updates the old Entitlement with the new one
-         *
+         * 
          * @param oldAttribute
-         *            to be replaced
+         *        to be replaced
          * @param newAttribute
-         *            new Entitlement
+         *        new Entitlement
          * @return The builder itself
          */
-        public Builder updateEntitlement(MultiValuedAttribute oldAttribute, MultiValuedAttribute newAttribute) {
+        public Builder updateEntitlement(Entitlement oldAttribute, Entitlement newAttribute) {
             deleteEntitlement(oldAttribute);
             addEntitlement(newAttribute);
             return this;
@@ -841,9 +847,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         // start active
         /**
          * updates the active status of a existing User to the given value
-         *
+         * 
          * @param active
-         *            new active status
+         *        new active status
          * @return The builder itself
          */
         public Builder updateActive(boolean active) {
@@ -855,7 +861,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * constructs a UpdateUser with the given values
-         *
+         * 
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build() {// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
