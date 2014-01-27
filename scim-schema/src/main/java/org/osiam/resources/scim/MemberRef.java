@@ -132,9 +132,19 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
          * @param member
          *        existing Attribute
          */
-        private Builder(MemberRef member) {
+        public Builder(MemberRef member) {
             super(member);
             type = member.type;
+        }
+        
+        /**
+         * builds an Builder based of the given {@link User} or {@link Group}
+         * 
+         * @param resource
+         *        existing {@link User} or {@link Group}
+         */
+        public Builder(Resource resource) {
+        	setValue(resource.getId());
         }
 
         @Override
