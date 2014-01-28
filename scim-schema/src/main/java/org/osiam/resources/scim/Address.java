@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -41,7 +42,7 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
     private String region;
     private String postalCode;
     private String country;
-    @JsonSerialize
+    @JsonProperty
     private Type type;
 
     /**

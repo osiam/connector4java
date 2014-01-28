@@ -22,7 +22,7 @@
  */
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This class represents a phoneNumber attribute.
@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 public class PhoneNumber extends MultiValuedAttribute {
 
-    @JsonSerialize
+    @JsonProperty
     private Type type;
 
     /**

@@ -23,7 +23,7 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be constructed by the builder or jackson
 
-    @JsonSerialize
+    @JsonProperty
     private Type type;
 
     /**
