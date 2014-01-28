@@ -60,10 +60,12 @@ import org.osiam.client.query.Query;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
@@ -277,12 +279,12 @@ public class OsiamConnectorTest {
     }
 
     public void thenPhoneNumbersAreDeserializedCorrectly() {
-        List<MultiValuedAttribute> phonenumbers = singleUserResult.getPhoneNumbers();
+        List<PhoneNumber> phonenumbers = singleUserResult.getPhoneNumbers();
         assertEquals(1, phonenumbers.size());
-        MultiValuedAttribute phonenumber = phonenumbers.get(0);
+        PhoneNumber phonenumber = phonenumbers.get(0);
 
         assertEquals("555-555-8377", phonenumber.getValue().toString());
-        assertEquals("work", phonenumber.getType());
+        assertEquals("work", phonenumber.getType().getValue());
     }
 
     public void thenBasicValuesAreDeserializedCorrectly() throws Exception {
@@ -470,7 +472,7 @@ public class OsiamConnectorTest {
         return expectedUser;
     }
 
-    private void assertEqualsEmailList(List<MultiValuedAttribute> expected, List<MultiValuedAttribute> actual) {
+    private void assertEqualsEmailList(List<Email> expected, List<Email> actual) {
         if (expected == null && actual == null) {
             return;
         }
@@ -478,8 +480,8 @@ public class OsiamConnectorTest {
             fail("The expected List has not the same number of values like the actual list");
         }
         for (int count = 0; count < expected.size(); count++) {
-            MultiValuedAttribute expectedAttribute = expected.get(count);
-            MultiValuedAttribute actualAttribute = actual.get(count);
+            Email expectedAttribute = expected.get(count);
+            Email actualAttribute = actual.get(count);
             assertEquals(expectedAttribute.getValue().toString(), actualAttribute.getValue().toString());
         }
     }
@@ -527,7 +529,7 @@ public class OsiamConnectorTest {
         for (Group currentGroup : allGroups) {
             if (currentGroup.getId().equals(GROUP_ID_STRING)) {
                 assertEquals(1, currentGroup.getMembers().size());
-                for (MultiValuedAttribute actValue : currentGroup.getMembers()) {
+                for (MemberRef actValue : currentGroup.getMembers()) {
                     assertEquals(userIdString, actValue.getValue().toString());
                 }
                 break;
