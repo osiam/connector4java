@@ -26,28 +26,10 @@ package org.osiam.resources.scim
 import spock.lang.Specification
 
 class MultiValuedAttributeSpec extends Specification {
-    def "should contain value, display, primary, type and operation"() {
-        given:
-        def builder = new MultiValuedAttribute.Builder()
-                .setDisplay("display")
-                .setOperation("op")
-                .setPrimary(true)
-                .setType("type")
-                .setValue("value")
-        when:
-        def mva = builder.build()
-
-        then:
-        mva.display == builder.display
-        mva.isPrimary() == builder.primary
-        mva.value == builder.value
-        mva.type == builder.type
-        mva.operation == builder.operation
-    }
 
     def "should contain an empty constructor for json"() {
         when:
-        def result = new MultiValuedAttribute()
+        def result = new Email()
         then:
         result
     }

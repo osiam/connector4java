@@ -22,6 +22,7 @@
  */
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Strings;
 
 public abstract class MultiValuedAttributeType {
@@ -35,6 +36,7 @@ public abstract class MultiValuedAttributeType {
         this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
