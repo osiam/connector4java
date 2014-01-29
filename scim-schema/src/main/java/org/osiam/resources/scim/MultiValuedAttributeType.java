@@ -73,10 +73,7 @@ public abstract class MultiValuedAttributeType {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("MultiValuedAttributeType [value=").append(value).append(", getClass()=").append(getClass())
-                .append("]");
-        return builder.toString();
+        return value;
     }
 
 }
