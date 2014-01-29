@@ -51,6 +51,7 @@ import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
@@ -208,14 +209,14 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     /**
      * See {@link OsiamConnector#replaceUser(User, AccessToken)}
      */
-    public User replaceUser(User user, AccessToken accessToken) {
+    public User replaceUser(String id, User user, AccessToken accessToken) {
         if (user == null) {
             throw new IllegalArgumentException("The given User can't be null.");
         }
-        if (user.getId() == null || user.getId().isEmpty()) {
+        if (Strings.isNullOrEmpty(id)) {
             throw new IllegalArgumentException("The given User ID can't be null or empty.");
         }
-        return replaceResource(user.getId(), user, accessToken);
+        return replaceResource(id, user, accessToken);
     }
 
     /**
