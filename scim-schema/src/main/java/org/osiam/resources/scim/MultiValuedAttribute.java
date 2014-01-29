@@ -129,6 +129,9 @@ public abstract class MultiValuedAttribute {
         return reference;
     }
 
+    /**
+     * calculates the hascode based on the attributes except the primary attribute
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -137,6 +140,9 @@ public abstract class MultiValuedAttribute {
         return result;
     }
 
+    /**
+     * compares the object with the given one except for the primary attribute
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
