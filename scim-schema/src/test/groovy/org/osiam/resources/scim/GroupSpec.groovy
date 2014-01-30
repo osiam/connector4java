@@ -23,29 +23,40 @@
 
 package org.osiam.resources.scim
 
-import java.lang.reflect.Member
-
 import spock.lang.Specification
 
 class GroupSpec extends Specification {
 
-    def "should be able to generate a group"() {
+    def 'should be able to generate a group'() {
         given:
-        def multiValueAttribute = new MemberRef.Builder().build()
-        def builder = new Group.Builder("display")
-                .setMembers([multiValueAttribute] as Set)
+        
+        User user = new User.Builder('userName').build()
+        
+        MemberRef memberRef = new MemberRef.Builder(user).build()
+        
+        Meta meta = new Meta.Builder().build()
+        
+        Group.Builder builder = new Group.Builder('display')
+                .setExternalId('externalId')
+                .setId('id')
+                .setMeta(meta)
+                .setSchemas(['schema'] as Set)
+                .setMembers([memberRef] as Set)
 
         when:
-        def group = builder.build()
+        Group group = builder.build()
 
         then:
-        group.displayName == builder.displayName
-        group.members == builder.members
+        group.members.iterator().next().value == memberRef.value
+        group.displayName == 'display'
+        group.externalId == 'externalId'
+        group.schemas.first() == 'schema'
+        group.id == 'id'
     }
 
-    def "should be able to enrich group members"() {
+    def 'should be able to enrich group members'() {
         given:
-        def group = new Group.Builder("display").build()
+        def group = new Group.Builder('display').build()
         when:
         group.members.add(new MemberRef.Builder().build())
 
@@ -53,9 +64,9 @@ class GroupSpec extends Specification {
         group.members.size() == 1
     }
 
-    def "members should be a must exist implementation"() {
+    def 'members should be a must exist implementation'() {
         given:
-        def group = new Group.Builder("display").build()
+        def group = new Group.Builder('display').build()
 
         when:
         group.members.add(new MemberRef.Builder().build())
@@ -66,17 +77,17 @@ class GroupSpec extends Specification {
     }
 
 
-    def "should contain empty public constructor for json serializing"() {
+    def 'should contain empty public constructor for json serializing'() {
         when:
         def result = new Group()
         then:
         result
     }
 
-    def "should be able to clone a group"() {
+    def 'should be able to clone a group'() {
         given:
-        def group = new Group.Builder("display").
-                setId("id").build()
+        def group = new Group.Builder('display').
+                setId('id').build()
         when:
         def result = new Group.Builder(group).build()
 
