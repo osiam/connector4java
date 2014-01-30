@@ -37,6 +37,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
@@ -58,6 +59,7 @@ import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.OsiamErrorMessage;
+import org.osiam.client.exception.OsiamErrorMessage02;
 import org.osiam.client.exception.UnauthorizedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -210,9 +212,15 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         String errorMessage;
         try {
             content = httpResponse.getEntity().getContent();
+            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
             ObjectMapper mapper = new ObjectMapper();
-            OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
-            errorMessage = error.getDescription();
+            if (inputStreamString.contains("error_code")) {
+                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
+                errorMessage = error.getDescription();
+            } else {
+                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
+                errorMessage = error.getDescription();
+            }
         } catch (Exception e) { // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
         } finally {

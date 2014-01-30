@@ -48,6 +48,7 @@ import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.apache.http.HttpStatus.*;
 
@@ -370,9 +371,17 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
         String errorMessage;
-        try (InputStream content = httpResponse.getEntity().getContent()) {
-            OsiamErrorMessage error = mapper.readValue(content, OsiamErrorMessage.class);
-            errorMessage = error.getDescription();
+        try {
+            InputStream content = httpResponse.getEntity().getContent();
+            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
+            ObjectMapper mapper = new ObjectMapper();
+            if (inputStreamString.contains("error_code")) {
+                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
+                errorMessage = error.getDescription();
+            } else {
+                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
+                errorMessage = error.getDescription();
+            }
         } catch (Exception e) { // NOSONAR - we catch everything
             errorMessage = defaultErrorMessage;
         }
