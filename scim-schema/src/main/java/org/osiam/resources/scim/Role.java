@@ -32,6 +32,8 @@ package org.osiam.resources.scim;
  */
 public class Role extends MultiValuedAttribute {
 
+    private Type type;
+
     /**
      * Default constructor for Jackson
      */
@@ -40,6 +42,7 @@ public class Role extends MultiValuedAttribute {
 
     private Role(Builder builder) {
         super(builder);
+        type = builder.type;
     }
 
     @Override
@@ -63,9 +66,27 @@ public class Role extends MultiValuedAttribute {
     }
 
     /**
+     * Gets the type of the attribute.
+     * 
+     * <p>
+     * For more detailed information please look at the <a href=
+     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
+     * </p>
+     * 
+     * @return
+     * 
+     * @return the actual type
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
      * Builder class that is used to build {@link Role} instances
      */
     public static class Builder extends MultiValuedAttribute.Builder {
+
+        private Type type;
 
         public Builder() {
         }
@@ -78,6 +99,7 @@ public class Role extends MultiValuedAttribute {
          */
         public Builder(Role role) {
             super(role);
+            type = role.type;
         }
 
         @Override
@@ -105,9 +127,30 @@ public class Role extends MultiValuedAttribute {
             return this;
         }
 
+        /**
+         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
+         * 
+         * @param type
+         *        the type of the attribute
+         * @return the builder itself
+         */
+        public Builder setType(Type type) {
+            this.type = type;
+            return this;
+        }
+
         @Override
         public Role build() {
             return new Role(this);
+        }
+    }
+
+    /**
+     * Represents an Role type.
+     */
+    public static class Type extends MultiValuedAttributeType {
+        public Type(String value) {
+            super(value);
         }
     }
 
