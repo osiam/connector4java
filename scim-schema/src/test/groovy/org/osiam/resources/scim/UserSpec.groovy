@@ -23,30 +23,35 @@
 
 package org.osiam.resources.scim
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class UserSpec extends Specification {
 
-    static def EXTENSION_URN = "urn:org.osiam:schemas:test:1.0:Test"
+    static def EXTENSION_URN = 'urn:org.osiam:schemas:test:1.0:Test'
     static def EXTENSION_EMPTY = new Extension(EXTENSION_URN)
     static def CORE_SCHEMA_SET = [Constants.USER_CORE_SCHEMA] as Set
 
-    def "default constructor should be present due to json mappings"() {
+    def 'default constructor should be present due to json mappings'() {
         when:
         def user = new User()
         then:
         user != null
     }
 
-    def "should contain core schemas as default"() {
+    def 'should contain core schemas as default'() {
         when:
-        def user = new User.Builder("username").build()
+        def user = new User.Builder('username').build()
         then:
         user.schemas == CORE_SCHEMA_SET
     }
 
-    def "should be possible to create an user without name for PATCH"() {
+    def 'should be possible to create an user without name for PATCH'() {
         when:
         def user = new User.Builder().build()
         then:
@@ -55,109 +60,97 @@ class UserSpec extends Specification {
     }
 
 
-    def "should be able to contain schemas"() {
-        def schemas = ["urn:wtf", "urn:hajo"] as Set
+    def 'should be able to contain schemas'() {
+        def schemas = ['urn:wtf', 'urn:hajo'] as Set
         when:
-        User user = new User.Builder("username").setSchemas(schemas).build()
+        User user = new User.Builder('username').setSchemas(schemas).build()
         then:
         user.schemas == schemas
-
     }
 
     @Unroll
-    def "using #parameter for userName raises exception"() {
+    def 'using #parameter for userName raises exception'() {
         when:
         new User.Builder(parameter)
 
         then:
         def e = thrown(IllegalArgumentException)
-        e.message == "userName must not be null or empty."
+        e.message == 'userName must not be null or empty.'
 
         where:
         parameter << [null, '']
-
     }
 
-    def "should generate a user based on builder"() {
+    def 'should generate a user based on builder'() {
         given:
-        def multivalueAttribute = new MultiValuedAttribute.Builder().build()
-        def meta = new Meta.Builder().build()
 
-        def builder = new User.Builder("test").setActive(true)
-                .setDisplayName("display")
-                .setLocale("locale")
-                .setName(new Name.Builder().build())
-                .setNickName("nickname")
-                .setPassword("password")
-                .setPreferredLanguage("preferredLanguage")
-                .setProfileUrl("profileUrl")
-                .setTimezone("time")
-                .setTitle("title")
-                .setUserType("userType")
-                .setEntitlements([multivalueAttribute] as List)
-                .setRoles([multivalueAttribute] as List)
-                .setX509Certificates([multivalueAttribute] as List)
+        Extension extension = getExtension('extension');
+        Meta meta = new Meta.Builder().build()
+        Address address = getAddress()
+        Email email = getEmail()
+        Entitlement entitlement = getEntitlement()
+        Im im = getIm()
+        Name name = getName()
+        PhoneNumber phoneNumber = getPhoneNumber()
+        Photo photo = getPhoto()
+        Role role = getRole()
+        X509Certificate x509Certificat = getX509Certificat()
+
+        def builder = new User.Builder('username')
                 .setId('id')
+                .setActive(true)
+                .setAddresses([address] as List)
+                .setDisplayName('displayName')
+                .setEmails([email] as List)
+                .setEntitlements([entitlement] as List)
+                .setExternalId('externalId')
+                .setIms([im] as List)
+                .setLocale('de_DE')
+                .setName(name)
+                .setNickName('nickname')
+                .setPassword('password')
+                .setPhoneNumbers([phoneNumber] as List)
+                .setPhotos([photo] as List)
+                .setPreferredLanguage('german')
+                .setProfileUrl('/user/username')
+                .setRoles([role] as List)
+                .setTimezone('MEZ')
+                .setTitle('title')
+                .setSchemas(['schema'] as Set)
+                .setX509Certificates([x509Certificat] as List)
                 .setMeta(meta)
-                .setExternalId('external')
-                .addExtension(new Extension("urn:org.osiam:schemas:test:1.0:Test"))
+                .setUserType('userType')
+                .addExtension(extension);
+
         when:
         User user = builder.build()
+
         then:
         user.active == builder.active
-        user.addresses == builder.addresses
-        user.displayName == builder.displayName
+        user.addresses.first() == address
+        user.displayName == 'displayName'
         user.emails == builder.emails
-        user.entitlements == builder.entitlements
-        user.groups == builder.groups
-        user.ims == builder.ims
-        user.locale == builder.locale
+        user.entitlements.first() == entitlement
+        user.ims.first() == im
+        user.locale == 'de_DE'
         user.name == builder.name
-        user.nickName == builder.nickName
-        user.password == builder.password
-        user.phoneNumbers == builder.phoneNumbers
-        user.photos == builder.photos
-        user.preferredLanguage == builder.preferredLanguage
-        user.profileUrl == builder.profileUrl
-        user.roles == builder.roles
-        user.timezone == builder.timezone
-        user.title == builder.title
-        user.userType == builder.userType
-        user.x509Certificates == builder.x509Certificates
-        user.userName == builder.userName
+        user.nickName == 'nickname'
+        user.password == 'password'
+        user.phoneNumbers.first() == phoneNumber
+        user.photos.first() == photo
+        user.preferredLanguage == 'german'
+        user.profileUrl == '/user/username'
+        user.roles.first() == role
+        user.timezone == 'MEZ'
+        user.title == 'title'
+        user.userType == 'userType'
+        user.x509Certificates.first() == x509Certificat
+        user.userName == 'username'
         user.id == 'id'
         user.meta == meta
-        user.externalId == 'external'
-        user.extensions == builder.extensions
-    }
-
-    def "should be able to enrich addresses, emails, entitlements, groups, phone-numbers, photos, roles and certificates"() {
-        given:
-        def user = new User.Builder("test2").build()
-        def address = new Address.Builder().build()
-        def generalAttribute = new MultiValuedAttribute.Builder().build()
-
-        when:
-        user.getAddresses().add(address)
-        user.getEmails().add(generalAttribute)
-        user.getEntitlements().add(generalAttribute)
-        user.getGroups().add(generalAttribute)
-        user.getIms().add(generalAttribute)
-        user.getPhoneNumbers().add(generalAttribute)
-        user.getPhotos().add(generalAttribute)
-        user.getRoles().add(generalAttribute)
-        user.getX509Certificates().add(generalAttribute)
-
-        then:
-        user.addresses.get(0) == address
-        user.emails.get(0) == generalAttribute
-        user.entitlements.get(0) == generalAttribute
-        user.groups.get(0) == generalAttribute
-        user.ims.get(0) == generalAttribute
-        user.phoneNumbers.get(0) == generalAttribute
-        user.photos.get(0) == generalAttribute
-        user.roles.get(0) == generalAttribute
-        user.x509Certificates.get(0) == generalAttribute
+        user.externalId == 'externalId'
+        user.schemas.first() == 'schema'
+        user.getAllExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING);
     }
 
     @Unroll
@@ -174,15 +167,15 @@ class UserSpec extends Specification {
 
         where:
         field              | value
-        'emails'           | [new MultiValuedAttribute.Builder().build()]
-        'phoneNumbers'     | [new MultiValuedAttribute.Builder().build()]
-        'ims'              | [new MultiValuedAttribute.Builder().build()]
-        'photos'           | [new MultiValuedAttribute.Builder().build()]
+        'emails'           | [new Email.Builder().build()]
+        'phoneNumbers'     | [new PhoneNumber.Builder().build()]
+        'ims'              | [new Im.Builder().build()]
+        'photos'           | [new Photo.Builder().build()]
         'addresses'        | [new Address.Builder().build()]
-        'groups'           | [new MultiValuedAttribute.Builder().build()]
-        'entitlements'     | [new MultiValuedAttribute.Builder().build()]
-        'roles'            | [new MultiValuedAttribute.Builder().build()]
-        'x509Certificates' | [new MultiValuedAttribute.Builder().build()]
+        'groups'           | [new GroupRef.Builder().build()]
+        'entitlements'     | [new Entitlement.Builder().build()]
+        'roles'            | [new Role.Builder().build()]
+        'x509Certificates' | [new X509Certificate.Builder().build()]
         'extensions'       | [(EXTENSION_URN): (EXTENSION_EMPTY)]
     }
 
@@ -214,7 +207,7 @@ class UserSpec extends Specification {
 
     def 'enriching extension using the getter raises exception'() {
         given:
-        def user = new User.Builder("test2").build()
+        def user = new User.Builder('test2').build()
         when:
         user.getAllExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
         then:
@@ -223,12 +216,12 @@ class UserSpec extends Specification {
 
     def 'builder should add a schema to the schema Set for each added extension'() {
         given:
-        def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
+        def extension1Urn = 'urn:org.osiam:schemas:test:1.0:Test1'
         def extension1 = new Extension(extension1Urn)
-        def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
+        def extension2Urn = 'urn:org.osiam:schemas:test:1.0:Test2'
         def extension2 = new Extension(extension2Urn)
         when:
-        def user = new User.Builder("test2")
+        def user = new User.Builder('test2')
                 .addExtension(extension1)
                 .addExtension(extension2)
                 .build()
@@ -239,14 +232,14 @@ class UserSpec extends Specification {
 
     def 'scim core schema must always be present in schema set when adding extensions'() {
         given:
-        def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
+        def extension1Urn = 'urn:org.osiam:schemas:test:1.0:Test1'
         def extension1 = new Extension(extension1Urn)
-        def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
+        def extension2Urn = 'urn:org.osiam:schemas:test:1.0:Test2'
         def extension2 = new Extension(extension2Urn)
         def coreSchemaUrn = Constants.USER_CORE_SCHEMA
 
         when:
-        def user = new User.Builder("test2")
+        def user = new User.Builder('test2')
                 .addExtension(extension1)
                 .addExtension(extension2)
                 .build()
@@ -256,7 +249,7 @@ class UserSpec extends Specification {
 
     def 'an added extension can be retrieved'() {
         given:
-        def user = new User.Builder("test2")
+        def user = new User.Builder('test2')
                 .addExtension(EXTENSION_EMPTY)
                 .build()
         expect:
@@ -267,7 +260,7 @@ class UserSpec extends Specification {
         given:
         def extensions = new HashSet<Extension>()
         extensions.add(EXTENSION_EMPTY)
-        def user = new User.Builder("test")
+        def user = new User.Builder('test')
                 //.addExtensions([(EXTENSION_URN): EXTENSION_EMPTY])
                 .addExtensions(extensions)
                 .build()
@@ -280,7 +273,7 @@ class UserSpec extends Specification {
     @Unroll
     def 'retrieving extension with #testCase urn raises exception'() {
         given:
-        def user = new User.Builder("test2")
+        def user = new User.Builder('test2')
                 .build()
         when:
         user.getExtension(urn)
@@ -302,4 +295,86 @@ class UserSpec extends Specification {
         thrown(IllegalArgumentException)
     }
 
+    Email getEmail() {
+        new Email.Builder()
+                .setPrimary(true)
+                .setValue('test@tarent.de')
+                .setType(Email.Type.WORK)
+                .build();
+    }
+
+    Address getAddress() {
+        new Address.Builder()
+                .setCountry('Germany')
+                .setFormatted('formatted')
+                .setLocality('Berlin')
+                .setPostalCode('12345')
+                .setPrimary(true)
+                .setRegion('Berlin')
+                .setStreetAddress('Voltastr. 5')
+                .setType(Address.Type.WORK)
+                .build();
+    }
+
+    Extension getExtension(urn) {
+        Extension extension = new Extension(urn);
+        extension.addOrUpdateField('gender', 'male')
+        return extension
+    }
+
+    Entitlement getEntitlement() {
+        new Entitlement.Builder()
+                .setPrimary(true)
+                .setType(new Entitlement.Type('irrelevant'))
+                .setValue('entitlement')
+                .build();
+    }
+
+    Im getIm() {
+        new Im.Builder()
+                .setPrimary(true)
+                .setType(Im.Type.AIM)
+                .setValue('aim')
+                .build();
+    }
+
+    Name getName() {
+        new Name.Builder()
+                .setFamilyName('test')
+                .setFormatted('formatted')
+                .setGivenName('test')
+                .setHonorificPrefix('Dr.')
+                .setHonorificSuffix('Mr.')
+                .setMiddleName('test').build();
+    }
+
+    PhoneNumber getPhoneNumber() {
+        new PhoneNumber.Builder()
+                .setPrimary(true)
+                .setType(PhoneNumber.Type.WORK)
+                .setValue('03012345678')
+                .build();
+    }
+
+    Photo getPhoto() {
+        new Photo.Builder()
+                .setPrimary(true)
+                .setType(Photo.Type.PHOTO)
+                .setValue('username.jpg')
+                .build();
+    }
+
+    Role getRole() {
+        new Role.Builder()
+                .setPrimary(true)
+                .setValue('user_role')
+                .build();
+    }
+
+    X509Certificate getX509Certificat() {
+        new X509Certificate.Builder()
+                .setPrimary(true)
+                .setValue('x509Certificat')
+                .build();
+    }
 }

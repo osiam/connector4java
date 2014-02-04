@@ -22,30 +22,27 @@
  */
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
- * This class represents a Im attribute.
+ * This class represents a x509Certificate attribute.
  * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Im extends MultiValuedAttribute {
+public class X509Certificate extends MultiValuedAttribute {
 
-    @JsonProperty
     private Type type;
 
     /**
      * Default constructor for Jackson
      */
-    private Im() {
+    private X509Certificate() {
     }
 
-    private Im(Builder builder) {
+    private X509Certificate(Builder builder) {
         super(builder);
-        this.type = builder.type;
+        type = builder.type;
     }
 
     @Override
@@ -84,38 +81,8 @@ public class Im extends MultiValuedAttribute {
         return type;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Im other = (Im) obj;
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
-    }
-
     /**
-     * Builder class that is used to build {@link Im} instances
+     * Builder class that is used to build {@link X509Certificate} instances
      */
     public static class Builder extends MultiValuedAttribute.Builder {
 
@@ -127,12 +94,12 @@ public class Im extends MultiValuedAttribute {
         /**
          * builds an Builder based of the given Attribute
          * 
-         * @param im
+         * @param x509Certificate
          *        existing Attribute
          */
-        public Builder(Im im) {
-            super(im);
-            type = im.type;
+        public Builder(X509Certificate x509Certificate) {
+            super(x509Certificate);
+            type = x509Certificate.type;
         }
 
         @Override
@@ -154,6 +121,12 @@ public class Im extends MultiValuedAttribute {
             return this;
         }
 
+        @Override
+        public Builder setPrimary(boolean primary) {
+            super.setPrimary(primary);
+            return this;
+        }
+
         /**
          * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
          * 
@@ -167,30 +140,15 @@ public class Im extends MultiValuedAttribute {
         }
 
         @Override
-        public Builder setPrimary(boolean primary) {
-            super.setPrimary(primary);
-            return this;
-        }
-
-        @Override
-        public Im build() {
-            return new Im(this);
+        public X509Certificate build() {
+            return new X509Certificate(this);
         }
     }
 
     /**
-     * Represents an IM type. Canonical values are available as static constants.
+     * Represents an X509Certificate type.
      */
     public static class Type extends MultiValuedAttributeType {
-        public static final Type AIM = new Type("aim");
-        public static final Type GTALK = new Type("gtalk");
-        public static final Type ICQ = new Type("icq");
-        public static final Type XMPP = new Type("xmpp");
-        public static final Type MSN = new Type("msn");
-        public static final Type SKYPE = new Type("skype");
-        public static final Type QQ = new Type("qq");
-        public static final Type YAHOO = new Type("yahoo");
-
         public Type(String value) {
             super(value);
         }

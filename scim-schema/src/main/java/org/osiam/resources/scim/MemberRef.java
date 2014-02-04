@@ -36,8 +36,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be constructed by the builder or jackson
 
-    @JsonProperty("$ref")
-    private String reference;
+    @JsonProperty
+    private Type type;
 
     /**
      * Default constructor for Jackson
@@ -47,38 +47,109 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
 
     private MemberRef(Builder builder) {
         super(builder);
-        reference = builder.reference;
+        type = builder.type;
+    }
+
+    @Override
+    public String getReference() {
+        return super.getReference();
+    }
+
+    @Override
+    public String getOperation() {
+        return super.getOperation();
+    }
+
+    @Override
+    public String getValue() {
+        return super.getValue();
+    }
+
+    @Override
+    public String getDisplay() {
+        return super.getDisplay();
     }
 
     /**
-     * Gets the reference to the actual SCIM Resource.
+     * Gets the type of the attribute.
      * 
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+     * For more detailed information please look at the <a href=
+     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
      * 
-     * @return the reference of the actual resource
+     * @return
+     * 
+     * @return the actual type
      */
-    public String getReference() {
-        return reference;
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MemberRef other = (MemberRef) obj;
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * The Builder class is used to construct instances of the {@link MemberRef}
      */
     public static class Builder extends MultiValuedAttribute.Builder {
-        private String reference;
+
+        private Type type;
+
+        public Builder() {
+        }
 
         /**
-         * Sets the reference (See {@link MemberRef#getReference()}).
+         * builds an Builder based of the given Attribute
          * 
-         * @param reference
-         *            the scim conform reference to the member
-         * @return the builder itself
+         * @param member
+         *        existing Attribute
          */
+        public Builder(MemberRef member) {
+            super(member);
+            type = member.type;
+        }
+        
+        /**
+         * builds an Builder based of the given {@link User} or {@link Group}
+         * 
+         * @param resource
+         *        existing {@link User} or {@link Group}
+         */
+        public Builder(Resource resource) {
+        	setValue(resource.getId());
+        }
+
+        @Override
         public Builder setReference(String reference) {
-            this.reference = reference;
+            super.setReference(reference);
             return this;
         }
 
@@ -94,15 +165,15 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
             return this;
         }
 
-        @Override
-        public Builder setPrimary(Boolean primary) {
-            super.setPrimary(primary);
-            return this;
-        }
-
-        @Override
-        public Builder setType(String type) {
-            super.setType(type);
+        /**
+         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
+         * 
+         * @param type
+         *        the type of the attribute
+         * @return the builder itself
+         */
+        public Builder setType(Type type) {
+            this.type = type;
             return this;
         }
 
@@ -115,6 +186,24 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
         @Override
         public MemberRef build() {
             return new MemberRef(this);
+        }
+    }
+
+    /**
+     * Represents an Member reference type.
+     */
+    public static class Type extends MultiValuedAttributeType {
+        /**
+         * indicates that the member is a {@link User}
+         */
+        public static final Type USER = new Type("User");
+        /**
+         * indicates that the member is a {@link Group}
+         */
+        public static final Type GROUP = new Type("Group");
+
+        private Type(String value) {
+            super(value);
         }
     }
 }
