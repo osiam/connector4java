@@ -302,7 +302,7 @@ public class Query {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Meta.class);
             }
             if (attribute.startsWith("emails.")) {
-                return isAttributeValid(compositeField, org.osiam.resources.scim.MultiValuedAttribute.class);
+                return isAttributeValid(compositeField, org.osiam.resources.scim.Email.class);
             }
             if (attribute.startsWith("name.")) {
                 return isAttributeValid(compositeField, org.osiam.resources.scim.Name.class);
