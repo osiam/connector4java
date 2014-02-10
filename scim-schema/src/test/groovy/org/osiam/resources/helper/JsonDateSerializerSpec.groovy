@@ -29,10 +29,6 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
 
 /**
- * Created with IntelliJ IDEA.
- * User: jtodea
- * Date: 23.05.13
- * Time: 11:53
  * To change this template use File | Settings | File Templates.
  */
 class JsonDateSerializerSpec extends Specification {
