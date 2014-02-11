@@ -28,9 +28,6 @@ import spock.lang.Specification
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
 
-/**
- * To change this template use File | Settings | File Templates.
- */
 class JsonDateSerializerSpec extends Specification {
 
     def jsonDateSerializer = new JsonDateSerializer()

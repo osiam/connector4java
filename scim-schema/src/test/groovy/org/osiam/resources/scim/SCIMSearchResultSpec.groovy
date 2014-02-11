@@ -25,9 +25,6 @@ package org.osiam.resources.scim
 
 import spock.lang.Specification
 
-/**
- * To change this template use File | Settings | File Templates.
- */
 class SCIMSearchResultSpec extends Specification {
 
     def "parametrized constructor and corresponding getter should be present"() {

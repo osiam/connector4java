@@ -36,7 +36,6 @@ class MetaSpec extends Specification {
         meta
     }
 
-
     def "should be able to create without explicit created, last modified"() {
         given:
         def oldSysTime = System.currentTimeMillis()

@@ -59,7 +59,6 @@ class UserSpec extends Specification {
         user.name == null
     }
 
-
     def 'should be able to contain schemas'() {
         def schemas = ['urn:wtf', 'urn:hajo'] as Set
         when:
