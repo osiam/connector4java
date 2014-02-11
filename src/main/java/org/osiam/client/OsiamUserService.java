@@ -102,18 +102,16 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
                 String errorMessage;
                 switch (httpStatus) {
                 case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessage(response,
-                            "You are not authorized to access OSIAM. Please make sure your access token is valid");
+                    errorMessage = getErrorMessage(response);
                     throw new UnauthorizedException(errorMessage);
                 case SC_FORBIDDEN:
-                    errorMessage = "Insufficient scope (" + accessToken.getScope() + ") to retrieve the actual User.";
+                    errorMessage = getErrorMessage(response);
                     throw new ForbiddenException(errorMessage);
                 case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, "Unable to retrieve the actual User.");
+                    errorMessage = getErrorMessage(response);
                     throw new ConflictException(errorMessage);
                 default:
-                    errorMessage = getErrorMessage(response,
-                            String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                    errorMessage = getErrorMessage(response);
                     throw new ConnectionInitializationException(errorMessage);
                 }
             }

@@ -36,6 +36,7 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.FileReader;
@@ -101,7 +102,6 @@ public class OsiamUserServiceTest {
         givenAnUserID();
         givenAnAccessToken();
     }
-
 
     @Test
     public void existing_user_is_returned() throws Exception {
@@ -221,39 +221,52 @@ public class OsiamUserServiceTest {
     }
 
     @Test
-    public void sort_order_is_split_correctly() throws UnsupportedEncodingException{
+    public void sort_order_is_split_correctly() throws UnsupportedEncodingException {
         givenAQueryContainingDifficultCharactersAndSortBy();
         givenAUserCanBeSearchedByQuery();
         whenSearchIsUsedByQuery();
         thenSortedQueryStringIsSplitCorrectly();
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void create_null_user_raises_exception(){
+    @Test(expected = IllegalArgumentException.class)
+    public void create_null_user_raises_exception() {
         User newUser = null;
         service.createUser(newUser, accessToken);
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void create_user_with_null_accestoken_raises_exception(){
+    @Test(expected = IllegalArgumentException.class)
+    public void create_user_with_null_accestoken_raises_exception() {
         User newUser = new User.Builder("cuwna").build();
         service.createUser(newUser, null);
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void delete_null_user_raises_exception(){
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_user_raises_exception() {
         String userID = null;
         service.deleteUser(userID, accessToken);
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void delete_user_with_null_accestoken_raises_exception(){
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_user_with_null_accestoken_raises_exception() {
         String id = "HelloWorld";
         service.deleteUser(id, null);
         Assert.fail("Exception excpected");
+    }
+
+    @Test
+    public void wrong_error_response_body_can_be_handled() {
+        given_wrong_error_body();
+
+        try {
+            String id = "HelloWorld";
+            service.deleteUser(id, accessToken);
+            Assert.fail("Exception excpected");
+        } catch (NoResultException e) {
+            assertTrue(e.getMessage().contains("Could not deserialize"));
+        }
     }
 
     private void givenAnAccessToken() throws IOException {
@@ -329,6 +342,13 @@ public class OsiamUserServiceTest {
                         .withStatus(SC_CONFLICT)));
     }
 
+    private void given_wrong_error_body() {
+        stubFor(givenIDisLookedUp(USER_ID, accessToken)
+                .willReturn(aResponse()
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withBodyFile("invalid_error_body.json")));
+    }
+
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
@@ -376,7 +396,8 @@ public class OsiamUserServiceTest {
     }
 
     private void thenSortedQueryStringIsSplitCorrectly() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
+        verify(getRequestedFor(
+                urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
@@ -388,7 +409,6 @@ public class OsiamUserServiceTest {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=displayName+eq+BarbaraJ."))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
-
 
     private void thenReturnedListOfSearchedUsersIsAsExpected() {
         assertEquals(1, searchResult.getTotalResults());
@@ -477,8 +497,8 @@ public class OsiamUserServiceTest {
             fail("The expected List has not the same number of values like the actual list");
         }
         for (int count = 0; count < expected.size(); count++) {
-        	Email expectedAttribute = expected.get(count);
-        	Email actualAttribute = actual.get(count);
+            Email expectedAttribute = expected.get(count);
+            Email actualAttribute = actual.get(count);
             assertEquals(expectedAttribute.getValue().toString(), actualAttribute.getValue().toString());
         }
     }
@@ -501,7 +521,7 @@ public class OsiamUserServiceTest {
         try {
             reader = new FileReader("src/test/resources/__files/user_" + USER_ID + ".json");
             jsonUser = new StringBuilder();
-            for (int c; (c = reader.read()) != -1; ) {
+            for (int c; (c = reader.read()) != -1;) {
                 jsonUser.append((char) c);
             }
         } finally {

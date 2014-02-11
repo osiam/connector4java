@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -183,39 +184,40 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private void checkAndHandleHttpStatus(HttpResponse response, int status) {
         if (status != SC_OK) {
             String errorMessage;
-            String defaultMessage;
             switch (status) {
             case SC_BAD_REQUEST:
-                defaultMessage = "Unable to create Connection. Please make sure that you have the correct grants.";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             case SC_UNAUTHORIZED:
-                defaultMessage = "You are not authorized to directly retrieve a access token.";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_NOT_FOUND:
-                defaultMessage = "Unable to find the given OSIAM service (" + getFinalEndpoint() + ")";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             default:
-                defaultMessage = String.format("Unable to setup connection (HTTP Status Code: %d)", status);
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }
     }
 
-    private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
+    protected String getErrorMessage(HttpResponse httpResponse) {
         String errorMessage;
         InputStream content = null;
+        String inputStreamStringValue = null;
 
         try {
             content = httpResponse.getEntity().getContent();
+            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
             ObjectMapper mapper = new ObjectMapper();
-            OAuthErrorMessage error = mapper.readValue(content, OAuthErrorMessage.class);
+            OAuthErrorMessage error = mapper.readValue(inputStreamStringValue, OAuthErrorMessage.class);
             errorMessage = error.getDescription();
         } catch (Exception e) { // NOSONAR - we catch everything
-            return defaultErrorMessage;
+            errorMessage = "Could not deserialize the error response for the status code \""
+                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
+            if (inputStreamStringValue != null) {
+                errorMessage += " Original response: " + inputStreamStringValue;
+            }
         }
 
         return errorMessage;
@@ -321,12 +323,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             String errorMessage;
             switch (httpStatus) {
             case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response,
-                        "Could not exchange yout authentication code against a access token.");
+                errorMessage = getErrorMessage(response);
                 throw new ConflictException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response,
-                        String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }
