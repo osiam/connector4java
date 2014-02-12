@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
     ~ Copyright (C) 2013 tarent AG
     ~
@@ -199,7 +199,6 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-
 
             <!-- Build Helper: will add Groovy sources to path -->
             <plugin>

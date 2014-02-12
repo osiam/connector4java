@@ -76,7 +76,6 @@ class GroupSpec extends Specification {
 
     }
 
-
     def 'should contain empty public constructor for json serializing'() {
         when:
         def result = new Group()
