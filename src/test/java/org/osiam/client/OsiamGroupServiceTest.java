@@ -265,7 +265,6 @@ public class OsiamGroupServiceTest {
                         .withStatus(SC_NOT_FOUND)));
     }
 
-
     private void givenIDisSpecial(String wildcard) {
         stubFor(givenIDisLookedUp(wildcard, accessToken)
                 .willReturn(aResponse()
@@ -296,7 +295,6 @@ public class OsiamGroupServiceTest {
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_all_groups.json")));
     }
-
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE + "?count=" + Integer.MAX_VALUE))

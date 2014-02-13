@@ -24,15 +24,20 @@
 package org.osiam.client.exception;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * Scim conform error class
+ * This class is a workaround since the error generation from the OSIAM server is not scim conform and 
+ * 2 error message bodys are send. It can be deleted after the error generation from the server is fixed.
+ * 
+ * Only used to serialize given error json string to extract the error message.
  */
-public class ScimErrorMessage {
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+public class OsiamErrorMessage02 {
 
-    @JsonProperty("error_code")
+    @JsonProperty("error")
     private String errorCode;
+    @JsonProperty("error_description")
     private String description;
 
     public String getErrorCode(){

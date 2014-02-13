@@ -23,40 +23,18 @@
 
 package org.osiam.client;
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_CONFLICT;
-import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.OsiamRequestException;
-import org.osiam.client.exception.ScimErrorMessage;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.resources.helper.UserDeserializer;
@@ -64,11 +42,15 @@ import org.osiam.resources.scim.Resource;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Scanner;
+
+import static org.apache.http.HttpStatus.*;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
@@ -126,16 +108,16 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage;
             switch (httpStatus) {
             case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageUnauthorized(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                 throw new NoResultException(errorMessage);
             case SC_FORBIDDEN:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageForbidden(accessToken, "get");
                 throw new ForbiddenException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageDefault(response, httpStatus);
                 throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
@@ -176,16 +158,18 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage;
             switch (httpStatus) {
             case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageUnauthorized(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_FORBIDDEN:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageForbidden(accessToken, "get");
                 throw new ForbiddenException(errorMessage);
             case SC_CONFLICT:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString
+                        + "': "
+                        + response.getStatusLine().getReasonPhrase());
                 throw new ConflictException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageDefault(response, httpStatus);
                 throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
@@ -218,7 +202,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             uri = new URI(webResource.getURI() + "/" + id);
             HttpDelete realWebResource = new HttpDelete(uri);
             realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-
+            
             response = httpclient.execute(realWebResource);
         } catch (URISyntaxException | IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -230,19 +214,20 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage;
             switch (httpStatus) {
             case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageUnauthorized(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
                 throw new NoResultException(errorMessage);
             case SC_CONFLICT:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "Unable to delete: "
+                        + response.getStatusLine().getReasonPhrase());
                 throw new ConflictException(errorMessage);
             case SC_FORBIDDEN:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageForbidden(accessToken, "delete");
                 throw new ForbiddenException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageDefault(response, httpStatus);
                 throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
@@ -272,16 +257,16 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage;
             switch (httpStatus) {
             case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageUnauthorized(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_CONFLICT:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "Unable to save");
                 throw new ConflictException(errorMessage);
             case SC_FORBIDDEN:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageForbidden(accessToken, "create");
                 throw new ForbiddenException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageDefault(response, httpStatus);
                 throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
@@ -328,22 +313,23 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage;
             switch (httpStatus) {
             case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageUnauthorized(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "Wrong " + typeName + ". Unable to update");
                 throw new ConflictException(errorMessage);
             case SC_CONFLICT:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, typeName + " with Conflicts. Unable to update");
                 throw new ConflictException(errorMessage);
             case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id
+                        + " could be found to be updated.");
                 throw new NoResultException(errorMessage);
             case SC_FORBIDDEN:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageForbidden(accessToken, "update");
                 throw new ForbiddenException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessageDefault(response, httpStatus);
                 throw new OsiamRequestException(httpStatus, errorMessage);
             }
         }
@@ -369,38 +355,52 @@ abstract class AbstractOsiamService<T extends Resource> {
         return endpoint;
     }
 
-    protected String getErrorMessage(HttpResponse httpResponse) {
+    private String getErrorMessageForbidden(AccessToken accessToken, String process) {
+        return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
+    }
+
+    private String getErrorMessageUnauthorized(HttpResponse httpResponse) {
+        return getErrorMessage(httpResponse,
+                "You are not authorized to access OSIAM. Please make sure your access token is valid");
+    }
+
+    private String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
+        return getErrorMessage(httpResponse,
+                String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+    }
+
+    protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
         String errorMessage;
-        InputStream content = null;
-        String inputStreamStringValue = null;
-
         try {
-            content = httpResponse.getEntity().getContent();
-            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
+            InputStream content = httpResponse.getEntity().getContent();
+            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
             ObjectMapper mapper = new ObjectMapper();
-            ScimErrorMessage error = mapper.readValue(inputStreamStringValue, ScimErrorMessage.class);
-            errorMessage = error.getDescription();
-        } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = "Could not deserialize the error response for the status code \""
-                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
-            if (inputStreamStringValue != null) {
-                errorMessage += " Original response: " + inputStreamStringValue;
+            if (inputStreamString.contains("error_code")) {
+                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
+                errorMessage = error.getDescription();
+            } else {
+                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
+                errorMessage = error.getDescription();
             }
+        } catch (Exception e) { // NOSONAR - we catch everything
+            errorMessage = defaultErrorMessage;
         }
-
+        if (errorMessage == null) {
+            errorMessage = defaultErrorMessage;
+        }
         return errorMessage;
     }
 
     protected T mapSingleResourceResponse(InputStream content) throws IOException {
         return mapper.readValue(content, type);
     }
-
+    
     private <R extends HttpRequestBase> R addDefaultHeaderToRequest(R request, AccessToken accessToken) {
         request.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
         request.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
         return request;
     }
-
+    
     protected static class Builder<T> {
         private String endpoint;
         private Class<T> type;

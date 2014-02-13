@@ -87,7 +87,6 @@ public class UserExtensionsTest {
         assertTrue(singleUserResult.getAllExtensions().containsKey(ENTERPRISE_EXTENSION_URN));
     }
 
-
     private void givenAnUserIdWithoutExtension() {
         userIdToRetrieve = USER_ID_WITHOUT_EXTENSION;
     }

@@ -76,7 +76,7 @@ public class OsiamUserEditTest {
         updateSingleUser();
         fail("Exception expected");
     }
- 
+
     @Test(expected = IllegalArgumentException.class)
     public void null_access_token__by_updating_user_rases_exception() throws Exception {
         givenIDisEmpty();

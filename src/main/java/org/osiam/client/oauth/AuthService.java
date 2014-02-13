@@ -37,10 +37,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -58,7 +58,8 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.OAuthErrorMessage;
+import org.osiam.client.exception.OsiamErrorMessage;
+import org.osiam.client.exception.OsiamErrorMessage02;
 import org.osiam.client.exception.UnauthorizedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -184,42 +185,56 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private void checkAndHandleHttpStatus(HttpResponse response, int status) {
         if (status != SC_OK) {
             String errorMessage;
+            String defaultMessage;
             switch (status) {
             case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response);
+                defaultMessage = "Unable to create Connection. Please make sure that you have the correct grants.";
+                errorMessage = getErrorMessage(response, defaultMessage);
                 throw new ConnectionInitializationException(errorMessage);
             case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
+                defaultMessage = "You are not authorized to directly retrieve a access token.";
+                errorMessage = getErrorMessage(response, defaultMessage);
                 throw new UnauthorizedException(errorMessage);
             case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response);
+                defaultMessage = "Unable to find the given OSIAM service (" + getFinalEndpoint() + ")";
+                errorMessage = getErrorMessage(response, defaultMessage);
                 throw new ConnectionInitializationException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                defaultMessage = String.format("Unable to setup connection (HTTP Status Code: %d)", status);
+                errorMessage = getErrorMessage(response, defaultMessage);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }
     }
 
-    protected String getErrorMessage(HttpResponse httpResponse) {
-        String errorMessage;
+    private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
         InputStream content = null;
-        String inputStreamStringValue = null;
-
+        String errorMessage;
         try {
             content = httpResponse.getEntity().getContent();
-            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
+            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
             ObjectMapper mapper = new ObjectMapper();
-            OAuthErrorMessage error = mapper.readValue(inputStreamStringValue, OAuthErrorMessage.class);
-            errorMessage = error.getDescription();
+            if (inputStreamString.contains("error_code")) {
+                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
+                errorMessage = error.getDescription();
+            } else {
+                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
+                errorMessage = error.getDescription();
+            }
         } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = "Could not deserialize the error response for the status code \""
-                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
-            if (inputStreamStringValue != null) {
-                errorMessage += " Original response: " + inputStreamStringValue;
+            errorMessage = defaultErrorMessage;
+        } finally {
+            try {
+                if (content != null) {
+                    content.close();
+                }
+            } catch (IOException notNeeded) {
+                /** doesn't matter **/
             }
         }
-
+        if (errorMessage == null) {
+            errorMessage = defaultErrorMessage;
+        }
         return errorMessage;
     }
 
@@ -323,10 +338,12 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             String errorMessage;
             switch (httpStatus) {
             case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response,
+                        "Could not exchange yout authentication code against a access token.");
                 throw new ConflictException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response);
+                errorMessage = getErrorMessage(response,
+                        String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
                 throw new ConnectionInitializationException(errorMessage);
             }
         }

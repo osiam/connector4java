@@ -57,10 +57,8 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamUserMeTest {
 
-
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
-
 
     final static private String COUNTRY = "Germany";
     final static private String ENDPOINT = "http://localhost:9090/osiam-server/";

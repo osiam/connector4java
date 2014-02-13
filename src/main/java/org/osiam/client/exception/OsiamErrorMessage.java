@@ -26,16 +26,14 @@ package org.osiam.client.exception;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-
 /**
- * OAuth conform error class 
+ * Only used to serialize given error json string to extract the error message.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class OAuthErrorMessage {
+public class OsiamErrorMessage {
 
-    @JsonProperty("error")
+    @JsonProperty("error_code")
     private String errorCode;
-    @JsonProperty("error_description")
     private String description;
 
     public String getErrorCode(){
