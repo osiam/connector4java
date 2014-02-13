@@ -29,18 +29,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.update.UpdateUser;
+import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;

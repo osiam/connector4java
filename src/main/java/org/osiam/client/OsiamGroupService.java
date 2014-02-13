@@ -28,9 +28,9 @@ import java.util.List;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
-import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.UpdateGroup;
 
 /**
  * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
