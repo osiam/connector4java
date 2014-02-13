@@ -29,7 +29,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
@@ -46,7 +45,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.google.common.base.Charsets;
 
 public class AuthServiceTest {
-
+    
     private final static String ENDPOINT = "http://localhost:9090/osiam-server/";
     private final static String REDIRECT_URI = "http://mypage.com";
     private static final String WRONG_ENDPOINT = "http://localhost:9090/wrong-osiam-server/";
@@ -73,7 +72,7 @@ public class AuthServiceTest {
         when_token_is_requested();
         then_access_token_is_valid();
     }
-
+    
     @Test
     public void service_returns_valid_redirect_Uri() throws Exception {
         given_a_correctly_configured_access_token_auth_service();
@@ -86,69 +85,56 @@ public class AuthServiceTest {
         given_oauth_server_issues_access_token();
 
         when_token_is_requested();
-
+        
         then_access_token_is_expected_one();
     }
-
-    @Test(expected = ConnectionInitializationException.class)
+    
+    @Test(expected=ConnectionInitializationException.class)
     public void service_fails_on_bad_request() {
         given_a_correctly_configured_password_auth_service();
         given_oauth_server_cannot_issues_access_token_because_of_bad_request();
-
+        
         when_token_is_requested();
-
+        
         then_exception_has_to_be_thrown();
     }
-
-    @Test(expected = UnauthorizedException.class)
+    
+    @Test(expected=UnauthorizedException.class)
     public void service_fails_on_unauthorized() {
         given_a_wrong_configured_auth_service_with_invalid_client_credentials();
         given_oauth_server_cannot_issues_access_token_because_of_wrong_auth();
-
+        
         when_token_is_requested();
-
+        
         then_exception_has_to_be_thrown();
     }
-
-    @Test(expected = ConnectionInitializationException.class)
+    
+    @Test(expected=ConnectionInitializationException.class)
     public void service_fails_on_not_found() {
         given_a_wrong_configured_auth_service_with_wrong_endpoint();
         given_oauth_server_issues_access_token();
-
+        
         when_token_is_requested();
-
+        
         then_exception_has_to_be_thrown();
     }
-
-    @Test(expected = ConnectionInitializationException.class)
+    
+    @Test(expected=ConnectionInitializationException.class)
     public void service_fails_on_other_error() {
         given_a_correctly_configured_password_auth_service();
         given_oauth_server_has_error();
-
+        
         when_token_is_requested();
-
+        
         then_exception_has_to_be_thrown();
     }
 
-    @Test(expected = IllegalAccessError.class)
-    public void using_retrieveAccessToken_without_authCode_while_using_gran_type_Auth_code() {
-        given_a_correctly_configured_access_token_auth_service();
-        when_token_is_requested();
+    @Test (expected = IllegalAccessError.class)
+    public void using_retrieveAccessToken_without_authCode_while_using_gran_type_Auth_code(){
+    	given_a_correctly_configured_access_token_auth_service();
+    	when_token_is_requested();
     }
-
-    @Test
-    public void wrong_error_response_body_can_be_handled() {
-        given_a_wrong_configured_auth_service_with_wrong_endpoint();
-        given_oauth_server_issues_wrong_error_body();
-
-        try {
-            when_token_is_requested();
-            then_exception_has_to_be_thrown();
-        } catch (ConnectionInitializationException e) {
-            assertTrue(e.getMessage().contains("Could not deserialize"));
-        }
-    }
-
+    
     private void given_a_wrong_configured_auth_service_with_wrong_endpoint() {
         service = new AuthService.Builder(WRONG_ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
@@ -159,7 +145,7 @@ public class AuthServiceTest {
                 .setScope(Scope.GET)
                 .build();
     }
-
+    
     private void given_a_wrong_configured_auth_service_with_invalid_client_credentials() {
         service = new AuthService.Builder(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
@@ -170,7 +156,7 @@ public class AuthServiceTest {
                 .setScope(Scope.GET)
                 .build();
     }
-
+    
     private void given_a_correctly_configured_password_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
@@ -181,7 +167,7 @@ public class AuthServiceTest {
                 .setScope(Scope.GET)
                 .build();
     }
-
+    
     private void given_a_correctly_configured_access_token_auth_service() {
         service = new AuthService.Builder(ENDPOINT)
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -198,20 +184,13 @@ public class AuthServiceTest {
                         .withStatus(HttpStatus.SC_OK)
                         .withBodyFile("valid_accesstoken.json")));
     }
-
-    private void given_oauth_server_issues_wrong_error_body() {
-        stubFor(post(urlEqualTo("/osiam-server/" + TOKEN_PATH)).
-                willReturn(aResponse()
-                        .withStatus(HttpStatus.SC_CONFLICT)
-                        .withBodyFile("invalid_error_body.json")));
-    }
-
+    
     private void given_oauth_server_has_error() {
         stubFor(post(urlEqualTo("/osiam-server/" + TOKEN_PATH)).
                 willReturn(aResponse()
                         .withStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR)));
     }
-
+        
     private void given_oauth_server_cannot_issues_access_token_because_of_bad_request() {
         stubFor(post(urlEqualTo("/osiam-server/" + TOKEN_PATH))
                 .willReturn(aResponse()
@@ -223,7 +202,7 @@ public class AuthServiceTest {
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.SC_UNAUTHORIZED)));
     }
-
+    
     private void when_token_is_requested() {
         accessToken = service.retrieveAccessToken();
     }
@@ -239,24 +218,24 @@ public class AuthServiceTest {
     private void then_access_token_is_valid() throws Exception {
         assertFalse(accessToken.isExpired());
     }
-
+    
     private void then_redirect_Uri_is_valid() throws Exception {
-        StringBuilder expected = new StringBuilder();
-        expected.append(ENDPOINT).append("/oauth/authorize?client_id=")
-                .append(VALID_CLIENT_ID).append("&response_type=code&redirect_uri=")
-                .append(encodeExpectedString(REDIRECT_URI))
-                .append("&scope=").append(encodeExpectedString(Scope.ALL.toString()));
-        URI expectedUri = new URI(expected.toString());
+    	StringBuilder expected = new StringBuilder();
+    	expected.append(ENDPOINT).append("/oauth/authorize?client_id=")
+    	.append(VALID_CLIENT_ID).append("&response_type=code&redirect_uri=")
+    	.append(encodeExpectedString(REDIRECT_URI))
+    	.append("&scope=").append(encodeExpectedString(Scope.ALL.toString()));
+    	URI expectedUri = new URI(expected.toString());
         assertEquals(expectedUri, service.getRedirectLoginUri());
     }
-
+    
     private String encodeExpectedString(String string) {
-        try {
-            return URLEncoder.encode(string, Charsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            fail("Filter contains non UTF-8 characters");
-        }
-
-        return "";
+		try {
+		    return URLEncoder.encode(string, Charsets.UTF_8.name());
+		} catch (UnsupportedEncodingException e) {
+		    fail("Filter contains non UTF-8 characters");
+		}
+	
+		return "";
     }
 }
