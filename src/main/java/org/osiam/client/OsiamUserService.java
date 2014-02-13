@@ -195,6 +195,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     /**
      * See {@link OsiamConnector#updateUser(String, User, AccessToken)}
      */
+    @Deprecated
     public User updateUser(String uuid, User user, AccessToken accessToken) {
         if (user == null) {
             throw new IllegalArgumentException("The given User can't be null.");

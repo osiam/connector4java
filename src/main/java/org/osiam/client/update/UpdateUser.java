@@ -32,6 +32,7 @@ import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
+import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.Im;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.Name;
@@ -90,12 +91,12 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         private List<Photo> photos = new ArrayList<>();
         private List<Role> roles = new ArrayList<>();
         private List<X509Certificate> certificates = new ArrayList<>();
+        private Set<Extension> extensions = new HashSet<>();
         private static final String DELETE = "delete";
 
         public Builder() {
         }
 
-        // start username
         /**
          * updates the nickName of a existing user
          * 
@@ -108,9 +109,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end username
-
-        // start address
         /**
          * adds a new address to the existing addresses of a existing user
          * 
@@ -163,9 +161,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end address
-
-        // start Nickname
         /**
          * deletes the nickName of a existing user
          * 
@@ -188,9 +183,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end Nickname
-
-        // start ExternalID
         /**
          * delete the external Id of a existing user
          * 
@@ -213,9 +205,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end ExternalID
-
-        // start local
         /**
          * delete the local value of a existing user
          * 
@@ -238,9 +227,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end local
-
-        // start password
         /**
          * updates the password of a existing user
          * 
@@ -253,9 +239,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end password
-
-        // start preferredLanguage
         /**
          * delete the preferred Language of a existing user
          * 
@@ -278,9 +261,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end preferredLanguage
-
-        // start ProfileUrl
         /**
          * deletes the profil Url of a existing user
          * 
@@ -303,9 +283,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end ProfileUrl
-
-        // start timezone
         /**
          * deletes the timezone of a existing user
          * 
@@ -328,9 +305,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end timezone
-
-        // start title
         /**
          * deletes the title of a existing user
          * 
@@ -353,9 +327,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end title
-
-        // start name
         /**
          * deletes the name of a existing user
          * 
@@ -378,9 +349,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end name
-
-        // start UserType
         /**
          * deletes the user type of a existing user
          * 
@@ -403,9 +371,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end UserType
-
-        // start DisplayName
         /**
          * deletes the display name of a existing user
          * 
@@ -428,9 +393,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end DisplayName
-
-        // start email
         /**
          * deletes all emails of a existing user
          * 
@@ -485,9 +447,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end email
-
-        // start certificates
         /**
          * deletes all X509Certificates of a existing user
          * 
@@ -541,9 +500,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end certificates
-
-        // start roles
         /**
          * deletes all roles of a existing user
          * 
@@ -612,9 +568,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end roles
-
-        // start ims
         /**
          * deletes all ims of a existing user
          * 
@@ -669,9 +622,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end ims
-
-        // start phonenumbers
         /**
          * adds or updates a phoneNumber to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
@@ -726,9 +676,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end phonenumbers
-
-        // start photos
         /**
          * adds or updates a photo to an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
@@ -784,9 +731,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end photos
-
-        // start entitlement
         /**
          * deletes all entitlements of a existing user
          * 
@@ -842,9 +786,6 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end entitlement
-
-        // start active
         /**
          * updates the active status of a existing User to the given value
          * 
@@ -857,7 +798,44 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             return this;
         }
 
-        // end activ
+        /**
+         * deletes the given extension of a existing user
+         * 
+         * @param urn
+         *        the id of the extension to be deleted
+         * @return The builder itself
+         */
+        public Builder deleteExtension(String urn) {
+            deleteFields.add(urn);
+            return this;
+        }
+
+        /**
+         * deletes the given extension field of a existing user
+         * 
+         * @param urn
+         *        the id of the extension to be deleted
+         * @param fieldName
+         *        the fieldName of a the extension to be deleted
+         * @return The builder itself
+         */
+        public Builder deleteExtensionField(String urn, String fieldName) {
+            deleteFields.add(urn + "." + fieldName);
+            return this;
+        }
+
+        /**
+         * updates all fields in the given extension. If the User doesn't have the given extension fields, they will be
+         * added.
+         * 
+         * @param extension
+         *        extension with all fields that need to be updated or added
+         * @return The builder itself
+         */
+        public Builder updateExtension(Extension extension) {
+            extensions.add(extension);
+            return this;
+        }
 
         /**
          * constructs a UpdateUser with the given values
@@ -870,43 +848,43 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             } else {
                 updateUser = new User.Builder(userName);
             }
-            if (nickName != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (nickName != null) {
                 updateUser.setNickName(nickName);
             }
-            if (externalId != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (externalId != null) {
                 updateUser.setExternalId(externalId);
             }
-            if (locale != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (locale != null) {
                 updateUser.setLocale(locale);
             }
-            if (password != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (password != null) {
                 updateUser.setPassword(password);
             }
-            if (preferredLanguage != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (preferredLanguage != null) {
                 updateUser.setPreferredLanguage(preferredLanguage);
             }
-            if (profileUrl != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (profileUrl != null) {
                 updateUser.setProfileUrl(profileUrl);
             }
-            if (timezone != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (timezone != null) {
                 updateUser.setTimezone(timezone);
             }
-            if (title != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (title != null) {
                 updateUser.setTitle(title);
             }
-            if (name != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (name != null) {
                 updateUser.setName(name);
             }
-            if (userType != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (userType != null) {
                 updateUser.setUserType(userType);
             }
-            if (displayName != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (displayName != null) {
                 updateUser.setDisplayName(displayName);
             }
-            if (active != null) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (active != null) {
                 updateUser.setActive(active);
             }
-            if (deleteFields.size() > 0) {// NOSONAR - false-positive from clover; if-expression is correct
+            if (deleteFields.size() > 0) {
                 Meta meta = new Meta.Builder()
                         .setAttributes(deleteFields).build();
                 updateUser.setMeta(meta);
@@ -934,6 +912,9 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             }
             if (certificates.size() > 0) {
                 updateUser.setX509Certificates(certificates);
+            }
+            if(extensions.size() > 0){
+                updateUser.addExtensions(extensions);
             }
 
             return new UpdateUser(this);
