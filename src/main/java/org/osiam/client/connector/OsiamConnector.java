@@ -579,11 +579,6 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
         return userService().updateUser(id, updateUser, accessToken);
     }
 
-    @Deprecated
-    public User updateUser(String uuid, User user, AccessToken accessToken) {
-        return userService().updateUser(uuid, user, accessToken);
-    }
-
     public User replaceUser(String id, User user, AccessToken accessToken) {
         return userService().replaceUser(id, user, accessToken);
     }
