@@ -31,7 +31,6 @@ import org.osiam.test.util.DateHelper
 import spock.lang.Specification
 import spock.lang.Unroll
 
-
 class ExtensionSpec extends Specification {
 
     static String FIELD = 'foo'

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
     ~ Copyright (C) 2013 tarent AG
     ~
@@ -35,7 +35,7 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>0.37</version>
+    <version>0.39-SNAPSHOT</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
@@ -198,7 +198,6 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-
 
             <!-- Build Helper: will add Groovy sources to path -->
             <plugin>

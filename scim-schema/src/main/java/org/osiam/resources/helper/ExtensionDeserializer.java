@@ -95,7 +95,6 @@ class ExtensionDeserializer extends StdDeserializer<Extension> {
         }
     }
 
-
     private void handleString(Extension extension, Map.Entry<String, JsonNode> entry) {
         String value = ExtensionFieldType.STRING.fromString(entry.getValue().asText());
         extension.addOrUpdateField(entry.getKey(), value);

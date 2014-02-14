@@ -21,7 +21,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package org.osiam.resources.scim
 
 import org.osiam.test.util.JsonFixturesHelper
