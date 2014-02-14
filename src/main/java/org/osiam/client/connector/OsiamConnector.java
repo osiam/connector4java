@@ -28,17 +28,22 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
-import org.osiam.client.update.UpdateGroup;
-import org.osiam.client.update.UpdateUser;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.UpdateGroup;
+import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 
 /**
