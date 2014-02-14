@@ -115,7 +115,6 @@ public class Query {
         return new Query(indexMatcher.replaceFirst("startIndex=" + newIndex));
     }
 
-
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -318,7 +317,6 @@ public class Query {
             return false;
         }
     }
-
 
     private static List<String> getAllClassFields(Class<?> clazz){
     	ArrayList<String> fields = new ArrayList<>();

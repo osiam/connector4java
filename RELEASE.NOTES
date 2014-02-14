@@ -1,0 +1,7 @@
+# OSIAM Connector4Java
+
+## 0.13 - 2014-02-14
+- [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
+  For migration see: https://github.com/osiam/connector4java/wiki/Migration#wiki-from-012-to-013
+- Updating a user is only possible by using an UpdateUser, updating with User is not supported anymore
+  https://github.com/osiam/connector4java/wiki/Migration#wiki-from-012-to-013

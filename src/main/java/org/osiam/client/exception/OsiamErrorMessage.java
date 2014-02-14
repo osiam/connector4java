@@ -26,7 +26,6 @@ package org.osiam.client.exception;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-
 /**
  * Only used to serialize given error json string to extract the error message.
  */

@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import java.util.Objects;
 
-
 /**
  * Objects of this type  represent an access token. Access tokens are granted by the OSIAM server
  * and allows access to restricted resources.

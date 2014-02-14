@@ -102,7 +102,6 @@ public class OsiamUserServiceTest {
         givenAnAccessToken();
     }
 
-
     @Test
     public void existing_user_is_returned() throws Exception {
         givenIDcanBeFound();
@@ -388,7 +387,6 @@ public class OsiamUserServiceTest {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=displayName+eq+BarbaraJ."))
                 .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
-
 
     private void thenReturnedListOfSearchedUsersIsAsExpected() {
         assertEquals(1, searchResult.getTotalResults());

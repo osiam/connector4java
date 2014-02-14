@@ -26,7 +26,6 @@ package org.osiam.client.exception;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-
 /**
  * This class is a workaround since the error generation from the OSIAM server is not scim conform and 
  * 2 error message bodys are send. It can be deleted after the error generation from the server is fixed.

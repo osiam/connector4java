@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright (C) 2013 tarent AG
   ~
@@ -31,7 +31,7 @@
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>0.12</version>
+    <version>0.14-SNAPSHOT</version>
     <name>OSIAM Connector 4 Java</name>
     <packaging>jar</packaging>
 
@@ -91,7 +91,7 @@
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>scim-schema</artifactId>
-            <version>0.37</version>
+            <version>0.38</version>
         </dependency>
         <!-- Used for access token retrieval -->
         <dependency>
