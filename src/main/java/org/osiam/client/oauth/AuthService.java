@@ -37,10 +37,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -58,8 +58,7 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.OsiamErrorMessage;
-import org.osiam.client.exception.OsiamErrorMessage02;
+import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -208,33 +207,24 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
-        InputStream content = null;
         String errorMessage;
+        InputStream content = null;
+        String inputStreamStringValue = null;
+
         try {
             content = httpResponse.getEntity().getContent();
-            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
+            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
             ObjectMapper mapper = new ObjectMapper();
-            if (inputStreamString.contains("error_code")) {
-                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
-                errorMessage = error.getDescription();
-            } else {
-                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
-                errorMessage = error.getDescription();
-            }
+            OAuthErrorMessage error = mapper.readValue(inputStreamStringValue, OAuthErrorMessage.class);
+            errorMessage = error.getDescription();
         } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = defaultErrorMessage;
-        } finally {
-            try {
-                if (content != null) {
-                    content.close();
-                }
-            } catch (IOException notNeeded) {
-                /** doesn't matter **/
+            errorMessage = " Could not deserialize the error response for the status code \""
+                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
+            if (inputStreamStringValue != null) {
+                errorMessage += " Original response: " + inputStreamStringValue;
             }
         }
-        if (errorMessage == null) {
-            errorMessage = defaultErrorMessage;
-        }
+
         return errorMessage;
     }
 
