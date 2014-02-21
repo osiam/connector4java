@@ -429,6 +429,18 @@ public class User extends Resource {
         return extensions.get(urn);
     }
 
+    @Override
+    public String toString() {
+        return "User [userName=" + userName + ", name=" + name + ", displayName=" + displayName + ", nickName="
+                + nickName + ", profileUrl=" + profileUrl + ", title=" + title + ", userType=" + userType
+                + ", preferredLanguage=" + preferredLanguage + ", locale=" + locale + ", timezone=" + timezone
+                + ", active=" + active + ", password=" + password + ", emails=" + emails + ", phoneNumbers="
+                + phoneNumbers + ", ims=" + ims + ", photos=" + photos + ", addresses=" + addresses + ", groups="
+                + groups + ", entitlements=" + entitlements + ", roles=" + roles + ", x509Certificates="
+                + x509Certificates + ", extensions=" + extensions + ", getId()=" + getId() + ", getExternalId()="
+                + getExternalId() + ", getMeta()=" + getMeta() + ", getSchemas()=" + getSchemas() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link User} instances
      */

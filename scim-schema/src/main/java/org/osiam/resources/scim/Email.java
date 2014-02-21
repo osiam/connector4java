@@ -114,6 +114,12 @@ public class Email extends MultiValuedAttribute {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Email [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary()
+                + ", operation=" + getOperation() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Email} instances
      */

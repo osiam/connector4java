@@ -114,6 +114,14 @@ public class PhoneNumber extends MultiValuedAttribute {
         return true;
     }
 
+    
+    @Override
+    public String toString() {
+        return "PhoneNumber [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+                + ", operation=" + getOperation() + "]";
+    }
+
+
     /**
      * Builder class that is used to build {@link PhoneNumber} instances
      */

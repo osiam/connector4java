@@ -114,6 +114,12 @@ public class Entitlement extends MultiValuedAttribute {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Entitlement [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary()
+                + ", operation=" + getOperation() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Entitlement} instances
      */

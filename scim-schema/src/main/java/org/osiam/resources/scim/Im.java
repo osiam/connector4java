@@ -114,6 +114,14 @@ public class Im extends MultiValuedAttribute {
         return true;
     }
 
+    
+    @Override
+    public String toString() {
+        return "Im [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+                + ", operation=" + getOperation() + "]";
+    }
+
+
     /**
      * Builder class that is used to build {@link Im} instances
      */

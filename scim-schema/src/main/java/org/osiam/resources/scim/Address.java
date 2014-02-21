@@ -220,6 +220,13 @@ public class Address extends MultiValuedAttribute { // NOSONAR - Builder constru
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Address [formatted=" + formatted + ", streetAddress=" + streetAddress + ", locality=" + locality
+                + ", region=" + region + ", postalCode=" + postalCode + ", country=" + country + ", type="
+                + type + ", operation=" + getOperation() + ", primary=" + isPrimary() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Address} instances
      */

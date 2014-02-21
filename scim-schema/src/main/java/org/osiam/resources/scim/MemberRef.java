@@ -116,6 +116,12 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "MemberRef [display=" + getDisplay() +", value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+                + ", operation=" + getOperation() + ", ref=" + getReference() + "]";
+    }
+
     /**
      * The Builder class is used to construct instances of the {@link MemberRef}
      */
