@@ -114,6 +114,12 @@ public class Photo extends MultiValuedAttribute {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Photo [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+                + ", operation=" + getOperation() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Photo} instances
      */

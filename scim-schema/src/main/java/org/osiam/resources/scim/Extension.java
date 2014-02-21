@@ -64,7 +64,7 @@ public class Extension {
      * Constructs an extension with the given urn.
      * 
      * @param urn
-     *            the urn of the extension
+     *        the urn of the extension
      */
     public Extension(String urn) {
         this.urn = urn;
@@ -83,14 +83,14 @@ public class Extension {
      * Return the value for the field with a given name and type.
      * 
      * @param field
-     *            The name of the field to retrieve the value of.
+     *        The name of the field to retrieve the value of.
      * @param extensionFieldType
-     *            The type of the field.
+     *        The type of the field.
      * @return The value for the field with the given name.
      * @throws NoSuchElementException
-     *             if this schema does not contain a field of the given name.
+     *         if this schema does not contain a field of the given name.
      * @throws IllegalArgumentException
-     *             if the given field is null or an empty string or if the extensionFieldType is null.
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public <T> T getField(String field, ExtensionFieldType<T> extensionFieldType) {
         if (field == null || field.isEmpty()) {
@@ -111,9 +111,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, String value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.STRING);
@@ -123,9 +123,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, Boolean value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.BOOLEAN);
@@ -135,9 +135,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, ByteBuffer value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.BINARY);
@@ -147,9 +147,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, BigInteger value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.INTEGER);
@@ -159,9 +159,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, BigDecimal value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.DECIMAL);
@@ -171,9 +171,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, Date value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.DATE_TIME);
@@ -183,9 +183,9 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      */
     public void addOrUpdateField(String fieldName, URI value) {
         addOrUpdateField(fieldName, value, ExtensionFieldType.REFERENCE);
@@ -195,11 +195,11 @@ public class Extension {
      * Adds or updates the field specified by the given field name with the given value of the given type.
      * 
      * @param fieldName
-     *            the field name
+     *        the field name
      * @param value
-     *            the new value
+     *        the new value
      * @param type
-     *            the scim type of the field
+     *        the scim type of the field
      */
     public <T> void addOrUpdateField(String fieldName, T value, ExtensionFieldType<T> type) {
         if (fieldName == null || fieldName.isEmpty()) {
@@ -226,7 +226,7 @@ public class Extension {
      * 2.0 spec).
      * 
      * @param field
-     *            Name of the field to check
+     *        Name of the field to check
      * @return true if the given field is present, else false
      */
     public boolean isFieldPresent(String field) {
@@ -271,6 +271,25 @@ public class Extension {
         return true;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringPresentation = new StringBuilder();
+        stringPresentation.append("Extension [urn=").append(urn).append("{");
+        boolean firstEntry = true;
+        for (String key : fields.keySet()) {
+            Field field = fields.get(key);
+            if (!firstEntry) {
+                stringPresentation.append(", ");
+            }
+            firstEntry = false;
+            stringPresentation.append("field=").append(key).append("(")
+                    .append("value=").append(field.getValue()).append(", type=")
+                    .append(field.getType()).append(")");
+        }
+        stringPresentation.append("}]");
+        return stringPresentation.toString();
+    }
+
     /**
      * This class represents a field of an extension with its type and value. Instances of this class are immutable.
      */
@@ -282,9 +301,9 @@ public class Extension {
          * Constructs a new {@link Field} with the given type and value.
          * 
          * @param type
-         *            the type of the field
+         *        the type of the field
          * @param value
-         *            the value of the field
+         *        the value of the field
          */
         public Field(ExtensionFieldType<?> type, String value) {
             this.type = type;
@@ -345,6 +364,11 @@ public class Extension {
                 return false;
             }
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return "Field [type=" + type + ", value=" + value + "]";
         }
 
     }

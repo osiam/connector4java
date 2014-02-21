@@ -165,6 +165,12 @@ public abstract class MultiValuedAttribute {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "MultiValuedAttribute [operation=" + operation + ", value=" + value + ", display=" + display
+                + ", primary=" + primary + ", reference=" + reference + "]";
+    }
+
     /**
      * Builder class that is used to build {@link MultiValuedAttribute} instances
      */

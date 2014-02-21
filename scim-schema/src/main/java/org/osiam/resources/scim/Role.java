@@ -81,6 +81,12 @@ public class Role extends MultiValuedAttribute {
         return type;
     }
 
+    @Override
+    public String toString() {
+        return "Role [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+                + ", operation=" + getOperation() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Role} instances
      */

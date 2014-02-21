@@ -78,6 +78,13 @@ public class Group extends Resource {
         return members;
     }
 
+    @Override
+    public String toString() {
+        return "Group [displayName=" + displayName + ", members=" + members + ", getId()=" + getId()
+                + ", getExternalId()=" + getExternalId() + ", getMeta()=" + getMeta() + ", getSchemas()="
+                + getSchemas() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Group} instances
      */

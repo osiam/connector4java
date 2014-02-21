@@ -176,6 +176,13 @@ public class Name {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Name [formatted=" + formatted + ", familyName=" + familyName + ", givenName=" + givenName
+                + ", middleName=" + middleName + ", honorificPrefix=" + honorificPrefix + ", honorificSuffix="
+                + honorificSuffix + "]";
+    }
+
     /**
      * Builder class that is used to build {@link Name} instances
      */
