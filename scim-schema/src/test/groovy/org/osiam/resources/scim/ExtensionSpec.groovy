@@ -160,7 +160,7 @@ class ExtensionSpec extends Specification {
         extension.addOrUpdateField(FIELD, VALUE)
         extension.addOrUpdateField(VALUE, FIELD)
         when:
-        def result = extension.allFields
+        def result = extension.fields
         then:
         result.size() == 2
         result[FIELD] == new Field(DEFAULT_FIELD_TYPE, VALUE)
@@ -171,7 +171,7 @@ class ExtensionSpec extends Specification {
         given:
         Extension extension = new Extension(URN)
         extension.addOrUpdateField(FIELD, VALUE)
-        def result = extension.getAllFields()
+        def result = extension.getFields()
 
         when:
         result[FIELD] = FIELD

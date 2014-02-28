@@ -44,7 +44,7 @@ public class ExtensionSerializer extends JsonSerializer<Extension> {
 
         jgen.writeStartObject();
 
-        Map<String, Field> fields = value.getAllFields();
+        Map<String, Field> fields = value.getFields();
         for (Entry<String, Field> entry : fields.entrySet()) {
             String fieldName = entry.getKey();
             ExtensionFieldType<?> fieldType = entry.getValue().getType();
