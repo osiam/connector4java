@@ -74,7 +74,7 @@ public class UserExtensionsTest {
 
         whenSingleUserisRetrieved();
 
-        assertEquals(0, singleUserResult.getAllExtensions().size());
+        assertEquals(0, singleUserResult.getExtensions().size());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class UserExtensionsTest {
 
         whenSingleUserisRetrieved();
 
-        assertTrue(singleUserResult.getAllExtensions().containsKey(ENTERPRISE_EXTENSION_URN));
+        assertTrue(singleUserResult.getExtensions().containsKey(ENTERPRISE_EXTENSION_URN));
     }
 
     private void givenAnUserIdWithoutExtension() {
