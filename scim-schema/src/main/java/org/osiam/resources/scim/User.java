@@ -402,6 +402,17 @@ public class User extends Resource {
      * @return an unmodifiable view of the extensions
      */
     @JsonAnyGetter
+    public Map<String, Extension> getExtensions() {
+        return Collections.unmodifiableMap(extensions);
+    }
+    
+    /**
+     * Provides an unmodifiable view of all additional {@link Extension} fields of the user
+     * 
+     * @return an unmodifiable view of the extensions
+     */
+    @Deprecated
+    @JsonAnyGetter
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
@@ -763,7 +774,7 @@ public class User extends Resource {
         }
 
         /**
-         * Sets a List of Extension to the User (See {@link User#getAllExtensions()}).
+         * Sets a List of Extension to the User (See {@link User#getExtensions()}).
          * 
          * @param extensions
          *        a list of extensions

@@ -217,6 +217,17 @@ public class Extension {
      * @return The Entries of this schema as an map.
      */
     @JsonIgnore
+    public Map<String, Field> getFields() {
+        return ImmutableMap.copyOf(fields);
+    }
+    
+    /**
+     * Provides a {@link Map} containing the entries of the extension. Note that the returned {@link Map} is immutable.
+     * 
+     * @return The Entries of this schema as an map.
+     */
+    @Deprecated
+    @JsonIgnore
     public Map<String, Field> getAllFields() {
         return ImmutableMap.copyOf(fields);
     }
