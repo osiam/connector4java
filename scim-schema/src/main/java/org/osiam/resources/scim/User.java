@@ -23,11 +23,17 @@
 
 package org.osiam.resources.scim;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
-
-import java.util.*;
 
 /**
  * User resources are meant to enable expression of common User informations. With the core attributes it should be
@@ -412,7 +418,6 @@ public class User extends Resource {
      * @return an unmodifiable view of the extensions
      */
     @Deprecated
-    @JsonAnyGetter
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
