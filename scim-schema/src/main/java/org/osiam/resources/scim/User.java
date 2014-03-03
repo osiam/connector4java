@@ -418,7 +418,6 @@ public class User extends Resource {
      * @return an unmodifiable view of the extensions
      */
     @Deprecated
-    @JsonAnyGetter
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
