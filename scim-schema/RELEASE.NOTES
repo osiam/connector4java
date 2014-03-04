@@ -1,8 +1,9 @@
 # OSIAM SCIM Schema
 
-## 0.38 - 2014-02-14
-- [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
-  For migration see: https://github.com/osiam/scim-schema/wiki/Migration#wiki-from-release-037-to-038
 ## 0.39 - 2014-03-04
 - [feature] add methods User.getExtensions() and Extension.getFields() and set methods User.getAllExtensions() and 
   Extension.getAllFields() to @Deprecated
+## 0.38 - 2014-02-14
+- [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
+  For migration see: https://github.com/osiam/scim-schema/wiki/Migration#wiki-from-release-037-to-038
+
