@@ -23,11 +23,18 @@
 
 package org.osiam.resources.scim;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
-
-import java.util.*;
 
 /**
  * User resources are meant to enable expression of common User informations. With the core attributes it should be
@@ -402,6 +409,17 @@ public class User extends Resource {
      * @return an unmodifiable view of the extensions
      */
     @JsonAnyGetter
+    public Map<String, Extension> getExtensions() {
+        return Collections.unmodifiableMap(extensions);
+    }
+    
+    /**
+     * Provides an unmodifiable view of all additional {@link Extension} fields of the user
+     * 
+     * @return an unmodifiable view of the extensions
+     */
+    @Deprecated
+    @JsonIgnore
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
@@ -427,6 +445,18 @@ public class User extends Resource {
         }
 
         return extensions.get(urn);
+    }
+
+    @Override
+    public String toString() {
+        return "User [userName=" + userName + ", name=" + name + ", displayName=" + displayName + ", nickName="
+                + nickName + ", profileUrl=" + profileUrl + ", title=" + title + ", userType=" + userType
+                + ", preferredLanguage=" + preferredLanguage + ", locale=" + locale + ", timezone=" + timezone
+                + ", active=" + active + ", password=" + password + ", emails=" + emails + ", phoneNumbers="
+                + phoneNumbers + ", ims=" + ims + ", photos=" + photos + ", addresses=" + addresses + ", groups="
+                + groups + ", entitlements=" + entitlements + ", roles=" + roles + ", x509Certificates="
+                + x509Certificates + ", extensions=" + extensions + ", getId()=" + getId() + ", getExternalId()="
+                + getExternalId() + ", getMeta()=" + getMeta() + ", getSchemas()=" + getSchemas() + "]";
     }
 
     /**
@@ -751,7 +781,7 @@ public class User extends Resource {
         }
 
         /**
-         * Sets a List of Extension to the User (See {@link User#getAllExtensions()}).
+         * Sets a List of Extension to the User (See {@link User#getExtensions()}).
          * 
          * @param extensions
          *        a list of extensions

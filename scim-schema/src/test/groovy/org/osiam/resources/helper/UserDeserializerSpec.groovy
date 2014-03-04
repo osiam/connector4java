@@ -81,8 +81,8 @@ class UserDeserializerSpec extends Specification {
         when:
         User user = mapExtendedUser()
         then:
-        user.getAllExtensions().size() == 1
-        user.getAllExtensions().entrySet().first().value instanceof Extension
+        user.getExtensions().size() == 1
+        user.getExtensions().entrySet().first().value instanceof Extension
     }
 
     @Unroll

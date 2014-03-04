@@ -109,6 +109,12 @@ public class GroupRef extends MultiValuedAttribute {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "GroupRef [display=" + getDisplay() +", value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+                + ", operation=" + getOperation() + ", ref=" + getReference() + "]";
+    }
+
     /**
      * Builder class that is used to build {@link GroupRef} instances
      */

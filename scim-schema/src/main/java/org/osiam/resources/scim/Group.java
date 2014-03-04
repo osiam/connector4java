@@ -23,11 +23,11 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * This class represent a Group resource.
@@ -76,6 +76,13 @@ public class Group extends Resource {
      */
     public Set<MemberRef> getMembers() {
         return members;
+    }
+
+    @Override
+    public String toString() {
+        return "Group [displayName=" + displayName + ", members=" + members + ", getId()=" + getId()
+                + ", getExternalId()=" + getExternalId() + ", getMeta()=" + getMeta() + ", getSchemas()="
+                + getSchemas() + "]";
     }
 
     /**

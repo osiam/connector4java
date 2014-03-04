@@ -149,7 +149,7 @@ class UserSpec extends Specification {
         user.meta == meta
         user.externalId == 'externalId'
         user.schemas.first() == 'schema'
-        user.getAllExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING);
+        user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING);
     }
 
     @Unroll
@@ -208,7 +208,7 @@ class UserSpec extends Specification {
         given:
         def user = new User.Builder('test2').build()
         when:
-        user.getAllExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
+        user.getExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
         then:
         thrown(UnsupportedOperationException)
     }
