@@ -32,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
 
@@ -418,6 +419,7 @@ public class User extends Resource {
      * @return an unmodifiable view of the extensions
      */
     @Deprecated
+    @JsonIgnore
     public Map<String, Extension> getAllExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
