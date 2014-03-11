@@ -51,7 +51,7 @@ import org.osiam.resources.scim.User;
  * manipulate the {@link Group} and {@link User} resources registered in the given OSIAM installation. For the
  * construction of an instance please use the {@link OsiamConnector.Builder}
  */
-public final class OsiamConnector {// NOSONAR - Builder constructs instances of this class
+public class OsiamConnector {// NOSONAR - Builder constructs instances of this class
 
     private String clientId;
     private String clientSecret;
