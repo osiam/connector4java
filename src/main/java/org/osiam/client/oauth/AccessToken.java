@@ -36,7 +36,7 @@ public class AccessToken {
 
     private static final int MILLIS = 1000;
     @JsonProperty("access_token")
-    private String token;
+    protected String token;
     @JsonProperty("token_type")
     private String type;
     @JsonProperty("expires_in")
