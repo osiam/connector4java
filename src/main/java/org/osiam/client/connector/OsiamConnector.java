@@ -51,7 +51,7 @@ import org.osiam.resources.scim.User;
  * manipulate the {@link Group} and {@link User} resources registered in the given OSIAM installation. For the
  * construction of an instance please use the {@link OsiamConnector.Builder}
  */
-public final class OsiamConnector {// NOSONAR - Builder constructs instances of this class
+public class OsiamConnector {// NOSONAR - Builder constructs instances of this class
 
     private String clientId;
     private String clientSecret;
@@ -568,8 +568,8 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *             if the request could not be authorized.
      * @throws ConflictException
      *             if the User could not be updated
-     * @throws NotFoundException
-     *             if no group with the given id can be found
+     * @throws NoResultException
+     *             if no user with the given id can be found
      * @throws ForbiddenException
      *             if the scope doesn't allow this request
      * @throws ConnectionInitializationException
@@ -600,7 +600,7 @@ public final class OsiamConnector {// NOSONAR - Builder constructs instances of 
      *             if the request could not be authorized.
      * @throws ConflictException
      *             if the Group could not be updated
-     * @throws NotFoundException
+     * @throws NoResultException
      *             if no group with the given id can be found
      * @throws ForbiddenException
      *             if the scope doesn't allow this request
