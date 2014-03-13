@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 class UserJsonSpec extends Specification {
 
-    private static JsonFixturesHelper jsonFixtures = new JsonFixturesHelper();
+    private static JsonFixturesHelper jsonFixtures = new JsonFixturesHelper()
 
     private final static ObjectMapper mapper = new ObjectMapper()
 
@@ -43,7 +43,7 @@ class UserJsonSpec extends Specification {
         def json = mapper.writeValueAsString(user)
         then:
         println json
-        JSONAssert.assertEquals(expectedJson, json, false);
+        JSONAssert.assertEquals(expectedJson, json, false)
 
         where:
         userType   | expectedJson                  | user

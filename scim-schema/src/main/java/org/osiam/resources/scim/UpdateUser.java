@@ -697,7 +697,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
          */
         public Builder deletePhoto(Photo photo) {
             Photo deletePhoto = new Photo.Builder()
-                    .setValue(photo.getValue())
+                    .setValue(photo.getValueAsURI())
                     .setType(photo.getType())
                     .setOperation(DELETE)
                     .build();
