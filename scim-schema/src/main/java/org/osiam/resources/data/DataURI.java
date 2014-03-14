@@ -35,6 +35,8 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.tika.Tika;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
+import com.google.common.base.Strings;
+
 /**
  * A URI of the form data:[<mediatype>][;base64],<data>
  */
@@ -52,6 +54,9 @@ public class DataURI {
      *         if the dataUri violates RFC 2396, as augmented by the above deviations
      */
     public DataURI(String dataUri) {
+        if(Strings.isNullOrEmpty(dataUri)){
+            throw new SCIMDataValidationException("The given string can't be null or empty.");
+        }
         if (!dataUri.startsWith(DATA) || !dataUri.contains(BASE64)) {
             throw new SCIMDataValidationException("The given string '" + dataUri + "' is not a data URI.");
         }
@@ -70,6 +75,9 @@ public class DataURI {
      *         if the URI doesn't expects the schema
      */
     public DataURI(URI dataUri) {
+        if(dataUri == null){
+            throw new SCIMDataValidationException("The given dataUri can't be null.");
+        }
         if (!dataUri.toString().startsWith(DATA) || !dataUri.toString().contains(BASE64)) {
             throw new SCIMDataValidationException("The given URI '" + dataUri.toString() + "' is not a data URI.");
         }
@@ -86,6 +94,9 @@ public class DataURI {
      *         if the inputStream can't be converted into an DataURI
      */
     public DataURI(InputStream inputStream) throws IOException {
+        if(inputStream == null){
+            throw new SCIMDataValidationException("The given inputStream can't be null.");
+        }
         String mimeType = new Tika().detect(inputStream);
         dataUri = convertInputStreamToDataURI(inputStream, mimeType);
     }

@@ -30,7 +30,7 @@ class GroupSpec extends Specification {
     def 'should be able to generate a group'() {
         given:
         
-        User user = new User.Builder('userName').build()
+        User user = new User.Builder('userName').setId('some ID').build()
         
         MemberRef memberRef = new MemberRef.Builder(user).build()
         
