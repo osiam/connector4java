@@ -22,6 +22,16 @@
  */
 package org.osiam.resources.scim;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.osiam.resources.data.ImageDataURI;
+import org.osiam.resources.data.PhotoValueType;
+import org.osiam.resources.exception.SCIMDataValidationException;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -32,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE)
 public class Photo extends MultiValuedAttribute {
 
     @JsonProperty
@@ -53,9 +64,52 @@ public class Photo extends MultiValuedAttribute {
         return super.getOperation();
     }
 
-    @Override
-    public String getValue() {
-        return super.getValue();
+    /**
+     * the value of the photo as URI. Check first with {@link Photo#getValueType()} if the type is
+     * {@link PhotoValueType#URI}
+     * 
+     * @return returns the value of the photo as URI
+     */
+    public URI getValueAsURI() {
+        URI uri = null;
+        try {
+            uri = new URI(super.getValue());
+        } catch (URISyntaxException e) {
+            throw new SCIMDataValidationException(e.getMessage());
+        }
+        return uri;
+    }
+
+    /**
+     * the value of the photo as {@link ImageDataURI}. Check first with {@link Photo#getValueType()} if the type is
+     * {@link PhotoValueType#IMAGE_DATA_URI}
+     * 
+     * @return the value of the photo as {@link ImageDataURI}
+     */
+    @JsonIgnore
+    public ImageDataURI getValueAsImageDataURI() {
+        return new ImageDataURI(super.getValue());
+    }
+
+    /**
+     * 
+     * @return the type of the saved photo value
+     */
+    @JsonIgnore
+    public PhotoValueType getValueType() {
+        if (super.getValue().startsWith("data:image/") && super.getValue().contains(";base64,")) {
+            try {
+                getValueAsImageDataURI();
+                return PhotoValueType.IMAGE_DATA_URI;
+            } catch (Exception e) {
+            }
+        }
+        try {
+            getValueAsURI();
+            return PhotoValueType.URI;
+        } catch (Exception e) {
+        }
+        return PhotoValueType.UNKNOWN;
     }
 
     @Override
@@ -116,7 +170,7 @@ public class Photo extends MultiValuedAttribute {
 
     @Override
     public String toString() {
-        return "Photo [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+        return "Photo [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary()
                 + ", operation=" + getOperation() + "]";
     }
 
@@ -154,9 +208,28 @@ public class Photo extends MultiValuedAttribute {
 
         }
 
-        @Override
-        public Builder setValue(String value) {
-            super.setValue(value);
+        /**
+         * an URI pointing to an image
+         * 
+         * @param uri
+         *        a image URI
+         * @return the Builder itself
+         */
+        public Builder setValue(URI uri) {
+            super.setValue(uri.toString());
+            return this;
+        }
+
+        /**
+         * an imageDataURI which contains a small in data image. For performance issues it is recommend to to store big
+         * pictures as ImageDataURI
+         * 
+         * @param image
+         *        a image
+         * @return the Builder itself
+         */
+        public Builder setValue(ImageDataURI image) {
+            super.setValue(image.toString());
             return this;
         }
 

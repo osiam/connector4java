@@ -244,7 +244,7 @@ class UpdateUserSpec extends Specification {
         newPhoto = new Photo.Builder()
                 .setValue('new Photo').build()
         deletePhoto = new Photo.Builder()
-                .setValue('delete Photo').build()
+                .setValue(new URI('delete_Photo')).build()
 
         newRole = new Role.Builder()
                 .setValue('new Role').build()
