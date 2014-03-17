@@ -70,7 +70,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public final class AuthService { // NOSONAR - Builder constructs instances of this class
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
-    private HttpPost post;
     private final String endpoint;
     private Header[] headers;
     private String clientId;
@@ -102,7 +101,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private HttpResponse performRequest(AccessToken... accessTokens) {
         buildHead();
         buildBody(accessTokens);
-        post = new HttpPost(getFinalEndpoint());
+        HttpPost post = new HttpPost(getFinalEndpoint());
         post.setHeaders(headers);
         post.setEntity(body);
 
@@ -184,29 +183,24 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private void checkAndHandleHttpStatus(HttpResponse response, int status) {
         if (status != SC_OK) {
             String errorMessage;
-            String defaultMessage;
             switch (status) {
             case SC_BAD_REQUEST:
-                defaultMessage = "Unable to create Connection. Please make sure that you have the correct grants.";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             case SC_UNAUTHORIZED:
-                defaultMessage = "You are not authorized to directly retrieve a access token.";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_NOT_FOUND:
-                defaultMessage = "Unable to find the given OSIAM service (" + getFinalEndpoint() + ")";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             default:
-                defaultMessage = String.format("Unable to setup connection (HTTP Status Code: %d)", status);
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }
     }
 
-    private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
+    private String getErrorMessage(HttpResponse httpResponse) {
         String errorMessage;
         InputStream content = null;
         String inputStreamStringValue = null;
@@ -328,12 +322,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             String errorMessage;
             switch (httpStatus) {
             case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response,
-                        "Could not exchange yout authentication code against a access token.");
+                errorMessage = getErrorMessage(response);
                 throw new ConflictException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response,
-                        String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }

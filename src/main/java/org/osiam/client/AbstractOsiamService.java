@@ -77,7 +77,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 abstract class AbstractOsiamService<T extends Resource> {
 
     private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    protected final HttpGet webResource;
+    private final HttpGet webResource; 
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
@@ -140,9 +140,9 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream content = response.getEntity().getContent()) {
+        try {
+            InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
-
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
@@ -192,7 +192,8 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream queryResult = response.getEntity().getContent()) {
+        try {
+            InputStream queryResult = response.getEntity().getContent();
             JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class,
                     type);
 
@@ -289,7 +290,8 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream content = response.getEntity().getContent()) {
+        try{
+            InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -352,7 +354,8 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream content = response.getEntity().getContent()) {
+        try{
+            InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -395,8 +398,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         try {
             content = httpResponse.getEntity().getContent();
             inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-            ObjectMapper mapper = new ObjectMapper();
-            ScimErrorMessage error = mapper.readValue(inputStreamStringValue, ScimErrorMessage.class);
+            ObjectMapper errorMapper = new ObjectMapper();
+            ScimErrorMessage error = errorMapper.readValue(inputStreamStringValue, ScimErrorMessage.class);
             errorMessage = error.getDescription();
         } catch (Exception e) { // NOSONAR - we catch everything
             errorMessage = " Could not deserialize the error response for the status code \""

@@ -28,12 +28,12 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.ConflictException; // NOSONAR : needed for Javadoc
+import org.osiam.client.exception.ConnectionInitializationException; // NOSONAR : needed for Javadoc
+import org.osiam.client.exception.ForbiddenException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Javadoc
+import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
