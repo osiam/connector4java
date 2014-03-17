@@ -24,7 +24,6 @@
 package org.osiam.resources.data;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -33,6 +32,7 @@ import java.net.URISyntaxException;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.tika.Tika;
+import org.apache.tika.io.IOUtils;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import com.google.common.base.Strings;
@@ -63,7 +63,7 @@ public class DataURI {
         try {
             this.dataUri = new URI(dataUri);
         } catch (URISyntaxException e) {
-            throw new SCIMDataValidationException(e.getMessage());
+            throw new SCIMDataValidationException(e.getMessage(), e);
         }
     }
 
@@ -102,31 +102,20 @@ public class DataURI {
     }
 
     private URI convertInputStreamToDataURI(InputStream inputStream, String mimeType) throws IOException {
-        byte[] byteArrayPhoto = convertInputStreamToByteArray(inputStream);
+        byte[] byteArrayPhoto = IOUtils.toByteArray(inputStream);
         String base64Photo = DatatypeConverter.printBase64Binary(byteArrayPhoto);
 
         StringBuilder uriStringBuilder = new StringBuilder();
         uriStringBuilder.append(DATA).append(mimeType)
                 .append(BASE64).append(base64Photo);
 
-        URI dataUri;
+        URI retDataUri;
         try {
-            dataUri = new URI(uriStringBuilder.toString());
+            retDataUri = new URI(uriStringBuilder.toString());
         } catch (URISyntaxException e) {
-            throw new SCIMDataValidationException(e.getMessage());
+            throw new SCIMDataValidationException(e.getMessage(), e);
         }
-        return dataUri;
-    }
-
-    private byte[] convertInputStreamToByteArray(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int byteLength;
-        byte[] data = new byte[16384];
-        while ((byteLength = inputStream.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, byteLength);
-        }
-        buffer.flush();
-        return buffer.toByteArray();
+        return retDataUri;
     }
 
     /**
@@ -145,8 +134,7 @@ public class DataURI {
         String imageCode = dataUri.toString().substring(dataUri.toString().indexOf(BASE64) + BASE64.length());
 
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(imageCode);
-        InputStream inputStream = new ByteArrayInputStream(decodedBytes);
-        return inputStream;
+        return new ByteArrayInputStream(decodedBytes);
     }
 
     /**
@@ -156,9 +144,7 @@ public class DataURI {
      */
     public String getMimeType() {
         String uriString = dataUri.toString();
-        String mimeType = uriString.substring(DATA.length(), uriString.indexOf(BASE64));
-        return mimeType;
-
+        return uriString.substring(DATA.length(), uriString.indexOf(BASE64));
     }
 
     @Override
