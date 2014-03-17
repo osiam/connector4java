@@ -35,7 +35,6 @@ import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.Comparison;
-import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.Resource;
 
 /**

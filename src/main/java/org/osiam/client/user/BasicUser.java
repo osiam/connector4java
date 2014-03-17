@@ -26,6 +26,7 @@ package org.osiam.client.user;
 import java.util.Date;
 
 import org.osiam.resources.helper.JsonDateSerializer;
+import org.osiam.resources.scim.User; // NOSONAR : needed for Javadoc
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -127,7 +128,7 @@ public class BasicUser {
      * @return the last updated date
      */
     public Date getUpdatedTime() {
-        return updatedTime;
+        return new Date(updatedTime.getTime());
     }
 
     /**

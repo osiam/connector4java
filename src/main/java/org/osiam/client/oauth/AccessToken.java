@@ -29,14 +29,15 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * Objects of this type  represent an access token. Access tokens are granted by the OSIAM server
- * and allows access to restricted resources.
+ * Objects of this type represent an access token. Access tokens are granted by the OSIAM server and allows access to
+ * restricted resources.
  */
 public class AccessToken {
 
     private static final int MILLIS = 1000;
     @JsonProperty("access_token")
-    protected String token;
+    protected String token; // NOSONAR : needed to the SimpleAccessToken in the SelfAdministration until a better
+                            // solution is found
     @JsonProperty("token_type")
     private String type;
     @JsonProperty("expires_in")
@@ -51,7 +52,7 @@ public class AccessToken {
 
     /**
      * Retrieve the string value of the access token used to authenticate against the provider.
-     *
+     * 
      * @return The access token string
      */
     public String getToken() {
@@ -60,7 +61,7 @@ public class AccessToken {
 
     /**
      * type of the access token
-     *
+     * 
      * @return the type of the access token
      */
     public String getType() {
@@ -69,7 +70,7 @@ public class AccessToken {
 
     /**
      * The number of seconds this access token is valid from the time it was retrieved.
-     *
+     * 
      * @return The number of seconds this access token is valid.
      */
     public int getExpiresIn() {
@@ -78,7 +79,7 @@ public class AccessToken {
 
     /**
      * checks if the time the access token will be valid are over
-     *
+     * 
      * @return true if the access token is not valid anymore
      */
     public boolean isExpired() {
@@ -88,7 +89,7 @@ public class AccessToken {
 
     /**
      * Retrieve the possible Scopes of this AccessToken
-     *
+     * 
      * @return The scopes as string
      */
     public String getScope() {
@@ -97,6 +98,7 @@ public class AccessToken {
 
     /**
      * Retrieve the refresh token for this access token
+     * 
      * @return The refresh token as String
      */
     public String getRefreshToken() {

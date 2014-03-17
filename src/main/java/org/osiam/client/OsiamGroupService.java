@@ -25,7 +25,7 @@ package org.osiam.client;
 
 import java.util.List;
 
-import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.connector.OsiamConnector; // NOSONAR : needed for Javadoc
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.resources.scim.Group;
