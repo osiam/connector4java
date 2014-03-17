@@ -23,9 +23,12 @@
 
 package org.osiam.resources.scim;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Strings;
 
 /**
  * This class represents a multi valued attribute.
@@ -203,6 +206,9 @@ public abstract class MultiValuedAttribute {
          * @return the builder itself
          */
         protected Builder setValue(String value) {
+            if(Strings.isNullOrEmpty(value)){
+                throw new SCIMDataValidationException("The given value can't be null or empty.");
+            }
             this.value = value;
             return this;
         }
