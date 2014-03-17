@@ -23,11 +23,6 @@
 
 package org.osiam.resources.scim;
 
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.MemberRef;
-import org.osiam.resources.scim.Meta;
-import org.osiam.resources.scim.meta.SingularAttribute;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,7 +39,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
     /**
      * the Scim conform Group to be used to update a existing Group
-     *
+     * 
      * @return Group to update
      */
     public Group getScimConformUpdateGroup() {
@@ -65,7 +60,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * delete the external Id of a existing group
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteExternalId() {
@@ -75,8 +70,9 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * updates the external id of a existing group
-         *
-         * @param externalID new external id
+         * 
+         * @param externalID
+         *        new external id
          * @return The builder itself
          */
         public Builder updateExternalId(String externalID) {
@@ -86,8 +82,9 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * updates the display name of a existing group
-         *
-         * @param displayName new display name
+         * 
+         * @param displayName
+         *        new display name
          * @return The builder itself
          */
         public Builder updateDisplayName(String displayName) {
@@ -97,7 +94,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * deletes all group members of a existing group
-         *
+         * 
          * @return The builder itself
          */
         public Builder deleteMembers() {
@@ -107,8 +104,9 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * removes the membership of the given group or user in a existing group
-         *
-         * @param memberId group or user id to be removed
+         * 
+         * @param memberId
+         *        group or user id to be removed
          * @return The builder itself
          */
         public Builder deleteMember(String memberId) {
@@ -121,8 +119,9 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * adds a new membership of a group or a user to a existing group
-         *
-         * @param memberId user or group id to be added
+         * 
+         * @param memberId
+         *        user or group id to be added
          * @return The builder itself
          */
         public Builder addMember(String memberId) {
@@ -134,7 +133,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * constructs a {@link UpdateGroup} with the given values
-         *
+         * 
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build() {

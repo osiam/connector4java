@@ -46,7 +46,7 @@ public class ImageDataURI extends DataURI {
     public ImageDataURI(String imageUri) {
         super(imageUri);
         if (!super.toString().startsWith(IMAGE_MIME_TYPE)) {
-            throw new SCIMDataValidationException("The given URI '" + imageUri.toString()
+            throw new SCIMDataValidationException("The given URI '" + imageUri
                     + "' is not a image data URI.");
         }
     }
