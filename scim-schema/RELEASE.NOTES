@@ -1,5 +1,8 @@
 # OSIAM SCIM Schema
 
+## 0.40 - 2014-03-17
+- [feature] The Photo object can take and return a URI and a ImageDataURI as value. The getter and setter for the 
+  string value have been removed. The ImageDataURI can also take an image InputStream as value.
 ## 0.39 - 2014-03-04
 - [feature] add methods User.getExtensions() and Extension.getFields() and set methods User.getAllExtensions() and 
   Extension.getAllFields() to @Deprecated
