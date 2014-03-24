@@ -1,12 +1,12 @@
 For detailed information and documentation visit the [connector4java Wiki](https://github.com/osiam/connector4java/wiki).
 
-The OSIAM Connector for Java is under construction at the moment. 
-
 If you are interested top use the OSIAM connector4java please watch or even better join us.
 
 #Overview
 
 This repository contains the OSIAM Connector for Java.
+
+The actual version can be found at http://search.maven.org/#search|ga|1|osiam.
 
 Together with OSIAM it provides a easy to use OAuth2 SCIM based user login for Java.
 
