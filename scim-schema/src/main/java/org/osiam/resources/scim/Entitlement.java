@@ -116,7 +116,7 @@ public class Entitlement extends MultiValuedAttribute {
 
     @Override
     public String toString() {
-        return "Entitlement [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary()
+        return "Entitlement [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary()
                 + ", operation=" + getOperation() + "]";
     }
 
