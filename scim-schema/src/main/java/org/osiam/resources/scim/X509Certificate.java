@@ -83,7 +83,7 @@ public class X509Certificate extends MultiValuedAttribute {
 
     @Override
     public String toString() {
-        return "X509Certificate [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+        return "X509Certificate [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary() 
                 + ", operation=" + getOperation() + "]";
     }
 

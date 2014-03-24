@@ -170,7 +170,7 @@ public class Photo extends MultiValuedAttribute {
 
     @Override
     public String toString() {
-        return "Photo [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary()
+        return "Photo [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary()
                 + ", operation=" + getOperation() + "]";
     }
 

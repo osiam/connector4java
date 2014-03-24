@@ -83,7 +83,7 @@ public class Role extends MultiValuedAttribute {
 
     @Override
     public String toString() {
-        return "Role [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+        return "Role [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary() 
                 + ", operation=" + getOperation() + "]";
     }
 
