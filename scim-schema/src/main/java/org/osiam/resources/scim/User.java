@@ -31,10 +31,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 /**
  * User resources are meant to enable expression of common User informations. With the core attributes it should be
@@ -423,7 +426,7 @@ public class User extends Resource {
     public Map<String, Extension> getExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
-    
+
     /**
      * Provides an unmodifiable view of all additional {@link Extension} fields of the user
      * 
@@ -498,25 +501,67 @@ public class User extends Resource {
         private Map<String, Extension> extensions = new HashMap<>();
 
         /**
+         * creates a new User.Builder based on the given userName and user. All values of the given user will be copied
+         * expect the userName will be be overridden by the given one
+         * 
+         * @param userName
+         *        the new userName of the user
+         * @param user
+         *        a existing user
+         */
+        public Builder(String userName, User user) {
+            super(user);
+            addSchema(Constants.USER_CORE_SCHEMA);
+            if (user != null) {
+                this.userName = user.userName;
+                this.name = user.name;
+                this.displayName = user.displayName;
+                this.nickName = user.nickName;
+                this.profileUrl = user.profileUrl;
+                this.title = user.title;
+                this.userType = user.userType;
+                this.preferredLanguage = user.preferredLanguage;
+                this.locale = user.locale;
+                this.timezone = user.timezone;
+                this.active = user.active;
+                this.password = user.password;
+                this.emails = Objects.firstNonNull(user.emails, this.emails);
+                this.phoneNumbers = Objects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
+                this.ims = Objects.firstNonNull(user.ims, this.ims);
+                this.photos = Objects.firstNonNull(user.photos, this.photos);
+                this.addresses = Objects.firstNonNull(user.addresses, this.addresses);
+                this.groups = Objects.firstNonNull(user.groups, this.groups);
+                this.entitlements = Objects.firstNonNull(user.entitlements, this.entitlements);
+                this.roles = Objects.firstNonNull(user.roles, this.roles);
+                this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
+                this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
+            }
+            if (!Strings.isNullOrEmpty(userName)) {
+                this.userName = userName;
+            }
+        }
+
+        /**
          * Constructs a new builder by with a set userName
          * 
          * @param userName
          *        Unique identifier for the User (See {@link User#getUserName()})
+         * 
+         * @throws SCIMDataValidationException
+         *         if the given userName is null or empty
          */
         public Builder(String userName) {
-            this();
-            if (userName == null || userName.isEmpty()) {
-                throw new IllegalArgumentException("userName must not be null or empty.");
+            this(userName, null);
+            if (Strings.isNullOrEmpty(userName)) {
+                throw new IllegalArgumentException("userName can't be null or empty.");
             }
-            this.userName = userName;
         }
 
         /**
          * Creates a new builder without a userName
          */
         public Builder() {
-            super();
-            this.schemas.add(Constants.USER_CORE_SCHEMA);
+            this(null, null);
         }
 
         /**
@@ -524,31 +569,15 @@ public class User extends Resource {
          * 
          * @param user
          *        a old {@link User}
+         * 
+         * @throws SCIMDataValidationException
+         *         if the given user is null
          */
         public Builder(User user) {
-            super(user);
-            this.userName = user.userName;
-            this.name = user.name;
-            this.displayName = user.displayName;
-            this.nickName = user.nickName;
-            this.profileUrl = user.profileUrl;
-            this.title = user.title;
-            this.userType = user.userType;
-            this.preferredLanguage = user.preferredLanguage;
-            this.locale = user.locale;
-            this.timezone = user.timezone;
-            this.active = user.active;
-            this.password = user.password;
-            this.emails = Objects.firstNonNull(user.emails, this.emails);
-            this.phoneNumbers = Objects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
-            this.ims = Objects.firstNonNull(user.ims, this.ims);
-            this.photos = Objects.firstNonNull(user.photos, this.photos);
-            this.addresses = Objects.firstNonNull(user.addresses, this.addresses);
-            this.groups = Objects.firstNonNull(user.groups, this.groups);
-            this.entitlements = Objects.firstNonNull(user.entitlements, this.entitlements);
-            this.roles = Objects.firstNonNull(user.roles, this.roles);
-            this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
-            this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
+            this(null, user);
+            if (user == null) {
+                throw new SCIMDataValidationException("The given user can't be null");
+            }
         }
 
         /**
@@ -826,7 +855,7 @@ public class User extends Resource {
                 throw new IllegalArgumentException("The given extension can't be null.");
             }
             extensions.put(extension.getUrn(), extension);
-            schemas.add(extension.getUrn());
+            addSchema(extension.getUrn());
             return this;
         }
 

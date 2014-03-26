@@ -26,8 +26,11 @@ package org.osiam.resources.scim;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.google.common.base.Strings;
 
 /**
  * This class represent a Group resource.
@@ -100,35 +103,64 @@ public class Group extends Resource {
         private String displayName;
         private Set<MemberRef> members = new HashSet<>();
 
+        /**
+         * creates a new Group.Builder based on the given displayName and group. All values of the given group will be
+         * copied expect the displayName will be be overridden by the given one
+         * 
+         * @param displayName
+         *        the new displayName of the group
+         * @param group
+         *        a existing group
+         */
+        public Builder(String displayName, Group group) {
+            super(group);
+            addSchema(Constants.GROUP_CORE_SCHEMA);
+            if (group != null) {
+                this.displayName = group.displayName;
+                members = group.members;
+            }
+            if (!Strings.isNullOrEmpty(displayName)) {
+                this.displayName = displayName;
+            }
+        }
+
+        /**
+         * creates a new Group without a displayName
+         */
         public Builder() {
-            super();
-            this.schemas.add(Constants.GROUP_CORE_SCHEMA);
+            this(null, null);
         }
 
         /**
          * Constructs a new builder by copying all values from the given {@link Group}
          * 
          * @param group
-         *            {@link Group} to be copied from
+         *        {@link Group} to be copied from
+         * 
+         * @throws SCIMDataValidationException
+         *         if the given group is null
          */
         public Builder(Group group) {
-            super(group);
-            displayName = group.displayName;
-            members = group.members;
+            this(null, group);
+            if (group == null) {
+                throw new SCIMDataValidationException("The given group can't be null.");
+            }
         }
 
         /**
          * Constructs a new builder and sets the display name (See {@link Group#getDisplayName()}).
          * 
          * @param displayName
-         *            the display name
+         *        the display name
+         * 
+         * @throws SCIMDataValidationException
+         *         if the displayName is null or empty
          */
-        public  Builder(String displayName) {
-            this();
+        public Builder(String displayName) {
+            this(displayName, null);
             if (displayName == null) {
-                throw new IllegalArgumentException("The given resource must not be null");
+                throw new SCIMDataValidationException("The given resource can't be null");
             }
-            this.displayName = displayName;
         }
 
         @Override
@@ -159,7 +191,7 @@ public class Group extends Resource {
          * Sets the list of members as {@link Set} (See {@link Group#getMembers()}).
          * 
          * @param members
-         *            the set of members
+         *        the set of members
          * @return the builder itself
          */
         public Builder setMembers(Set<MemberRef> members) {
