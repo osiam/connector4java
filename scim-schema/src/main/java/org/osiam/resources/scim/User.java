@@ -45,6 +45,13 @@ import com.google.common.base.Objects;
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
  * </p>
+ * 
+ * <p>
+ * client info: The scim schema is mainly meant as a connection link between the 
+ * OSIAM server and by a client like the connector4Java. 
+ * Some values will be not accepted by the OSIAM server.
+ * These specific values have an own client info documentation section.
+ * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class User extends Resource {
@@ -262,6 +269,10 @@ public class User extends Resource {
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      * 
+     * <p>
+     * client info: if the actual user is loaded from the OSIAM server the password of the user will always be null
+     * </p>
+     * 
      * @return the password of the {@link User}
      */
     public String getPassword() {
@@ -374,7 +385,7 @@ public class User extends Resource {
     }
 
     /**
-     * Gets a list of roles for the user that collectively represent who the User is.
+     * Gets a list of roles for the user that collectively represent who the User is e.g., 'Student', "Faculty"
      * 
      * <p>
      * For more detailed information please look at the <a
@@ -735,6 +746,12 @@ public class User extends Resource {
         /**
          * Sets a list of groups that the user belongs to (See {@link User#getGroups()})
          * 
+         * <p>
+         * client info: The groups where the user is a member of will only be set from the OSIAM server. 
+         * If you want to put a user into a group, you have to add the user as a member to the group.
+         * If a {@link User} which is send to the OSIAM server has this value filled, the value will be ignored or the action will be
+         * rejected.
+         * </p>
          * @param groups
          *        groups of the User
          * @return the builder itself
