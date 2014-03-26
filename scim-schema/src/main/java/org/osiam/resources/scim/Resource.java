@@ -132,6 +132,12 @@ public abstract class Resource {
         /**
          * Sets the id of the resource.
          * 
+         * <p>
+         * client info: The id of a User will be created and set by the OSIAM server. 
+         * If a {@link User} or {@link Group} which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected.
+         * </p>
+         * 
          * @param id
          *            if of the resource
          * @return the builder itself
@@ -156,6 +162,14 @@ public abstract class Resource {
 
         /**
          * Sets the meta data
+         * 
+         * <p>
+         * client info: The meta information of a User will be created and set by the OSIAM server. 
+         * If a {@link User} or {@link Group} which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected. 
+         * For an update(PATCH) the attribute value can be set by the client. In normal case this 
+         * should be set by the {@link UpdateUser} or {@link UpdateGroup} and not by the client directly. 
+         * </p>
          * 
          * @param meta
          *            the meta object

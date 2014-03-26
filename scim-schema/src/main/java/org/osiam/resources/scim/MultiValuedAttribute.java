@@ -216,6 +216,11 @@ public abstract class MultiValuedAttribute {
         /**
          * Sets the human readable name (See {@link MultiValuedAttribute#getDisplay()}).
          * 
+         * <p>
+         * client info: the Display value is set by the OSIAM server.
+         * If a MultiValuedAttribute which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected. 
+         * </p>
          * @param display
          *        a human readable name
          * @return the builder itself
@@ -240,6 +245,8 @@ public abstract class MultiValuedAttribute {
         /**
          * Sets the operation (See {@link MultiValuedAttribute#getOperation()}).
          * 
+         * Will be automatically set by the {@link UpdateUser}
+         * 
          * @param operation
          *        only "delete" is supported at the moment
          * @return the builder itself
@@ -251,6 +258,12 @@ public abstract class MultiValuedAttribute {
 
         /**
          * Sets the reference (See {@link MemberRef#getReference()}).
+         * 
+         * <p>
+         * client info: the Reference value is set by the OSIAM server.
+         * If a MultiValuedAttribute which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected. 
+         * </p>
          * 
          * @param reference
          *        the scim conform reference to the member
