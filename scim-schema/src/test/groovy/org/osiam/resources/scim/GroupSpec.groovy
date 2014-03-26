@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim
 
+import org.osiam.resources.exception.SCIMDataValidationException
+
 import spock.lang.Specification
 
 class GroupSpec extends Specification {
@@ -101,7 +103,21 @@ class GroupSpec extends Specification {
         new Group.Builder(null)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(SCIMDataValidationException)
+    }
+    
+    def 'the copied group should have the given displayname'(){
+        given:
+        Group oldGroup = new Group.Builder("oldDisplayName").setExternalId("externalId").build()
+        String newDisplayName = 'newDisplayName'
+        Group newGroup
+        
+        when:
+        newGroup = new Group.Builder(newDisplayName, oldGroup).build()
+        
+        then:
+        newGroup.getExternalId() == 'externalId'
+        newGroup.getDisplayName() == newDisplayName
     }
 
 }
