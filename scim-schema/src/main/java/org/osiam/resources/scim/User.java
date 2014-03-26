@@ -553,7 +553,7 @@ public class User extends Resource {
         public Builder(String userName) {
             this(userName, null);
             if (Strings.isNullOrEmpty(userName)) {
-                throw new IllegalArgumentException("userName can't be null or empty.");
+                throw new IllegalArgumentException("userName must not be null or empty.");
             }
         }
 
@@ -576,7 +576,7 @@ public class User extends Resource {
         public Builder(User user) {
             this(null, user);
             if (user == null) {
-                throw new SCIMDataValidationException("The given user can't be null");
+                throw new SCIMDataValidationException("The given user must not be null");
             }
         }
 
@@ -835,7 +835,7 @@ public class User extends Resource {
          */
         public Builder addExtensions(Set<Extension> extensions) {
             if (extensions == null) {
-                throw new IllegalArgumentException("The given extensions can't be null.");
+                throw new IllegalArgumentException("The given extensions must not be null.");
             }
             for (Extension entry : extensions) {
                 this.addExtension(entry);
@@ -852,7 +852,7 @@ public class User extends Resource {
          */
         public Builder addExtension(Extension extension) {
             if (extension == null) {
-                throw new IllegalArgumentException("The given extension can't be null.");
+                throw new IllegalArgumentException("The given extension must not be null.");
             }
             extensions.put(extension.getUrn(), extension);
             addSchema(extension.getUrn());

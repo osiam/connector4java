@@ -73,8 +73,7 @@ class UserSpec extends Specification {
         new User.Builder(parameter)
 
         then:
-        def e = thrown(IllegalArgumentException)
-        e.message == 'userName must not be null or empty.'
+        thrown(IllegalArgumentException)
 
         where:
         parameter << [null, '']
