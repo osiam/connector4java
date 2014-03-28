@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.joda.time.DateTime;
 import org.osiam.resources.helper.ExtensionSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
