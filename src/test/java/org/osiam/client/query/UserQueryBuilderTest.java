@@ -39,6 +39,7 @@ import org.osiam.client.query.metamodel.DateAttribute;
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.client.query.metamodel.StringAttribute;
 import org.osiam.client.query.metamodel.User_;
+import org.osiam.resources.helper.ScimHelper;
 import org.osiam.resources.scim.User;
 
 import com.google.common.base.Charsets;
@@ -62,8 +63,7 @@ public class UserQueryBuilderTest {
     @Before
     public void setUp() throws UnsupportedEncodingException {
         queryBuilder = new Query.Builder(User.class);
-        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        dateNowString = dateFormat.print(dateNow);
+        dateNowString = ScimHelper.getScimConformFormatedDateTime(dateNow);
     }
 
     @Test
