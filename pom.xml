@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>scim-schema</artifactId>
-            <version>0.41-SNAPSHOT</version>
+            <version>0.41</version>
         </dependency>
 
         <!-- Used for access token retrieval -->
