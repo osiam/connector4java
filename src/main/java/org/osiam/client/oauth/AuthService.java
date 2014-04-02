@@ -37,10 +37,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -58,8 +58,7 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.OsiamErrorMessage;
-import org.osiam.client.exception.OsiamErrorMessage02;
+import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,7 +70,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public final class AuthService { // NOSONAR - Builder constructs instances of this class
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
-    private HttpPost post;
     private final String endpoint;
     private Header[] headers;
     private String clientId;
@@ -103,7 +101,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private HttpResponse performRequest(AccessToken... accessTokens) {
         buildHead();
         buildBody(accessTokens);
-        post = new HttpPost(getFinalEndpoint());
+        HttpPost post = new HttpPost(getFinalEndpoint());
         post.setHeaders(headers);
         post.setEntity(body);
 
@@ -185,56 +183,42 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     private void checkAndHandleHttpStatus(HttpResponse response, int status) {
         if (status != SC_OK) {
             String errorMessage;
-            String defaultMessage;
             switch (status) {
             case SC_BAD_REQUEST:
-                defaultMessage = "Unable to create Connection. Please make sure that you have the correct grants.";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             case SC_UNAUTHORIZED:
-                defaultMessage = "You are not authorized to directly retrieve a access token.";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_NOT_FOUND:
-                defaultMessage = "Unable to find the given OSIAM service (" + getFinalEndpoint() + ")";
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             default:
-                defaultMessage = String.format("Unable to setup connection (HTTP Status Code: %d)", status);
-                errorMessage = getErrorMessage(response, defaultMessage);
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }
     }
 
-    private String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
-        InputStream content = null;
+    private String getErrorMessage(HttpResponse httpResponse) {
         String errorMessage;
+        InputStream content = null;
+        String inputStreamStringValue = null;
+
         try {
             content = httpResponse.getEntity().getContent();
-            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
+            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
             ObjectMapper mapper = new ObjectMapper();
-            if (inputStreamString.contains("error_code")) {
-                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
-                errorMessage = error.getDescription();
-            } else {
-                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
-                errorMessage = error.getDescription();
-            }
+            OAuthErrorMessage error = mapper.readValue(inputStreamStringValue, OAuthErrorMessage.class);
+            errorMessage = error.getDescription();
         } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = defaultErrorMessage;
-        } finally {
-            try {
-                if (content != null) {
-                    content.close();
-                }
-            } catch (IOException notNeeded) {
-                /** doesn't matter **/
+            errorMessage = " Could not deserialize the error response for the status code \""
+                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
+            if (inputStreamStringValue != null) {
+                errorMessage += " Original response: " + inputStreamStringValue;
             }
         }
-        if (errorMessage == null) {
-            errorMessage = defaultErrorMessage;
-        }
+
         return errorMessage;
     }
 
@@ -338,12 +322,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
             String errorMessage;
             switch (httpStatus) {
             case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response,
-                        "Could not exchange yout authentication code against a access token.");
+                errorMessage = getErrorMessage(response);
                 throw new ConflictException(errorMessage);
             default:
-                errorMessage = getErrorMessage(response,
-                        String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
+                errorMessage = getErrorMessage(response);
                 throw new ConnectionInitializationException(errorMessage);
             }
         }

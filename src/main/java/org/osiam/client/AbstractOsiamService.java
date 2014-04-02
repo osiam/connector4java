@@ -23,24 +23,13 @@
 
 package org.osiam.client;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.osiam.client.exception.*;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
-import org.osiam.resources.helper.UserDeserializer;
-import org.osiam.resources.scim.Resource;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.User;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,9 +37,38 @@ import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Scanner;
 
-import static org.apache.http.HttpStatus.*;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OsiamRequestException;
+import org.osiam.client.exception.ScimErrorMessage;
+import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.Query;
+import org.osiam.resources.helper.UserDeserializer;
+import org.osiam.resources.scim.Resource;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.User;
+
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
@@ -59,7 +77,7 @@ import static org.apache.http.HttpStatus.*;
 abstract class AbstractOsiamService<T extends Resource> {
 
     private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    protected final HttpGet webResource;
+    private final HttpGet webResource; 
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
@@ -122,9 +140,9 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream content = response.getEntity().getContent()) {
+        try {
+            InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
-
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
@@ -174,7 +192,8 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream queryResult = response.getEntity().getContent()) {
+        try {
+            InputStream queryResult = response.getEntity().getContent();
             JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class,
                     type);
 
@@ -271,7 +290,8 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream content = response.getEntity().getContent()) {
+        try{
+            InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -334,7 +354,8 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try (InputStream content = response.getEntity().getContent()) {
+        try{
+            InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -371,23 +392,23 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
         String errorMessage;
+        InputStream content = null;
+        String inputStreamStringValue = null;
+
         try {
-            InputStream content = httpResponse.getEntity().getContent();
-            String inputStreamString = new Scanner(content, "UTF-8").useDelimiter("\\A").next(); //workaround until error body creation in the server is scim conform
-            ObjectMapper mapper = new ObjectMapper();
-            if (inputStreamString.contains("error_code")) {
-                OsiamErrorMessage error = mapper.readValue(inputStreamString, OsiamErrorMessage.class);
-                errorMessage = error.getDescription();
-            } else {
-                OsiamErrorMessage02 error = mapper.readValue(inputStreamString, OsiamErrorMessage02.class);
-                errorMessage = error.getDescription();
-            }
+            content = httpResponse.getEntity().getContent();
+            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
+            ObjectMapper errorMapper = new ObjectMapper();
+            ScimErrorMessage error = errorMapper.readValue(inputStreamStringValue, ScimErrorMessage.class);
+            errorMessage = error.getDescription();
         } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = defaultErrorMessage;
+            errorMessage = " Could not deserialize the error response for the status code \""
+                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
+            if (inputStreamStringValue != null) {
+                errorMessage += " Original response: " + inputStreamStringValue;
+            }
         }
-        if (errorMessage == null) {
-            errorMessage = defaultErrorMessage;
-        }
+
         return errorMessage;
     }
 

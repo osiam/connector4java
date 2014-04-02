@@ -1,5 +1,11 @@
 # OSIAM Connector4Java
 
+## 0.14 - 2014-04-02
+- [enhancement] Raised SCIM-Schema version to 0.41. No migration necessary.
+  -> Consider the deprecated API's for getAllExtensions and getAllFields in SCIM-Schema
+- [refactoring] OsiamConnector and AccessToken can be extended now,
+  because they are not final anymore and the token field in the AccessToken class is protected
+
 ## 0.13 - 2014-02-14
 - [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
   For migration see: https://github.com/osiam/connector4java/wiki/Migration#wiki-from-012-to-013
