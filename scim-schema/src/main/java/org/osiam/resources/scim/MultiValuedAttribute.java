@@ -23,9 +23,12 @@
 
 package org.osiam.resources.scim;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Strings;
 
 /**
  * This class represents a multi valued attribute.
@@ -203,6 +206,9 @@ public abstract class MultiValuedAttribute {
          * @return the builder itself
          */
         protected Builder setValue(String value) {
+            if(Strings.isNullOrEmpty(value)){
+                throw new SCIMDataValidationException("The given value can't be null or empty.");
+            }
             this.value = value;
             return this;
         }
@@ -210,6 +216,11 @@ public abstract class MultiValuedAttribute {
         /**
          * Sets the human readable name (See {@link MultiValuedAttribute#getDisplay()}).
          * 
+         * <p>
+         * client info: the Display value is set by the OSIAM server.
+         * If a MultiValuedAttribute which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected. 
+         * </p>
          * @param display
          *        a human readable name
          * @return the builder itself
@@ -234,6 +245,8 @@ public abstract class MultiValuedAttribute {
         /**
          * Sets the operation (See {@link MultiValuedAttribute#getOperation()}).
          * 
+         * Will be automatically set by the {@link UpdateUser}
+         * 
          * @param operation
          *        only "delete" is supported at the moment
          * @return the builder itself
@@ -245,6 +258,12 @@ public abstract class MultiValuedAttribute {
 
         /**
          * Sets the reference (See {@link MemberRef#getReference()}).
+         * 
+         * <p>
+         * client info: the Reference value is set by the OSIAM server.
+         * If a MultiValuedAttribute which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected. 
+         * </p>
          * 
          * @param reference
          *        the scim conform reference to the member

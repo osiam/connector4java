@@ -118,7 +118,7 @@ public class MemberRef extends MultiValuedAttribute { // NOSONAR - will be const
 
     @Override
     public String toString() {
-        return "MemberRef [display=" + getDisplay() +", value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+        return "MemberRef [display=" + getDisplay() +", value=" + getValue() + ", type=" + type + ", primary=" + isPrimary() 
                 + ", operation=" + getOperation() + ", ref=" + getReference() + "]";
     }
 

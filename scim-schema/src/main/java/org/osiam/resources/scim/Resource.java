@@ -101,20 +101,16 @@ public abstract class Resource {
     public abstract static class Builder {
         private String id;
         private Meta meta;
-        protected Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
+        private Set<String> schemas = new HashSet<>(); // NOSONAR - fields are needed in child classes
         protected String externalId; // NOSONAR - fields are needed in child classes
 
         public Builder(Resource resource) {
-            if (resource == null) {
-                throw new IllegalArgumentException("The given resource must not be null");
+            if (resource != null) {
+                this.id = resource.id;
+                this.externalId = resource.externalId;
+                this.meta = resource.meta;
+                this.schemas = resource.schemas;
             }
-            this.id = resource.id;
-            this.externalId = resource.externalId;
-            this.meta = resource.meta;
-            this.schemas = resource.schemas;
-        }
-
-        public Builder() {
         }
 
         /**
@@ -128,9 +124,22 @@ public abstract class Resource {
             this.schemas = schemas;
             return this;
         }
+        
+        protected void addSchema(String schema){
+            if(schemas == null){
+                schemas = new HashSet<>();
+            }
+            schemas.add(schema);
+        }
 
         /**
          * Sets the id of the resource.
+         * 
+         * <p>
+         * client info: The id of a User will be created and set by the OSIAM server. 
+         * If a {@link User} or {@link Group} which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected.
+         * </p>
          * 
          * @param id
          *            if of the resource
@@ -156,6 +165,14 @@ public abstract class Resource {
 
         /**
          * Sets the meta data
+         * 
+         * <p>
+         * client info: The meta information of a User will be created and set by the OSIAM server. 
+         * If a {@link User} or {@link Group} which is send to the OSIAM server has this value filled, 
+         * the value will be ignored or the action will be rejected. 
+         * For an update(PATCH) the attribute value can be set by the client. In normal case this 
+         * should be set by the {@link UpdateUser} or {@link UpdateGroup} and not by the client directly. 
+         * </p>
          * 
          * @param meta
          *            the meta object

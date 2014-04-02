@@ -117,7 +117,7 @@ public class PhoneNumber extends MultiValuedAttribute {
     
     @Override
     public String toString() {
-        return "PhoneNumber [value=" + getValue() + ", type=" + type.toString() + ", primary=" + isPrimary() 
+        return "PhoneNumber [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary() 
                 + ", operation=" + getOperation() + "]";
     }
 

@@ -23,10 +23,10 @@
 
 package org.osiam.resources.scim
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList
+import java.util.HashMap
+import java.util.List
+import java.util.Map
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -73,8 +73,7 @@ class UserSpec extends Specification {
         new User.Builder(parameter)
 
         then:
-        def e = thrown(IllegalArgumentException)
-        e.message == 'userName must not be null or empty.'
+        thrown(IllegalArgumentException)
 
         where:
         parameter << [null, '']
@@ -83,7 +82,7 @@ class UserSpec extends Specification {
     def 'should generate a user based on builder'() {
         given:
 
-        Extension extension = getExtension('extension');
+        Extension extension = getExtension('extension')
         Meta meta = new Meta.Builder().build()
         Address address = getAddress()
         Email email = getEmail()
@@ -119,7 +118,7 @@ class UserSpec extends Specification {
                 .setX509Certificates([x509Certificat] as List)
                 .setMeta(meta)
                 .setUserType('userType')
-                .addExtension(extension);
+                .addExtension(extension)
 
         when:
         User user = builder.build()
@@ -149,7 +148,7 @@ class UserSpec extends Specification {
         user.meta == meta
         user.externalId == 'externalId'
         user.schemas.first() == 'schema'
-        user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING);
+        user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING)
     }
 
     @Unroll
@@ -293,13 +292,27 @@ class UserSpec extends Specification {
         then:
         thrown(IllegalArgumentException)
     }
+    
+    def 'the copied user should have the given username'(){
+        given:
+        User oldUser = new User.Builder("oldUserName").setActive(true).build()
+        String newUserName = 'newUserName'
+        User newUser
+        
+        when:
+        newUser = new User.Builder(newUserName, oldUser).build()
+        
+        then:
+        newUser.isActive() == true
+        newUser.getUserName() == newUserName
+    }
 
     Email getEmail() {
         new Email.Builder()
                 .setPrimary(true)
                 .setValue('test@tarent.de')
                 .setType(Email.Type.WORK)
-                .build();
+                .build()
     }
 
     Address getAddress() {
@@ -312,11 +325,11 @@ class UserSpec extends Specification {
                 .setRegion('Berlin')
                 .setStreetAddress('Voltastr. 5')
                 .setType(Address.Type.WORK)
-                .build();
+                .build()
     }
 
     Extension getExtension(urn) {
-        Extension extension = new Extension(urn);
+        Extension extension = new Extension(urn)
         extension.addOrUpdateField('gender', 'male')
         return extension
     }
@@ -326,7 +339,7 @@ class UserSpec extends Specification {
                 .setPrimary(true)
                 .setType(new Entitlement.Type('irrelevant'))
                 .setValue('entitlement')
-                .build();
+                .build()
     }
 
     Im getIm() {
@@ -334,7 +347,7 @@ class UserSpec extends Specification {
                 .setPrimary(true)
                 .setType(Im.Type.AIM)
                 .setValue('aim')
-                .build();
+                .build()
     }
 
     Name getName() {
@@ -344,7 +357,7 @@ class UserSpec extends Specification {
                 .setGivenName('test')
                 .setHonorificPrefix('Dr.')
                 .setHonorificSuffix('Mr.')
-                .setMiddleName('test').build();
+                .setMiddleName('test').build()
     }
 
     PhoneNumber getPhoneNumber() {
@@ -352,7 +365,7 @@ class UserSpec extends Specification {
                 .setPrimary(true)
                 .setType(PhoneNumber.Type.WORK)
                 .setValue('03012345678')
-                .build();
+                .build()
     }
 
     Photo getPhoto() {
@@ -360,20 +373,20 @@ class UserSpec extends Specification {
                 .setPrimary(true)
                 .setType(Photo.Type.PHOTO)
                 .setValue('username.jpg')
-                .build();
+                .build()
     }
 
     Role getRole() {
         new Role.Builder()
                 .setPrimary(true)
                 .setValue('user_role')
-                .build();
+                .build()
     }
 
     X509Certificate getX509Certificat() {
         new X509Certificate.Builder()
                 .setPrimary(true)
                 .setValue('x509Certificat')
-                .build();
+                .build()
     }
 }

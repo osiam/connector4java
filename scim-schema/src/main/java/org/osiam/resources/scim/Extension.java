@@ -106,6 +106,111 @@ public class Extension {
 
         return extensionFieldType.fromString(fields.get(field).value);
     }
+    
+    /**
+     * Return the value for the field with a given name as String.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public String getFieldAsString(String field) {
+        return getField(field, ExtensionFieldType.STRING);
+    }
+    
+    /**
+     * Return the value for the field with a given name as boolean.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public boolean getFieldAsBoolean(String field) {
+        return getField(field, ExtensionFieldType.BOOLEAN);
+    }
+    
+    /**
+     * Return the value for the field with a given name as ByteBuffer.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public ByteBuffer getFieldAsByteBuffer(String field) {
+        return getField(field, ExtensionFieldType.BINARY);
+    }
+    
+    /**
+     * Return the value for the field with a given name as Date.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public Date getFieldAsDate(String field) {
+        return getField(field, ExtensionFieldType.DATE_TIME);
+    }
+    
+    /**
+     * Return the value for the field with a given name as BigDecimal.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public BigDecimal getFieldAsDecimal(String field) {
+        return getField(field, ExtensionFieldType.DECIMAL);
+    }
+    
+    /**
+     * Return the value for the field with a given name as BigInteger.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public BigInteger getFieldAsInteger(String field) {
+        return getField(field, ExtensionFieldType.INTEGER);
+    }
+
+    /**
+     * Return the value for the field with a given name as URI.
+     * 
+     * @param field
+     *        The name of the field to retrieve the value of.
+     * @return The value for the field with the given name.
+     * @throws NoSuchElementException
+     *         if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException
+     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     */
+    public URI getFieldAsReference(String field) {
+        return getField(field, ExtensionFieldType.REFERENCE);
+    }
 
     /**
      * Adds or updates the field specified by the given field name with the given value.

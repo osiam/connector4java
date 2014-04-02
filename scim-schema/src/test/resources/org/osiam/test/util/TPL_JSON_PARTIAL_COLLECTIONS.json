@@ -5,6 +5,11 @@
         "type":"work"
     }
 ],
+"photos":[
+    {
+        "value":"example.png"
+    }
+],
 "phoneNumbers":[
     {
         "value":"555-555-8377",

@@ -31,10 +31,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 /**
  * User resources are meant to enable expression of common User informations. With the core attributes it should be
@@ -44,6 +47,13 @@ import com.google.common.base.Objects;
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+ * </p>
+ * 
+ * <p>
+ * client info: The scim schema is mainly meant as a connection link between the 
+ * OSIAM server and by a client like the connector4Java. 
+ * Some values will be not accepted by the OSIAM server.
+ * These specific values have an own client info documentation section.
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -262,6 +272,10 @@ public class User extends Resource {
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      * 
+     * <p>
+     * client info: if the actual user is loaded from the OSIAM server the password of the user will always be null
+     * </p>
+     * 
      * @return the password of the {@link User}
      */
     public String getPassword() {
@@ -374,7 +388,7 @@ public class User extends Resource {
     }
 
     /**
-     * Gets a list of roles for the user that collectively represent who the User is.
+     * Gets a list of roles for the user that collectively represent who the User is e.g., 'Student', "Faculty"
      * 
      * <p>
      * For more detailed information please look at the <a
@@ -412,7 +426,7 @@ public class User extends Resource {
     public Map<String, Extension> getExtensions() {
         return Collections.unmodifiableMap(extensions);
     }
-    
+
     /**
      * Provides an unmodifiable view of all additional {@link Extension} fields of the user
      * 
@@ -487,25 +501,67 @@ public class User extends Resource {
         private Map<String, Extension> extensions = new HashMap<>();
 
         /**
+         * creates a new User.Builder based on the given userName and user. All values of the given user will be copied
+         * expect the userName will be be overridden by the given one
+         * 
+         * @param userName
+         *        the new userName of the user
+         * @param user
+         *        a existing user
+         */
+        public Builder(String userName, User user) {
+            super(user);
+            addSchema(Constants.USER_CORE_SCHEMA);
+            if (user != null) {
+                this.userName = user.userName;
+                this.name = user.name;
+                this.displayName = user.displayName;
+                this.nickName = user.nickName;
+                this.profileUrl = user.profileUrl;
+                this.title = user.title;
+                this.userType = user.userType;
+                this.preferredLanguage = user.preferredLanguage;
+                this.locale = user.locale;
+                this.timezone = user.timezone;
+                this.active = user.active;
+                this.password = user.password;
+                this.emails = Objects.firstNonNull(user.emails, this.emails);
+                this.phoneNumbers = Objects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
+                this.ims = Objects.firstNonNull(user.ims, this.ims);
+                this.photos = Objects.firstNonNull(user.photos, this.photos);
+                this.addresses = Objects.firstNonNull(user.addresses, this.addresses);
+                this.groups = Objects.firstNonNull(user.groups, this.groups);
+                this.entitlements = Objects.firstNonNull(user.entitlements, this.entitlements);
+                this.roles = Objects.firstNonNull(user.roles, this.roles);
+                this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
+                this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
+            }
+            if (!Strings.isNullOrEmpty(userName)) {
+                this.userName = userName;
+            }
+        }
+
+        /**
          * Constructs a new builder by with a set userName
          * 
          * @param userName
          *        Unique identifier for the User (See {@link User#getUserName()})
+         * 
+         * @throws SCIMDataValidationException
+         *         if the given userName is null or empty
          */
         public Builder(String userName) {
-            this();
-            if (userName == null || userName.isEmpty()) {
+            this(userName, null);
+            if (Strings.isNullOrEmpty(userName)) {
                 throw new IllegalArgumentException("userName must not be null or empty.");
             }
-            this.userName = userName;
         }
 
         /**
          * Creates a new builder without a userName
          */
         public Builder() {
-            super();
-            this.schemas.add(Constants.USER_CORE_SCHEMA);
+            this(null, null);
         }
 
         /**
@@ -513,31 +569,15 @@ public class User extends Resource {
          * 
          * @param user
          *        a old {@link User}
+         * 
+         * @throws SCIMDataValidationException
+         *         if the given user is null
          */
         public Builder(User user) {
-            super(user);
-            this.userName = user.userName;
-            this.name = user.name;
-            this.displayName = user.displayName;
-            this.nickName = user.nickName;
-            this.profileUrl = user.profileUrl;
-            this.title = user.title;
-            this.userType = user.userType;
-            this.preferredLanguage = user.preferredLanguage;
-            this.locale = user.locale;
-            this.timezone = user.timezone;
-            this.active = user.active;
-            this.password = user.password;
-            this.emails = Objects.firstNonNull(user.emails, this.emails);
-            this.phoneNumbers = Objects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
-            this.ims = Objects.firstNonNull(user.ims, this.ims);
-            this.photos = Objects.firstNonNull(user.photos, this.photos);
-            this.addresses = Objects.firstNonNull(user.addresses, this.addresses);
-            this.groups = Objects.firstNonNull(user.groups, this.groups);
-            this.entitlements = Objects.firstNonNull(user.entitlements, this.entitlements);
-            this.roles = Objects.firstNonNull(user.roles, this.roles);
-            this.x509Certificates = Objects.firstNonNull(user.x509Certificates, this.x509Certificates);
-            this.extensions = Objects.firstNonNull(user.extensions, this.extensions);
+            this(null, user);
+            if (user == null) {
+                throw new SCIMDataValidationException("The given user must not be null");
+            }
         }
 
         /**
@@ -735,6 +775,12 @@ public class User extends Resource {
         /**
          * Sets a list of groups that the user belongs to (See {@link User#getGroups()})
          * 
+         * <p>
+         * client info: The groups where the user is a member of will only be set from the OSIAM server. 
+         * If you want to put a user into a group, you have to add the user as a member to the group.
+         * If a {@link User} which is send to the OSIAM server has this value filled, the value will be ignored or the action will be
+         * rejected.
+         * </p>
          * @param groups
          *        groups of the User
          * @return the builder itself
@@ -789,7 +835,7 @@ public class User extends Resource {
          */
         public Builder addExtensions(Set<Extension> extensions) {
             if (extensions == null) {
-                throw new IllegalArgumentException("The given extensions can't be null.");
+                throw new IllegalArgumentException("The given extensions must not be null.");
             }
             for (Extension entry : extensions) {
                 this.addExtension(entry);
@@ -806,10 +852,10 @@ public class User extends Resource {
          */
         public Builder addExtension(Extension extension) {
             if (extension == null) {
-                throw new IllegalArgumentException("The given extension can't be null.");
+                throw new IllegalArgumentException("The given extension must not be null.");
             }
             extensions.put(extension.getUrn(), extension);
-            schemas.add(extension.getUrn());
+            addSchema(extension.getUrn());
             return this;
         }
 

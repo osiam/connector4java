@@ -22,6 +22,11 @@
  */
 package org.osiam.resources.scim;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -55,6 +60,11 @@ public class Email extends MultiValuedAttribute {
 
     @Override
     public String getValue() {
+        Pattern pattern = Pattern.compile(".+@.+\\.[a-z]+");
+        Matcher matcher = pattern.matcher(super.getValue());
+        if (!matcher.matches()) {
+            throw new SCIMDataValidationException("The value '" + super.getValue() + "' is not a well-formed email.");
+        }
         return super.getValue();
     }
 
@@ -153,8 +163,21 @@ public class Email extends MultiValuedAttribute {
             return this;
         }
 
+        /**
+         * Sets the email value.
+         * 
+         * @param value
+         *        the email attribute
+         * @return the builder itself
+         * @throws SCIMDataValidationException in case the value is not a well-formed email
+         */
         @Override
         public Builder setValue(String value) {
+            Pattern pattern = Pattern.compile(".+@.+\\.[a-z]+");
+            Matcher matcher = pattern.matcher(value);
+            if (!matcher.matches()) {
+                throw new SCIMDataValidationException("The value '" + value + "' is not a well-formed email.");
+            }
             super.setValue(value);
             return this;
         }
