@@ -428,17 +428,6 @@ public class User extends Resource {
     }
 
     /**
-     * Provides an unmodifiable view of all additional {@link Extension} fields of the user
-     * 
-     * @return an unmodifiable view of the extensions
-     */
-    @Deprecated
-    @JsonIgnore
-    public Map<String, Extension> getAllExtensions() {
-        return Collections.unmodifiableMap(extensions);
-    }
-
-    /**
      * Provides the {@link Extension} with the given URN
      * 
      * @param urn

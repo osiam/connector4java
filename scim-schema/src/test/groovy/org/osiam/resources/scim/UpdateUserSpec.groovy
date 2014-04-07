@@ -256,8 +256,7 @@ class UpdateUserSpec extends Specification {
         deleteX509Certificate = new X509Certificate.Builder()
                 .setValue('delete X509Certificate').build()
 
-        extension = new Extension('extension')
-        extension.addOrUpdateField('field', 'value')
+        extension = new Extension.Builder('extension').setField('field', 'value').build()
     }
 
     private createUpdateUserForDeletion(){

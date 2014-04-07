@@ -40,21 +40,20 @@ class ExtensionSerializerSpec  extends Specification{
     def 'serializing an empty extension works'(){
         given:
         ObjectMapper mapper = new ObjectMapper()
-        Extension extension = new Extension('extension')
+        Extension extension = new Extension.Builder('extension').build()
 
         expect:
-        JSONAssert.assertEquals('{}', mapper.writeValueAsString(extension), false);
+        JSONAssert.assertEquals('{}', mapper.writeValueAsString(extension), false)
     }
 
     @Unroll
     def 'serializing an extension with #type type works'() {
         given:
         ObjectMapper mapper = new ObjectMapper()
-        Extension extension = new Extension('extension')
-        extension.addOrUpdateField('key', givenValue)
+        Extension extension = new Extension.Builder('extension').setField('key', givenValue).build()
 
         expect:
-        JSONAssert.assertEquals(expectedJson, mapper.writeValueAsString(extension), false);
+        JSONAssert.assertEquals(expectedJson, mapper.writeValueAsString(extension), false)
 
         where:
         type                         | givenValue                                                     | expectedJson
@@ -63,7 +62,14 @@ class ExtensionSerializerSpec  extends Specification{
         ExtensionFieldType.DECIMAL   | 12.3G                                                          | '{"key" : 12.3}'
         ExtensionFieldType.BOOLEAN   | true                                                          | '{"key" : true}'
         ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22)                  | '{"key" : "2008-01-23T04:56:22.000Z"}'
-        ExtensionFieldType.BINARY    | ByteBuffer.wrap([101, 120, 97, 109, 112, 108, 101] as byte[]) | '{"key" : "ZXhhbXBsZQ=="}'
+        ExtensionFieldType.BINARY    | ByteBuffer.wrap([
+            101,
+            120,
+            97,
+            109,
+            112,
+            108,
+            101] as byte[]) | '{"key" : "ZXhhbXBsZQ=="}'
         ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')                        | '{"key" : "https://example.com/Users/28"}'
     }
 }

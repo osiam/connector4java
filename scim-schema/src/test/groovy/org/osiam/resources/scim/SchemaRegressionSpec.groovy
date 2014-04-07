@@ -30,9 +30,9 @@ class SchemaRegressionSpec extends Specification {
     def 'REG-BT-13'() {
         given:
         def extension1Urn = "urn:org.osiam:schemas:test:1.0:Test1"
-        def extension1 = new Extension(extension1Urn)
+        def extension1 = new Extension.Builder(extension1Urn).build()
         def extension2Urn = "urn:org.osiam:schemas:test:1.0:Test2"
-        def extension2 = new Extension(extension2Urn)
+        def extension2 = new Extension.Builder(extension2Urn).build()
         def coreSchemaUrn = Constants.USER_CORE_SCHEMA
 
         when:

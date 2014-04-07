@@ -61,7 +61,7 @@ class ExtensionDeserializer extends StdDeserializer<Extension> {
         if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
             throw new JsonMappingException("Extension is of wrong JSON type");
         }
-        Extension extension = new Extension(urn);
+        Extension.Builder extension = new Extension.Builder(urn);
         Iterator<Map.Entry<String, JsonNode>> fieldIterator = rootNode.fields();
         while (fieldIterator.hasNext()) {
             Map.Entry<String, JsonNode> entry = fieldIterator.next();
@@ -80,29 +80,29 @@ class ExtensionDeserializer extends StdDeserializer<Extension> {
             }
         }
 
-        return extension;
+        return extension.build();
     }
 
-    private void handleNumber(Extension extension, Map.Entry<String, JsonNode> entry) {
+    private void handleNumber(Extension.Builder extension, Map.Entry<String, JsonNode> entry) {
 
         String stringValue = entry.getValue().asText();
         if (stringValue.contains(".")) {
             BigDecimal value = ExtensionFieldType.DECIMAL.fromString(stringValue);
-            extension.addOrUpdateField(entry.getKey(), value);
+            extension.setField(entry.getKey(), value);
         } else {
             BigInteger value = ExtensionFieldType.INTEGER.fromString(stringValue);
-            extension.addOrUpdateField(entry.getKey(), value);
+            extension.setField(entry.getKey(), value);
         }
     }
 
-    private void handleString(Extension extension, Map.Entry<String, JsonNode> entry) {
+    private void handleString(Extension.Builder extension, Map.Entry<String, JsonNode> entry) {
         String value = ExtensionFieldType.STRING.fromString(entry.getValue().asText());
-        extension.addOrUpdateField(entry.getKey(), value);
+        extension.setField(entry.getKey(), value);
     }
 
-    private void handleBoolean(Extension extension, Map.Entry<String, JsonNode> entry) {
+    private void handleBoolean(Extension.Builder extension, Map.Entry<String, JsonNode> entry) {
         Boolean value = ExtensionFieldType.BOOLEAN.fromString(entry.getValue().asText());
-        extension.addOrUpdateField(entry.getKey(), value);
+        extension.setField(entry.getKey(), value);
     }
 
     void setUrn(String urn) {
