@@ -228,6 +228,9 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      * operators and usable fields please have a look into the wiki.
      * <p>
      * <b>Note:</b> The query string should be URL encoded!
+     * <p>
+     * <b>Note:</b> A String based query can be easily build with the StringQueryBuilder
+     * <br/> A DateTime can be transformed into a correct string by the method QueryHelper.getScimConformFormatedDateTime
      *
      * @param queryString
      *            The URL encoded string with the query that should be passed to the OSIAM service
@@ -347,7 +350,12 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     /**
      * Search for existing groups by a given search string. For more detailed information about the possible logical
      * operators and usable fields please have a look into the wiki.
-     *
+     * <p>
+     * <b>Note:</b> The query string should be URL encoded!
+     * <p>
+     * <b>Note:</b> A String based query can be easily build with the StringQueryBuilder.
+     * <br/> A DateTime can be transformed into a correct string by the method QueryHelper.getScimConformFormatedDateTime
+     * 
      * @param queryString
      *            a string containing the needed search where statement
      * @param accessToken
