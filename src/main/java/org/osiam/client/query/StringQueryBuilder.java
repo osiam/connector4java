@@ -95,6 +95,18 @@ public class StringQueryBuilder {
         this.sortOrder = sortOrder;
         return this;
     }
+    
+    /**
+     * ascending or descending
+     * 
+     * @param sortOrder
+     *        ascending or descending
+     * @return the Builder itself
+     */
+    public StringQueryBuilder setSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder.toString();
+        return this;
+    }
 
     /**
      * the number of wanted results per page
