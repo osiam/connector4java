@@ -3,7 +3,9 @@ package org.osiam.client.query;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
+import org.osiam.client.connector.OsiamConnector;
 
 public class StringQueryBuilderTest {
 
@@ -18,7 +20,7 @@ public class StringQueryBuilderTest {
         String query;
 
         query = queryBuilder.build();
-        String excpectedtQuery = "&filter=userName+eq++%22marissa%22&sortBy=userName&sortOrder=ascending&count=50&startIndex=3";
+        String excpectedtQuery = "filter=userName+eq++%22marissa%22&sortBy=userName&sortOrder=ascending&count=50&startIndex=3";
         assertThat(query, is(excpectedtQuery));
     }
 

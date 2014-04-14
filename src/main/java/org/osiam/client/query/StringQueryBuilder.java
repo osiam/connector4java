@@ -156,7 +156,11 @@ public class StringQueryBuilder {
             queryBuilder.append("&startIndex=").append(startIndex.toString());
         }
 
-        return queryBuilder.toString();
+        String queryString = queryBuilder.toString();
+        if(queryString.startsWith("&")){
+            queryString = queryString.substring(1);
+        }
+        return queryString;
     }
 
     private StringBuilder appendQueryPart(StringBuilder queryBuilder, String value, String queryPart) {
