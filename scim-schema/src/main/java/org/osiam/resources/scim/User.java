@@ -460,6 +460,17 @@ public class User extends Resource {
 
         return extensions.get(urn);
     }
+    
+    /**
+     * Checks if an extension with the given urn is present because an extension is not returned if no field is set
+     * 
+     * @param urn
+     *        urn of the extension
+     * @return true if the given extension is present, else false
+     */
+    public boolean isExtensionPresent(String urn) {
+        return extensions.containsKey(urn);
+    }
 
     @Override
     public String toString() {
