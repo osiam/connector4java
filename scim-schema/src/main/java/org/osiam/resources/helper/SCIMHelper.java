@@ -44,7 +44,7 @@ public class SCIMHelper {
      * @param user a {@link User} with a possible email
      * @return an email if found
      */
-    public static Optional<Email> getSendToEmail(User user){
+    public static Optional<Email> getPrimaryOrFirstEmail(User user){
         for (Email email : user.getEmails()) {
             if (email.isPrimary()) {
                 return Optional.of(email);
