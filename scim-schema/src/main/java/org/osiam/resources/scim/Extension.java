@@ -435,10 +435,13 @@ public class Extension {
          */
         public <T> Builder setField(String fieldName, T value, ExtensionFieldType<T> type) {
             if (fieldName == null || fieldName.isEmpty()) {
-                throw new IllegalArgumentException("Invalid field name");
+                throw new IllegalArgumentException("The field name can't be null or empty.");
             }
             if (value == null) {
-                throw new IllegalArgumentException("Invalid value");
+                throw new IllegalArgumentException("The value can't be null.");
+            }
+            if (type == null) {
+                throw new IllegalArgumentException("The type can't be null.");
             }
             fields.put(fieldName, new Field(type, type.toString(value)));
             return this;
