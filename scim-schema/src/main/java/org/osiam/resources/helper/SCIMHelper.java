@@ -31,9 +31,9 @@ import com.google.common.base.Optional;
 /**
  * This class is a collection of different helper methods around the scim schema context  
  */
-public class ScimHelper {
+public class SCIMHelper {
 
-    private ScimHelper(){
+    private SCIMHelper(){
     }
     
     /**
