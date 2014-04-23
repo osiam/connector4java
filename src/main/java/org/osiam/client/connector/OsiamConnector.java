@@ -647,7 +647,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
 
         /**
          * use the given basic endpoint for communication with the OAuth2-Service for authentication and the SCIM2
-         * resource server. The schema will be <endpoint>/osiam-auth-server and <endpoint>/osiam-resource-server
+         * resource server. The schema will be <endpoint>/osiam-auth-server and <endpoint>/osiam-resource-server.
+         * This method can be used if the authentification and the resource server are at the same location and have the standard names.
          *
          * @param endpoint
          *            The endpoint to use for communication
