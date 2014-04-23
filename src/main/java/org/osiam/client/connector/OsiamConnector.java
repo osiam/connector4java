@@ -672,7 +672,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          *        The AuthService endpoint to use for communication
          * @return The builder itself
          */
-        public Builder setAuthServiceEndpoint(String endpoint) {
+        public Builder setAuthServerEndpoint(String endpoint) {
             this.authServiceEndpoint = endpoint;
             return this;
         }
@@ -684,7 +684,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          *        The resource service endpoint to use
          * @return The builder itself
          */
-        public Builder setResourceEndpoint(String endpoint) {
+        public Builder setResourceServerEndpoint(String endpoint) {
             this.resourceServiceEndpoint = endpoint;
             return this;
         }
