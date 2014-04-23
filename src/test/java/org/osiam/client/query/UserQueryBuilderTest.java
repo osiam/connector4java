@@ -62,8 +62,7 @@ public class UserQueryBuilderTest {
     @Before
     public void setUp() throws UnsupportedEncodingException {
         queryBuilder = new Query.Builder(User.class);
-        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        dateNowString = dateFormat.print(dateNow);
+        dateNowString = QueryHelper.getScimConformFormatedDateTime(dateNow);
     }
 
     @Test
