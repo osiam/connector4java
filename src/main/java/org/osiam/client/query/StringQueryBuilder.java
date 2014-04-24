@@ -44,10 +44,6 @@ public class StringQueryBuilder {
     private Integer count;
     private Integer startIndex;
 
-    public StringQueryBuilder() {
-
-    }
-
     /**
      * the general filter of the query
      * 

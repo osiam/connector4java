@@ -32,6 +32,9 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class QueryHelper {
 
+    private QueryHelper(){
+    }
+
     /**
      * formats a given DateTime to the scim needed string form with the pattern 
      * "yyyy-MM-dd'T'HH:mm:ss.SSS"
