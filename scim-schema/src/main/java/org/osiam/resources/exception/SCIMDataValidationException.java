@@ -23,8 +23,6 @@
 
 package org.osiam.resources.exception;
 
-import java.net.URISyntaxException;
-
 public class SCIMDataValidationException extends SCIMException{
 
     private static final long serialVersionUID = 7416418339453997681L;

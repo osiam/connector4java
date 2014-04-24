@@ -34,7 +34,6 @@ import java.util.Set;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;

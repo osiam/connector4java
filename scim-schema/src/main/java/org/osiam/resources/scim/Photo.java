@@ -75,7 +75,7 @@ public class Photo extends MultiValuedAttribute {
         try {
             uri = new URI(super.getValue());
         } catch (URISyntaxException e) {
-            throw new SCIMDataValidationException(e.getMessage());
+            throw new SCIMDataValidationException(e.getMessage(), e);
         }
         return uri;
     }
