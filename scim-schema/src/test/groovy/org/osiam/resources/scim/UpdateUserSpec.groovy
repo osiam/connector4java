@@ -345,7 +345,6 @@ class UpdateUserSpec extends Specification {
         emails.add(newEmail)
         emails.add(deleteEmail)
 
-
         List<Entitlement> entitlements = new ArrayList<Entitlement>()
         entitlements.add(newEntit)
         entitlements.add(deleteEntit)

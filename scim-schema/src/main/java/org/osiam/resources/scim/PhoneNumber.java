@@ -121,7 +121,6 @@ public class PhoneNumber extends MultiValuedAttribute {
                 + ", operation=" + getOperation() + "]";
     }
 
-
     /**
      * Builder class that is used to build {@link PhoneNumber} instances
      */
