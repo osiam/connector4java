@@ -36,10 +36,9 @@ public class Attribute<O, T> {
 
     public Attribute(String name, Class<O> ownerClazz, Class<T> typeClazz) {
         this.name = name;
-        this.ownerClazz = ownerClazz;
-        this.typeClazz = typeClazz;
+        this.ownerClazz = ownerClazz;// NOSONAR : not finished yet
+        this.typeClazz = typeClazz;// NOSONAR : not finished yet
 
-   
         try {
             this.field = ownerClazz.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
