@@ -39,13 +39,13 @@ public class AccessToken {
     protected String token; // NOSONAR : needed to the SimpleAccessToken in the SelfAdministration until a better
                             // solution is found
     @JsonProperty("token_type")
-    private String type;
+    private String type = "";
     @JsonProperty("expires_in")
-    private int expiresIn;
+    private int expiresIn = 0;
     @JsonProperty
-    private String scope;
+    private String scope = "";
     @JsonProperty("refresh_token")
-    private String refreshToken;
+    private String refreshToken = "";
 
     /* This might not be the smartest idea, but anyway */
     private long retrievedOn = new Date().getTime();
@@ -105,6 +105,19 @@ public class AccessToken {
         return refreshToken;
     }
 
+    /**
+     * creates an basic AccessToken Object with the given access token String. 
+     * If the AccessToken is created this way all getter will return an empty String
+     * and the is isExpired() method will always return true
+     * @param accessToken the access token
+     * @return a new basic AccessToken Object
+     */
+    public static AccessToken of(String accessToken){
+        AccessToken token = new AccessToken();
+        token.token = accessToken;
+        return token;
+    }
+    
     @Override
     public String toString() {
         StringBuilder returnToken = new StringBuilder();
@@ -120,38 +133,34 @@ public class AccessToken {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        AccessToken that = (AccessToken) o;
-
-        if (expiresIn != that.expiresIn) {
-            return false;
-        }
-        if (!refreshToken.equals(that.refreshToken)) {
-            return false;
-        }
-        if (!scope.equals(that.scope)) {
-            return false;
-        }
-        if (!token.equals(that.token)) {
-            return false;
-        }
-        if (!type.equals(that.type)) {
-            return false;
-        }
-
-        return this.isExpired() == that.isExpired();
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((token == null) ? 0 : token.hashCode());
+        return result;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(token, type, expiresIn, scope, refreshToken, this.isExpired());
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AccessToken other = (AccessToken) obj;
+        if (token == null) {
+            if (other.token != null) {
+                return false;
+            }
+        } else if (!token.equals(other.token)) {
+            return false;
+        }
+        return true;
     }
+
+    
 }
