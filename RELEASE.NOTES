@@ -1,5 +1,10 @@
 # OSIAM Connector4Java
 
+## 0.15 - 2014-04-30
+- [feature] added class StringQueryBuilder 
+- [feature] added class QueryHelper
+- [refactor] renaming some methods in the OsiamConnector.Builder
+
 ## 0.14 - 2014-04-02
 - [enhancement] Raised SCIM-Schema version to 0.41. No migration necessary.
   -> Consider the deprecated API's for getAllExtensions and getAllFields in SCIM-Schema
