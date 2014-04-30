@@ -77,7 +77,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 abstract class AbstractOsiamService<T extends Resource> {
 
     private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    private final HttpGet webResource; 
+    private final HttpGet webResource;
     private Class<T> type;
     private String typeName;
     private ObjectMapper mapper;
@@ -221,7 +221,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             uri = new URI(webResource.getURI() + "/" + id);
             HttpDelete realWebResource = new HttpDelete(uri);
             realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-            
+
             response = httpclient.execute(realWebResource);
         } catch (URISyntaxException | IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -290,7 +290,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try{
+        try {
             InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
         } catch (IOException e) {
@@ -314,15 +314,15 @@ abstract class AbstractOsiamService<T extends Resource> {
         ensureAccessTokenIsNotNull(accessToken);
         ensureReferenceIsNotNull(id, "The given id can't be null.");
 
-        realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
+        HttpEntityEnclosingRequestBase finalWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
         httpclient = new DefaultHttpClient();
 
         HttpResponse response;
         String userAsString;
         try {
             userAsString = mapper.writeValueAsString(resource);
-            realWebResource.setEntity(new StringEntity(userAsString, contentType));
-            response = httpclient.execute(realWebResource);
+            finalWebResource.setEntity(new StringEntity(userAsString, contentType));
+            response = httpclient.execute(finalWebResource);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
@@ -354,7 +354,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             }
         }
 
-        try{
+        try {
             InputStream content = response.getEntity().getContent();
             return mapSingleResourceResponse(content);
         } catch (IOException e) {
@@ -415,13 +415,13 @@ abstract class AbstractOsiamService<T extends Resource> {
     protected T mapSingleResourceResponse(InputStream content) throws IOException {
         return mapper.readValue(content, type);
     }
-    
+
     private <R extends HttpRequestBase> R addDefaultHeaderToRequest(R request, AccessToken accessToken) {
         request.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
         request.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
         return request;
     }
-    
+
     protected static class Builder<T> {
         private String endpoint;
         private Class<T> type;

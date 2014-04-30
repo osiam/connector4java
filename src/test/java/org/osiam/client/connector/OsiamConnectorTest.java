@@ -587,7 +587,7 @@ public class OsiamConnectorTest {
     private void givenAConfiguredServiceWithoutResourceEndpoint() {
         oConnector = new OsiamConnector.Builder()
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setUserName(VALID_USERNAME)
