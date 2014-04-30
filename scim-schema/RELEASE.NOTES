@@ -1,5 +1,10 @@
 # OSIAM SCIM Schema
 
+## 0.42 - 2014-04-30
+- [refactore] Extension have been refactored to the builder pattern
+- [rafactore] ScimHelper renamed into SCIMHelper
+- [refactore] correct naming of methods in UpdateUser
+
 ## 0.41 - 2014-04-02
 - [feature] Extension fields could also get by getValueAs[Type] e.g. getValueAsString
 - [feature] Added ScimHelper for static helper functions. Started with a function to extract
