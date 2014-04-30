@@ -35,7 +35,7 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>0.41</version>
+    <version>0.42</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
@@ -215,19 +215,6 @@
                 <version>1.8</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/src/main/groovy</source>
-                                <source>${basedir}/src/main/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>add-test-source</id>
                         <phase>generate-test-sources</phase>
                         <goals>
@@ -236,7 +223,6 @@
                         <configuration>
                             <sources>
                                 <source>${basedir}/src/test/groovy</source>
-                                <source>${basedir}/src/test/java</source>
                             </sources>
                         </configuration>
                     </execution>

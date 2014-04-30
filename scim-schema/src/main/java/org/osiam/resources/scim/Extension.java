@@ -1,3 +1,6 @@
+package org.osiam.resources.scim;
+
+import java.math.BigDecimal;
 /*
  * Copyright (C) 2013 tarent AG
  *
@@ -21,9 +24,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.resources.scim;
-
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -60,14 +60,9 @@ public class Extension {
     protected Extension() {
     }
 
-    /**
-     * Constructs an extension with the given urn.
-     * 
-     * @param urn
-     *        the urn of the extension
-     */
-    public Extension(String urn) {
-        this.urn = urn;
+    private Extension(Builder builder) {
+        this.urn = builder.urn;
+        this.fields = builder.fields;
     }
 
     /**
@@ -106,7 +101,7 @@ public class Extension {
 
         return extensionFieldType.fromString(fields.get(field).value);
     }
-    
+
     /**
      * Return the value for the field with a given name as String.
      * 
@@ -121,7 +116,7 @@ public class Extension {
     public String getFieldAsString(String field) {
         return getField(field, ExtensionFieldType.STRING);
     }
-    
+
     /**
      * Return the value for the field with a given name as boolean.
      * 
@@ -136,7 +131,7 @@ public class Extension {
     public boolean getFieldAsBoolean(String field) {
         return getField(field, ExtensionFieldType.BOOLEAN);
     }
-    
+
     /**
      * Return the value for the field with a given name as ByteBuffer.
      * 
@@ -151,7 +146,7 @@ public class Extension {
     public ByteBuffer getFieldAsByteBuffer(String field) {
         return getField(field, ExtensionFieldType.BINARY);
     }
-    
+
     /**
      * Return the value for the field with a given name as Date.
      * 
@@ -166,7 +161,7 @@ public class Extension {
     public Date getFieldAsDate(String field) {
         return getField(field, ExtensionFieldType.DATE_TIME);
     }
-    
+
     /**
      * Return the value for the field with a given name as BigDecimal.
      * 
@@ -181,7 +176,7 @@ public class Extension {
     public BigDecimal getFieldAsDecimal(String field) {
         return getField(field, ExtensionFieldType.DECIMAL);
     }
-    
+
     /**
      * Return the value for the field with a given name as BigInteger.
      * 
@@ -213,127 +208,12 @@ public class Extension {
     }
 
     /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, String value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.STRING);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, Boolean value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.BOOLEAN);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, ByteBuffer value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.BINARY);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, BigInteger value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.INTEGER);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, BigDecimal value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.DECIMAL);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, Date value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.DATE_TIME);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     */
-    public void addOrUpdateField(String fieldName, URI value) {
-        addOrUpdateField(fieldName, value, ExtensionFieldType.REFERENCE);
-    }
-
-    /**
-     * Adds or updates the field specified by the given field name with the given value of the given type.
-     * 
-     * @param fieldName
-     *        the field name
-     * @param value
-     *        the new value
-     * @param type
-     *        the scim type of the field
-     */
-    public <T> void addOrUpdateField(String fieldName, T value, ExtensionFieldType<T> type) {
-        if (fieldName == null || fieldName.isEmpty()) {
-            throw new IllegalArgumentException("Invalid field name");
-        }
-        if (value == null) {
-            throw new IllegalArgumentException("Invalid value");
-        }
-        fields.put(fieldName, new Field(type, type.toString(value)));
-    }
-
-    /**
      * Provides a {@link Map} containing the entries of the extension. Note that the returned {@link Map} is immutable.
      * 
      * @return The Entries of this schema as an map.
      */
     @JsonIgnore
     public Map<String, Field> getFields() {
-        return ImmutableMap.copyOf(fields);
-    }
-    
-    /**
-     * Provides a {@link Map} containing the entries of the extension. Note that the returned {@link Map} is immutable.
-     * 
-     * @return The Entries of this schema as an map.
-     */
-    @Deprecated
-    @JsonIgnore
-    public Map<String, Field> getAllFields() {
         return ImmutableMap.copyOf(fields);
     }
 
@@ -404,6 +284,184 @@ public class Extension {
         }
         stringPresentation.append("}]");
         return stringPresentation.toString();
+    }
+
+    /**
+     * Builder class that is used to build {@link Extension} instances
+     */
+    public static class Builder {
+
+        private String urn;
+
+        private Map<String, Field> fields = new HashMap<>();
+
+        /**
+         * Constructs an extension with the given urn.
+         * 
+         * @param urn
+         *        the urn of the extension
+         */
+        public Builder(String urn) {
+            this.urn = urn;
+        }
+
+        /**
+         * Constructs an extension based on the given extension.
+         * 
+         * @param extension
+         *        existing extension
+         */
+        public Builder(Extension extension) {
+            this.urn = extension.urn;
+            this.fields = extension.fields;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, String value) {
+            setField(fieldName, value, ExtensionFieldType.STRING);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, Boolean value) {
+            setField(fieldName, value, ExtensionFieldType.BOOLEAN);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, ByteBuffer value) {
+            setField(fieldName, value, ExtensionFieldType.BINARY);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, BigInteger value) {
+            setField(fieldName, value, ExtensionFieldType.INTEGER);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, BigDecimal value) {
+            setField(fieldName, value, ExtensionFieldType.DECIMAL);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, Date value) {
+            setField(fieldName, value, ExtensionFieldType.DATE_TIME);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @return the builder itself
+         */
+        public Builder setField(String fieldName, URI value) {
+            setField(fieldName, value, ExtensionFieldType.REFERENCE);
+            return this;
+        }
+
+        /**
+         * Sets the field specified by the given field name with the given value of the given type. <br>
+         * Can only be set and saved if extension field is registered in the database
+         * 
+         * @param fieldName
+         *        the field name
+         * @param value
+         *        the new value
+         * @param type
+         *        the scim type of the field
+         * @return the builder itself
+         */
+        public <T> Builder setField(String fieldName, T value, ExtensionFieldType<T> type) {
+            if (fieldName == null || fieldName.isEmpty()) {
+                throw new IllegalArgumentException("The field name can't be null or empty.");
+            }
+            if (value == null) {
+                throw new IllegalArgumentException("The value can't be null.");
+            }
+            if (type == null) {
+                throw new IllegalArgumentException("The type can't be null.");
+            }
+            fields.put(fieldName, new Field(type, type.toString(value)));
+            return this;
+        }
+
+        /**
+         * removes one field and its value
+         * 
+         * @param fieldName
+         *        the field to be removed
+         * @return the builder itself
+         */
+        public Builder removeField(String fieldName) {
+            fields.remove(fieldName);
+            return this;
+        }
+
+        public Extension build() {
+            return new Extension(this);
+        }
     }
 
     /**

@@ -31,9 +31,9 @@ import com.google.common.base.Optional;
 /**
  * This class is a collection of different helper methods around the scim schema context  
  */
-public class ScimHelper {
+public class SCIMHelper {
 
-    private ScimHelper(){
+    private SCIMHelper(){
     }
     
     /**
@@ -44,7 +44,7 @@ public class ScimHelper {
      * @param user a {@link User} with a possible email
      * @return an email if found
      */
-    public static Optional<Email> getSendToEmail(User user){
+    public static Optional<Email> getPrimaryOrFirstEmail(User user){
         for (Email email : user.getEmails()) {
             if (email.isPrimary()) {
                 return Optional.of(email);

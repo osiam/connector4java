@@ -34,7 +34,6 @@ import java.util.Set;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -428,17 +427,6 @@ public class User extends Resource {
     }
 
     /**
-     * Provides an unmodifiable view of all additional {@link Extension} fields of the user
-     * 
-     * @return an unmodifiable view of the extensions
-     */
-    @Deprecated
-    @JsonIgnore
-    public Map<String, Extension> getAllExtensions() {
-        return Collections.unmodifiableMap(extensions);
-    }
-
-    /**
      * Provides the {@link Extension} with the given URN
      * 
      * @param urn
@@ -459,6 +447,17 @@ public class User extends Resource {
         }
 
         return extensions.get(urn);
+    }
+    
+    /**
+     * Checks if an extension with the given urn is present because an extension is not returned if no field is set
+     * 
+     * @param urn
+     *        urn of the extension
+     * @return true if the given extension is present, else false
+     */
+    public boolean isExtensionPresent(String urn) {
+        return extensions.containsKey(urn);
     }
 
     @Override

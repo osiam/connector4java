@@ -34,7 +34,7 @@ import spock.lang.Unroll
 class UserSpec extends Specification {
 
     static def EXTENSION_URN = 'urn:org.osiam:schemas:test:1.0:Test'
-    static def EXTENSION_EMPTY = new Extension(EXTENSION_URN)
+    static def EXTENSION_EMPTY = new Extension.Builder(EXTENSION_URN).build()
     static def CORE_SCHEMA_SET = [Constants.USER_CORE_SCHEMA] as Set
 
     def 'default constructor should be present due to json mappings'() {
@@ -215,9 +215,9 @@ class UserSpec extends Specification {
     def 'builder should add a schema to the schema Set for each added extension'() {
         given:
         def extension1Urn = 'urn:org.osiam:schemas:test:1.0:Test1'
-        def extension1 = new Extension(extension1Urn)
+        def extension1 = new Extension.Builder(extension1Urn).build()
         def extension2Urn = 'urn:org.osiam:schemas:test:1.0:Test2'
-        def extension2 = new Extension(extension2Urn)
+        def extension2 = new Extension.Builder(extension2Urn).build()
         when:
         def user = new User.Builder('test2')
                 .addExtension(extension1)
@@ -231,9 +231,9 @@ class UserSpec extends Specification {
     def 'scim core schema must always be present in schema set when adding extensions'() {
         given:
         def extension1Urn = 'urn:org.osiam:schemas:test:1.0:Test1'
-        def extension1 = new Extension(extension1Urn)
+        def extension1 = new Extension.Builder(extension1Urn).build()
         def extension2Urn = 'urn:org.osiam:schemas:test:1.0:Test2'
-        def extension2 = new Extension(extension2Urn)
+        def extension2 = new Extension.Builder(extension2Urn).build()
         def coreSchemaUrn = Constants.USER_CORE_SCHEMA
 
         when:
@@ -329,8 +329,8 @@ class UserSpec extends Specification {
     }
 
     Extension getExtension(urn) {
-        Extension extension = new Extension(urn)
-        extension.addOrUpdateField('gender', 'male')
+        Extension extension = new Extension.Builder(urn)
+            .setField('gender', 'male').build()
         return extension
     }
 

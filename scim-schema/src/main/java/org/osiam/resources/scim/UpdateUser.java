@@ -148,15 +148,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old Address with the new one
          * 
-         * @param oldAttribute
+         * @param oldAddress
          *        to be replaced
-         * @param newAttribute
+         * @param newAddress
          *        new Address
          * @return The builder itself
          */
-        public Builder updateAddress(Address oldAttribute, Address newAttribute) {
-            deleteAddress(oldAttribute);
-            addAddress(newAttribute);
+        public Builder updateAddress(Address oldAddress, Address newAddress) {
+            deleteAddress(oldAddress);
+            addAddress(newAddress);
             return this;
         }
 
@@ -434,15 +434,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old Email with the new one
          * 
-         * @param oldAttribute
+         * @param oldEmail
          *        to be replaced
-         * @param newAttribute
+         * @param newEmail
          *        new Email
          * @return The builder itself
          */
-        public Builder updateEmail(Email oldAttribute, Email newAttribute) {
-            deleteEmail(oldAttribute);
-            addEmail(newAttribute);
+        public Builder updateEmail(Email oldEmail, Email newEmail) {
+            deleteEmail(oldEmail);
+            addEmail(newEmail);
             return this;
         }
 
@@ -487,15 +487,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old X509Certificate with the new one
          * 
-         * @param oldAttribute
+         * @param oldCertificate
          *        to be replaced
-         * @param newAttribute
+         * @param newCertificate
          *        new X509Certificate
          * @return The builder itself
          */
-        public Builder updateX509Certificate(X509Certificate oldAttribute, X509Certificate newAttribute) {
-            deleteX509Certificate(oldAttribute);
-            addX509Certificate(newAttribute);
+        public Builder updateX509Certificate(X509Certificate oldCertificate, X509Certificate newCertificate) {
+            deleteX509Certificate(oldCertificate);
+            addX509Certificate(newCertificate);
             return this;
         }
 
@@ -555,15 +555,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old Role with the new one
          * 
-         * @param oldAttribute
+         * @param oldRole
          *        to be replaced
-         * @param newAttribute
+         * @param newRole
          *        new Role
          * @return The builder itself
          */
-        public Builder updateRole(Role oldAttribute, Role newAttribute) {
-            deleteRole(oldAttribute);
-            addRole(newAttribute);
+        public Builder updateRole(Role oldRole, Role newRole) {
+            deleteRole(oldRole);
+            addRole(newRole);
             return this;
         }
 
@@ -580,14 +580,14 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * deletes the ims of a existing user
          * 
-         * @param ims
+         * @param im
          *        to be deleted
          * @return The builder itself
          */
-        public Builder deleteIms(Im ims) {
+        public Builder deleteIm(Im im) {
             Im deleteIms = new Im.Builder()
-                    .setValue(ims.getValue())
-                    .setType(ims.getType())
+                    .setValue(im.getValue())
+                    .setType(im.getType())
                     .setOperation(DELETE).build();
             this.ims.add(deleteIms);
             return this;
@@ -597,27 +597,27 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
          * adds or updates a ims to an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
          * 
-         * @param ims
+         * @param im
          *        new ims
          * @return The builder itself
          */
-        public Builder addIms(Im ims) {
-            this.ims.add(ims);
+        public Builder addIm(Im im) {
+            this.ims.add(im);
             return this;
         }
 
         /**
          * updates the old Ims with the new one
          * 
-         * @param oldAttribute
+         * @param oldIm
          *        to be replaced
-         * @param newAttribute
+         * @param newIm
          *        new Ims
          * @return The builder itself
          */
-        public Builder updateIms(Im oldAttribute, Im newAttribute) {
-            deleteIms(oldAttribute);
-            addIms(newAttribute);
+        public Builder updateIm(Im oldIm, Im newIm) {
+            deleteIm(oldIm);
+            addIm(newIm);
             return this;
         }
 
@@ -663,15 +663,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old PhoneNumber with the new one
          * 
-         * @param oldAttribute
+         * @param oldPhoneNumber
          *        to be replaced
-         * @param newAttribute
+         * @param newPhoneNumber
          *        new PhoneNumber
          * @return The builder itself
          */
-        public Builder updatePhoneNumber(PhoneNumber oldAttribute, PhoneNumber newAttribute) {
-            deletePhoneNumber(oldAttribute);
-            addPhoneNumber(newAttribute);
+        public Builder updatePhoneNumber(PhoneNumber oldPhoneNumber, PhoneNumber newPhoneNumber) {
+            deletePhoneNumber(oldPhoneNumber);
+            addPhoneNumber(newPhoneNumber);
             return this;
         }
 
@@ -718,15 +718,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old Photo with the new one
          * 
-         * @param oldAttribute
+         * @param oldPhoto
          *        to be replaced
-         * @param newAttribute
+         * @param newPhoto
          *        new Photo
          * @return The builder itself
          */
-        public Builder updatePhotos(Photo oldAttribute, Photo newAttribute) {
-            deletePhoto(oldAttribute);
-            addPhoto(newAttribute);
+        public Builder updatePhoto(Photo oldPhoto, Photo newPhoto) {
+            deletePhoto(oldPhoto);
+            addPhoto(newPhoto);
             return this;
         }
 
@@ -773,15 +773,15 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the old Entitlement with the new one
          * 
-         * @param oldAttribute
+         * @param oldEntitlement
          *        to be replaced
-         * @param newAttribute
+         * @param newEntitlement
          *        new Entitlement
          * @return The builder itself
          */
-        public Builder updateEntitlement(Entitlement oldAttribute, Entitlement newAttribute) {
-            deleteEntitlement(oldAttribute);
-            addEntitlement(newAttribute);
+        public Builder updateEntitlement(Entitlement oldEntitlement, Entitlement newEntitlement) {
+            deleteEntitlement(oldEntitlement);
+            addEntitlement(newEntitlement);
             return this;
         }
 
@@ -824,7 +824,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         }
 
         /**
-         * updates all fields in the given extension. If the User doesn't have the given extension fields, they will be
+         * updates the given fields in the extension. If the User doesn't have the given extension fields, they will be
          * added.
          * 
          * @param extension
@@ -912,7 +912,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
             if (certificates.size() > 0) {
                 updateUser.setX509Certificates(certificates);
             }
-            if(extensions.size() > 0){
+            if (extensions.size() > 0) {
                 updateUser.addExtensions(extensions);
             }
 

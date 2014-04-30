@@ -256,8 +256,7 @@ class UpdateUserSpec extends Specification {
         deleteX509Certificate = new X509Certificate.Builder()
                 .setValue('delete X509Certificate').build()
 
-        extension = new Extension('extension')
-        extension.addOrUpdateField('field', 'value')
+        extension = new Extension.Builder('extension').setField('field', 'value').build()
     }
 
     private createUpdateUserForDeletion(){
@@ -273,7 +272,7 @@ class UpdateUserSpec extends Specification {
         updateBuilder.deleteExtensionField('extension', 'field')
         updateBuilder.deleteExternalId()
         updateBuilder.deleteIms()
-        updateBuilder.deleteIms(deleteIm)
+        updateBuilder.deleteIm(deleteIm)
         updateBuilder.deleteLocal()
         updateBuilder.deleteName()
         updateBuilder.deleteNickName()
@@ -299,7 +298,7 @@ class UpdateUserSpec extends Specification {
         updateBuilder.addAddress(newAddress)
         updateBuilder.addEmail(newEmail)
         updateBuilder.addEntitlement(newEntit)
-        updateBuilder.addIms(newIm)
+        updateBuilder.addIm(newIm)
         updateBuilder.addPhoneNumber(newPhoneNumber)
         updateBuilder.addPhoto(newPhoto)
         updateBuilder.addRole(newRole)
@@ -318,13 +317,13 @@ class UpdateUserSpec extends Specification {
         updateBuilder.updateEntitlement(deleteEntit, newEntit)
         updateBuilder.updateExtension(extension)
         updateBuilder.updateExternalId(compareUser.getExternalId())
-        updateBuilder.updateIms(deleteIm, newIm)
+        updateBuilder.updateIm(deleteIm, newIm)
         updateBuilder.updateLocale(compareUser.getLocale())
         updateBuilder.updateName(compareUser.getName())
         updateBuilder.updateNickName(compareUser.getNickName())
         updateBuilder.updatePassword(compareUser.getPassword())
         updateBuilder.updatePhoneNumber(deletePhoneNumber, newPhoneNumber)
-        updateBuilder.updatePhotos(deletePhoto, newPhoto)
+        updateBuilder.updatePhoto(deletePhoto, newPhoto)
         updateBuilder.updatePreferredLanguage(compareUser.getPreferredLanguage())
         updateBuilder.updateProfileUrl(compareUser.getProfileUrl())
         updateBuilder.updateRole(deleteRole, newRole)
@@ -345,7 +344,6 @@ class UpdateUserSpec extends Specification {
         List<Email> emails = new ArrayList<Email>()
         emails.add(newEmail)
         emails.add(deleteEmail)
-
 
         List<Entitlement> entitlements = new ArrayList<Entitlement>()
         entitlements.add(newEntit)

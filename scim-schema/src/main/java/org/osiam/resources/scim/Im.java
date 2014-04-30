@@ -121,7 +121,6 @@ public class Im extends MultiValuedAttribute {
                 + ", operation=" + getOperation() + "]";
     }
 
-
     /**
      * Builder class that is used to build {@link Im} instances
      */
