@@ -824,7 +824,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         }
 
         /**
-         * updates all fields in the given extension. If the User doesn't have the given extension fields, they will be
+         * updates the given fields in the extension. If the User doesn't have the given extension fields, they will be
          * added.
          * 
          * @param extension
