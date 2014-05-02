@@ -73,12 +73,12 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
     private static final Client client = ClientBuilder.newClient();
 
     private final String endpoint;
-    private String clientId;
-    private String clientSecret;
-    private String clientRedirectUri;
+    private final String clientId;
+    private final String clientSecret;
+    private final String clientRedirectUri;
     private String scopes;
-    private String password;
-    private String userName;
+    private final String password;
+    private final String userName;
     private GrantType grantType;
 
     private final WebTarget targetEndpoint;
