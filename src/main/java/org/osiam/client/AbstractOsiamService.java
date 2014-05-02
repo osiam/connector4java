@@ -57,8 +57,8 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.OsiamRequestException;
 import org.osiam.client.exception.ScimErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
 import org.osiam.resources.helper.UserDeserializer;
 import org.osiam.resources.scim.Resource;
 import org.osiam.resources.scim.SCIMSearchResult;
@@ -152,6 +152,10 @@ abstract class AbstractOsiamService<T extends Resource> {
         return searchResources("count=" + Integer.MAX_VALUE, accessToken).getResources();
     }
 
+    /**
+     * @deprecated Use {@link AbstractOsiamService#searchResources(Query, AccessToken)}
+     */
+    @Deprecated
     protected SCIMSearchResult<T> searchResources(String queryString, AccessToken accessToken) {
         ensureAccessTokenIsNotNull(accessToken);
 
@@ -203,11 +207,20 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
+    /**
+     * @deprecated Use {@link AbstractOsiamService#searchResources(Query, AccessToken)}
+     */
+    @Deprecated
+    protected SCIMSearchResult<T> searchResources(org.osiam.client.query.Query query, AccessToken accessToken) {
         if (query == null) {
             throw new IllegalArgumentException("The given queryBuilder can't be null.");
         }
         return searchResources(query.toString(), accessToken);
+    }
+    
+    protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
+        //TODO implement
+        return null;
     }
 
     protected void deleteResource(String id, AccessToken accessToken) {

@@ -26,8 +26,8 @@ package org.osiam.client;
 import java.util.List;
 
 import org.osiam.client.connector.OsiamConnector; // NOSONAR : needed for Javadoc
+import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateGroup;
@@ -64,16 +64,28 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
 
     /**
      * See {@link OsiamConnector#searchGroups(String, AccessToken)}
+     * @deprecated Use {@link OsiamGroupService#searchGroups(Query, AccessToken)}
      */
+    @Deprecated
     public SCIMSearchResult<Group> searchGroups(String queryString, AccessToken accessToken) {
         return searchResources(queryString, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#searchGroups(Query, AccessToken)}
+     * @deprecated Use {@link OsiamGroupService#searchGroups(Query, AccessToken)}
+     */
+    @Deprecated
+    public SCIMSearchResult<Group> searchGroups(org.osiam.client.query.Query query, AccessToken accessToken) {
+        return searchResources(query, accessToken);
+    }
+    
+    /**
+     * See {@link OsiamConnector#searchGroups(Query, AccessToken)}
      */
     public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
-        return searchResources(query, accessToken);
+        // TODO: implement
+        return null;
     }
 
     /**

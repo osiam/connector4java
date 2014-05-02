@@ -35,11 +35,11 @@ import org.osiam.client.exception.ForbiddenException; // NOSONAR : needed for Ja
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
+import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
-import org.osiam.client.query.Query;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
@@ -78,18 +78,18 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *            a valid Builder that holds all needed variables
      */
     private OsiamConnector(Builder builder) {
-        this.clientId = builder.clientId;
-        this.clientSecret = builder.clientSecret;
-        this.grantType = builder.grantType;
-        this.username = builder.username;
-        this.password = builder.password;
-        this.authServiceEndpoint = builder.authServiceEndpoint;
-        this.resourceServiceEndpoint = builder.resourceServiceEndpoint;
-        this.genEndpoint = builder.genEndpoint;
-        this.scope = builder.scope;
-        this.scopes = builder.scopes;
-        this.stringScope = builder.stringScope;
-        this.clientRedirectUri = builder.clientRedirectUri;
+        clientId = builder.clientId;
+        clientSecret = builder.clientSecret;
+        grantType = builder.grantType;
+        username = builder.username;
+        password = builder.password;
+        authServiceEndpoint = builder.authServiceEndpoint;
+        resourceServiceEndpoint = builder.resourceServiceEndpoint;
+        genEndpoint = builder.genEndpoint;
+        scope = builder.scope;
+        scopes = builder.scopes;
+        stringScope = builder.stringScope;
+        clientRedirectUri = builder.clientRedirectUri;
     }
 
     /**
@@ -136,7 +136,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             return authServiceEndpoint;
         }
         if (!(genEndpoint == null || genEndpoint.isEmpty())) {
-            StringBuilder endpoint = new StringBuilder(this.genEndpoint);
+            StringBuilder endpoint = new StringBuilder(genEndpoint);
             if (!genEndpoint.endsWith("/")) {
                 endpoint.append("/");
             }
@@ -151,7 +151,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             return resourceServiceEndpoint;
         }
         if (!(genEndpoint == null || genEndpoint.isEmpty())) {
-            StringBuilder endpoint = new StringBuilder(this.genEndpoint);
+            StringBuilder endpoint = new StringBuilder(genEndpoint);
             if (!genEndpoint.endsWith("/")) {
                 endpoint.append("/");
             }
@@ -246,7 +246,9 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *             if the connection to the given OSIAM service could not be initialized
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user">https://github.com/osiam/connector4java/wiki/Working-with-user#search-for-user</a>
+     * @deprecated Use {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
+    @Deprecated
     public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
         return userService().searchUsers(queryString, accessToken);
     }
@@ -265,9 +267,31 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *             if the scope doesn't allow this request
      * @throws ConnectionInitializationException
      *             if the connection to the given OSIAM service could not be initialized
+     * @deprecated Use {@link OsiamConnector#searchUsers(Query, AccessToken)}
+     */
+    @Deprecated
+    public SCIMSearchResult<User> searchUsers(org.osiam.client.query.Query query, AccessToken accessToken) {
+        return userService().searchUsers(query, accessToken);
+    }
+    
+    /**
+     * Search for existing Users by the given {@link org.osiam.client.nquery.Query Query}.
+     * 
+     * @param query
+     *        containing the query to execute.
+     * @param accessToken
+     *        the OSIAM access token from for the current session
+     * @return a SCIMSearchResult Containing a list of all found Users
+     * @throws UnauthorizedException
+     *         if the request could not be authorized.
+     * @throws ForbiddenException
+     *         if the scope doesn't allow this request
+     * @throws ConnectionInitializationException
+     *         if the connection to the given OSIAM service could not be initialized
      */
     public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
-        return userService().searchUsers(query, accessToken);
+        // TODO: implement
+        return null;
     }
 
     /**
@@ -371,7 +395,9 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *             if the connection to the given OSIAM service could not be initialized
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
+     * @deprecated Use {@link OsiamConnector#searchGroups(Query, AccessToken)}
      */
+    @Deprecated
     public SCIMSearchResult<Group> searchGroups(String queryString, AccessToken accessToken) {
         return groupService().searchGroups(queryString, accessToken);
     }
@@ -393,9 +419,34 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *             if the connection to the given OSIAM service could not be initialized
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
+     * @deprecated Use {@link OsiamConnector#searchGroups(Query, AccessToken)}
+     */
+    @Deprecated
+    public SCIMSearchResult<Group> searchGroups(org.osiam.client.query.Query query, AccessToken accessToken) {
+        return groupService().searchGroups(query, accessToken);
+    }
+    
+    /**
+     * Search for existing groups by a given {@link org.osiam.client.nquery.Query Query}. For more detailed information about the possible logical
+     * operators and usable fields please have a look into the wiki.
+     * 
+     * @param query
+     *        containing the needed search where statement
+     * @param accessToken
+     *        the OSIAM access token from for the current session
+     * @return a SCIMSearchResult containing a list of all found Groups
+     * @throws UnauthorizedException
+     *         if the request could not be authorized.
+     * @throws ForbiddenException
+     *         if the scope doesn't allow this request
+     * @throws ConnectionInitializationException
+     *         if the connection to the given OSIAM service could not be initialized
+     * @see <a
+     *      href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
      */
     public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
-        return groupService().searchGroups(query, accessToken);
+        // TODO: implement
+        return null;
     }
 
     /**
@@ -681,7 +732,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          * @return The builder itself
          */
         public Builder setEndpoint(String endpoint) {
-            this.genEndpoint = endpoint;
+            genEndpoint = endpoint;
             return this;
         }
 
@@ -693,7 +744,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          * @return The builder itself
          */
         public Builder setAuthServerEndpoint(String endpoint) {
-            this.authServiceEndpoint = endpoint;
+            authServiceEndpoint = endpoint;
             return this;
         }
 
@@ -705,7 +756,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          * @return The builder itself
          */
         public Builder setResourceServerEndpoint(String endpoint) {
-            this.resourceServiceEndpoint = endpoint;
+            resourceServiceEndpoint = endpoint;
             return this;
         }
 
@@ -732,7 +783,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          * @return The builder itself
          */
         public Builder setScope(String scope) {
-            this.stringScope = scope;
+            stringScope = scope;
             return this;
         }
 
@@ -783,7 +834,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          * @return The builder itself
          */
         public Builder setUserName(String userName) {
-            this.username = userName;
+            username = userName;
             return this;
         }
 

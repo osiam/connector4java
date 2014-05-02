@@ -43,8 +43,8 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateUser;
@@ -156,16 +156,28 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
     /**
      * See {@link OsiamConnector#searchUsers(String, AccessToken)}
+     * @deprecated Use {@link OsiamUserService#searchUsers(Query, AccessToken)} instead
      */
+    @Deprecated
     public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
         return super.searchResources(queryString, accessToken);
     }
 
     /**
+     * See {@link OsiamConnector#searchUsers(org.osiam.client.query.Query, AccessToken)}
+     * @deprecated Use {@link OsiamUserService#searchUsers(Query, AccessToken)} instead
+     */
+    @Deprecated
+    public SCIMSearchResult<User> searchUsers(org.osiam.client.query.Query query, AccessToken accessToken) {
+        return super.searchResources(query, accessToken);
+    }
+    
+    /**
      * See {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
     public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
-        return super.searchResources(query, accessToken);
+        // TODO implement
+        return null;
     }
 
     /**
