@@ -75,7 +75,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamConnectorTest {
 
-    private final static String ENDPOINT = "http://localhost:9090/";
+    private final static String ENDPOINT = "http://localhost:9090";
     static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server/";
     private static final String URL_BASE_USERS = "/osiam-resource-server//Users";
     private static final String URL_BASE_ME = "/osiam-resource-server//me";
@@ -298,11 +298,11 @@ public class OsiamConnectorTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenAnUserID() {
-        this.searchedUserID = userIdString;
+        searchedUserID = userIdString;
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
@@ -502,7 +502,7 @@ public class OsiamConnectorTest {
     }
 
     private void givenAGroupID() {
-        this.searchedGroupId = GROUP_ID_STRING;
+        searchedGroupId = GROUP_ID_STRING;
     }
 
     private void thenReturnedGroupHasID(String id) {
@@ -597,7 +597,7 @@ public class OsiamConnectorTest {
     }
 
     private void given_oauth_server_issues_access_token() {
-        stubFor(post(urlEqualTo("/osiam-auth-server/" + TOKEN_PATH)).
+        stubFor(post(urlEqualTo("/osiam-auth-server" + TOKEN_PATH)).
                 willReturn(aResponse()
                         .withStatus(HttpStatus.SC_OK)
                         .withBodyFile("valid_accesstoken.json")));

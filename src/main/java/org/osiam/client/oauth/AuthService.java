@@ -23,37 +23,32 @@
 
 package org.osiam.client.oauth;
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.StatusType;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriBuilderException;
+
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException;
@@ -64,6 +59,7 @@ import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 
 /**
  * The AuthService provides access to the OAuth2 service used to authorize
@@ -72,10 +68,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public final class AuthService { // NOSONAR - Builder constructs instances of
                                  // this class
 
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String ACCEPT = "Accept";
     private static final String BEARER = "Bearer ";
     private static final Charset CHARSET = Charset.forName("UTF-8");
+    private static final Client client = ClientBuilder.newClient();
+
     private final String endpoint;
     private String clientId;
     private String clientSecret;
@@ -85,8 +81,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
     private String userName;
     private GrantType grantType;
 
-    private Header[] headers;
-    private HttpEntity body;
+    private final WebTarget targetEndpoint;
 
     /**
      * The private constructor for the AuthService. Please use the
@@ -104,6 +99,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
+
+        targetEndpoint = client.target(endpoint);
     }
 
     /**
@@ -114,12 +111,37 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
             throw new IllegalAccessError("For the grant type " + GrantType.AUTHORIZATION_CODE
                     + " you need to retrieve a authentication code first.");
         }
-        HttpResponse response = performRequest();
-        int status = response.getStatusLine().getStatusCode();
 
-        checkAndHandleHttpStatus(response, status);
+        String authHeaderValue = "Basic " + encodeClientCredentials();
+        Form form = new Form();
+        form.param("scope", scopes);
+        form.param("grant_type", grantType.getUrlParam());
+        // FIXME: grantType == GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS
+        if (grantType != GrantType.REFRESH_TOKEN) {
+            if (userName != null) {
+                form.param("username", userName);
+            }
+            if (password != null) {
+                form.param("password", password);
+            }
+        }
 
-        return getAccessToken(response);
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("/oauth/token").request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", authHeaderValue)
+                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+        }
+
+        checkAndHandleResponse(content, status);
+
+        return getAccessToken(content);
     }
 
     /**
@@ -152,55 +174,84 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
     public AccessToken retrieveAccessToken(String authCode) {
-        if (authCode == null) {
-            throw new IllegalArgumentException("The given authentication code can't be null.");
-        }
+        checkArgument(!Strings.isNullOrEmpty(authCode), "The given authentication code can't be null.");
 
-        HttpPost realWebResource = getWebRessourceToEchangeAuthCode(authCode);
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpResponse response;
-        int httpStatus;
+        String authHeaderValue = "Basic " + encodeClientCredentials();
+        Form form = new Form();
+        form.param("code", authCode);
+        form.param("grant_type", "authorization_code");
+        form.param("redirect_uri", clientRedirectUri);
+
+        StatusType status;
+        String content;
         try {
-            response = httpClient.execute(realWebResource);
-            httpStatus = response.getStatusLine().getStatusCode();
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
+            Response response = targetEndpoint.path("/oauth/token").request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", authHeaderValue)
+                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
-        if (httpStatus != SC_OK) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response);
+        // TODO: consolidate with checkAndHandleResponse()
+        if (status.getStatusCode() != Status.OK.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+
+            if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
                 throw new ConflictException(errorMessage);
-            default:
-                errorMessage = getErrorMessage(response);
+            } else {
                 throw new ConnectionInitializationException(errorMessage);
             }
         }
 
-        return getAccessToken(response);
+        return getAccessToken(content);
     }
 
     /**
      * @see OsiamConnector#refreshAccessToken(AccessToken, Scope...)
      */
-    public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] scopes) {
-        if (scopes.length != 0) {
+    public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] newScopes) {
+        if (newScopes.length != 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            for (Scope scope : scopes) {
+            for (Scope scope : newScopes) {
                 stringBuilder.append(" ").append(scope.toString());
             }
-            this.scopes = stringBuilder.toString().trim();
+            // FIXME: changing the scope? AuthService should be immutable.
+            scopes = stringBuilder.toString().trim();
         }
+        // FIXME: changing the grantType? AuthService should be immutable.
         grantType = GrantType.REFRESH_TOKEN;
 
-        HttpResponse response = performRequest(accessToken);
-        int status = response.getStatusLine().getStatusCode();
+        Form form = new Form();
+        form.param("scope", scopes);
+        form.param("grant_type", grantType.getUrlParam());
 
-        checkAndHandleHttpStatus(response, status);
+        // FIXME: should be a guard on method entry
+        if (accessToken.getRefreshToken() == null) {
+            throw new ConnectionInitializationException(
+                    "Unable to perform a refresh_token_grant request without refresh token.");
+        }
+        form.param("refresh_token", accessToken.getRefreshToken());
 
-        return getAccessToken(response);
+        String authHeaderValue = "Basic " + encodeClientCredentials();
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("/oauth/token").request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", authHeaderValue)
+                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+        }
+
+        checkAndHandleResponse(content, status);
+
+        return getAccessToken(content);
     }
 
     /**
@@ -210,206 +261,102 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
      */
     public URI getRedirectLoginUri() {
         if (grantType != GrantType.AUTHORIZATION_CODE) {
+            // FIXME: IllegalAccessError must be replaced with
+            // IllegalStateException
             throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE
                     + " to be able to use this method.");
         }
-        URI returnUri;
+
         try {
-            returnUri = new URIBuilder().setPath(getFinalEndpoint())
-                    .addParameter("client_id", clientId)
-                    .addParameter("response_type", "code")
-                    .addParameter("redirect_uri", clientRedirectUri)
-                    .addParameter("scope", scopes)
+            return UriBuilder.fromUri(endpoint).path("/oauth/authorize")
+                    .queryParam("client_id", clientId)
+                    .queryParam("response_type", "code")
+                    .queryParam("redirect_uri", clientRedirectUri)
+                    .queryParam("scope", scopes)
                     .build();
-        } catch (URISyntaxException e) {
+        } catch (UriBuilderException | IllegalArgumentException e) {
+            // FIXME: must be replaced with a different exception
             throw new ConnectionInitializationException("Unable to create redirect URI", e);
         }
-        return returnUri;
     }
 
     /**
      * @see OsiamConnector#validateAccessToken(AccessToken, AccessToken)
      */
     public AccessToken validateAccessToken(AccessToken tokenToValidate, AccessToken tokenToAuthorize) {
-        if (tokenToValidate == null || tokenToAuthorize == null) {
-            throw new IllegalArgumentException("The given accessToken can't be null.");
-        }
-        DefaultHttpClient httpclient = new DefaultHttpClient();
+        checkNotNull(tokenToValidate, "The tokenToValidate must not be null.");
+        checkNotNull(tokenToAuthorize, "The tokenToAuthorize must not be null.");
 
-        HttpResponse response;
+        StatusType status;
+        String content;
         try {
-            URI uri = new URI(endpoint + "/token/validation/" + tokenToValidate.getToken());
-            HttpPost realWebResource = new HttpPost(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + tokenToAuthorize.getToken());
-            realWebResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-            response = httpclient.execute(realWebResource);
-        } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("", e);
-        }
-        int httpStatus = response.getStatusLine().getStatusCode();
+            Response response = targetEndpoint.path("/token/validation/").path(tokenToValidate.getToken())
+                    .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + tokenToAuthorize.getToken())
+                    .post(null);
 
-        if (httpStatus == SC_BAD_REQUEST) {
-            String errorMessage = getErrorMessage(response);
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+        }
+
+        if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
             throw new AccessTokenValidationException(errorMessage);
         }
 
-        checkAndHandleHttpStatus(response, httpStatus);
+        checkAndHandleResponse(content, status);
 
-        return getAccessToken(response);
+        return getAccessToken(content);
     }
 
-    private HttpResponse performRequest(AccessToken... accessTokens) {
-        buildHead();
-        buildBody(accessTokens);
-        HttpPost post = new HttpPost(getFinalEndpoint());
-        post.setHeaders(headers);
-        post.setEntity(body);
-
-        HttpClient defaultHttpClient = new DefaultHttpClient();
-        final HttpResponse response;
-        try {
-            response = defaultHttpClient.execute(post);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to perform Request ", e);
-        }
-        return response;
-    }
-
-    private void buildHead() {
-        String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
-        Header authHeader = new BasicHeader("Authorization", authHeaderValue);
-        Header acceptHeader = new BasicHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
-        headers = new Header[] {
-                authHeader, acceptHeader
-        };
-    }
-
-    private String encodeClientCredentials(String clientId, String clientSecret) {
+    private String encodeClientCredentials() {
         String clientCredentials = clientId + ":" + clientSecret;
         clientCredentials = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
         return clientCredentials;
     }
 
-    private void buildBody(AccessToken... accessTokens) {
-        List<NameValuePair> nameValuePairs = new ArrayList<>();
-        nameValuePairs.add(new BasicNameValuePair("scope", scopes));
-        nameValuePairs.add(new BasicNameValuePair("grant_type", grantType.getUrlParam())); // NOSONAR
-                                                                                           // -
-                                                                                           // we
-                                                                                           // check
-                                                                                           // before
-                                                                                           // that
-                                                                                           // the
-                                                                                           // grantType
-                                                                                           // is
-                                                                                           // not
-                                                                                           // null
-        if (grantType != GrantType.REFRESH_TOKEN) {
-            if (userName != null) {
-                nameValuePairs.add(new BasicNameValuePair("username", userName));
-            }
-            if (password != null) {
-                nameValuePairs.add(new BasicNameValuePair("password", password));
-            }
-        } else if (grantType == GrantType.REFRESH_TOKEN && accessTokens.length != 0) {
-            if (accessTokens[0].getRefreshToken() == null) {
-                throw new ConnectionInitializationException(
-                        "Unable to perform a refresh_token_grant request without refresh token.");
-            }
-            nameValuePairs.add(new BasicNameValuePair("refresh_token", accessTokens[0].getRefreshToken()));
+    private void checkAndHandleResponse(String content, StatusType status) {
+        if (status.getStatusCode() == Status.OK.getStatusCode()) {
+            return;
         }
 
-        try {
-            body = new UrlEncodedFormEntity(nameValuePairs);
-        } catch (UnsupportedEncodingException e) {
-            throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
-        }
-    }
+        final String errorMessage = extractErrorMessage(content, status);
 
-    private void checkAndHandleHttpStatus(HttpResponse response, int status) {
-        if (status != SC_OK) {
-            String errorMessage;
-            switch (status) {
-            case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response);
-                throw new ConnectionInitializationException(errorMessage);
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessage(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response);
-                throw new ConnectionInitializationException(errorMessage);
-            default:
-                errorMessage = getErrorMessage(response);
-                throw new ConnectionInitializationException(errorMessage);
-            }
-        }
-    }
-
-    private String getErrorMessage(HttpResponse httpResponse) {
-        String errorMessage;
-        InputStream content = null;
-        String inputStreamStringValue = null;
-
-        try {
-            content = httpResponse.getEntity().getContent();
-            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-            ObjectMapper mapper = new ObjectMapper();
-            OAuthErrorMessage error = mapper.readValue(inputStreamStringValue, OAuthErrorMessage.class);
-            errorMessage = error.getDescription();
-        } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = " Could not deserialize the error response for the status code \""
-                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
-            if (inputStreamStringValue != null) {
-                errorMessage += " Original response: " + inputStreamStringValue;
-            }
-        }
-
-        return errorMessage;
-    }
-
-    private AccessToken getAccessToken(HttpResponse response) {
-        final AccessToken accessToken;
-        try {
-            InputStream content = response.getEntity().getContent();
-            ObjectMapper mapper = new ObjectMapper();
-            accessToken = mapper.readValue(content, AccessToken.class);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token: IOException", e);
-        }
-        return accessToken;
-    }
-
-    private String getFinalEndpoint() {
-        String finalEndpoint = endpoint;
-        if (grantType.equals(GrantType.AUTHORIZATION_CODE)) {// NOSONAR - we
-                                                             // check before
-                                                             // that the
-                                                             // grantType is not
-                                                             // null
-            finalEndpoint += "/oauth/authorize";
+        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
+            throw new UnauthorizedException(errorMessage);
         } else {
-            finalEndpoint += "/oauth/token";
+            throw new ConnectionInitializationException(errorMessage);
         }
-        return finalEndpoint;
     }
 
-    private HttpPost getWebRessourceToEchangeAuthCode(String authCode) {
-        HttpPost realWebResource = new HttpPost(endpoint + "/oauth/token");
-        String authHeaderValue = "Basic " + encodeClientCredentials(clientId, clientSecret);
-        realWebResource.addHeader("Authorization", authHeaderValue);
-
-        List<NameValuePair> nameValuePairs = new ArrayList<>();
-        nameValuePairs.add(new BasicNameValuePair("code", authCode));
-        nameValuePairs.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        nameValuePairs.add(new BasicNameValuePair("redirect_uri", clientRedirectUri));
-
+    private String extractErrorMessage(String content, StatusType status) {
         try {
-            realWebResource.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new ConnectionInitializationException("Unable to Build Request in this encoding.", e);
+            OAuthErrorMessage error = new ObjectMapper().readValue(content, OAuthErrorMessage.class);
+
+            return error.getDescription();
+        } catch (Exception e) { // NOSONAR - we catch everything
+            String errorMessage = String.format("Could not deserialize the error response for the HTTP status '%s'.",
+                    status.getReasonPhrase());
+            if (content != null) {
+                errorMessage += String.format(" Original response: %s", content);
+            }
+
+            return errorMessage;
         }
-        return realWebResource;
+    }
+
+    private AccessToken getAccessToken(String content) {
+        try {
+            return new ObjectMapper().readValue(content, AccessToken.class);
+        } catch (IOException e) {
+            // FIXME: replace with an other exception. IOExceptions means that
+            // jackson could not map/parse json
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+        }
     }
 
     /**
