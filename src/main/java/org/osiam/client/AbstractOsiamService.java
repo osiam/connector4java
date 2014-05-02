@@ -71,37 +71,36 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
- * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
- * installation. For the construction of an instance please use the included {@link AbstractOsiamService.Builder}
+ * AbstractOsiamService provides all basic methods necessary to manipulate the
+ * Entities registered in the given OSIAM installation. For the construction of
+ * an instance please use the included {@link AbstractOsiamService.Builder}
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
     private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    private final HttpGet webResource;
-    private Class<T> type;
-    private String typeName;
-    private ObjectMapper mapper;
+    private static final ContentType CONTENT_TYPE = ContentType.create("application/json");
     protected static final String AUTHORIZATION = "Authorization";
     protected static final String ACCEPT = "Accept";
     protected static final String BEARER = "Bearer ";
-    private DefaultHttpClient httpclient;
-    private ContentType contentType;
-    private String endpoint;
 
-    @SuppressWarnings("unchecked")
-    protected AbstractOsiamService(@SuppressWarnings("rawtypes") Builder builder) {
+    private final HttpGet webResource;
+    private final Class<T> type;
+    private final String typeName;
+    private final ObjectMapper mapper;
+    private final String endpoint;
+
+    private DefaultHttpClient httpclient;
+
+    protected AbstractOsiamService(Builder<T> builder) {
+        type = builder.type;
+        typeName = builder.typeName;
+        endpoint = builder.endpoint;
+        webResource = builder.getWebResource();
+
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
                 .addDeserializer(User.class, new UserDeserializer(User.class));
         mapper.registerModule(userDeserializerModule);
-
-        contentType = ContentType.create("application/json");
-        webResource = builder.getWebResource();
-        type = (Class<T>)
-                ((ParameterizedType) getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0];
-        typeName = type.getSimpleName();
-        endpoint = builder.endpoint;
     }
 
     protected T getResource(String id, AccessToken accessToken) {
@@ -153,7 +152,8 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     /**
-     * @deprecated Use {@link AbstractOsiamService#searchResources(Query, AccessToken)}
+     * @deprecated Use
+     *             {@link AbstractOsiamService#searchResources(Query, AccessToken)}
      */
     @Deprecated
     protected SCIMSearchResult<T> searchResources(String queryString, AccessToken accessToken) {
@@ -208,7 +208,8 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     /**
-     * @deprecated Use {@link AbstractOsiamService#searchResources(Query, AccessToken)}
+     * @deprecated Use
+     *             {@link AbstractOsiamService#searchResources(Query, AccessToken)}
      */
     @Deprecated
     protected SCIMSearchResult<T> searchResources(org.osiam.client.query.Query query, AccessToken accessToken) {
@@ -217,9 +218,9 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
         return searchResources(query.toString(), accessToken);
     }
-    
+
     protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
-        //TODO implement
+        // TODO implement
         return null;
     }
 
@@ -277,7 +278,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         HttpResponse response;
         try {
             String userAsString = mapper.writeValueAsString(resource);
-            realWebResource.setEntity(new StringEntity(userAsString, contentType));
+            realWebResource.setEntity(new StringEntity(userAsString, CONTENT_TYPE));
             response = httpclient.execute(realWebResource);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
@@ -334,7 +335,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         String userAsString;
         try {
             userAsString = mapper.writeValueAsString(resource);
-            finalWebResource.setEntity(new StringEntity(userAsString, contentType));
+            finalWebResource.setEntity(new StringEntity(userAsString, CONTENT_TYPE));
             response = httpclient.execute(finalWebResource);
         } catch (IOException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
