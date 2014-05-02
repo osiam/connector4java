@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.Charsets;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.Attribute;
 import org.osiam.client.query.metamodel.Comparison;
@@ -256,9 +255,8 @@ public class Query {
             StringBuilder builder = new StringBuilder();
             if (filter != null) {
                 try{
-                ensureQueryParamIsSeparated(builder);
-                builder.append("filter=")
-                	.append(URLEncoder.encode(filter, Charsets.UTF_8.name()));
+                    ensureQueryParamIsSeparated(builder);
+                    builder.append("filter=").append(URLEncoder.encode(filter, "UTF-8"));
                 }catch(UnsupportedEncodingException e)    {
                     throw new RuntimeException(e);  // NOSONAR - The UnsupportedEncodingException will in real time "never" happen and if yes a runtime exception will catch the problem
                 }
