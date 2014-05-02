@@ -39,7 +39,9 @@ import org.osiam.resources.scim.Resource;
 
 /**
  * This class represents a query as it is run against the OSIAM service.
+ * @deprecated See {@link org.osiam.client.nquery.Query}
  */
+@Deprecated
 public class Query {
     private static final int DEFAULT_COUNT = 100;
     private static final int DEFAULT_INDEX = 1;
@@ -51,6 +53,10 @@ public class Query {
     private Matcher indexMatcher;
     private Matcher countMatcher;
 
+    /**
+     * @deprecated See {@link org.osiam.client.nquery.QueryBuilder}
+     */
+    @Deprecated
     public Query(String queryString) {
         this.queryString = queryString;
         indexMatcher = INDEX_PATTERN.matcher(queryString);
@@ -223,7 +229,7 @@ public class Query {
          * @return The Builder with this count per page added.
          */
         public Builder setCountPerPage(int count) {
-            this.countPerPage = count;
+            countPerPage = count;
             return this;
         }
 
@@ -234,7 +240,7 @@ public class Query {
          * @return The Builder with sortBy added.
          */
         public Builder setSortBy(Attribute attribute) {
-            if (!(isAttributeValid(attribute.toString()))) {
+            if (!isAttributeValid(attribute.toString())) {
                 throw new InvalidAttributeException("Sorting for this attribute is not supported");//TODO
             }
             sortBy = attribute.toString();
@@ -471,7 +477,7 @@ public class Query {
         }
 
         private Filter query(Comparison comparison) {
-            if (!(isAttributeValid(comparison))) {
+            if (!isAttributeValid(comparison)) {
                 throw new InvalidAttributeException("Querying for this attribute is not supported");
             }
 
