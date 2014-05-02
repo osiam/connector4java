@@ -99,13 +99,6 @@
             <version>0.43-SNAPSHOT</version>
         </dependency>
 
-        <!-- Used for access token retrieval -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
