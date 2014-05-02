@@ -26,5 +26,66 @@ package org.osiam.client.nquery;
  * This class represents query for submission to the resource server.
  */
 public class Query {
+    private final String attributes;
+    private final String filter;
+    private final String sortBy;
+    private final String sortOrder;
+    private final long startIndex;
+    private final int count;
+    
+    /**
+     * Creates a new {@link Query} from the given Builder.
+     * @param builder
+     */
+    Query(QueryBuilder builder) {
+        attributes = builder.attributes;
+        filter = builder.filter;
+        sortBy = builder.sortBy;
+        sortOrder = builder.sortOrder;
+        startIndex = builder.startIndex;
+        count = builder.count;
+    }
 
+    /**
+     * Gets the attributes of the resources to return.
+     */
+    public String getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * Gets the filter string.
+     */
+    public String getFilter() {
+        return filter;
+    }
+
+    /**
+     * Gets the attribute to sort the returned resources by.
+     */
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    /**
+     * Gets the sort order (ascending, descending) of the returned resources.
+     */
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    /**
+     * Gets the index (1-based) of the first resource in the list of returned resource.
+     */
+    public long getStartIndex() {
+        return startIndex;
+    }
+
+    /**
+     * Gets the number of returned resources per page.
+     */
+    public int getCount() {
+        return count;
+    }
+    
 }
