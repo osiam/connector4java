@@ -96,7 +96,7 @@ public class OsiamUserMeTest {
         thenReturnedUserMatchesExpectations();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void accessToken_is_null_by_getting_me_user_raises_exception() throws Exception {
         givenIDisEmpty();
         accessToken = null;
