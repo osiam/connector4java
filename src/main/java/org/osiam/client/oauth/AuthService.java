@@ -49,6 +49,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException;
@@ -70,7 +74,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
 
     private static final String BEARER = "Bearer ";
     private static final Charset CHARSET = Charset.forName("UTF-8");
-    private static final Client client = ClientBuilder.newClient();
+    private static final Client client = ClientBuilder.newClient(new ClientConfig()
+            .connectorProvider(new ApacheConnectorProvider())
+            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED));
 
     private final String endpoint;
     private final String clientId;
