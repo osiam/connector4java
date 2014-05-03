@@ -61,11 +61,11 @@ public class OsiamUserMeTest {
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final static private String COUNTRY = "Germany";
-    final static private String ENDPOINT = "http://localhost:9090/osiam-server/";
+    final static private String ENDPOINT = "http://localhost:9090/osiam-server";
     final static private String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String URL_BASE = "/osiam-server//Users";
-    private static final String URL_BASE_USERS = "/osiam-server//Users";
-    private static final String URL_BASE_ME = "/osiam-server//me";
+    private static final String URL_BASE = "/osiam-server/Users";
+    private static final String URL_BASE_USERS = "/osiam-server/Users";
+    private static final String URL_BASE_ME = "/osiam-server/me";
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -119,7 +119,7 @@ public class OsiamUserMeTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void whenMeIsLookedUp() {

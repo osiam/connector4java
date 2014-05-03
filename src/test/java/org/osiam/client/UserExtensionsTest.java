@@ -48,8 +48,8 @@ public class UserExtensionsTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090);
 
-    private final static String URL_BASE = "/osiam-auth-server//Users";
-    private final static String ENDPOINT = "http://localhost:9090/osiam-auth-server/";
+    private final static String URL_BASE = "/osiam-auth-server/Users";
+    private final static String ENDPOINT = "http://localhost:9090/osiam-auth-server";
     private final static String USER_ID_WITHOUT_EXTENSION = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String USER_ID_WITH_EXTENSION = "a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String ENTERPRISE_EXTENSION_URN = "urn:scim:schemas:extension:enterprise:2.0:User";
@@ -100,7 +100,7 @@ public class UserExtensionsTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenUserIdIsLookedUp() {

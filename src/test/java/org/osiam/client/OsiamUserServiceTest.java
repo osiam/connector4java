@@ -72,14 +72,14 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamUserServiceTest {
 
-    private static final String URL_BASE = "/osiam-server//Users";
+    private static final String URL_BASE = "/osiam-server/Users";
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     private final static String COUNTRY = "Germany";
     private final static String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
-    private final static String endpoint = "http://localhost:9090/osiam-server/";
+    private final static String endpoint = "http://localhost:9090/osiam-server";
     private final static String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
 
     private String searchedID;
@@ -128,7 +128,7 @@ public class OsiamUserServiceTest {
         fail("Exception expected");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenIDisEmpty();
         accessToken = null;
@@ -227,14 +227,14 @@ public class OsiamUserServiceTest {
         thenSortedQueryStringIsSplitCorrectly();
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void create_null_user_raises_exception(){
         User newUser = null;
         service.createUser(newUser, accessToken);
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void create_user_with_null_accestoken_raises_exception(){
         User newUser = new User.Builder("cuwna").build();
         service.createUser(newUser, null);
@@ -248,7 +248,7 @@ public class OsiamUserServiceTest {
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void delete_user_with_null_accestoken_raises_exception(){
         String id = "HelloWorld";
         service.deleteUser(id, null);
@@ -256,11 +256,11 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenAnUserID() {
-        this.searchedID = USER_ID;
+        searchedID = USER_ID;
     }
 
     private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {

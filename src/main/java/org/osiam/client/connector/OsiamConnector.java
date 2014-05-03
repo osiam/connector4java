@@ -155,7 +155,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             if (!genEndpoint.endsWith("/")) {
                 endpoint.append("/");
             }
-            endpoint.append("osiam-resource-server/");
+            endpoint.append("osiam-resource-server");
             return endpoint.toString();
         }
         throw new InvalidAttributeException("No endpoint to the OSIAM server has been set");

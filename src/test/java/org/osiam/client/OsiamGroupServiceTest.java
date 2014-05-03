@@ -62,14 +62,14 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamGroupServiceTest {
 
-    private static final String URL_BASE = "/osiam-server//Groups";
+    private static final String URL_BASE = "/osiam-server/Groups";
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String INVALID_GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
     private static final String USER_ID_STRING = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String ENDPOINT = "http://localhost:9090/osiam-server/";
+    private static final String ENDPOINT = "http://localhost:9090/osiam-server";
     final static private int NUMBER_OF_EXPECTED_GROUPS = 7;
     final static private String SIMPLE_QUERY_STRING = "filter=displayName+eq+test_group01";
 
@@ -127,7 +127,7 @@ public class OsiamGroupServiceTest {
         fail("Exception expected");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void accessToken_is_null_by_getting_single_group_raises_exception() throws Exception {
         givenIDisEmpty();
         accessToken = null;
@@ -193,14 +193,14 @@ public class OsiamGroupServiceTest {
         fail("Exception expected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = NullPointerException.class)
     public void create_null_group_raises_exception(){
         Group newGroup = null;
         service.createGroup(newGroup, accessToken);
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = NullPointerException.class)
     public void create_group_with_null_accestoken_raises_exception(){
         Group newGroup = new Group.Builder().build();
         service.createGroup(newGroup, null);
@@ -214,7 +214,7 @@ public class OsiamGroupServiceTest {
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void delete_group_with_null_accestoken_raises_exception(){
         String id = "HelloWorld";
         service.deleteGroup(id, null);
@@ -222,11 +222,11 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenAGroupID() {
-        this.searchedId = GROUP_ID_STRING;
+        searchedId = GROUP_ID_STRING;
     }
 
     private void whenSingleGroupIsLookedUp() {
@@ -357,7 +357,7 @@ public class OsiamGroupServiceTest {
         for (MemberRef multiValuedAttribute : users) {
             Object value = multiValuedAttribute.getValue();
             assertTrue(value.getClass().equals(String.class));
-            String userId = (String) multiValuedAttribute.getValue();
+            String userId = multiValuedAttribute.getValue();
             assertEquals(USER_ID_STRING, userId);
             count++;
         }
