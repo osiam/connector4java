@@ -154,7 +154,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
      * @see OsiamConnector#retrieveAccessToken(HttpResponse)
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
+     * @deprecated This method will be removed in future releases
      */
+    @Deprecated
     public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
         String authCode = null;
         Header header = authCodeResponse.getLastHeader("Location");
