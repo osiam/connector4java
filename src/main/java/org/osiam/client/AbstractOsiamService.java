@@ -86,7 +86,7 @@ import com.google.common.base.Strings;
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
-    private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
+    protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
             .connectorProvider(new ApacheConnectorProvider())
             .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED));
@@ -98,12 +98,12 @@ abstract class AbstractOsiamService<T extends Resource> {
     private final HttpGet webResource;
     private final Class<T> type;
     private final String typeName;
-    private final ObjectMapper mapper;
+    protected final ObjectMapper mapper;
     private final String endpoint;
 
     private DefaultHttpClient httpclient;
 
-    private final WebTarget targetEndpoint;
+    protected final WebTarget targetEndpoint;
 
     protected AbstractOsiamService(Builder<T> builder) {
         type = builder.type;
@@ -144,7 +144,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 String errorMessage = extractErrorMessage(content, status, "No " + typeName + " with given id " + id);
                 throw new NoResultException(errorMessage);
             } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = getErrorMessageForbidden(accessToken, "get");
+                String errorMessage = extractErrorMessageForbidden(accessToken, "get");
                 throw new ForbiddenException(errorMessage);
             } else {
                 String errorMessage = extractErrorMessageDefault(content, status);
@@ -199,7 +199,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 errorMessage = getErrorMessageUnauthorized(response);
                 throw new UnauthorizedException(errorMessage);
             case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "get");
+                errorMessage = extractErrorMessageForbidden(accessToken, "get");
                 throw new ForbiddenException(errorMessage);
             case SC_CONFLICT:
                 errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString
@@ -269,7 +269,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                         + status.getReasonPhrase());
                 throw new ConflictException(errorMessage);
             } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = getErrorMessageForbidden(accessToken, "delete");
+                String errorMessage = extractErrorMessageForbidden(accessToken, "delete");
                 throw new ForbiddenException(errorMessage);
             } else {
                 String errorMessage = extractErrorMessageDefault(content, status);
@@ -310,7 +310,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 String errorMessage = extractErrorMessage(content, status, "Unable to save");
                 throw new ConflictException(errorMessage);
             } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = getErrorMessageForbidden(accessToken, "create");
+                String errorMessage = extractErrorMessageForbidden(accessToken, "create");
                 throw new ForbiddenException(errorMessage);
             } else {
                 String errorMessage = extractErrorMessageDefault(content, status);
@@ -377,7 +377,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                         + " could be found to be updated.");
                 throw new NoResultException(errorMessage);
             } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = getErrorMessageForbidden(accessToken, "update");
+                String errorMessage = extractErrorMessageForbidden(accessToken, "update");
                 throw new ForbiddenException(errorMessage);
             } else {
                 String errorMessage = extractErrorMessageDefault(content, status);
@@ -406,11 +406,11 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    private String getErrorMessageForbidden(AccessToken accessToken, String process) {
+    protected String extractErrorMessageForbidden(AccessToken accessToken, String process) {
         return "Insufficient scope (" + accessToken.getScopes() + ") to " + process + " this " + typeName + ".";
     }
 
-    private String extractErrorMessageUnauthorized(String content, StatusType status) {
+    protected String extractErrorMessageUnauthorized(String content, StatusType status) {
         return extractErrorMessage(content, status,
                 "You are not authorized to access OSIAM. Please make sure your access token is valid");
     }
@@ -420,7 +420,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 "You are not authorized to access OSIAM. Please make sure your access token is valid");
     }
 
-    private String extractErrorMessageDefault(String content, StatusType status) {
+    protected String extractErrorMessageDefault(String content, StatusType status) {
         return extractErrorMessage(content, status,
                 String.format("Unable to setup connection (HTTP Status Code: %d)", status.getStatusCode()));
     }
@@ -430,7 +430,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                 String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
     }
 
-    private String extractErrorMessage(String content, StatusType status, String defaultErrorMessage) {
+    protected String extractErrorMessage(String content, StatusType status, String defaultErrorMessage) {
         try {
             ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
 
