@@ -285,13 +285,15 @@ public class OsiamUserServiceTest {
     private void givenExpiredAccessTokenIsUsedForLookup() {
         stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(SC_UNAUTHORIZED)));
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void givenInvalidAccessTokenIsUsedForLookup() {
         stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(SC_UNAUTHORIZED)));
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void givenIDcanNotBeFound() {

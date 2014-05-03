@@ -244,13 +244,15 @@ public class OsiamGroupServiceTest {
     private void givenExpiredAccessTokenIsUsedForLookup() {
         stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(SC_UNAUTHORIZED)));
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void givenInvalidAccessTokenIsUsedForLookup() {
         stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(SC_UNAUTHORIZED)));
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void givenIDcanNotBeFound() {

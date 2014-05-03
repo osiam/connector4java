@@ -200,7 +200,8 @@ public class AuthServiceTest {
     private void given_oauth_server_cannot_issues_access_token_because_of_wrong_auth() {
         stubFor(post(urlEqualTo("/osiam-server" + TOKEN_PATH))
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.SC_UNAUTHORIZED)));
+                        .withStatus(HttpStatus.SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void when_token_is_requested() {
