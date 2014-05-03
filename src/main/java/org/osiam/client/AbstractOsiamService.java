@@ -435,7 +435,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
 
             return error.getDescription();
-        } catch (Exception e) {
+        } catch (ProcessingException | IOException e) {
             String errorMessage = String.format("Could not deserialize the error response for the HTTP status '%s'.",
                     status.getReasonPhrase());
             if (content != null) {
