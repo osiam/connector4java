@@ -76,10 +76,10 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 public class OsiamConnectorTest {
 
     private final static String ENDPOINT = "http://localhost:9090";
-    static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server/";
-    private static final String URL_BASE_USERS = "/osiam-resource-server//Users";
-    private static final String URL_BASE_ME = "/osiam-resource-server//me";
-    private static final String URL_BASE_GROUPS = "/osiam-resource-server//Groups";
+    static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server";
+    private static final String URL_BASE_USERS = "/osiam-resource-server/Users";
+    private static final String URL_BASE_ME = "/osiam-resource-server/me";
+    private static final String URL_BASE_GROUPS = "/osiam-resource-server/Groups";
     private final static String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String COUNTRY = "Germany";
