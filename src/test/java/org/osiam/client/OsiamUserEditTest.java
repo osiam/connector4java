@@ -66,7 +66,7 @@ public class OsiamUserEditTest {
         givenAnAccessToken();
         givenAnUpdateUser();
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void id_is_null_by_updating_single_user_raises_exception() throws Exception {
     	givenIDisEmpty();
@@ -82,7 +82,7 @@ public class OsiamUserEditTest {
         updateSingleUser();
         fail("Exception expected");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void null_UpdateUser_rases_exception() throws Exception {
         givenIDisEmpty();
@@ -90,8 +90,8 @@ public class OsiamUserEditTest {
         updateSingleUser();
         fail("Exception expected");
     }
-    
-    @Test(expected = IllegalArgumentException.class)
+
+    @Test(expected = NullPointerException.class)
     public void user_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenIDisEmpty();
 
@@ -100,29 +100,29 @@ public class OsiamUserEditTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
-    
+
     private void givenAnUpdateUser() {
-        this.updateUser = new UpdateUser.Builder().build();
+        updateUser = new UpdateUser.Builder().build();
     }
 
     private void updateSingleUser() {
         service.updateUser(UPDATE_USER_ID, updateUser, accessToken);
     }
-    
+
     private void updateSingleUserWithEmptyResource() {
     	singleUserResult = null;
     	service.updateResource(UPDATE_USER_ID, singleUserResult, accessToken);
     }
-    
+
     private void givenIDisEmpty() {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
                         .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .withBodyFile("query_all_users.json")));
-    }    
+    }
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
