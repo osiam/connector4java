@@ -46,8 +46,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -223,7 +224,7 @@ public class OsiamConnectorTest {
         stubFor(givenUserIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + userIdString + ".json")));
     }
 
@@ -231,19 +232,19 @@ public class OsiamConnectorTest {
         stubFor(givenGroupIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("group_" + GROUP_ID_STRING + ".json")));
     }
 
     private MappingBuilder givenUserIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_USERS + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private MappingBuilder givenGroupIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_GROUPS + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -307,11 +308,11 @@ public class OsiamConnectorTest {
 
     private void givenAllUsersAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE_USERS + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
@@ -330,10 +331,10 @@ public class OsiamConnectorTest {
 
     private void givenASingleUserCanBeSearchedByQuery() {
         stubFor(get(urlEqualTo(URL_BASE_USERS + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_user_by_name.json")));
     }
 
@@ -343,7 +344,7 @@ public class OsiamConnectorTest {
 
     private void thenUserQueryWasValid() {
         verify(getRequestedFor(urlEqualTo(URL_BASE_USERS + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void thenReturnedListOfSearchedUsersIsAsExpected() {
@@ -358,10 +359,10 @@ public class OsiamConnectorTest {
 
     private void givenAUserCanBeSearchedByQuery() {
         stubFor(get(urlMatching(URL_BASE_USERS + "\\?filter=.+"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_user_by_name.json")));
     }
 
@@ -372,14 +373,14 @@ public class OsiamConnectorTest {
     private void thenQueryStringIsSplitCorrectly() {
         verify(getRequestedFor(
                 urlEqualTo(URL_BASE_USERS + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void givenAccessTokenForCurrentUserBasicIsValid() {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_me.json")));
     }
 
@@ -390,7 +391,7 @@ public class OsiamConnectorTest {
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_ME))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -512,11 +513,11 @@ public class OsiamConnectorTest {
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE_GROUPS + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_groups.json")));
     }
 
@@ -539,16 +540,16 @@ public class OsiamConnectorTest {
 
     private void givenASingleGroupCanBeLookedUpByQuery() {
         stubFor(get(urlEqualTo(URL_BASE_GROUPS + "?filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_group_by_name.json")));
     }
 
     private void thenGroupQueryWasValid() {
         verify(getRequestedFor(urlEqualTo(URL_BASE_GROUPS + "?filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
