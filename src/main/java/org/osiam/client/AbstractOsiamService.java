@@ -53,6 +53,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -89,7 +91,10 @@ abstract class AbstractOsiamService<T extends Resource> {
     protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
             .connectorProvider(new ApacheConnectorProvider())
-            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED));
+            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+            .property(ClientProperties.CONNECT_TIMEOUT, 2500)
+            .property(ClientProperties.READ_TIMEOUT, 5000)
+            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
 
     protected static final String AUTHORIZATION = "Authorization";
     protected static final String ACCEPT = "Accept";
