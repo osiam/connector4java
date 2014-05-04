@@ -28,7 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,7 +44,6 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
@@ -55,6 +53,7 @@ import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.RequestEntityProcessing;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException;
@@ -75,7 +74,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
                                  // this class
 
     private static final String BEARER = "Bearer ";
-    private static final Charset CHARSET = Charset.forName("UTF-8");
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
             .connectorProvider(new ApacheConnectorProvider())
             .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
@@ -111,7 +109,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
 
-        targetEndpoint = client.target(endpoint);
+        targetEndpoint = client.target(endpoint)
+                .register(HttpAuthenticationFeature.basic(clientId, clientSecret));
     }
 
     /**
@@ -123,7 +122,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
                     + " you need to retrieve a authentication code first.");
         }
 
-        String authHeaderValue = "Basic " + encodeClientCredentials();
         Form form = new Form();
         form.param("scope", scopes);
         form.param("grant_type", grantType.getUrlParam());
@@ -140,8 +138,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token").request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", authHeaderValue)
+            Response response = targetEndpoint.path("/oauth/token")
+                    .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -189,7 +187,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
     public AccessToken retrieveAccessToken(String authCode) {
         checkArgument(!Strings.isNullOrEmpty(authCode), "The given authentication code can't be null.");
 
-        String authHeaderValue = "Basic " + encodeClientCredentials();
         Form form = new Form();
         form.param("code", authCode);
         form.param("grant_type", "authorization_code");
@@ -198,8 +195,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token").request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", authHeaderValue)
+            Response response = targetEndpoint.path("/oauth/token")
+                    .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -248,12 +245,11 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         }
         form.param("refresh_token", accessToken.getRefreshToken());
 
-        String authHeaderValue = "Basic " + encodeClientCredentials();
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token").request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", authHeaderValue)
+            Response response = targetEndpoint.path("/oauth/token")
+                    .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -322,12 +318,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
-    }
-
-    private String encodeClientCredentials() {
-        String clientCredentials = clientId + ":" + clientSecret;
-        clientCredentials = new String(Base64.encodeBase64(clientCredentials.getBytes(CHARSET)), CHARSET);
-        return clientCredentials;
     }
 
     private void checkAndHandleResponse(String content, StatusType status) {
