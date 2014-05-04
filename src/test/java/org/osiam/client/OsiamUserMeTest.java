@@ -38,7 +38,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.apache.http.entity.ContentType;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -130,7 +131,7 @@ public class OsiamUserMeTest {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
@@ -148,13 +149,13 @@ public class OsiamUserMeTest {
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_ME))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -262,7 +263,7 @@ public class OsiamUserMeTest {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_me.json")));
     }
 
@@ -271,13 +272,13 @@ public class OsiamUserMeTest {
         stubFor(givenUserIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + USER_ID + ".json")));
     }
 
     private MappingBuilder givenUserIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_USERS + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 

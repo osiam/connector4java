@@ -34,7 +34,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.apache.http.entity.ContentType;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -105,13 +106,13 @@ public class UserExtensionsTest {
 
     private void givenUserIdIsLookedUp() {
         stubFor(givenIDisLookedUp(userIdToRetrieve, accessToken).willReturn(
-                aResponse().withStatus(SC_OK).withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                aResponse().withStatus(SC_OK).withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + userIdToRetrieve + ".json")));
     }
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE + "/" + id)).withHeader("Content-Type",
-                equalTo(ContentType.APPLICATION_JSON.getMimeType())).withHeader("Authorization",
+        return get(urlEqualTo(URL_BASE + "/" + id)).withHeader("Accept",
+                equalTo(MediaType.APPLICATION_JSON)).withHeader("Authorization",
                 equalTo("Bearer " + accessToken.getToken()));
     }
 }

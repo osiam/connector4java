@@ -31,7 +31,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.fail;
 
-import org.apache.http.entity.ContentType;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -95,13 +96,13 @@ public class OsiamUserEditTest {
         stubFor(createGetMapping(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
     private MappingBuilder createGetMapping(AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/"))
-                .withHeader("Accept", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 

@@ -44,9 +44,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.core.MediaType;
+
 import junit.framework.Assert;
 
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -275,10 +276,10 @@ public class OsiamGroupServiceTest {
 
     private void givenASingleGroupCanBeLookedUpByQuery() {
         stubFor(get(urlEqualTo(URL_BASE + "?filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_group_by_name.json")));
     }
 
@@ -286,7 +287,7 @@ public class OsiamGroupServiceTest {
         stubFor(givenIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("group_" + GROUP_ID_STRING + ".json")));
     }
 
@@ -294,23 +295,23 @@ public class OsiamGroupServiceTest {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_groups.json")));
     }
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_groups.json")));
     }
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -321,7 +322,7 @@ public class OsiamGroupServiceTest {
 
     private void thenQueryWasValid() {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void thenReturnedListOfSearchedGroupsIsAsExpected() {

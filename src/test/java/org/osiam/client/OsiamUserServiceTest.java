@@ -47,9 +47,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
 import junit.framework.Assert;
 
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -275,10 +276,10 @@ public class OsiamUserServiceTest {
 
     private void givenAUserCanBeSearchedByQuery() {
         stubFor(get(urlMatching(URL_BASE + "\\?filter=.+"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_user_by_name.json")));
     }
 
@@ -306,7 +307,7 @@ public class OsiamUserServiceTest {
         stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + USER_ID + ".json")));
     }
 
@@ -314,7 +315,7 @@ public class OsiamUserServiceTest {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
@@ -332,26 +333,26 @@ public class OsiamUserServiceTest {
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
         stubFor(get(urlEqualTo(URL_BASE + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
     private void givenASingleUserCanBeSearchedByQuery() {
         stubFor(get(urlEqualTo(URL_BASE + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_user_by_name.json")));
     }
 
@@ -373,12 +374,12 @@ public class OsiamUserServiceTest {
 
     private void thenQueryStringIsSplitCorrectly() {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void thenSortedQueryStringIsSplitCorrectly() {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void thenReturnedUserHasID(String id) {
@@ -387,7 +388,7 @@ public class OsiamUserServiceTest {
 
     private void thenQueryWasValid() {
         verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON)));
     }
 
     private void thenReturnedListOfSearchedUsersIsAsExpected() {
