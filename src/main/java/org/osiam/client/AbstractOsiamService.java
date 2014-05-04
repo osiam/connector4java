@@ -45,6 +45,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.io.IOUtils;
@@ -63,6 +64,7 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.OsiamRequestException;
 import org.osiam.client.exception.ScimErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
@@ -132,7 +134,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         String content;
         try {
             Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", BEARER + accessToken.getToken())
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .get();
 
             status = response.getStatusInfo();
@@ -141,31 +143,9 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        if (status.getStatusCode() != Status.OK.getStatusCode()) {
-            if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-                String errorMessage = extractErrorMessageUnauthorized(content, status);
-                throw new UnauthorizedException(errorMessage);
-            } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "No " + typeName + " with given id " + id);
-                throw new NoResultException(errorMessage);
-            } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = extractErrorMessageForbidden(accessToken, "get");
-                throw new ForbiddenException(errorMessage);
-            } else {
-                String errorMessage = extractErrorMessageDefault(content, status);
-                throw new OsiamRequestException(status.getStatusCode(), errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, "get", id);
 
-        try {
-            return mapper.readValue(content, type);
-        } catch (IOException e) {
-            // FIXME: replace with an other exception and add the content to it
-            // IOException means mapping could not be done by jackson
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        } catch (ProcessingException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
+        return mapToResource(content);
     }
 
     protected List<T> getAllResources(AccessToken accessToken) {
@@ -253,7 +233,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         String content;
         try {
             Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", BEARER + accessToken.getToken())
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .delete();
 
             status = response.getStatusInfo();
@@ -262,25 +242,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        if (status.getStatusCode() != Status.OK.getStatusCode()) {
-            if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-                String errorMessage = extractErrorMessageUnauthorized(content, status);
-                throw new UnauthorizedException(errorMessage);
-            } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "No " + typeName + " with given id " + id);
-                throw new NoResultException(errorMessage);
-            } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "Unable to delete: "
-                        + status.getReasonPhrase());
-                throw new ConflictException(errorMessage);
-            } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = extractErrorMessageForbidden(accessToken, "delete");
-                throw new ForbiddenException(errorMessage);
-            } else {
-                String errorMessage = extractErrorMessageDefault(content, status);
-                throw new OsiamRequestException(status.getStatusCode(), errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, "delete", id);
     }
 
     protected T createResource(T resource, AccessToken accessToken) {
@@ -298,7 +260,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         String content;
         try {
             Response response = targetEndpoint.path(typeName + "s").request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", BEARER + accessToken.getToken())
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .post(Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
 
             status = response.getStatusInfo();
@@ -307,31 +269,9 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        if (status.getStatusCode() != Status.CREATED.getStatusCode()) {
-            if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-                String errorMessage = extractErrorMessageUnauthorized(content, status);
-                throw new UnauthorizedException(errorMessage);
-            } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "Unable to save");
-                throw new ConflictException(errorMessage);
-            } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = extractErrorMessageForbidden(accessToken, "create");
-                throw new ForbiddenException(errorMessage);
-            } else {
-                String errorMessage = extractErrorMessageDefault(content, status);
-                throw new OsiamRequestException(status.getStatusCode(), errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, "create", null);
 
-        try {
-            return mapper.readValue(content, type);
-        } catch (IOException e) {
-            // FIXME: replace with an other exception and add the content to it
-            // IOException means mapping could not be done by jackson
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        } catch (ProcessingException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
+        return mapToResource(content);
     }
 
     protected T updateResource(String id, T resource, AccessToken accessToken) {
@@ -358,7 +298,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         String content;
         try {
             Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", BEARER + accessToken.getToken())
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .method(method, Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
 
             status = response.getStatusInfo();
@@ -367,37 +307,20 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        if (status.getStatusCode() != Status.OK.getStatusCode()) {
-            if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-                String errorMessage = extractErrorMessageUnauthorized(content, status);
-                throw new UnauthorizedException(errorMessage);
-            } else if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "Unable to update");
-                throw new ConflictException(errorMessage);
-            } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "Unable to update");
-                throw new ConflictException(errorMessage);
-            } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "A " + typeName + " with the id " + id
-                        + " could be found to be updated.");
-                throw new NoResultException(errorMessage);
-            } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = extractErrorMessageForbidden(accessToken, "update");
-                throw new ForbiddenException(errorMessage);
-            } else {
-                String errorMessage = extractErrorMessageDefault(content, status);
-                throw new OsiamRequestException(status.getStatusCode(), errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, method.equals("PUT") ? "replace" : "update", id);
 
+        return mapToResource(content);
+    }
+
+    protected T mapToResource(String content) {
+        return mapToType(content, type);
+    }
+
+    protected <U> U mapToType(String content, Class<U> type) {
         try {
             return mapper.readValue(content, type);
         } catch (IOException e) {
-            // FIXME: replace with an other exception and add the content to it
-            // IOException means mapping could not be done by jackson
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        } catch (ProcessingException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
+            throw new OsiamClientException(String.format("Unable to parse %s: %s", typeName, content), e);
         }
     }
 
@@ -409,6 +332,34 @@ abstract class AbstractOsiamService<T extends Resource> {
         if (reference == null) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken, String action,
+            String id) {
+        if (status.getFamily() == Family.SUCCESSFUL) {
+            return;
+        }
+
+        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
+            String errorMessage = extractErrorMessageUnauthorized(content, status);
+            throw new UnauthorizedException(errorMessage);
+        } else if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status, "Unable to update");
+            throw new ConflictException(errorMessage);
+        } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status, String.format("No %s with given id %s was found", typeName, id));
+            throw new NoResultException(errorMessage);
+        } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
+            String errorMessage = extractErrorMessageForbidden(accessToken, action);
+            throw new ForbiddenException(errorMessage);
+        } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status, "Unable to " + action);
+            throw new ConflictException(errorMessage);
+        } else {
+            String errorMessage = extractErrorMessageDefault(content, status);
+            throw new OsiamRequestException(status.getStatusCode(), errorMessage);
+        }
+
     }
 
     protected String extractErrorMessageForbidden(AccessToken accessToken, String process) {

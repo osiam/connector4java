@@ -23,21 +23,15 @@
 
 package org.osiam.client;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.osiam.client.connector.OsiamConnector; // NOSONAR : needed for Javadoc
-import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.OsiamRequestException;
-import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.user.BasicUser;
@@ -91,31 +85,9 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        if (status.getStatusCode() != Status.OK.getStatusCode()) {
-            if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-                String errorMessage = extractErrorMessageUnauthorized(content, status);
-                throw new UnauthorizedException(errorMessage);
-            } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-                String errorMessage = extractErrorMessageForbidden(accessToken, "get");
-                throw new ForbiddenException(errorMessage);
-            } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
-                String errorMessage = extractErrorMessage(content, status, "Unable to retrieve the actual User.");
-                throw new ConflictException(errorMessage);
-            } else {
-                String errorMessage = extractErrorMessageDefault(content, status);
-                throw new OsiamRequestException(status.getStatusCode(), errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, "get me", null);
 
-        try {
-            return mapper.readValue(content, BasicUser.class);
-        } catch (IOException e) {
-            // FIXME: replace with an other exception and add the content to it
-            // IOException means mapping could not be done by jackson
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        } catch (ProcessingException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
+        return mapToType(content, BasicUser.class);
     }
 
     /**

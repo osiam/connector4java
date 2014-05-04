@@ -56,11 +56,11 @@ import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.AccessTokenValidationException;
-import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.OAuthErrorMessage;
+import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.UnauthorizedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -125,14 +125,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         Form form = new Form();
         form.param("scope", scopes);
         form.param("grant_type", grantType.getUrlParam());
-        // FIXME: grantType == GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS
-        if (grantType != GrantType.REFRESH_TOKEN) {
-            if (userName != null) {
-                form.param("username", userName);
-            }
-            if (password != null) {
-                form.param("password", password);
-            }
+        if (grantType == GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS) {
+            form.param("username", userName);
+            form.param("password", password);
         }
 
         StatusType status;
@@ -205,16 +200,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
             throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
-        // TODO: consolidate with checkAndHandleResponse()
-        if (status.getStatusCode() != Status.OK.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status);
-
-            if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
-                throw new ConflictException(errorMessage);
-            } else {
-                throw new ConnectionInitializationException(errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
     }
@@ -223,6 +209,11 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
      * @see OsiamConnector#refreshAccessToken(AccessToken, Scope...)
      */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] newScopes) {
+        if (accessToken.getRefreshToken() == null) {
+            throw new ConnectionInitializationException(
+                    "Unable to perform a refresh_token_grant request without refresh token.");
+        }
+
         if (newScopes.length != 0) {
             StringBuilder stringBuilder = new StringBuilder();
             for (Scope scope : newScopes) {
@@ -237,12 +228,6 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         Form form = new Form();
         form.param("scope", scopes);
         form.param("grant_type", grantType.getUrlParam());
-
-        // FIXME: should be a guard on method entry
-        if (accessToken.getRefreshToken() == null) {
-            throw new ConnectionInitializationException(
-                    "Unable to perform a refresh_token_grant request without refresh token.");
-        }
         form.param("refresh_token", accessToken.getRefreshToken());
 
         StatusType status;
@@ -270,10 +255,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
      */
     public URI getRedirectLoginUri() {
         if (grantType != GrantType.AUTHORIZATION_CODE) {
-            // FIXME: IllegalAccessError must be replaced with
-            // IllegalStateException
-            throw new IllegalAccessError("You need to use the GrantType " + GrantType.AUTHORIZATION_CODE
-                    + " to be able to use this method.");
+            throw new IllegalStateException(String.format(
+                    "You need to use the GrantType %s to be able to use this method.", GrantType.AUTHORIZATION_CODE));
         }
 
         try {
@@ -284,8 +267,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
                     .queryParam("scope", scopes)
                     .build();
         } catch (UriBuilderException | IllegalArgumentException e) {
-            // FIXME: must be replaced with a different exception
-            throw new ConnectionInitializationException("Unable to create redirect URI", e);
+            throw new OsiamClientException("Unable to create redirect URI", e);
         }
     }
 
@@ -327,7 +309,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
 
         final String errorMessage = extractErrorMessage(content, status);
 
-        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
+        if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+            throw new ConnectionInitializationException(errorMessage);
+        } else if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
             throw new UnauthorizedException(errorMessage);
         } else {
             throw new ConnectionInitializationException(errorMessage);
@@ -337,11 +321,11 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
     private String extractErrorMessage(String content, StatusType status) {
         try {
             OAuthErrorMessage error = new ObjectMapper().readValue(content, OAuthErrorMessage.class);
-
             return error.getDescription();
-        } catch (Exception e) { // NOSONAR - we catch everything
+        } catch (IOException e) {
             String errorMessage = String.format("Could not deserialize the error response for the HTTP status '%s'.",
                     status.getReasonPhrase());
+
             if (content != null) {
                 errorMessage += String.format(" Original response: %s", content);
             }
@@ -354,11 +338,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         try {
             return new ObjectMapper().readValue(content, AccessToken.class);
         } catch (IOException e) {
-            // FIXME: replace with an other exception. IOExceptions means that
-            // jackson could not map/parse json
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
-        } catch (ProcessingException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+            throw new OsiamClientException(String.format("Unable to parse access token: %s", content), e);
         }
     }
 
