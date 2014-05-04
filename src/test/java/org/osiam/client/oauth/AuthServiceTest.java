@@ -89,7 +89,7 @@ public class AuthServiceTest {
         then_access_token_is_expected_one();
     }
 
-    @Test(expected=ConnectionInitializationException.class)
+    @Test(expected = ConnectionInitializationException.class)
     public void service_fails_on_bad_request() {
         given_a_correctly_configured_password_auth_service();
         given_oauth_server_cannot_issues_access_token_because_of_bad_request();

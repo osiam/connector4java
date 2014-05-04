@@ -243,6 +243,10 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
             throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
+        // need to override default behavior of checkAndHandleResponse
+        if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+            throw new ConflictException(extractErrorMessage(content, status));
+        }
         checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
