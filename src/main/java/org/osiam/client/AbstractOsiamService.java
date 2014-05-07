@@ -377,7 +377,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     private String getErrorMessageForbidden(AccessToken accessToken, String process) {
-        return "Insufficient scope (" + accessToken.getScope() + ") to " + process + " this " + typeName + ".";
+        return "Insufficient scope (" + accessToken.getScopes() + ") to " + process + " this " + typeName + ".";
     }
 
     private String getErrorMessageUnauthorized(HttpResponse httpResponse) {

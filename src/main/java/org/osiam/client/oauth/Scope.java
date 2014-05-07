@@ -23,27 +23,33 @@
 
 package org.osiam.client.oauth;
 
-/**
- * supported access scopes by the OSIAM Server
- */
-public enum Scope {
 
-	GET
-	,POST
-	,PUT
-	,PATCH
-	,DELETE
-	,ALL{
-			@Override
-			public String toString(){
-				StringBuilder allScopes = new StringBuilder();
-				for (Scope actScope : Scope.values()) {
-					if(actScope != this){
-						allScopes.append(" ").append(actScope.toString());
-					}
-				}
-				return allScopes.toString().trim();
-			}
-		}
-	;
+/**
+ * access scopes by the OSIAM Server. The default scopes get be created by e.g. Scope.GET
+ */
+public class Scope {
+
+    public static final Scope GET = new Scope("GET");
+    public static final Scope POST = new Scope("POST");
+    public static final Scope PUT = new Scope("PUT");
+    public static final Scope PATCH = new Scope("PATCH");
+    public static final Scope DELETE = new Scope("DELETE");
+    public static final Scope ALL = new Scope(Scope.GET + " " + Scope.POST + " " + Scope.PUT + " "
+            + Scope.PATCH + " " + Scope.DELETE);
+
+    private String value;
+
+    public Scope(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
 }

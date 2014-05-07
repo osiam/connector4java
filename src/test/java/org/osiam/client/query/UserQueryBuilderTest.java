@@ -30,13 +30,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
-import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.query.metamodel.DateAttribute;
-import org.osiam.client.query.metamodel.Group_;
 import org.osiam.client.query.metamodel.StringAttribute;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.User;

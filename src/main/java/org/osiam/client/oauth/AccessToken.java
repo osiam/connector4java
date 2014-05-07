@@ -23,10 +23,11 @@
 
 package org.osiam.client.oauth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Objects of this type represent an access token. Access tokens are granted by the OSIAM server and allows access to
@@ -34,21 +35,42 @@ import java.util.Objects;
  */
 public class AccessToken {
 
-    private static final int MILLIS = 1000;
     @JsonProperty("access_token")
-    protected String token; // NOSONAR : needed to the SimpleAccessToken in the SelfAdministration until a better
-                            // solution is found
-    @JsonProperty("token_type")
-    private String type = "";
-    @JsonProperty("expires_in")
-    private int expiresIn = 0;
+    private String token;
+    @JsonProperty("expires_at")
+    private Date expiresAt;
     @JsonProperty
-    private String scope = "";
+    private String scope;
     @JsonProperty("refresh_token")
     private String refreshToken = "";
+    @JsonProperty("refresh_token_expires_at")
+    private Date refreshTokenExpiresAt;
+    @JsonProperty("token_type")
+    private String type;
+    @JsonProperty("client_id")
+    private String clientId = "";
+    @JsonProperty("user_id")
+    private String userId = "";
+    @JsonProperty("user_name")
+    private String userName = "";
 
-    /* This might not be the smartest idea, but anyway */
-    private long retrievedOn = new Date().getTime();
+    /**
+     * Default constructor for Jackson
+     */
+    private AccessToken() {
+    }
+
+    private AccessToken(Builder builder) {
+        token = builder.token;
+        expiresAt = builder.expiresAt;
+        scope = builder.scope;
+        refreshToken = builder.refreshToken;
+        refreshTokenExpiresAt = builder.refreshTokenExpiresAt;
+        type = builder.type;
+        clientId = builder.clientId;
+        userId = builder.userId;
+        userName = builder.userName;
+    }
 
     /**
      * Retrieve the string value of the access token used to authenticate against the provider.
@@ -60,21 +82,12 @@ public class AccessToken {
     }
 
     /**
-     * type of the access token
+     * The Date when the access token is not valid anymore
      * 
-     * @return the type of the access token
+     * @return The Date when the access token is not valid anymore.
      */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * The number of seconds this access token is valid from the time it was retrieved.
-     * 
-     * @return The number of seconds this access token is valid.
-     */
-    public int getExpiresIn() {
-        return expiresIn;
+    public Date getExpiresAt() {
+        return expiresAt;
     }
 
     /**
@@ -83,17 +96,22 @@ public class AccessToken {
      * @return true if the access token is not valid anymore
      */
     public boolean isExpired() {
-        long now = new Date().getTime();
-        return now > retrievedOn + (long) expiresIn * MILLIS;
+        return expiresAt.before(new Date());
     }
 
     /**
      * Retrieve the possible Scopes of this AccessToken
      * 
-     * @return The scopes as string
+     * @return The scopes
      */
-    public String getScope() {
-        return scope;
+    public Set<Scope> getScopes() {
+        String[] scopes = this.scope.split(" ");
+        Set<Scope> scopeSet = new HashSet<Scope>();
+        for (String scope : scopes) {
+            scopeSet.add(new Scope(scope));
+        }
+
+        return null;
     }
 
     /**
@@ -106,30 +124,56 @@ public class AccessToken {
     }
 
     /**
-     * creates an basic AccessToken Object with the given access token String. 
-     * If the AccessToken is created this way all getter will return an empty String
-     * and the is isExpired() method will always return true
-     * @param accessToken the access token
-     * @return a new basic AccessToken Object
+     * The Date when the refresh access token is not valid anymore
+     * 
+     * @return The Date when the refresh access token is not valid anymore.
      */
-    public static AccessToken of(String accessToken){
-        AccessToken token = new AccessToken();
-        token.token = accessToken;
-        return token;
+    public Date getRefreshTokenExpiresAt() {
+        return refreshTokenExpiresAt;
     }
-    
-    @Override
-    public String toString() {
-        StringBuilder returnToken = new StringBuilder();
 
-        returnToken.append("[access_token = ").append(token).
-                append(", token_type = ").append(type).
-                append(", scope = ").append(scope).
-                append(", expired = ").append(isExpired()).
-                append(", refresh_token = ").append(refreshToken).
-                append("]");
+    /**
+     * checks if the time the refresh access token will be valid are over
+     * 
+     * @return true if the refresh access token is not valid anymore
+     */
+    public boolean isRefreshTokenExpired() {
+        return refreshTokenExpiresAt.before(new Date());
+    }
 
-        return returnToken.toString();
+    /**
+     * type of the access token
+     * 
+     * @return the type of the access token
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * 
+     * @return the client Id where the AccessToken belongs to
+     */
+    public String getClientId() {
+        return clientId;
+    }
+
+    /**
+     * 
+     * @return the userId of the User the Access token belongs to. Will be empty if the AccessToken was created with an
+     *         ClientCredentials Flow
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
+     * 
+     * @return the userName of the User the Access token belongs to. Will be empty if the AccessToken was created with
+     *         an ClientCredentials Flow
+     */
+    public String getUserName() {
+        return userName;
     }
 
     @Override
@@ -162,5 +206,148 @@ public class AccessToken {
         return true;
     }
 
-    
+    @Override
+    public String toString() {
+        return "AccessToken [token=" + token + ", expiresAt=" + expiresAt + ", scopes=" + scope + ", refreshTokenId="
+                + refreshToken + ", refreshTokenExpiresAt=" + refreshTokenExpiresAt + ", clientId=" + clientId
+                + ", userId=" + userId + ", userName=" + userName + "]";
+    }
+
+    /**
+     * The Builder class is used to construct instances of the {@link AccessToken}.
+     */
+    public static class Builder {
+
+        private String token;
+        private Date expiresAt = new Date(Long.MIN_VALUE);
+        private String scope = "";
+        private String refreshToken = "";
+        private Date refreshTokenExpiresAt = new Date(Long.MIN_VALUE);
+        private String type;
+        private String clientId = "";
+        private String userId = "";
+        private String userName = "";
+
+        /**
+         * 
+         * @param token
+         *        the token part of the AccessToken
+         * @return
+         */
+        public Builder setToken(String token) {
+            this.token = token;
+            return this;
+        }
+
+        /**
+         * 
+         * @param expireDate
+         *        sets the expire Date of the AccessToken
+         * @return
+         */
+        public Builder setExpiresAt(Date expireDate) {
+            this.expiresAt = expireDate;
+            return this;
+        }
+
+        /**
+         * 
+         * @param scope
+         *        adds one scope of the AccessToken
+         * @return
+         */
+        public Builder addScope(Scope scope) {
+            this.scope += scope + " ";
+            return this;
+        }
+
+        /**
+         * 
+         * @param scopes
+         *        adds an set of scopes to the AccessToken
+         * @return
+         */
+        public Builder addScopes(Set<Scope> scopes) {
+            for (Scope scope : scopes) {
+                addScope(scope);
+            }
+            return this;
+        }
+
+        /**
+         * 
+         * @param refreshToken
+         *        the refresh token
+         * @return
+         */
+        public Builder setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
+            return this;
+        }
+
+        /**
+         * 
+         * @param expireDate
+         *        sets the expire Date of the refresh token
+         * @return
+         */
+        public Builder setRefreshTokenExpiresAt(Date expireDate) {
+            this.refreshTokenExpiresAt = expireDate;
+            return this;
+        }
+
+        /**
+         * 
+         * @param type
+         *        the type of the access token
+         * @return
+         */
+        public Builder setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        /**
+         * 
+         * @param clientId
+         *        the client id of the client where the AccessToken belongs to
+         * @return
+         */
+        public Builder setClientId(String clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+
+        /**
+         * 
+         * @param userId
+         *        the id of the user the AccessToken belongs to
+         * @return
+         */
+        public Builder setUserId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        /**
+         * 
+         * @param userName
+         *        the userName of the user the AccessToken belongs to
+         * @return
+         */
+        public Builder setUserName(String userName) {
+            this.userName = userName;
+            return this;
+        }
+
+        /**
+         * Construct the {@link AccessToken} with the parameters passed to this builder.
+         * 
+         * @return An AccessToken configured accordingly.
+         */
+        public AccessToken build() {
+            return new AccessToken(this);
+        }
+    }
+
 }
