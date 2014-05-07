@@ -53,6 +53,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.AccessTokenMockProvider;
+import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;

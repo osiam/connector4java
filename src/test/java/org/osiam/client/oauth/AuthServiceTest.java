@@ -38,6 +38,7 @@ import java.net.URLEncoder;
 import org.apache.http.HttpStatus;
 import org.junit.Rule;
 import org.junit.Test;
+import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
 
@@ -61,7 +62,7 @@ public class AuthServiceTest {
     @Rule
     public WireMockClassRule wireMockRule = new WireMockClassRule(9090);
 
-    private AuthService service;
+    private OsiamConnector service;
     private AccessToken accessToken;
 
     @Test
@@ -99,7 +100,7 @@ public class AuthServiceTest {
         then_exception_has_to_be_thrown();
     }
 
-    @Test(expected=UnauthorizedException.class)
+    @Test(expected = UnauthorizedException.class)
     public void service_fails_on_unauthorized() {
         given_a_wrong_configured_auth_service_with_invalid_client_credentials();
         given_oauth_server_cannot_issues_access_token_because_of_wrong_auth();
@@ -109,7 +110,7 @@ public class AuthServiceTest {
         then_exception_has_to_be_thrown();
     }
 
-    @Test(expected=ConnectionInitializationException.class)
+    @Test(expected = ConnectionInitializationException.class)
     public void service_fails_on_not_found() {
         given_a_wrong_configured_auth_service_with_wrong_endpoint();
         given_oauth_server_issues_access_token();
@@ -119,7 +120,7 @@ public class AuthServiceTest {
         then_exception_has_to_be_thrown();
     }
 
-    @Test(expected=ConnectionInitializationException.class)
+    @Test(expected = ConnectionInitializationException.class)
     public void service_fails_on_other_error() {
         given_a_correctly_configured_password_auth_service();
         given_oauth_server_has_error();
@@ -129,47 +130,47 @@ public class AuthServiceTest {
         then_exception_has_to_be_thrown();
     }
 
-    @Test (expected = IllegalAccessError.class)
-    public void using_retrieveAccessToken_without_authCode_while_using_gran_type_Auth_code(){
-    	given_a_correctly_configured_access_token_auth_service();
-    	when_token_is_requested();
+    @Test(expected = IllegalAccessError.class)
+    public void using_retrieveAccessToken_without_authCode_while_using_gran_type_Auth_code() {
+        given_a_correctly_configured_access_token_auth_service();
+        when_token_is_requested();
     }
 
     private void given_a_wrong_configured_auth_service_with_wrong_endpoint() {
-        service = new AuthService.Builder(WRONG_ENDPOINT)
+        service = new OsiamConnector.Builder().setAuthServerEndpoint(WRONG_ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUsername(VALID_USERNAME)
+                .setUserName(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
                 .setScope(Scope.GET)
                 .build();
     }
 
     private void given_a_wrong_configured_auth_service_with_invalid_client_credentials() {
-        service = new AuthService.Builder(ENDPOINT)
+        service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(INVALID_CLIENT_ID)
                 .setClientSecret(INVALID_CLIENT_SECRET)
-                .setUsername(VALID_USERNAME)
+                .setUserName(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
                 .setScope(Scope.GET)
                 .build();
     }
 
     private void given_a_correctly_configured_password_auth_service() {
-        service = new AuthService.Builder(ENDPOINT)
+        service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUsername(VALID_USERNAME)
+                .setUserName(VALID_USERNAME)
                 .setPassword(VALID_PASSWORD)
                 .setScope(Scope.GET)
                 .build();
     }
 
     private void given_a_correctly_configured_access_token_auth_service() {
-        service = new AuthService.Builder(ENDPOINT)
+        service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
@@ -221,22 +222,22 @@ public class AuthServiceTest {
     }
 
     private void then_redirect_Uri_is_valid() throws Exception {
-    	StringBuilder expected = new StringBuilder();
+        StringBuilder expected = new StringBuilder();
         expected.append(ENDPOINT)
                 .append("/oauth/authorize?client_id=").append(VALID_CLIENT_ID)
                 .append("&response_type=code&redirect_uri=").append(REDIRECT_URI)
                 .append("&scope=").append(encodeExpectedString(Scope.ALL.toString()));
-    	URI expectedUri = new URI(expected.toString());
+        URI expectedUri = new URI(expected.toString());
         assertEquals(expectedUri, service.getRedirectLoginUri());
     }
 
     private String encodeExpectedString(String string) {
-		try {
-		    return URLEncoder.encode(string, Charsets.UTF_8.name());
-		} catch (UnsupportedEncodingException e) {
-		    fail("Filter contains non UTF-8 characters");
-		}
+        try {
+            return URLEncoder.encode(string, Charsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            fail("Filter contains non UTF-8 characters");
+        }
 
-		return "";
+        return "";
     }
 }
