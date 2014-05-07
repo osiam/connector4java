@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.oauth;
+package org.osiam.client;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -54,24 +54,27 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.AccessTokenValidationException;
+import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 
 /**
- * The AuthService provides access to the OAuth2 service used to authorize
- * requests. Please use the {@link AuthService.Builder} to construct one.
+ * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
+ * {@link AuthService.Builder} to construct one.
  */
-public final class AuthService { // NOSONAR - Builder constructs instances of
-                                 // this class
+class AuthService { // NOSONAR - Builder constructs instances of
+                    // this class
 
     private static final String BEARER = "Bearer ";
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
@@ -93,8 +96,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
     private final WebTarget targetEndpoint;
 
     /**
-     * The private constructor for the AuthService. Please use the
-     * {@link AuthService.Builder} to construct one.
+     * The private constructor for the AuthService. Please use the {@link AuthService.Builder} to construct one.
      *
      * @param builder
      *            a valid Builder that holds all needed variables
@@ -361,8 +363,8 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         private String clientRedirectUri;
 
         /**
-         * Set up the Builder for the construction of an {@link AuthService}
-         * instance for the OAuth2 service at the given endpoint
+         * Set up the Builder for the construction of an {@link AuthService} instance for the OAuth2 service at the
+         * given endpoint
          *
          * @param endpoint
          *            The URL at which the OAuth2 service lives.
@@ -467,7 +469,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
          *            The userName
          * @return The builder itself
          */
-        public Builder setUsername(String userName) {
+        public Builder setUserName(String userName) {
             this.userName = userName;
             return this;
         }
@@ -485,8 +487,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of
         }
 
         /**
-         * Construct the {@link AuthService} with the parameters passed to this
-         * builder.
+         * Construct the {@link AuthService} with the parameters passed to this builder.
          *
          * @return An {@link AuthService} configured accordingly.
          */

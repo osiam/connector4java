@@ -20,14 +20,12 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.osiam.client.connector;
+package org.osiam.client;
 
 import java.net.URI;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.osiam.client.OsiamGroupService;
-import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ConnectionInitializationException; // NOSONAR : needed for Javadoc
@@ -37,7 +35,6 @@ import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Jav
 import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
 import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.user.BasicUser;
@@ -113,7 +110,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
                 builder = builder.setPassword(password);
             }
             if (username != null) {
-                builder = builder.setUsername(username);
+                builder = builder.setUserName(username);
             }
             if (scope != null && scopes != null) {
                 builder = builder.setScope(scope, scopes);
@@ -273,7 +270,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     public SCIMSearchResult<User> searchUsers(org.osiam.client.query.Query query, AccessToken accessToken) {
         return userService().searchUsers(query, accessToken);
     }
-    
+
     /**
      * Search for existing Users by the given {@link org.osiam.client.nquery.Query Query}.
      * 
@@ -425,10 +422,10 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     public SCIMSearchResult<Group> searchGroups(org.osiam.client.query.Query query, AccessToken accessToken) {
         return groupService().searchGroups(query, accessToken);
     }
-    
+
     /**
-     * Search for existing groups by a given {@link org.osiam.client.nquery.Query Query}. For more detailed information about the possible logical
-     * operators and usable fields please have a look into the wiki.
+     * Search for existing groups by a given {@link org.osiam.client.nquery.Query Query}. For more detailed information
+     * about the possible logical operators and usable fields please have a look into the wiki.
      * 
      * @param query
      *        containing the needed search where statement

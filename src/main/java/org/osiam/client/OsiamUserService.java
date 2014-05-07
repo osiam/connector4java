@@ -30,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.StatusType;
 
-import org.osiam.client.connector.OsiamConnector; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.nquery.Query;
 import org.osiam.client.oauth.AccessToken;
@@ -45,13 +44,13 @@ import com.google.common.base.Strings;
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
  * installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
  */
-public final class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder constructs instances of
+class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder constructs instances of
                                                                          // this class
 
     /**
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
      * one.
-     *
+     * 
      * @param builder
      *        a Builder to build the service from
      */
@@ -107,6 +106,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
     /**
      * See {@link OsiamConnector#searchUsers(String, AccessToken)}
+     * 
      * @deprecated Use {@link OsiamUserService#searchUsers(Query, AccessToken)} instead
      */
     @Deprecated
@@ -116,6 +116,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
 
     /**
      * See {@link OsiamConnector#searchUsers(org.osiam.client.query.Query, AccessToken)}
+     * 
      * @deprecated Use {@link OsiamUserService#searchUsers(Query, AccessToken)} instead
      */
     @Deprecated
@@ -176,7 +177,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         /**
          * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
          * given endpoint
-         *
+         * 
          * @param endpoint
          *        The URL at which the OSIAM server lives.
          */
