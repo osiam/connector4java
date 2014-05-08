@@ -23,36 +23,49 @@
 
 package org.osiam.client.oauth;
 
+import helper.ScopeDeserializer;
+import helper.ScopeSerializer;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+import org.osiam.resources.scim.User;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Strings;
 
 /**
  * Objects of this type represent an access token. Access tokens are granted by the OSIAM server and allows access to
  * restricted resources.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessToken {
 
     @JsonProperty("access_token")
     private String token;
     @JsonProperty("expires_at")
     private Date expiresAt;
-    @JsonProperty
-    private String scope;
+    @JsonSerialize(using = ScopeSerializer.class)
+    @JsonDeserialize(using = ScopeDeserializer.class)
+    @JsonProperty("scope")
+    private Set<Scope> scopes = new HashSet<Scope>();
     @JsonProperty("refresh_token")
-    private String refreshToken = "";
+    private String refreshToken;
     @JsonProperty("refresh_token_expires_at")
     private Date refreshTokenExpiresAt;
     @JsonProperty("token_type")
     private String type;
     @JsonProperty("client_id")
-    private String clientId = "";
+    private String clientId;
     @JsonProperty("user_id")
-    private String userId = "";
+    private String userId;
     @JsonProperty("user_name")
-    private String userName = "";
+    private String userName;
 
     /**
      * Default constructor for Jackson
@@ -63,7 +76,7 @@ public class AccessToken {
     private AccessToken(Builder builder) {
         token = builder.token;
         expiresAt = builder.expiresAt;
-        scope = builder.scope;
+        scopes = builder.scopes;
         refreshToken = builder.refreshToken;
         refreshTokenExpiresAt = builder.refreshTokenExpiresAt;
         type = builder.type;
@@ -105,13 +118,7 @@ public class AccessToken {
      * @return The scopes
      */
     public Set<Scope> getScopes() {
-        String[] scopes = this.scope.split(" ");
-        Set<Scope> scopeSet = new HashSet<Scope>();
-        for (String scope : scopes) {
-            scopeSet.add(new Scope(scope));
-        }
-
-        return null;
+        return scopes;
     }
 
     /**
@@ -175,6 +182,15 @@ public class AccessToken {
     public String getUserName() {
         return userName;
     }
+    
+    /**
+     * 
+     * @return if this access token is only refers to a client. Will be true if the AccessToken was created with
+     *         an ClientCredentials Flow
+     */
+    public boolean isClientOnly() {
+        return Strings.isNullOrEmpty(userName);
+    }
 
     @Override
     public int hashCode() {
@@ -208,7 +224,7 @@ public class AccessToken {
 
     @Override
     public String toString() {
-        return "AccessToken [token=" + token + ", expiresAt=" + expiresAt + ", scopes=" + scope + ", refreshTokenId="
+        return "AccessToken [token=" + token + ", expiresAt=" + expiresAt + ", scopes=" + scopes + ", refreshTokenId="
                 + refreshToken + ", refreshTokenExpiresAt=" + refreshTokenExpiresAt + ", clientId=" + clientId
                 + ", userId=" + userId + ", userName=" + userName + "]";
     }
@@ -220,30 +236,36 @@ public class AccessToken {
 
         private String token;
         private Date expiresAt = new Date(Long.MIN_VALUE);
-        private String scope = "";
+        private Set<Scope> scopes = new HashSet<Scope>();
         private String refreshToken = "";
         private Date refreshTokenExpiresAt = new Date(Long.MIN_VALUE);
-        private String type;
+        private String type = "";
         private String clientId = "";
         private String userId = "";
         private String userName = "";
 
+        
         /**
+         * Constructs a new builder with a token
          * 
          * @param token
-         *        the token part of the AccessToken
-         * @return
+         *        The token string (See {@link AccessToken#getToken()})
+         * 
+         * @throws IllegalArgumentException
+         *         if the given token is null or empty
          */
-        public Builder setToken(String token) {
+        public Builder(String token) {
             this.token = token;
-            return this;
+            if (Strings.isNullOrEmpty(token)) {
+                throw new IllegalArgumentException("token must not be null or empty.");
+            }
         }
-
+        
         /**
          * 
          * @param expireDate
          *        sets the expire Date of the AccessToken
-         * @return
+         * @return the Builder itself
          */
         public Builder setExpiresAt(Date expireDate) {
             this.expiresAt = expireDate;
@@ -254,10 +276,10 @@ public class AccessToken {
          * 
          * @param scope
          *        adds one scope of the AccessToken
-         * @return
+         * @return the Builder itself
          */
         public Builder addScope(Scope scope) {
-            this.scope += scope + " ";
+            this.scopes.add(scope);
             return this;
         }
 
@@ -265,7 +287,7 @@ public class AccessToken {
          * 
          * @param scopes
          *        adds an set of scopes to the AccessToken
-         * @return
+         * @return the Builder itself
          */
         public Builder addScopes(Set<Scope> scopes) {
             for (Scope scope : scopes) {
@@ -278,7 +300,7 @@ public class AccessToken {
          * 
          * @param refreshToken
          *        the refresh token
-         * @return
+         * @return the Builder itself
          */
         public Builder setRefreshToken(String refreshToken) {
             this.refreshToken = refreshToken;
@@ -289,7 +311,7 @@ public class AccessToken {
          * 
          * @param expireDate
          *        sets the expire Date of the refresh token
-         * @return
+         * @return the Builder itself
          */
         public Builder setRefreshTokenExpiresAt(Date expireDate) {
             this.refreshTokenExpiresAt = expireDate;
@@ -300,7 +322,7 @@ public class AccessToken {
          * 
          * @param type
          *        the type of the access token
-         * @return
+         * @return the Builder itself
          */
         public Builder setType(String type) {
             this.type = type;
@@ -311,7 +333,7 @@ public class AccessToken {
          * 
          * @param clientId
          *        the client id of the client where the AccessToken belongs to
-         * @return
+         * @return the Builder itself
          */
         public Builder setClientId(String clientId) {
             this.clientId = clientId;
@@ -322,7 +344,7 @@ public class AccessToken {
          * 
          * @param userId
          *        the id of the user the AccessToken belongs to
-         * @return
+         * @return the Builder itself
          */
         public Builder setUserId(String userId) {
             this.userId = userId;
@@ -333,13 +355,13 @@ public class AccessToken {
          * 
          * @param userName
          *        the userName of the user the AccessToken belongs to
-         * @return
+         * @return the Builder itself
          */
         public Builder setUserName(String userName) {
             this.userName = userName;
             return this;
         }
-
+        
         /**
          * Construct the {@link AccessToken} with the parameters passed to this builder.
          * 
@@ -349,5 +371,4 @@ public class AccessToken {
             return new AccessToken(this);
         }
     }
-
 }

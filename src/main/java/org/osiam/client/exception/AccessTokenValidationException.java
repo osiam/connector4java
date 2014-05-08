@@ -21,36 +21,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.oauth;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package org.osiam.client.exception;
 
 /**
- * access scopes by the OSIAM Server. The default scopes get be created by e.g. Scope.GET
+ * Thrown if an accesstoken is not valid
  */
-public class Scope {
+public class AccessTokenValidationException extends OsiamClientException {
 
-    public static final Scope GET = new Scope("GET");
-    public static final Scope POST = new Scope("POST");
-    public static final Scope PUT = new Scope("PUT");
-    public static final Scope PATCH = new Scope("PATCH");
-    public static final Scope DELETE = new Scope("DELETE");
-    public static final Scope ALL = new Scope(Scope.GET + " " + Scope.POST + " " + Scope.PUT + " "
-            + Scope.PATCH + " " + Scope.DELETE);
+    private static final long serialVersionUID = -6114330785799547036L;
 
-    private String value;
-
-    public Scope(String value) {
-        this.value = value;
+    public AccessTokenValidationException(String message) {
+        super(message);
     }
 
-    @JsonProperty
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return value;
+    public AccessTokenValidationException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
