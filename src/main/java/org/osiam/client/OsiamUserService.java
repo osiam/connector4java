@@ -50,7 +50,7 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
     /**
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
      * one.
-     * 
+     *
      * @param builder
      *        a Builder to build the service from
      */
@@ -105,31 +105,10 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
     }
 
     /**
-     * See {@link OsiamConnector#searchUsers(String, AccessToken)}
-     * 
-     * @deprecated Use {@link OsiamUserService#searchUsers(Query, AccessToken)} instead
-     */
-    @Deprecated
-    public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
-        return super.searchResources(queryString, accessToken);
-    }
-
-    /**
-     * See {@link OsiamConnector#searchUsers(org.osiam.client.query.Query, AccessToken)}
-     * 
-     * @deprecated Use {@link OsiamUserService#searchUsers(Query, AccessToken)} instead
-     */
-    @Deprecated
-    public SCIMSearchResult<User> searchUsers(org.osiam.client.query.Query query, AccessToken accessToken) {
-        return super.searchResources(query, accessToken);
-    }
-
-    /**
      * See {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
     public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
-        // TODO implement
-        return null;
+        return searchResources(query, accessToken);
     }
 
     /**
@@ -177,7 +156,7 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
         /**
          * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
          * given endpoint
-         * 
+         *
          * @param endpoint
          *        The URL at which the OSIAM server lives.
          */

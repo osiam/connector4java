@@ -25,16 +25,9 @@ package org.osiam.client;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.http.HttpStatus.SC_CONFLICT;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.ws.rs.ProcessingException;
@@ -48,12 +41,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
@@ -69,6 +56,7 @@ import org.osiam.client.exception.OsiamRequestException;
 import org.osiam.client.exception.ScimErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.nquery.Query;
+import org.osiam.client.nquery.QueryBuilder;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.resources.helper.UserDeserializer;
 import org.osiam.resources.scim.Resource;
@@ -102,13 +90,10 @@ abstract class AbstractOsiamService<T extends Resource> {
     protected static final String ACCEPT = "Accept";
     protected static final String BEARER = "Bearer ";
 
-    private final HttpGet webResource;
     private final Class<T> type;
     private final String typeName;
     protected final ObjectMapper mapper;
     private final String endpoint;
-
-    private DefaultHttpClient httpclient;
 
     protected final WebTarget targetEndpoint;
 
@@ -116,7 +101,6 @@ abstract class AbstractOsiamService<T extends Resource> {
         type = builder.type;
         typeName = builder.typeName;
         endpoint = builder.endpoint;
-        webResource = builder.getWebResource();
 
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
@@ -149,80 +133,45 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     protected List<T> getAllResources(AccessToken accessToken) {
-        return searchResources("count=" + Integer.MAX_VALUE, accessToken).getResources();
-    }
-
-    /**
-     * @deprecated Use
-     *             {@link AbstractOsiamService#searchResources(Query, AccessToken)}
-     */
-    @Deprecated
-    protected SCIMSearchResult<T> searchResources(String queryString, AccessToken accessToken) {
-        ensureAccessTokenIsNotNull(accessToken);
-
-        httpclient = new DefaultHttpClient();
-
-        HttpResponse response;
-        try {
-            URI uri = new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString));
-
-            HttpGet realWebResource = new HttpGet(uri);
-            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-
-            realWebResource.setURI(uri);
-            response = httpclient.execute(realWebResource);
-        } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
-
-        int httpStatus = response.getStatusLine().getStatusCode();
-
-        if (httpStatus != SC_OK) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = extractErrorMessageForbidden(accessToken, "get");
-                throw new ForbiddenException(errorMessage);
-            case SC_CONFLICT:
-                errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString
-                        + "': "
-                        + response.getStatusLine().getReasonPhrase());
-                throw new ConflictException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamRequestException(httpStatus, errorMessage);
-            }
-        }
-
-        try {
-            InputStream queryResult = response.getEntity().getContent();
-            JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class,
-                    type);
-
-            return mapper.readValue(queryResult, queryResultType);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to deserialize query result", e);
-        }
-    }
-
-    /**
-     * @deprecated Use
-     *             {@link AbstractOsiamService#searchResources(Query, AccessToken)}
-     */
-    @Deprecated
-    protected SCIMSearchResult<T> searchResources(org.osiam.client.query.Query query, AccessToken accessToken) {
-        if (query == null) {
-            throw new IllegalArgumentException("The given queryBuilder can't be null.");
-        }
-        return searchResources(query.toString(), accessToken);
+        return searchResources(new QueryBuilder().build(), accessToken).getResources();
     }
 
     protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
-        // TODO implement
-        return null;
+        checkNotNull(query, "The given query must not be null.");
+        checkAccessTokenIsNotNull(accessToken);
+
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path(typeName + "s")
+                    .queryParam("attributes", query.getAttributes())
+                    .queryParam("filter", query.getFilter())
+                    .queryParam("sortBy", query.getSortBy())
+                    .queryParam("sortOrder", query.getSortOrder())
+                    .queryParam("startIndex",
+                            query.getStartIndex() != QueryBuilder.DEFAULT_START_INDEX ? query.getStartIndex() : null)
+                    .queryParam("count",
+                            query.getCount() != QueryBuilder.DEFAULT_COUNT ? query.getCount() : null)
+                    .request(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .get();
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
+        }
+
+        checkAndHandleResponse(content, status, accessToken, String.format("search with query: %s", query), null);
+
+        try {
+            JavaType queryResultType = TypeFactory.defaultInstance()
+                    .constructParametricType(SCIMSearchResult.class, type);
+
+            return mapper.readValue(content, queryResultType);
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to deserialize search result: %s", content), e);
+        }
     }
 
     protected void deleteResource(String id, AccessToken accessToken) {
@@ -324,16 +273,6 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    private void ensureAccessTokenIsNotNull(AccessToken accessToken) {
-        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
-    }
-
-    private void ensureReferenceIsNotNull(Object reference, String message) {
-        if (reference == null) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
     protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken, String action,
             String id) {
         if (status.getFamily() == Family.SUCCESSFUL) {
@@ -371,19 +310,9 @@ abstract class AbstractOsiamService<T extends Resource> {
                 "You are not authorized to access OSIAM. Please make sure your access token is valid");
     }
 
-    private String getErrorMessageUnauthorized(HttpResponse httpResponse) {
-        return getErrorMessage(httpResponse,
-                "You are not authorized to access OSIAM. Please make sure your access token is valid");
-    }
-
     protected String extractErrorMessageDefault(String content, StatusType status) {
         return extractErrorMessage(content, status,
                 String.format("Unable to setup connection (HTTP Status Code: %d)", status.getStatusCode()));
-    }
-
-    private String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
-        return getErrorMessage(httpResponse,
-                String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
     }
 
     protected String extractErrorMessage(String content, StatusType status, String defaultErrorMessage) {
@@ -400,34 +329,6 @@ abstract class AbstractOsiamService<T extends Resource> {
 
             return errorMessage;
         }
-    }
-
-    protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
-        String errorMessage;
-        InputStream content = null;
-        String inputStreamStringValue = null;
-
-        try {
-            content = httpResponse.getEntity().getContent();
-            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-            ObjectMapper errorMapper = new ObjectMapper();
-            ScimErrorMessage error = errorMapper.readValue(inputStreamStringValue, ScimErrorMessage.class);
-            errorMessage = error.getDescription();
-        } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = " Could not deserialize the error response for the status code \""
-                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
-            if (inputStreamStringValue != null) {
-                errorMessage += " Original response: " + inputStreamStringValue;
-            }
-        }
-
-        return errorMessage;
-    }
-
-    private <R extends HttpRequestBase> R addDefaultHeaderToRequest(R request, AccessToken accessToken) {
-        request.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
-        request.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-        return request;
     }
 
     protected String getEndpoint() {
@@ -450,18 +351,6 @@ abstract class AbstractOsiamService<T extends Resource> {
                     ((ParameterizedType) getClass().getGenericSuperclass())
                             .getActualTypeArguments()[0];
             typeName = type.getSimpleName();
-        }
-
-        protected HttpGet getWebResource() {
-            HttpGet webResource;
-            try {
-                webResource = new HttpGet(new URI(endpoint + "/" + typeName + "s"));
-                webResource.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
-            } catch (URISyntaxException e) {
-                throw new ConnectionInitializationException("Unable to setup connection " + endpoint +
-                        "is not a valid URI.", e);
-            }
-            return webResource;
         }
     }
 }
