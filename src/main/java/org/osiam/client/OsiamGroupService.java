@@ -41,7 +41,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
     /**
      * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder} to construct
      * one.
-     * 
+     *
      * @param builder
      *        The Builder to build the OsiamGroupService from
      */
@@ -64,31 +64,10 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
     }
 
     /**
-     * See {@link OsiamConnector#searchGroups(String, AccessToken)}
-     * 
-     * @deprecated Use {@link OsiamGroupService#searchGroups(Query, AccessToken)}
-     */
-    @Deprecated
-    public SCIMSearchResult<Group> searchGroups(String queryString, AccessToken accessToken) {
-        return searchResources(queryString, accessToken);
-    }
-
-    /**
-     * See {@link OsiamConnector#searchGroups(Query, AccessToken)}
-     * 
-     * @deprecated Use {@link OsiamGroupService#searchGroups(Query, AccessToken)}
-     */
-    @Deprecated
-    public SCIMSearchResult<Group> searchGroups(org.osiam.client.query.Query query, AccessToken accessToken) {
-        return searchResources(query, accessToken);
-    }
-
-    /**
      * See {@link OsiamConnector#searchGroups(Query, AccessToken)}
      */
     public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
-        // TODO: implement
-        return null;
+        return searchResources(query, accessToken);
     }
 
     /**
@@ -134,7 +113,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
         /**
          * Set up the Builder for the construction of an {@link OsiamGroupService} instance for the OSIAM service at the
          * given endpoint
-         * 
+         *
          * @param endpoint
          *        The URL at which the OSIAM server lives.
          */
