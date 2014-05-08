@@ -22,20 +22,50 @@
  */
 package org.osiam.client.nquery;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+/**
+ * Builder for {@link Query} objects.
+ */
 public class QueryBuilder {
-    private static final int DEFAULT_START_INDEX = 1;
-    private static final int DEFAULT_COUNT = 100;
+    public static final long DEFAULT_START_INDEX = 1;
+    public static final int DEFAULT_COUNT = 100;
+    public static final int MAX_COUNT = 100;
 
     String attributes;
+
     String filter;
+
     String sortBy;
     String sortOrder;
 
-    public long startIndex = DEFAULT_START_INDEX;
-    public int count = DEFAULT_COUNT;
+    long startIndex = DEFAULT_START_INDEX;
+    int count = DEFAULT_COUNT;
 
     /**
-     * Creates a new {@link Query} using this builder's values. 
+     * Constructs a new empty builder.
+     */
+    public QueryBuilder() {
+    }
+
+    /**
+     * Constructs a new {@link QueryBuilder} with values copied from given
+     * {@link Query}.
+     */
+    public QueryBuilder(Query original) {
+        attributes = original.getAttributes();
+        filter = original.getFilter();
+        sortBy = original.getSortBy();
+        sortOrder = original.getSortOrder();
+        startIndex = original.getStartIndex();
+        count = original.getCount();
+    }
+
+    /**
+     * Creates a new {@link Query} using this builder's values.
+     *
      * @return The query built by this {@link QueryBuilder}
      */
     public Query build() {
@@ -43,8 +73,9 @@ public class QueryBuilder {
     }
 
     /**
-     * Sets the attributes of the resources to return as a comma-separated
-     * list, e.g <code>userName, displayName</code>.
+     * Sets the attributes of the resources to return as a comma-separated list,
+     * e.g <code>userName, displayName</code>.
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.7
      */
     public QueryBuilder attributes(String attributes) {
@@ -54,6 +85,7 @@ public class QueryBuilder {
 
     /**
      * Sets the search filter string.
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.2
      */
     public QueryBuilder filter(String filter) {
@@ -63,6 +95,7 @@ public class QueryBuilder {
 
     /**
      * Sets the attribute to sort the returned resources by.
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.3
      */
     public QueryBuilder sortBy(String sortBy) {
@@ -71,7 +104,9 @@ public class QueryBuilder {
     }
 
     /**
-     * Sets the sort order (ascending, descending) the sort the returned resources by.
+     * Sets the sort order (ascending, descending) the sort the returned
+     * resources by.
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.3
      */
     public QueryBuilder sortOrder(String sortOrder) {
@@ -80,63 +115,44 @@ public class QueryBuilder {
     }
 
     /**
-     * Sets the index (1-based) of the first resource in the list of returned resources. 
+     * Sets the index (1-based) of the first resource in the list of returned
+     * resources.
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.4
      */
     public QueryBuilder startIndex(long startIndex) {
-        this.startIndex = startIndex;
+        if (startIndex == DEFAULT_START_INDEX) {
+            return this;
+        }
+
+        this.startIndex = startIndex < 1 ? DEFAULT_START_INDEX : startIndex;
         return this;
     }
 
     /**
      * Sets the number of returned resources per page.
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.4
      */
     public QueryBuilder count(int count) {
-        this.count = count;
+        if (count == DEFAULT_COUNT) {
+            return this;
+        }
+
+        this.count = count < 1 || count > MAX_COUNT ? DEFAULT_COUNT : count;
         return this;
     }
 
     /**
-     * Gets the attributes of the resources to return.
+     * Formats a given {@link DateTime} to the SCIM needed string form with the
+     * pattern "yyyy-MM-dd'T'HH:mm:ss.SSS"
+     *
+     * @param dateTime
+     *        dateTime to be converted
+     * @return dateTime as scim conform String
      */
-    public String getAttributes() {
-        return attributes;
+    public static String getScimConformFormatedDateTime(DateTime dateTime) {
+        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        return dateFormat.print(dateTime);
     }
-
-    /**
-     * Gets the filter string.
-     */
-    public String getFilter() {
-        return filter;
-    }
-
-    /**
-     * Gets the attribute to sort the returned resources by.
-     */
-    public String getSortBy() {
-        return sortBy;
-    }
-
-    /**
-     * Gets the sort order (ascending, descending) of the returned resources.
-     */
-    public String getSortOrder() {
-        return sortOrder;
-    }
-
-    /**
-     * Gets the index (1-based) of the first resource in the list of returned resource.
-     */
-    public long getStartIndex() {
-        return startIndex;
-    }
-
-    /**
-     * Gets the number of returned resources per page.
-     */
-    public int getCount() {
-        return count;
-    }
-    
 }

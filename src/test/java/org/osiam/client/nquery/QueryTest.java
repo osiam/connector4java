@@ -22,6 +22,51 @@
  */
 package org.osiam.client.nquery;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+
 
 public class QueryTest {
+
+    @Test
+    public void nextPage_increases_startIndex_by_count_and_returns_new_instance() {
+        Query queryOriginal = new QueryBuilder()
+                .startIndex(1)
+                .count(10)
+                .build();
+
+        Query queryNext = queryOriginal.nextPage();
+
+        assertThat(queryNext, is(not(sameInstance(queryOriginal))));
+        assertThat(queryNext.getStartIndex(), is(11L));
+    }
+
+    @Test
+    public void previousPage_decreases_startIndex_by_count_and_returns_new_instance() {
+        Query queryOriginal = new QueryBuilder()
+                .startIndex(21)
+                .count(10)
+                .build();
+
+        Query queryNext = queryOriginal.previousPage();
+
+        assertThat(queryNext, is(not(sameInstance(queryOriginal))));
+        assertThat(queryNext.getStartIndex(), is(11L));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void previousPage_raises_exception_if_on_first_page() {
+        Query queryOriginal = new QueryBuilder()
+                .startIndex(1)
+                .build();
+
+        queryOriginal.previousPage();
+
+        fail("Exception expected");
+    }
 }

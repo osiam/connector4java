@@ -22,6 +22,9 @@
  */
 package org.osiam.client.nquery;
 
+import static com.google.common.base.Preconditions.checkState;
+
+
 /**
  * This class represents query for submission to the resource server.
  */
@@ -32,10 +35,12 @@ public class Query {
     private final String sortOrder;
     private final long startIndex;
     private final int count;
-    
+
     /**
-     * Creates a new {@link Query} from the given Builder.
+     * Creates a new {@link Query} from the given {@link QueryBuilder}.
+     *
      * @param builder
+     *        the {@link QueryBuilder} holding the values of this query
      */
     Query(QueryBuilder builder) {
         attributes = builder.attributes;
@@ -44,6 +49,32 @@ public class Query {
         sortOrder = builder.sortOrder;
         startIndex = builder.startIndex;
         count = builder.count;
+    }
+
+    /**
+     * Create a new query that is moved forward in the result set by one page.
+     *
+     * @return A new query paged forward by one.
+     */
+    public Query nextPage() {
+        return new QueryBuilder(this)
+                .startIndex(startIndex + count)
+                .build();
+    }
+
+    /**
+     * Create a new query that is moved backward the result set by one page.
+     *
+     * @return A new query paged backward by one.
+     * @throws IllegalStateException
+     *         in case you are already at the first page
+     */
+    public Query previousPage() {
+        checkState(startIndex > 1, "StartIndex < 1 is not possible.");
+
+        return new QueryBuilder(this)
+                .startIndex(startIndex - count)
+                .build();
     }
 
     /**
@@ -87,5 +118,14 @@ public class Query {
     public int getCount() {
         return count;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Query [attributes=").append(attributes).append(", filter=").append(filter).append(", sortBy=")
+                .append(sortBy).append(", sortOrder=").append(sortOrder).append(", startIndex=").append(startIndex)
+                .append(", count=").append(count).append("]");
+        return builder.toString();
+    }
+
 }
