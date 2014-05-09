@@ -26,9 +26,11 @@ package org.osiam.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Date;
+
+import org.osiam.client.oauth.AccessToken;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.osiam.client.oauth.AccessToken;
 
 public class AccessTokenMockProvider {
 
@@ -49,9 +51,9 @@ public class AccessTokenMockProvider {
     public AccessToken expired_access_token() throws IOException, NoSuchFieldException, IllegalAccessException {
         InputStream is = readFile(path);
         AccessToken accessToken = mapper.readValue(is, AccessToken.class);
-        Field expiredInField = accessToken.getClass().getDeclaredField("expiresIn");
+        Field expiredInField = accessToken.getClass().getDeclaredField("expiresAt");
         expiredInField.setAccessible(true);
-        expiredInField.set(accessToken, -1);
+        expiredInField.set(accessToken, new Date(Long.MIN_VALUE));
         expiredInField.setAccessible(false);
         return accessToken;
     }

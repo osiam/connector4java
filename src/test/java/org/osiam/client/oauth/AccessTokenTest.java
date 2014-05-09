@@ -54,7 +54,6 @@ public class AccessTokenTest {
     public void access_token_is_deserialized_without_errors() throws IOException {
         given_a_valid_access_token();
         assertEquals(TOKEN, accessToken.getToken());
-        assertEquals(TOKEN_TYPE, accessToken.getType());
         assertFalse(accessToken.isExpired());
     }
 
@@ -65,25 +64,11 @@ public class AccessTokenTest {
     }
 
     @Test
-    public void toString_behaves_as_expected() throws IOException {
-        given_a_valid_access_token();
-        String builder = "[access_token = " + TOKEN + ", token_type = " + TOKEN_TYPE + ", scope = DELETE GET PATCH POST PUT" + ", expired = false, refresh_token = " + REFRESH_TOKEN + "]";
-        assertEquals(builder, accessToken.toString());
-    }
-
-    @Test
     public void equalsContract() {
         EqualsVerifier.forClass(AccessToken.class)
                 .usingGetClass()
                 .suppress(Warning.NULL_FIELDS, Warning.NONFINAL_FIELDS) // Neither Null nor modification is possible
                 .verify();
-    }
-    
-    @Test
-    public void staticOfCreatesEqualAccessTokens(){
-        AccessToken accessToken01 = AccessToken.of("token");
-        AccessToken accessToken02 = AccessToken.of("token");
-        assertTrue(accessToken01.equals(accessToken02));
     }
 
     private void given_an_expired_access_token() throws Exception {

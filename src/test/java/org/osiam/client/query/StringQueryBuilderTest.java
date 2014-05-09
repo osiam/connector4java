@@ -26,9 +26,7 @@ package org.osiam.client.query;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
-import org.osiam.client.connector.OsiamConnector;
 
 public class StringQueryBuilderTest {
 

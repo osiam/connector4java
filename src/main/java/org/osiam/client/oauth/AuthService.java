@@ -54,6 +54,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
@@ -69,6 +71,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public final class AuthService { // NOSONAR - Builder constructs instances of this class
 
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String ACCEPT = "Accept";
+    private static final String BEARER = "Bearer ";
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private final String endpoint;
     private Header[] headers;
@@ -85,7 +90,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
      * The private constructor for the AuthService. Please use the {@link AuthService.Builder} to construct one.
      * 
      * @param builder
-     *        a valid Builder that holds all needed variables
+     *            a valid Builder that holds all needed variables
      */
     private AuthService(Builder builder) {
         endpoint = builder.endpoint;
@@ -159,13 +164,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
-     * Provide an {@link AccessToken} for the given parameters of this service.
-     * 
-     * @return a valid AccessToken
-     * @throws ConnectionInitializationException
-     *         If the Service is unable to connect to the configured OAuth2 service.
-     * @throws UnauthorizedException
-     *         If the configured credentials for this service are not permitted to retrieve an {@link AccessToken}
+     * @see OsiamConnector#retrieveAccessToken()
      */
     public AccessToken retrieveAccessToken() {
         if (grantType == GrantType.AUTHORIZATION_CODE) {
@@ -223,10 +222,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
-     * provides the needed URI which is needed to reconnect the User to the OSIAM server to login. A detailed example
-     * how to use this method, can be seen in our wiki in gitHub
-     * 
-     * @return the needed redirect Uri
+     * @see OsiamConnector#getRedirectLoginUri()
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
@@ -250,22 +246,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
-     * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}. If
-     * the User acepted your request for the needed data you will get an access token. If the User denied your request a
-     * {@link ForbiddenException} will be thrown. If the {@linkplain HttpResponse} does not contain a value named "code"
-     * or "error" a {@linkplain InvalidAttributeException} will be thrown
-     * 
-     * @param authCodeResponse
-     *        response given from the OSIAM server. For more information please look at the wiki at github
-     * @return a valid AccessToken
-     * @throws org.osiam.client.exception.ForbiddenException
-     *         in case the User had denied you the wanted data
-     * @throws org.osiam.client.exception.InvalidAttributeException
-     *         in case not authCode and no error message could be found in the response
-     * @throws org.osiam.client.exception.ConflictException
-     *         in case the given authCode could not be exchanged against a access token
-     * @throws org.osiam.client.exception.ConnectionInitializationException
-     *         If the Service is unable to connect to the configured OAuth2 service.
+     * @see OsiamConnector#retrieveAccessToken(HttpResponse)
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
@@ -289,16 +270,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
-     * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
-     * 
-     * @param authCode
-     *        authentication code retrieved from the OSIAM Server by using the oauth2 login flow. For more information
-     *        please look at the wiki at github
-     * @return a valid AccessToken
-     * @throws ConflictException
-     *         in case the given authCode could not be exchanged against a access token
-     * @throws ConnectionInitializationException
-     *         If the Service is unable to connect to the configured OAuth2 service.
+     * @see OsiamConnector#retrieveAccessToken(String)
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
@@ -373,6 +345,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         return realWebResource;
     }
 
+    /**
+     * @see OsiamConnector#refreshAccessToken(AccessToken, Scope...)
+     */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] scopes) {
         if (scopes.length != 0) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -387,6 +362,37 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         int status = response.getStatusLine().getStatusCode();
 
         checkAndHandleHttpStatus(response, status);
+
+        return getAccessToken(response);
+    }
+
+    /**
+     * @see OsiamConnector#validateAccessToken(AccessToken, AccessToken)
+     */
+    public AccessToken validateAccessToken(AccessToken tokenToValidate, AccessToken tokenToAuthorize) {
+        if (tokenToValidate == null || tokenToAuthorize == null) {
+            throw new IllegalArgumentException("The given accessToken can't be null.");
+        }
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+
+        HttpResponse response;
+        try {
+            URI uri = new URI(endpoint + "/token/validation/" + tokenToValidate.getToken());
+            HttpPost realWebResource = new HttpPost(uri);
+            realWebResource.addHeader(AUTHORIZATION, BEARER + tokenToAuthorize.getToken());
+            realWebResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
+            response = httpclient.execute(realWebResource);
+        } catch (IOException | URISyntaxException e) {
+            throw new ConnectionInitializationException("", e);
+        }
+        int httpStatus = response.getStatusLine().getStatusCode();
+
+        if (httpStatus == SC_BAD_REQUEST) {
+            String errorMessage = getErrorMessage(response);
+            throw new AccessTokenValidationException(errorMessage);
+        }
+
+        checkAndHandleHttpStatus(response, httpStatus);
 
         return getAccessToken(response);
     }
@@ -410,7 +416,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * given endpoint
          * 
          * @param endpoint
-         *        The URL at which the OAuth2 service lives.
+         *            The URL at which the OAuth2 service lives.
          */
         public Builder(String endpoint) {
             this.endpoint = endpoint;
@@ -420,9 +426,9 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Use the given {@link Scope} to for the request.
          * 
          * @param scope
-         *        the needed scope
+         *            the needed scope
          * @param scopes
-         *        the needed scopes
+         *            the needed scopes
          * @return The builder itself
          */
         public Builder setScope(Scope scope, Scope... scopes) {
@@ -449,7 +455,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * The needed access token scopes as String like 'GET PATCH'
          * 
          * @param scope
-         *        the needed scopes
+         *            the needed scopes
          * @return The builder itself
          */
         public Builder setScope(String scope) {
@@ -461,7 +467,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Use the given {@link GrantType} to for the request.
          * 
          * @param grantType
-         *        of the requested AuthCode
+         *            of the requested AuthCode
          * @return The builder itself
          */
         public Builder setGrantType(GrantType grantType) {
@@ -473,7 +479,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Add a ClientId to the OAuth2 request
          * 
          * @param clientId
-         *        The client-Id
+         *            The client-Id
          * @return The builder itself
          */
         public Builder setClientId(String clientId) {
@@ -485,7 +491,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Add a Client redirect URI to the OAuth2 request
          * 
          * @param clientRedirectUri
-         *        the clientRedirectUri which is known to the OSIAM server
+         *            the clientRedirectUri which is known to the OSIAM server
          * @return The builder itself
          */
         public Builder setClientRedirectUri(String clientRedirectUri) {
@@ -497,7 +503,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Add a clientSecret to the OAuth2 request
          * 
          * @param clientSecret
-         *        The client secret
+         *            The client secret
          * @return The builder itself
          */
         public Builder setClientSecret(String clientSecret) {
@@ -509,7 +515,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Add the given userName to the OAuth2 request
          * 
          * @param userName
-         *        The userName
+         *            The userName
          * @return The builder itself
          */
         public Builder setUsername(String userName) {
@@ -521,7 +527,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
          * Add the given password to the OAuth2 request
          * 
          * @param password
-         *        The password
+         *            The password
          * @return The builder itself
          */
         public Builder setPassword(String password) {
