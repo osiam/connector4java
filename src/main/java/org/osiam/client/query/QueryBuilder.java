@@ -45,13 +45,13 @@ public class QueryBuilder {
     int count = DEFAULT_COUNT;
 
     /**
-     * Constructs a new empty builder.
+     * Constructs a new empty {@link QueryBuilder}.
      */
     public QueryBuilder() {
     }
 
     /**
-     * Constructs a new {@link QueryBuilder} with values copied from given
+     * Constructs a new {@link QueryBuilder} with values copied from the given
      * {@link Query}.
      */
     public QueryBuilder(Query original) {
@@ -76,6 +76,9 @@ public class QueryBuilder {
      * Sets the attributes of the resources to return as a comma-separated list,
      * e.g <code>userName, displayName</code>.
      *
+     * @param attributes
+     *        list of attributes to return
+     *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.7
      */
     public QueryBuilder attributes(String attributes) {
@@ -84,8 +87,10 @@ public class QueryBuilder {
     }
 
     /**
-     * Sets the search filter string.
+     * Filter the resulting resources by the given filter string.
      *
+     * @param filter
+     *        the filter string
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.2
      */
     public QueryBuilder filter(String filter) {
@@ -94,29 +99,37 @@ public class QueryBuilder {
     }
 
     /**
-     * Sets the attribute to sort the returned resources by.
+     * Sort the resulting resources ascending by the given attribute.
      *
+     * @param sortByAttribute
+     *        the attribute to sort the resulting resources by
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.3
      */
-    public QueryBuilder sortBy(String sortBy) {
-        this.sortBy = sortBy;
+    public QueryBuilder ascending(String sortByAttribute) {
+        sortBy = sortByAttribute;
+        sortOrder = "ascending";
         return this;
     }
 
     /**
-     * Sets the sort order (ascending, descending) the sort the returned
-     * resources by.
+     * Sort the resulting resources descending by the given attribute.
      *
+     * @param sortByAttribute
+     *        the attribute to sort the resulting resources by
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.3
      */
-    public QueryBuilder sortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
+    public QueryBuilder descending(String sortByAttribute) {
+        sortBy = sortByAttribute;
+        sortOrder = "descending";
         return this;
     }
 
     /**
      * Sets the index (1-based) of the first resource in the list of returned
      * resources.
+     *
+     * @param startIndex
+     *        the (1-based) index of the first resource
      *
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.4
      */
@@ -132,6 +145,8 @@ public class QueryBuilder {
     /**
      * Sets the number of returned resources per page.
      *
+     * @param count
+     *        the number of returned resources
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.4
      */
     public QueryBuilder count(int count) {

@@ -6,8 +6,6 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryBuilder;
 
 public class QueryBuilderTest {
 
@@ -30,16 +28,15 @@ public class QueryBuilderTest {
         Query query = queryBuilder
                 .attributes("attributes")
                 .filter("filter")
-                .sortBy("sortBy")
-                .sortOrder("sortOrder")
+                .ascending("sortByAttribute")
                 .startIndex(11L)
                 .count(10)
                 .build();
 
         assertThat(query.getAttributes(), is(equalTo("attributes")));
         assertThat(query.getFilter(), is(equalTo("filter")));
-        assertThat(query.getSortBy(), is(equalTo("sortBy")));
-        assertThat(query.getSortOrder(), is(equalTo("sortOrder")));
+        assertThat(query.getSortBy(), is(equalTo("sortByAttribute")));
+        assertThat(query.getSortOrder(), is(equalTo("ascending")));
         assertThat(query.getStartIndex(), is(11L));
         assertThat(query.getCount(), is(10));
     }
@@ -49,8 +46,7 @@ public class QueryBuilderTest {
         Query queryOriginal = queryBuilder
                 .attributes("attributes")
                 .filter("filter")
-                .sortBy("sortBy")
-                .sortOrder("sortOrder")
+                .ascending("sortByAttribute")
                 .startIndex(11L)
                 .count(10)
                 .build();
@@ -90,6 +86,24 @@ public class QueryBuilderTest {
                 .build();
 
         assertThat(query.getCount(), is(100));
+    }
+
+    @Test
+    public void sorting_ascending_works() {
+        Query query = queryBuilder
+                .ascending("sortByAttribute")
+                .build();
+
+        assertThat(query.getSortOrder(), is("ascending"));
+    }
+
+    @Test
+    public void sorting_descending_works() {
+        Query query = queryBuilder
+                .descending("sortByAttribute")
+                .build();
+
+        assertThat(query.getSortOrder(), is("descending"));
     }
 
 }
