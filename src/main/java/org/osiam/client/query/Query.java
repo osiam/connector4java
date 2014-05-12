@@ -20,7 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.osiam.client.nquery;
+package org.osiam.client.query;
 
 import static com.google.common.base.Preconditions.checkState;
 

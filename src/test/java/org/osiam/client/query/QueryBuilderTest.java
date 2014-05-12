@@ -1,4 +1,4 @@
-package org.osiam.client.nquery;
+package org.osiam.client.query;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 
 public class QueryBuilderTest {
 
