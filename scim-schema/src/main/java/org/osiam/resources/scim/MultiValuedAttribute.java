@@ -132,20 +132,18 @@ public abstract class MultiValuedAttribute {
         return reference;
     }
 
-    /**
-     * calculates the hascode based on the attributes except the primary attribute
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((display == null) ? 0 : display.hashCode());
+        result = prime * result + ((operation == null) ? 0 : operation.hashCode());
+        result = prime * result + (primary ? 1231 : 1237);
+        result = prime * result + ((reference == null) ? 0 : reference.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
 
-    /**
-     * compares the object with the given one except for the primary attribute
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -158,6 +156,30 @@ public abstract class MultiValuedAttribute {
             return false;
         }
         MultiValuedAttribute other = (MultiValuedAttribute) obj;
+        if (display == null) {
+            if (other.display != null) {
+                return false;
+            }
+        } else if (!display.equals(other.display)) {
+            return false;
+        }
+        if (operation == null) {
+            if (other.operation != null) {
+                return false;
+            }
+        } else if (!operation.equals(other.operation)) {
+            return false;
+        }
+        if (primary != other.primary) {
+            return false;
+        }
+        if (reference == null) {
+            if (other.reference != null) {
+                return false;
+            }
+        } else if (!reference.equals(other.reference)) {
+            return false;
+        }
         if (value == null) {
             if (other.value != null) {
                 return false;

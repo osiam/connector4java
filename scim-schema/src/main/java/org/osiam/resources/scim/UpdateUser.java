@@ -889,28 +889,28 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
                 updateUser.setMeta(meta);
             }
             if (emails.size() > 0) {
-                updateUser.setEmails(emails);
+                updateUser.addEmails(emails);
             }
             if (phoneNumbers.size() > 0) {
-                updateUser.setPhoneNumbers(phoneNumbers);
+                updateUser.addPhoneNumbers(phoneNumbers);
             }
             if (addresses.size() > 0) {
-                updateUser.setAddresses(addresses);
+                updateUser.addAddresses(addresses);
             }
             if (entitlements.size() > 0) {
-                updateUser.setEntitlements(entitlements);
+                updateUser.addEntitlements(entitlements);
             }
             if (ims.size() > 0) {
-                updateUser.setIms(ims);
+                updateUser.addIms(ims);
             }
             if (photos.size() > 0) {
-                updateUser.setPhotos(photos);
+                updateUser.addPhotos(photos);
             }
             if (roles.size() > 0) {
-                updateUser.setRoles(roles);
+                updateUser.addRoles(roles);
             }
             if (certificates.size() > 0) {
-                updateUser.setX509Certificates(certificates);
+                updateUser.addX509Certificates(certificates);
             }
             if (extensions.size() > 0) {
                 updateUser.addExtensions(extensions);
