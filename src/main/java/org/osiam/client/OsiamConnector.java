@@ -25,7 +25,6 @@ package org.osiam.client;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ConnectionInitializationException; // NOSONAR : needed for Javadoc
@@ -379,30 +378,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      */
     public URI getRedirectLoginUri() {
         return authService().getRedirectLoginUri();
-    }
-
-    /**
-     * Provide an {@link AccessToken} for the given parameters of this service and the given {@link HttpResponse}. If
-     * the User accepted your request for the needed data you will get an access token. If the User denied your request
-     * a {@link ForbiddenException} will be thrown. If the {@linkplain HttpResponse} does not contain a value named
-     * "code" or "error" a {@linkplain InvalidAttributeException} will be thrown
-     *
-     * @param authCodeResponse
-     *            response given from the OSIAM server. For more information please look at the wiki at github
-     * @return a valid AccessToken
-     * @throws ForbiddenException
-     *             in case the User had denied you the wanted data
-     * @throws InvalidAttributeException
-     *             in case not authCode and no error message could be found in the response
-     * @throws ConflictException
-     *             in case the given authCode could not be exchanged against a access token
-     * @throws ConnectionInitializationException
-     *             If the Service is unable to connect to the configured OAuth2 service.
-     * @see <a
-     *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
-     */
-    public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
-        return authService().retrieveAccessToken(authCodeResponse);
     }
 
     /**
