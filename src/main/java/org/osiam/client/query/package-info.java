@@ -24,4 +24,4 @@
 /**
  * This package contains the improved query API.
  */
-package org.osiam.client.nquery;
+package org.osiam.client.query;

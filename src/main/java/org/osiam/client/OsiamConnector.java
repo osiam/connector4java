@@ -32,11 +32,11 @@ import org.osiam.client.exception.ForbiddenException; // NOSONAR : needed for Ja
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
-import org.osiam.client.nquery.Query;
-import org.osiam.client.nquery.QueryBuilder;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
@@ -222,7 +222,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
 
     /**
-     * Search for existing Users by the given {@link org.osiam.client.nquery.Query Query}.
+     * Search for existing Users by the given {@link org.osiam.client.query.Query Query}.
      *
      * @param query
      *        containing the query to execute.
@@ -320,7 +320,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
 
     /**
-     * Search for existing groups by a given {@link org.osiam.client.nquery.Query Query}. For more detailed information
+     * Search for existing groups by a given {@link org.osiam.client.query.Query Query}. For more detailed information
      * about the possible logical operators and usable fields please have a look into the wiki.
      *
      * @param query
