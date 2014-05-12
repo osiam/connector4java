@@ -150,7 +150,7 @@
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
+                <artifactId>wagon-ssh-external</artifactId>
                 <version>2.6</version>
             </extension>
         </extensions>
@@ -386,12 +386,12 @@
                 <repository>
                     <id>osiam-repository</id>
                     <name>public evolvis release repository</name>
-                    <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
+                    <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
                 </repository>
                 <snapshotRepository>
                     <id>OSIAM-NG-SNAPSHOT-repository</id>
                     <name>public evolvis release repository</name>
-                    <url>sftp://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
+                    <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
                 </snapshotRepository>
 
             </distributionManagement>
@@ -412,7 +412,7 @@
                         <dependencies>
                             <dependency>
                                 <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-ssh</artifactId>
+                                <artifactId>wagon-ssh-external</artifactId>
                                 <version>2.6</version>
                             </dependency>
                         </dependencies>
