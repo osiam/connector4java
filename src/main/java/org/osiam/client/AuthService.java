@@ -44,9 +44,6 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpResponse;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
@@ -57,8 +54,6 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -148,32 +143,6 @@ class AuthService { // NOSONAR - Builder constructs instances of
         checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
-    }
-
-    /**
-     * @see OsiamConnector#retrieveAccessToken(HttpResponse)
-     * @see <a
-     *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
-     * @deprecated This method will be removed in future releases
-     */
-    @Deprecated
-    public AccessToken retrieveAccessToken(HttpResponse authCodeResponse) {
-        String authCode = null;
-        Header header = authCodeResponse.getLastHeader("Location");
-        HeaderElement[] elements = header.getElements();
-        for (HeaderElement actHeaderElement : elements) {
-            if (actHeaderElement.getName().contains("code")) {
-                authCode = actHeaderElement.getValue();
-                break;
-            }
-            if (actHeaderElement.getName().contains("error")) {
-                throw new ForbiddenException("The user had denied the acces to his data.");
-            }
-        }
-        if (authCode == null) {
-            throw new InvalidAttributeException("Could not find any auth code or error message in the given Response");
-        }
-        return retrieveAccessToken(authCode);
     }
 
     /**
