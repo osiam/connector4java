@@ -312,19 +312,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
 
     /**
-     * Provide an {@link AccessToken} for the given parameters of this service.
-     *
-     * @return a valid AccessToken
-     * @throws ConnectionInitializationException
-     *             If the Service is unable to connect to the configured OAuth2 service.
-     * @throws UnauthorizedException
-     *             If the configured credentials for this service are not permitted to retrieve an {@link AccessToken}
-     */
-    public AccessToken retrieveAccessToken() {
-        return authService().retrieveAccessToken();
-    }
-
-    /**
      * Provides a new and refreshed access token by getting the refresh token from the given access token.
      *
      * @param accessToken
@@ -341,7 +328,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     /**
      * provides the needed URI which is needed to reconnect the User to the OSIAM server to login. A detailed example
      * how to use this method, can be seen in our wiki in gitHub
-     *
+     * 
+     * @param scopes the wanted scopes for the user who want's to log in with the oauth workflow
      * @return the needed redirect Uri
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
@@ -350,18 +338,30 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         return authService().getRedirectLoginUri(scopes);
     }
 
-     public AccessToken retrieveAccessToken(Scope... scopes) {
-    //TODO
+    /**
+     * Provide an {@link AccessToken} for the {@link GrantType} CLIENT_CREDENTIALS.
+     * @param scopes the wanted Scopes of the {@link AccessToken}
+     * @return an valid {@link AccessToken} 
+     */
+    public AccessToken retrieveAccessToken(Scope... scopes) {
         return authService().retrieveAccessToken(scopes);
     }
     
+    /**
+     * Provide an {@link AccessToken} for the {@link GrantType} RESOURCE_OWNER_PASSWORD_CREDENTIALS.
+     * 
+     * @param userName the userName of the actual User
+     * @param password the password of the actual User
+     * @param scopes the wanted Scopes of the {@link AccessToken}
+     * @return an valid {@link AccessToken} 
+     */
     public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
         return authService().retrieveAccessToken(userName, password, scopes);
     }
 
     /**
-     * Provide an {@link AccessToken} for the given parameters of this service and the given authCode.
-     *
+     * Provide an {@link AccessToken} for the {@link GrantType} AUTHORIZATION_CODE (oauth2 login).
+     * 
      * @param authCode
      *            authentication code retrieved from the OSIAM Server by using the oauth2 login flow. For more
      *            information please look at the wiki at github

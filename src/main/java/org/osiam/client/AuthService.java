@@ -83,12 +83,6 @@ class AuthService {
 
     private final WebTarget targetEndpoint;
 
-    /**
-     * The private constructor for the AuthService. Please use the {@link AuthService.Builder} to construct one.
-     *
-     * @param builder
-     *            a valid Builder that holds all needed variables
-     */
     private AuthService(Builder builder) {
         endpoint = builder.endpoint;
         clientId = builder.clientId;
@@ -99,9 +93,6 @@ class AuthService {
                 .register(HttpAuthenticationFeature.basic(clientId, clientSecret));
     }
 
-    /**
-     * @see OsiamConnector#retrieveAccessToken()
-     */
     public AccessToken retrieveAccessToken(Scope... scopes) {
         String formattedScopes = getScopesAsString(scopes);
         Form form = new Form();
@@ -152,11 +143,6 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    /**
-     * @see OsiamConnector#retrieveAccessToken(String)
-     * @see <a
-     *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
-     */
     public AccessToken retrieveAccessToken(String authCode) {
         checkArgument(!Strings.isNullOrEmpty(authCode), "The given authentication code can't be null.");
 
@@ -192,9 +178,6 @@ class AuthService {
         return scopeBuilder.toString().trim();
     }
 
-    /**
-     * @see OsiamConnector#refreshAccessToken(AccessToken, Scope...)
-     */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
         if (accessToken.getRefreshToken() == null) {
             throw new ConnectionInitializationException(
@@ -230,11 +213,6 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    /**
-     * @see OsiamConnector#getRedirectLoginUri()
-     * @see <a
-     *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
-     */
     public URI getRedirectLoginUri(Scope... scopes) {
         try {
             String formattedScopes = getScopesAsString(scopes);
