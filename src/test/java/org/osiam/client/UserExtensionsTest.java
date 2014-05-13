@@ -34,7 +34,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.apache.http.entity.ContentType;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,8 +49,8 @@ public class UserExtensionsTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090);
 
-    private final static String URL_BASE = "/osiam-auth-server//Users";
-    private final static String ENDPOINT = "http://localhost:9090/osiam-auth-server/";
+    private final static String URL_BASE = "/osiam-auth-server/Users";
+    private final static String ENDPOINT = "http://localhost:9090/osiam-auth-server";
     private final static String USER_ID_WITHOUT_EXTENSION = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String USER_ID_WITH_EXTENSION = "a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private final static String ENTERPRISE_EXTENSION_URN = "urn:scim:schemas:extension:enterprise:2.0:User";
@@ -100,18 +101,18 @@ public class UserExtensionsTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenUserIdIsLookedUp() {
         stubFor(givenIDisLookedUp(userIdToRetrieve, accessToken).willReturn(
-                aResponse().withStatus(SC_OK).withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                aResponse().withStatus(SC_OK).withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + userIdToRetrieve + ".json")));
     }
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
-        return get(urlEqualTo(URL_BASE + "/" + id)).withHeader("Content-Type",
-                equalTo(ContentType.APPLICATION_JSON.getMimeType())).withHeader("Authorization",
+        return get(urlEqualTo(URL_BASE + "/" + id)).withHeader("Accept",
+                equalTo(MediaType.APPLICATION_JSON)).withHeader("Authorization",
                 equalTo("Bearer " + accessToken.getToken()));
     }
 }

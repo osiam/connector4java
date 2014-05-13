@@ -24,31 +24,32 @@
 package org.osiam.client.oauth;
 
 /**
- * The Grant Type represents the type of Grant that the client expects from the service.
+ * The Grant Type represents the type of oauth2 grant a client wants to use.
  */
 public enum GrantType {
 
-	/**
-	 * for this GrantType also the user name and the user password are needed
-	 */
-    RESOURCE_OWNER_PASSWORD_CREDENTIALS("password")
-     /**
-	 * for this GrantType the user name and the user password are not allowed
-	 * If you set one of these a exception will be thrown.
-	 * Also a redir4ect Uri is needed
-	 */
-   , AUTHORIZATION_CODE("authorization_code")
     /**
-	 * for this GrantType the user name and the user password are not allowed
-	 * If you set one of these a exception will be thrown
-	 */
-   , CLIENT_CREDENTIALS("client_credentials"),
-    /**
-     * This grant type has the purpose to refresh an existing access token.
-     * This means you get a new access token with the configured lifetime.
-     * Refreshing is not allowed with the client credentials grant.
+     * For this GrantType client id, client secret, user name and password must
+     * be set.
      */
-     REFRESH_TOKEN("refresh_token");
+    RESOURCE_OWNER_PASSWORD_CREDENTIALS("password"),
+    /**
+     * For this GrantType client id, client secret and redirect URI must be set,
+     * and user name and password must not be set, otherwise an exception will
+     * be thrown.
+     */
+    AUTHORIZATION_CODE("authorization_code"),
+    /**
+     * For this GrantType client id and secret must be set, and user name and
+     * password must not be set, otherwise an exception will be thrown.
+     */
+    CLIENT_CREDENTIALS("client_credentials"),
+    /**
+     * This grant type has the purpose to refresh an existing access token, i.e.
+     * getting a new access token with the configured lifetime. Refreshing is
+     * not allowed with the client credentials grant.
+     */
+    REFRESH_TOKEN("refresh_token");
 
     private String urlParam;
 
@@ -57,8 +58,8 @@ public enum GrantType {
     }
 
     /**
-     * Provide the string for use in the actual request.
-     *
+     * Provides the string for use in the actual request.
+     * 
      * @return The string representation of the grant type.
      */
     public String getUrlParam() {

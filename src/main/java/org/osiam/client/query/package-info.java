@@ -21,28 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.query;
-
 /**
- * This enum represents the way in which the result of a query should be ordered.
+ * This package contains the improved query API.
  */
-public enum SortOrder {
-    /**
-     * Order result ascending
-     */
-    ASCENDING("ascending"),
-    /**
-     * Order result descending
-     */
-    DESCENDING("descending");
-
-    private String sortOrder;
-
-    SortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public String toString() {
-        return sortOrder;
-    }
-}
+package org.osiam.client.query;

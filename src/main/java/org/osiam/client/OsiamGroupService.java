@@ -25,7 +25,6 @@ package org.osiam.client;
 
 import java.util.List;
 
-import org.osiam.client.connector.OsiamConnector; // NOSONAR : needed for Javadoc
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.resources.scim.Group;
@@ -33,16 +32,18 @@ import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateGroup;
 
 /**
- * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the
- * given OSIAM installation. For the construction of an instance please use the {@link OsiamGroupService.Builder}
+ * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the given
+ * OSIAM installation. For the construction of an instance please use the {@link OsiamGroupService.Builder}
  */
-public final class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of this class
+class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of
+                                                                           // this class
 
     /**
-     * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder}
-     * to construct one.
+     * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder} to construct
+     * one.
      *
-     * @param builder The Builder to build the OsiamGroupService from
+     * @param builder
+     *        The Builder to build the OsiamGroupService from
      */
     private OsiamGroupService(Builder builder) {
         super(builder);
@@ -60,13 +61,6 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
      */
     public List<Group> getAllGroups(AccessToken accessToken) {
         return getAllResources(accessToken);
-    }
-
-    /**
-     * See {@link OsiamConnector#searchGroups(String, AccessToken)}
-     */
-    public SCIMSearchResult<Group> searchGroups(String queryString, AccessToken accessToken) {
-        return searchResources(queryString, accessToken);
     }
 
     /**
@@ -107,7 +101,7 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
     /**
      * See {@link OsiamConnector#replaceGroup(String, Group, AccessToken)}
      */
-    public Group replaceGroup(String id, Group group, AccessToken accessToken){
+    public Group replaceGroup(String id, Group group, AccessToken accessToken) {
         return replaceResource(id, group, accessToken);
     }
 
@@ -117,10 +111,11 @@ public final class OsiamGroupService extends AbstractOsiamService<Group> { // NO
     public static class Builder extends AbstractOsiamService.Builder<Group> {
 
         /**
-         * Set up the Builder for the construction of  an {@link OsiamGroupService} instance for the OSIAM service at
-         * the given endpoint
+         * Set up the Builder for the construction of an {@link OsiamGroupService} instance for the OSIAM service at the
+         * given endpoint
          *
-         * @param endpoint The URL at which the OSIAM server lives.
+         * @param endpoint
+         *        The URL at which the OSIAM server lives.
          */
         public Builder(String endpoint) {
             super(endpoint);

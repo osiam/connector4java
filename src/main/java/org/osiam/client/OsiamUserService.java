@@ -23,26 +23,14 @@
 
 package org.osiam.client;
 
-import static org.apache.http.HttpStatus.SC_CONFLICT;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.osiam.client.connector.OsiamConnector; // NOSONAR : needed for Javadoc
-import org.osiam.client.exception.ConflictException;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.StatusType;
+
 import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.user.BasicUser;
@@ -50,20 +38,19 @@ import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
  * installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
  */
-public final class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder constructs instances of
+class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder constructs instances of
                                                                          // this class
 
     /**
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
      * one.
-     * 
+     *
      * @param builder
      *        a Builder to build the service from
      */
@@ -82,49 +69,24 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
      * See {@link OsiamConnector#getCurrentUserBasic(AccessToken)}
      */
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
-        if (accessToken == null) {
-            throw new IllegalArgumentException("The given accessToken can't be null.");
-        }
+        checkAccessTokenIsNotNull(accessToken);
 
+        StatusType status;
+        String content;
         try {
-            DefaultHttpClient httpclient = new DefaultHttpClient();
+            Response response = targetEndpoint.path("me").request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + accessToken.getToken())
+                    .get();
 
-            URI uri = new URI(getMeWebResource().getURI().toString());
-
-            HttpGet realWebResource = new HttpGet(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
-            realWebResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-
-            HttpResponse response = httpclient.execute(realWebResource);
-            int httpStatus = response.getStatusLine().getStatusCode();
-
-            if (httpStatus != SC_OK) {
-                String errorMessage;
-                switch (httpStatus) {
-                case SC_UNAUTHORIZED:
-                    errorMessage = getErrorMessage(response,
-                            "You are not authorized to access OSIAM. Please make sure your access token is valid");
-                    throw new UnauthorizedException(errorMessage);
-                case SC_FORBIDDEN:
-                    errorMessage = "Insufficient scope (" + accessToken.getScopes() + ") to retrieve the actual User.";
-                    throw new ForbiddenException(errorMessage);
-                case SC_CONFLICT:
-                    errorMessage = getErrorMessage(response, "Unable to retrieve the actual User.");
-                    throw new ConflictException(errorMessage);
-                default:
-                    errorMessage = getErrorMessage(response,
-                            String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
-                    throw new ConnectionInitializationException(errorMessage);
-                }
-            }
-
-            InputStream content = response.getEntity().getContent();
-            BasicUser basicUser = new ObjectMapper().readValue(content, BasicUser.class);
-
-            return basicUser;
-        } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("Unable to setup connection", e);
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
+
+        checkAndHandleResponse(content, status, accessToken, "get me", null);
+
+        return mapToType(content, BasicUser.class);
     }
 
     /**
@@ -135,18 +97,6 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         return getResource(basicUser.getId(), accessToken);
     }
 
-    protected HttpGet getMeWebResource() {
-        HttpGet webResource;
-        try {
-            webResource = new HttpGet(new URI(getEndpoint() + "/me"));
-            webResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-        } catch (URISyntaxException e) {
-            throw new ConnectionInitializationException("Unable to setup connection " + getEndpoint() +
-                    "is not a valid URI.", e);
-        }
-        return webResource;
-    }
-
     /**
      * See {@link OsiamConnector#getAllUsers(AccessToken)}
      */
@@ -155,17 +105,10 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
     }
 
     /**
-     * See {@link OsiamConnector#searchUsers(String, AccessToken)}
-     */
-    public SCIMSearchResult<User> searchUsers(String queryString, AccessToken accessToken) {
-        return super.searchResources(queryString, accessToken);
-    }
-
-    /**
      * See {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
     public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
-        return super.searchResources(query, accessToken);
+        return searchResources(query, accessToken);
     }
 
     /**
@@ -213,7 +156,7 @@ public final class OsiamUserService extends AbstractOsiamService<User> { // NOSO
         /**
          * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
          * given endpoint
-         * 
+         *
          * @param endpoint
          *        The URL at which the OSIAM server lives.
          */

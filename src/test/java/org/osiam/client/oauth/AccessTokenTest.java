@@ -39,8 +39,6 @@ import org.osiam.client.AccessTokenMockProvider;
 public class AccessTokenTest {
 
     private final static String TOKEN = "c5d116cb-2758-4e7c-9aca-4a115bc4f19e";
-    private final static String TOKEN_TYPE = "bearer";
-    private final static String REFRESH_TOKEN = "c5d116cb-5568-4e7c-9aca-4a115bc4f19e";
     private AccessTokenMockProvider tokenProvider;
     private AccessToken accessToken;
 
