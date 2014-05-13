@@ -130,52 +130,32 @@ public class AuthServiceTest {
         then_exception_has_to_be_thrown();
     }
 
-    @Test(expected = IllegalAccessError.class)
-    public void using_retrieveAccessToken_without_authCode_while_using_gran_type_Auth_code() {
-        given_a_correctly_configured_access_token_auth_service();
-        when_token_is_requested();
-    }
-
     private void given_a_wrong_configured_auth_service_with_wrong_endpoint() {
         service = new OsiamConnector.Builder().setAuthServerEndpoint(WRONG_ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void given_a_wrong_configured_auth_service_with_invalid_client_credentials() {
         service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(INVALID_CLIENT_ID)
                 .setClientSecret(INVALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void given_a_correctly_configured_password_auth_service() {
         service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void given_a_correctly_configured_access_token_auth_service() {
         service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
-                .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
-                .setScope(Scope.ALL)
                 .build();
     }
 
@@ -228,7 +208,7 @@ public class AuthServiceTest {
                 .append("&response_type=code&redirect_uri=").append(REDIRECT_URI)
                 .append("&scope=").append(encodeExpectedString(Scope.ALL.toString()));
         URI expectedUri = new URI(expected.toString());
-        assertEquals(expectedUri, service.getRedirectLoginUri());
+        assertEquals(expectedUri, service.getRedirectLoginUri(Scope.ALL));
     }
 
     private String encodeExpectedString(String string) {

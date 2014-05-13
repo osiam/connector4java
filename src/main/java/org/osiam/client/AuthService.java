@@ -28,8 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -68,8 +66,7 @@ import com.google.common.base.Strings;
  * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
  * {@link AuthService.Builder} to construct one.
  */
-class AuthService { // NOSONAR - Builder constructs instances of
-                    // this class
+class AuthService { 
 
     private static final String BEARER = "Bearer ";
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
@@ -83,10 +80,6 @@ class AuthService { // NOSONAR - Builder constructs instances of
     private final String clientId;
     private final String clientSecret;
     private final String clientRedirectUri;
-    private String scopes;
-    private final String password;
-    private final String userName;
-    private GrantType grantType;
 
     private final WebTarget targetEndpoint;
 
@@ -98,10 +91,6 @@ class AuthService { // NOSONAR - Builder constructs instances of
      */
     private AuthService(Builder builder) {
         endpoint = builder.endpoint;
-        scopes = builder.scopes;
-        grantType = builder.grantType;
-        userName = builder.userName;
-        password = builder.password;
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
@@ -113,19 +102,37 @@ class AuthService { // NOSONAR - Builder constructs instances of
     /**
      * @see OsiamConnector#retrieveAccessToken()
      */
-    public AccessToken retrieveAccessToken() {
-        if (grantType == GrantType.AUTHORIZATION_CODE) {
-            throw new IllegalAccessError("For the grant type " + GrantType.AUTHORIZATION_CODE
-                    + " you need to retrieve a authentication code first.");
+    public AccessToken retrieveAccessToken(Scope... scopes) {
+        String formattedScopes = getScopesAsString(scopes);
+        Form form = new Form();
+        form.param("scope", formattedScopes);
+        form.param("grant_type", GrantType.CLIENT_CREDENTIALS.getUrlParam());
+
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("/oauth/token")
+                    .request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
+        checkAndHandleResponse(content, status);
+
+        return getAccessToken(content);
+    }
+
+    public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
+        String formattedScopes = getScopesAsString(scopes);
         Form form = new Form();
-        form.param("scope", scopes);
-        form.param("grant_type", grantType.getUrlParam());
-        if (grantType == GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS) {
-            form.param("username", userName);
-            form.param("password", password);
-        }
+        form.param("scope", formattedScopes);
+        form.param("grant_type", GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS.getUrlParam());
+        form.param("username", userName);
+        form.param("password", password);
 
         StatusType status;
         String content;
@@ -176,29 +183,29 @@ class AuthService { // NOSONAR - Builder constructs instances of
         return getAccessToken(content);
     }
 
+    private String getScopesAsString(Scope... scopes) {
+        StringBuilder scopeBuilder = new StringBuilder();
+        for (Scope scope : scopes) {
+            scopeBuilder.append(scope.toString()).append(" ");
+        }
+
+        return scopeBuilder.toString().trim();
+    }
+
     /**
      * @see OsiamConnector#refreshAccessToken(AccessToken, Scope...)
      */
-    public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] newScopes) {
+    public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
         if (accessToken.getRefreshToken() == null) {
             throw new ConnectionInitializationException(
                     "Unable to perform a refresh_token_grant request without refresh token.");
         }
 
-        if (newScopes.length != 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (Scope scope : newScopes) {
-                stringBuilder.append(" ").append(scope.toString());
-            }
-            // FIXME: changing the scope? AuthService should be immutable.
-            scopes = stringBuilder.toString().trim();
-        }
-        // FIXME: changing the grantType? AuthService should be immutable.
-        grantType = GrantType.REFRESH_TOKEN;
+        String formattedScopes = getScopesAsString(scopes);
 
         Form form = new Form();
-        form.param("scope", scopes);
-        form.param("grant_type", grantType.getUrlParam());
+        form.param("scope", formattedScopes);
+        form.param("grant_type", GrantType.REFRESH_TOKEN.getUrlParam());
         form.param("refresh_token", accessToken.getRefreshToken());
 
         StatusType status;
@@ -228,18 +235,15 @@ class AuthService { // NOSONAR - Builder constructs instances of
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
-    public URI getRedirectLoginUri() {
-        if (grantType != GrantType.AUTHORIZATION_CODE) {
-            throw new IllegalStateException(String.format(
-                    "You need to use the GrantType %s to be able to use this method.", GrantType.AUTHORIZATION_CODE));
-        }
-
+    public URI getRedirectLoginUri(Scope... scopes) {
         try {
+            String formattedScopes = getScopesAsString(scopes);
+
             return UriBuilder.fromUri(endpoint).path("/oauth/authorize")
                     .queryParam("client_id", clientId)
                     .queryParam("response_type", "code")
                     .queryParam("redirect_uri", clientRedirectUri)
-                    .queryParam("scope", scopes)
+                    .queryParam("scope", formattedScopes)
                     .build();
         } catch (UriBuilderException | IllegalArgumentException e) {
             throw new OsiamClientException("Unable to create redirect URI", e);
@@ -379,11 +383,7 @@ class AuthService { // NOSONAR - Builder constructs instances of
 
         private String clientId;
         private String clientSecret;
-        private GrantType grantType;
-        private String scopes;
         private String endpoint;
-        private String password;
-        private String userName;
         private String clientRedirectUri;
 
         /**
@@ -395,59 +395,6 @@ class AuthService { // NOSONAR - Builder constructs instances of
          */
         public Builder(String endpoint) {
             this.endpoint = endpoint;
-        }
-
-        /**
-         * Use the given {@link Scope} to for the request.
-         *
-         * @param scope
-         *            the needed scope
-         * @param scopes
-         *            the needed scopes
-         * @return The builder itself
-         */
-        public Builder setScope(Scope scope, Scope... scopes) {
-            Set<Scope> scopeSet = new HashSet<>();
-
-            scopeSet.add(scope);
-            for (Scope actScope : scopes) {
-                scopeSet.add(actScope);
-            }
-
-            if (scopeSet.contains(Scope.ALL)) {
-                this.scopes = Scope.ALL.toString();
-            } else {
-                StringBuilder scopeBuilder = new StringBuilder();
-                for (Scope actScope : scopeSet) {
-                    scopeBuilder.append(" ").append(actScope.toString());
-                }
-                this.scopes = scopeBuilder.toString().trim();
-            }
-            return this;
-        }
-
-        /**
-         * The needed access token scopes as String like 'GET PATCH'
-         *
-         * @param scope
-         *            the needed scopes
-         * @return The builder itself
-         */
-        public Builder setScope(String scope) {
-            scopes = scope;
-            return this;
-        }
-
-        /**
-         * Use the given {@link GrantType} to for the request.
-         *
-         * @param grantType
-         *            of the requested AuthCode
-         * @return The builder itself
-         */
-        public Builder setGrantType(GrantType grantType) {
-            this.grantType = grantType;
-            return this;
         }
 
         /**
@@ -487,30 +434,6 @@ class AuthService { // NOSONAR - Builder constructs instances of
         }
 
         /**
-         * Add the given userName to the OAuth2 request
-         *
-         * @param userName
-         *            The userName
-         * @return The builder itself
-         */
-        public Builder setUserName(String userName) {
-            this.userName = userName;
-            return this;
-        }
-
-        /**
-         * Add the given password to the OAuth2 request
-         *
-         * @param password
-         *            The password
-         * @return The builder itself
-         */
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        /**
          * Construct the {@link AuthService} with the parameters passed to this builder.
          *
          * @return An {@link AuthService} configured accordingly.
@@ -520,31 +443,9 @@ class AuthService { // NOSONAR - Builder constructs instances of
             return new AuthService(this);
         }
 
-        private void ensureAllNeededParameterAreCorrect() {// NOSONAR - this is
-                                                           // a test method the
-                                                           // Cyclomatic
-                                                           // Complexity
-                                                           // can be over 10.
+        private void ensureAllNeededParameterAreCorrect() {
             if (clientId == null || clientSecret == null) {
                 throw new IllegalArgumentException("The provided client credentials are incomplete.");
-            }
-            if (scopes == null) {
-                throw new IllegalArgumentException("At least one scope needs to be set.");
-            }
-            if (grantType == null) {
-                throw new IllegalArgumentException("The grant type is not set.");
-            }
-            if (grantType.equals(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
-                    && userName == null && password == null) {
-                throw new IllegalArgumentException("The grant type 'password' requires username and password");
-            }
-            if ((grantType.equals(GrantType.CLIENT_CREDENTIALS) || grantType.equals(GrantType.AUTHORIZATION_CODE))
-                    && (userName != null || password != null)) {
-                throw new IllegalArgumentException("For the grant type '" + grantType
-                        + "' setting of password and username are not allowed.");
-            }
-            if (grantType.equals(GrantType.AUTHORIZATION_CODE) && clientRedirectUri == null) {
-                throw new IllegalArgumentException("For the grant type '" + grantType + "' the redirect Uri is needed.");
             }
         }
     }

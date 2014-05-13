@@ -52,8 +52,6 @@ import org.osiam.client.AccessTokenMockProvider;
 import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
@@ -103,11 +101,8 @@ public class OsiamConnectorTest {
     public void setUp() throws Exception {
         oConnector = new OsiamConnector.Builder()
                 .setEndpoint(ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
-                .setUserName(IRRELEVANT)
-                .setPassword(IRRELEVANT)
                 .build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
@@ -453,35 +448,23 @@ public class OsiamConnectorTest {
     private void given_a_correctly_configured_auth_service() {
         oConnector = new OsiamConnector.Builder()
                 .setEndpoint(ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void givenAConfiguredServiceWithoutEndpoint() {
         oConnector = new OsiamConnector.Builder()
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void givenAConfiguredServiceWithoutResourceEndpoint() {
         oConnector = new OsiamConnector.Builder()
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 

@@ -33,7 +33,6 @@ import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
@@ -53,15 +52,9 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
 
     private String clientId;
     private String clientSecret;
-    private GrantType grantType;
-    private String username;
-    private String password;
     private String genEndpoint;
     private String authServiceEndpoint;
     private String resourceServiceEndpoint;
-    private Scope scope;
-    private Scope[] scopes;
-    private String stringScope;
     private String clientRedirectUri;
 
     private AuthService authService;
@@ -77,15 +70,9 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     private OsiamConnector(Builder builder) {
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
-        grantType = builder.grantType;
-        username = builder.username;
-        password = builder.password;
         authServiceEndpoint = builder.authServiceEndpoint;
         resourceServiceEndpoint = builder.resourceServiceEndpoint;
         genEndpoint = builder.genEndpoint;
-        scope = builder.scope;
-        scopes = builder.scopes;
-        stringScope = builder.stringScope;
         clientRedirectUri = builder.clientRedirectUri;
     }
 
@@ -102,23 +89,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             }
             if (clientSecret != null) {
                 builder = builder.setClientSecret(clientSecret);
-            }
-            if (grantType != null) {
-                builder = builder.setGrantType(grantType);
-            }
-            if (password != null) {
-                builder = builder.setPassword(password);
-            }
-            if (username != null) {
-                builder = builder.setUserName(username);
-            }
-            if (scope != null && scopes != null) {
-                builder = builder.setScope(scope, scopes);
-            } else if (scope != null) {
-                builder = builder.setScope(scope);
-            }
-            if (stringScope != null) {
-                builder = builder.setScope(stringScope);
             }
             if (clientRedirectUri != null) {
                 builder = builder.setClientRedirectUri(clientRedirectUri);
@@ -376,8 +346,17 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
-    public URI getRedirectLoginUri() {
-        return authService().getRedirectLoginUri();
+    public URI getRedirectLoginUri(Scope... scopes) {
+        return authService().getRedirectLoginUri(scopes);
+    }
+
+     public AccessToken retrieveAccessToken(Scope... scopes) {
+    //TODO
+        return authService().retrieveAccessToken(scopes);
+    }
+    
+    public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
+        return authService().retrieveAccessToken(userName, password, scopes);
     }
 
     /**
@@ -591,15 +570,9 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
 
         private String clientId;
         private String clientSecret;
-        private GrantType grantType;
-        private String username;
-        private String password;
         private String genEndpoint;
         private String authServiceEndpoint;
         private String resourceServiceEndpoint;
-        private Scope scope;
-        private Scope[] scopes;
-        private String stringScope;
         private String clientRedirectUri;
 
         /**
@@ -642,48 +615,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         }
 
         /**
-         * Use the given {@link Scope} to for the request.
-         *
-         * @param scope
-         *            the needed scope
-         * @param scopes
-         *            the needed scopes
-         * @return The builder itself
-         */
-        public Builder setScope(Scope scope, Scope... scopes) {
-            this.scope = scope;
-            this.scopes = scopes;
-            return this;
-        }
-
-        /**
-         * The needed access token scopes as String like 'GET PATCH'
-         *
-         * @param scope
-         *            the needed scope
-         * @return The builder itself
-         */
-        public Builder setScope(String scope) {
-            stringScope = scope;
-            return this;
-        }
-
-        /**
-         * Use the given {@link org.osiam.client.oauth.GrantType} to for the request. At this point only the grant type
-         * 'password' is supported.
-         *
-         * @param grantType
-         *            of the requested AuthCode
-         * @return The builder itself
-         * @throws UnsupportedOperationException
-         *             At build time if the GrantType is anything else than GrantType.PASSWORD
-         */
-        public Builder setGrantType(GrantType grantType) {
-            this.grantType = grantType;
-            return this;
-        }
-
-        /**
          * Add a ClientId to the OAuth2 request
          *
          * @param clientId
@@ -704,30 +635,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
          */
         public Builder setClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
-            return this;
-        }
-
-        /**
-         * Add the given userName to the OAuth2 request
-         *
-         * @param userName
-         *            The userName
-         * @return The builder itself
-         */
-        public Builder setUserName(String userName) {
-            username = userName;
-            return this;
-        }
-
-        /**
-         * Add the given password to the OAuth2 request
-         *
-         * @param password
-         *            The password
-         * @return The builder itself
-         */
-        public Builder setPassword(String password) {
-            this.password = password;
             return this;
         }
 
