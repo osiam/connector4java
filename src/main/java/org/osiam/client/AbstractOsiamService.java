@@ -283,16 +283,16 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage = extractErrorMessageUnauthorized(content, status);
             throw new UnauthorizedException(errorMessage);
         } else if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status, "Unable to update");
+            String errorMessage = extractErrorMessage(content, status);
             throw new ConflictException(errorMessage);
         } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status, String.format("No %s with given id %s was found", typeName, id));
+            String errorMessage = extractErrorMessage(content, status);
             throw new NoResultException(errorMessage);
         } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
             String errorMessage = extractErrorMessageForbidden(accessToken, action);
             throw new ForbiddenException(errorMessage);
         } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status, "Unable to " + action);
+            String errorMessage = extractErrorMessage(content, status);
             throw new ConflictException(errorMessage);
         } else {
             String errorMessage = extractErrorMessageDefault(content, status);
@@ -306,16 +306,14 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     protected String extractErrorMessageUnauthorized(String content, StatusType status) {
-        return extractErrorMessage(content, status,
-                "You are not authorized to access OSIAM. Please make sure your access token is valid");
+        return extractErrorMessage(content, status);
     }
 
     protected String extractErrorMessageDefault(String content, StatusType status) {
-        return extractErrorMessage(content, status,
-                String.format("Unable to setup connection (HTTP Status Code: %d)", status.getStatusCode()));
+        return extractErrorMessage(content, status);
     }
 
-    protected String extractErrorMessage(String content, StatusType status, String defaultErrorMessage) {
+    protected String extractErrorMessage(String content, StatusType status) {
         try {
             ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
 

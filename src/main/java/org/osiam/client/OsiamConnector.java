@@ -25,7 +25,6 @@ package org.osiam.client;
 import java.net.URI;
 import java.util.List;
 
-import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ConnectionInitializationException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ForbiddenException; // NOSONAR : needed for Javadoc
@@ -320,6 +319,12 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *            an optional parameter if the scope of the token should be changed. Otherwise the scopes of the old
      *            token are used.
      * @return the new access token with the refreshed lifetime
+     * @throws IllegalArgumentException
+     *         in case the accessToken has an empty refresh token
+     * @throws ConnectionInitializationException
+     *         if the connection to the given OSIAM service could not be initialized
+     * @throws UnauthorizedException
+     *         if the request could not be authorized.
      */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
         return authService.refreshAccessToken(accessToken, scopes);
@@ -329,7 +334,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      * provides the needed URI which is needed to reconnect the User to the OSIAM server to login. A detailed example
      * how to use this method, can be seen in our wiki in gitHub
      * 
-     * @param scopes the wanted scopes for the user who want's to log in with the oauth workflow
+     * @param scopes
+     *        the wanted scopes for the user who want's to log in with the oauth workflow
      * @return the needed redirect Uri
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
@@ -340,20 +346,25 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
 
     /**
      * Provide an {@link AccessToken} for the {@link GrantType} CLIENT_CREDENTIALS.
-     * @param scopes the wanted Scopes of the {@link AccessToken}
-     * @return an valid {@link AccessToken} 
+     * 
+     * @param scopes
+     *        the wanted Scopes of the {@link AccessToken}
+     * @return an valid {@link AccessToken}
      */
     public AccessToken retrieveAccessToken(Scope... scopes) {
         return authService().retrieveAccessToken(scopes);
     }
-    
+
     /**
      * Provide an {@link AccessToken} for the {@link GrantType} RESOURCE_OWNER_PASSWORD_CREDENTIALS.
      * 
-     * @param userName the userName of the actual User
-     * @param password the password of the actual User
-     * @param scopes the wanted Scopes of the {@link AccessToken}
-     * @return an valid {@link AccessToken} 
+     * @param userName
+     *        the userName of the actual User
+     * @param password
+     *        the password of the actual User
+     * @param scopes
+     *        the wanted Scopes of the {@link AccessToken}
+     * @return an valid {@link AccessToken}
      */
     public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
         return authService().retrieveAccessToken(userName, password, scopes);
@@ -491,6 +502,29 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         return userService().updateUser(id, updateUser, accessToken);
     }
 
+    /**
+     * replaces the {@link User} with the given id with the given {@link User}
+     * 
+     * @param id
+     *        The id of the User to be replaced
+     * @param user
+     *        The {@link User} who will repleace the old {@link User}
+     * @param accessToken
+     *        the OSIAM access token from for the current session
+     * @return the replaced User
+     * @throws InvalidAttributeException
+     *         in case the id or the User is null or empty
+     * @throws UnauthorizedException
+     *         if the request could not be authorized.
+     * @throws ConflictException
+     *         if the User could not be replaced
+     * @throws NoResultException
+     *         if no user with the given id can be found
+     * @throws ForbiddenException
+     *         if the scope doesn't allow this request
+     * @throws ConnectionInitializationException
+     *         if the connection to the given OSIAM service could not be initialized
+     */
     public User replaceUser(String id, User user, AccessToken accessToken) {
         return userService().replaceUser(id, user, accessToken);
     }
@@ -523,10 +557,29 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         return groupService().updateGroup(id, updateGroup, accessToken);
     }
 
-    public Group updateGroup(String id, Group group, AccessToken accessToken) {
-        return groupService().updateGroup(id, group, accessToken);
-    }
-
+    /**
+     * replaces the {@link Group} with the given id with the given {@link Group}
+     * 
+     * @param id
+     *        The id of the Group to be replaced
+     * @param user
+     *        The {@link Group} who will repleace the old {@link Group}
+     * @param accessToken
+     *        the OSIAM access token from for the current session
+     * @return the replaced User
+     * @throws InvalidAttributeException
+     *         in case the id or the Group is null or empty
+     * @throws UnauthorizedException
+     *         if the request could not be authorized.
+     * @throws ConflictException
+     *         if the Group could not be replaced
+     * @throws NoResultException
+     *         if no Group with the given id can be found
+     * @throws ForbiddenException
+     *         if the scope doesn't allow this request
+     * @throws ConnectionInitializationException
+     *         if the connection to the given OSIAM service could not be initialized
+     */
     public Group replaceGroup(String id, Group group, AccessToken accessToken) {
         return groupService().updateGroup(id, group, accessToken);
     }

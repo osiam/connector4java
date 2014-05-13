@@ -179,10 +179,8 @@ class AuthService {
     }
 
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
-        if (accessToken.getRefreshToken() == null) {
-            throw new ConnectionInitializationException(
-                    "Unable to perform a refresh_token_grant request without refresh token.");
-        }
+        checkArgument(accessToken == null, "The given accessToken code can't be null.");
+        checkArgument(accessToken.getRefreshToken() == null,"Unable to perform a refresh_token_grant request without refresh token.");
 
         String formattedScopes = getScopesAsString(scopes);
 

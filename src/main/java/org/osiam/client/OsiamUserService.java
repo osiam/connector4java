@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.user.BasicUser;
@@ -140,10 +141,10 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
      */
     public User replaceUser(String id, User user, AccessToken accessToken) {
         if (user == null) {
-            throw new IllegalArgumentException("The given User can't be null.");
+            throw new InvalidAttributeException("The given User can't be null.");
         }
         if (Strings.isNullOrEmpty(id)) {
-            throw new IllegalArgumentException("The given User ID can't be null or empty.");
+            throw new InvalidAttributeException("The given User ID can't be null or empty.");
         }
         return replaceResource(id, user, accessToken);
     }
