@@ -23,15 +23,12 @@
 
 package org.osiam.client.oauth;
 
-import helper.ScopeDeserializer;
-import helper.ScopeSerializer;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.osiam.resources.exception.SCIMDataValidationException;
-import org.osiam.resources.scim.User;
+import org.osiam.client.helper.ScopeDeserializer;
+import org.osiam.client.helper.ScopeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

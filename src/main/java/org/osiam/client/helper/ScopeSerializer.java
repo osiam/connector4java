@@ -21,36 +21,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package helper;
+package org.osiam.client.helper;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.osiam.client.oauth.Scope;
 
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class ScopeDeserializer extends JsonDeserializer<Set<Scope>> {
+public class ScopeSerializer extends JsonSerializer<Set<Scope>> {
 
     @Override
-    public Set<Scope> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    public void serialize(Set<Scope> value, JsonGenerator jgen, SerializerProvider provider) throws IOException,
             JsonProcessingException {
-        String text = jp.getText();
-        return parseParameterList(text);
-    }
-
-    private Set<Scope> parseParameterList(String values) {
-        Set<Scope> scopeResult = new HashSet<Scope>();
-        if (values != null && values.trim().length() > 0) {
-            String[] scopes = values.split("\\s+");
-            for (String scope : scopes) {
-                scopeResult.add(new Scope(scope));
+        if (value != null && !value.isEmpty()) {
+            StringBuffer scopeResult = new StringBuffer();
+            for (Scope scope : value) {
+                scopeResult.append(scope).append(" ");
             }
+            jgen.writeString(scopeResult.toString().trim());
         }
-        return scopeResult;
     }
 }
