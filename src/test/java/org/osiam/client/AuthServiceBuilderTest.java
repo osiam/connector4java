@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.oauth;
+package org.osiam.client;
 
 import static org.junit.Assert.fail;
 

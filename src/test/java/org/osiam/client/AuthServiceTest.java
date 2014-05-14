@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.oauth;
+package org.osiam.client;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -41,6 +41,8 @@ import org.junit.Test;
 import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.google.common.base.Charsets;

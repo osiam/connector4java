@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.connector;
+package org.osiam.client;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -48,7 +48,6 @@ import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.osiam.client.AccessTokenMockProvider;
 import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
@@ -266,7 +265,7 @@ public class OsiamConnectorTest {
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE_USERS))
+        stubFor(get(urlEqualTo(URL_BASE_USERS + "?count=2147483647"))
                 .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
@@ -419,7 +418,7 @@ public class OsiamConnectorTest {
     }
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE_GROUPS))
+        stubFor(get(urlEqualTo(URL_BASE_GROUPS + "?count=2147483647"))
                 .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
