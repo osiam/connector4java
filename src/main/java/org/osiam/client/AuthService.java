@@ -164,6 +164,10 @@ class AuthService {
             throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
+        if(status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()){
+            String errorMessage = extractErrorMessage(content, status);
+            throw new ConflictException(errorMessage);
+        }
         checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
@@ -179,8 +183,8 @@ class AuthService {
     }
 
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
-        checkArgument(accessToken == null, "The given accessToken code can't be null.");
-        checkArgument(accessToken.getRefreshToken() == null,"Unable to perform a refresh_token_grant request without refresh token.");
+        checkArgument(accessToken != null, "The given accessToken code can't be null.");
+        checkArgument(accessToken.getRefreshToken() != null,"Unable to perform a refresh_token_grant request without refresh token.");
 
         String formattedScopes = getScopesAsString(scopes);
 
