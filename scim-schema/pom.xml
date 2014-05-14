@@ -94,25 +94,11 @@
             <version>2.3</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.joda</groupId>
-            <artifactId>joda-convert</artifactId>
-            <version>1.6</version>
-        </dependency>
-
         <!-- Spock testing framework for all kinds of tests LICENSE: Apache 2.0 according to http://code.google.com/p/spock/ -->
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
             <version>0.7-groovy-2.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Support for mocking concrete classes within Spock LICENSE: Apache 2.0 according to source package -->
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>2.2.2</version>
             <scope>test</scope>
         </dependency>
 
