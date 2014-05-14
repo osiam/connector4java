@@ -25,6 +25,7 @@ package org.osiam.client;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.io.IOException;
 import java.net.URI;
@@ -66,7 +67,7 @@ import com.google.common.base.Strings;
  * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
  * {@link AuthService.Builder} to construct one.
  */
-class AuthService { 
+class AuthService {
 
     private static final String BEARER = "Bearer ";
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
@@ -94,6 +95,7 @@ class AuthService {
     }
 
     public AccessToken retrieveAccessToken(Scope... scopes) {
+        ensureClientCredentialsAreSet();
         String formattedScopes = getScopesAsString(scopes);
         Form form = new Form();
         form.param("scope", formattedScopes);
@@ -118,6 +120,7 @@ class AuthService {
     }
 
     public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
+        ensureClientCredentialsAreSet();
         String formattedScopes = getScopesAsString(scopes);
         Form form = new Form();
         form.param("scope", formattedScopes);
@@ -145,7 +148,8 @@ class AuthService {
 
     public AccessToken retrieveAccessToken(String authCode) {
         checkArgument(!Strings.isNullOrEmpty(authCode), "The given authentication code can't be null.");
-
+        ensureClientCredentialsAreSet();
+        
         Form form = new Form();
         form.param("code", authCode);
         form.param("grant_type", "authorization_code");
@@ -164,7 +168,7 @@ class AuthService {
             throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
-        if(status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()){
+        if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
             throw new ConflictException(errorMessage);
         }
@@ -184,8 +188,10 @@ class AuthService {
 
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
         checkArgument(accessToken != null, "The given accessToken code can't be null.");
-        checkArgument(accessToken.getRefreshToken() != null,"Unable to perform a refresh_token_grant request without refresh token.");
-
+        checkArgument(accessToken.getRefreshToken() != null,
+                "Unable to perform a refresh_token_grant request without refresh token.");
+        ensureClientCredentialsAreSet();
+        
         String formattedScopes = getScopesAsString(scopes);
 
         Form form = new Form();
@@ -215,8 +221,9 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    public URI getRedirectLoginUri(Scope... scopes) {
-        try {
+    public URI getAuthorizationUri(Scope... scopes) {
+        checkState(!Strings.isNullOrEmpty(clientRedirectUri), "Can't create the login uri: redirect URI was not set.");
+        try {            
             String formattedScopes = getScopesAsString(scopes);
 
             return UriBuilder.fromUri(endpoint).path("/oauth/authorize")
@@ -300,6 +307,11 @@ class AuthService {
             throw new OsiamClientException(String.format("Unable to parse access token: %s", content), e);
         }
     }
+    
+    private void ensureClientCredentialsAreSet(){
+        checkState(!Strings.isNullOrEmpty(clientId), "The client id can't be null or empty.");
+        checkState(!Strings.isNullOrEmpty(clientSecret), "The client secrect can't be null or empty.");
+    }
 
     /**
 <<<<<<< HEAD
@@ -369,9 +381,9 @@ class AuthService {
         /**
          * Set up the Builder for the construction of an {@link AuthService} instance for the OAuth2 service at the
          * given endpoint
-         *
+         * 
          * @param endpoint
-         *            The URL at which the OAuth2 service lives.
+         *        The URL at which the OAuth2 service lives.
          */
         public Builder(String endpoint) {
             this.endpoint = endpoint;
@@ -379,9 +391,9 @@ class AuthService {
 
         /**
          * Add a ClientId to the OAuth2 request
-         *
+         * 
          * @param clientId
-         *            The client-Id
+         *        The client-Id
          * @return The builder itself
          */
         public Builder setClientId(String clientId) {
@@ -391,9 +403,9 @@ class AuthService {
 
         /**
          * Add a Client redirect URI to the OAuth2 request
-         *
+         * 
          * @param clientRedirectUri
-         *            the clientRedirectUri which is known to the OSIAM server
+         *        the clientRedirectUri which is known to the OSIAM server
          * @return The builder itself
          */
         public Builder setClientRedirectUri(String clientRedirectUri) {
@@ -403,9 +415,9 @@ class AuthService {
 
         /**
          * Add a clientSecret to the OAuth2 request
-         *
+         * 
          * @param clientSecret
-         *            The client secret
+         *        The client secret
          * @return The builder itself
          */
         public Builder setClientSecret(String clientSecret) {
@@ -415,18 +427,12 @@ class AuthService {
 
         /**
          * Construct the {@link AuthService} with the parameters passed to this builder.
-         *
+         * 
          * @return An {@link AuthService} configured accordingly.
          */
         public AuthService build() {
-            ensureAllNeededParameterAreCorrect();
             return new AuthService(this);
         }
 
-        private void ensureAllNeededParameterAreCorrect() {
-            if (clientId == null || clientSecret == null) {
-                throw new IllegalArgumentException("The provided client credentials are incomplete.");
-            }
-        }
     }
 }

@@ -38,7 +38,6 @@ import java.net.URLEncoder;
 import org.apache.http.HttpStatus;
 import org.junit.Rule;
 import org.junit.Test;
-import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
@@ -57,8 +56,6 @@ public class AuthServiceTest {
     private final static String VALID_CLIENT_SECRET = "valid_secret";
     private static final String INVALID_CLIENT_ID = "invalid-client";
     private static final String INVALID_CLIENT_SECRET = "invalid-secret";
-    private final static String VALID_USERNAME = "valid-username";
-    private final static String VALID_PASSWORD = "valid-password";
     private final static String ACCESS_TOKEN_STRING = "c5d116cb-2758-4e7c-9aca-4a115bc4f19e";
 
     @Rule
@@ -210,7 +207,7 @@ public class AuthServiceTest {
                 .append("&response_type=code&redirect_uri=").append(REDIRECT_URI)
                 .append("&scope=").append(encodeExpectedString(Scope.ALL.toString()));
         URI expectedUri = new URI(expected.toString());
-        assertEquals(expectedUri, service.getRedirectLoginUri(Scope.ALL));
+        assertEquals(expectedUri, service.getAuthorizationUri(Scope.ALL));
     }
 
     private String encodeExpectedString(String string) {

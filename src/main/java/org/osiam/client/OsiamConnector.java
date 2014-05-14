@@ -340,8 +340,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      * @see <a
      *      href="https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
      */
-    public URI getRedirectLoginUri(Scope... scopes) {
-        return authService().getRedirectLoginUri(scopes);
+    public URI getAuthorizationUri(Scope... scopes) {
+        return authService().getAuthorizationUri(scopes);
     }
 
     /**
