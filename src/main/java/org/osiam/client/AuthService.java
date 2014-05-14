@@ -50,7 +50,6 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.OAuthErrorMessage;
@@ -257,9 +256,9 @@ class AuthService {
             throw new ConnectionInitializationException("Unable to retrieve access token.", e);
         }
 
-        if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
-            throw new AccessTokenValidationException(errorMessage);
+            throw new UnauthorizedException(errorMessage);
         }
 
         checkAndHandleResponse(content, status);

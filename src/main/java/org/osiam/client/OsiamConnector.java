@@ -591,8 +591,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *            The AccessToken to be validated
      * @return The validated AccessToken if the AccessToken is valid
      * @throws UnauthorizedException
-     *             if the request could not be authorized.
-     * @throws AccessTokenValidationException
      *             if the tokenToValidate is not valid
      * @throws ConnectionInitializationException
      *             if the connection to the given OSIAM service could not be initialized
