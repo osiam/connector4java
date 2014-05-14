@@ -1,5 +1,14 @@
 # OSIAM Connector4Java
 
+## 1.0 - 2014-05-15
+Finally released version 1.0 of all important OSIAM projects!
+- [enhancement] You can check if an accesstoken is valid
+- [enhancement] AccessToken provides additional information about the user it belongs to and the
+  expiration date of the refresh token. The AccessToken can be created with a Builder.
+- [refactor] The OsiamConnector.Builder doesn't need all information to create an AccessToken. You can set
+  the needed information directly in the retrieveAccessToken(...) methods. The OsiamConnector provides one
+  retrieveAccessToken-method for each grant
+
 ## 0.15 - 2014-04-30
 - [feature] added class StringQueryBuilder 
 - [feature] added class QueryHelper
