@@ -240,16 +240,15 @@ class AuthService {
     /**
      * @see OsiamConnector#validateAccessToken(AccessToken, AccessToken)
      */
-    public AccessToken validateAccessToken(AccessToken tokenToValidate, AccessToken tokenToAuthorize) {
+    public AccessToken validateAccessToken(AccessToken tokenToValidate) {
         checkNotNull(tokenToValidate, "The tokenToValidate must not be null.");
-        checkNotNull(tokenToAuthorize, "The tokenToAuthorize must not be null.");
 
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/token/validation/").path(tokenToValidate.getToken())
+            Response response = targetEndpoint.path("/token/validation")
                     .request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", BEARER + tokenToAuthorize.getToken())
+                    .header("Authorization", BEARER + tokenToValidate.getToken())
                     .post(null);
 
             status = response.getStatusInfo();
@@ -314,61 +313,6 @@ class AuthService {
     }
 
     /**
-<<<<<<< HEAD
-     * @see OsiamConnector#refreshAccessToken(AccessToken, Scope...)
-     */
-    public AccessToken refreshAccessToken(AccessToken accessToken, Scope[] scopes) {
-        if (scopes.length != 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (Scope scope : scopes) {
-                stringBuilder.append(" ").append(scope.toString());
-            }
-            this.scopes = stringBuilder.toString().trim();
-        }
-        this.grantType = GrantType.REFRESH_TOKEN;
-
-        HttpResponse response = performRequest(accessToken);
-        int status = response.getStatusLine().getStatusCode();
-
-        checkAndHandleHttpStatus(response, status);
-
-        return getAccessToken(response);
-    }
-
-    /**
-     * @see OsiamConnector#validateAccessToken(AccessToken)
-     */
-    public AccessToken validateAccessToken(AccessToken tokenToValidate) {
-        if (tokenToValidate == null) {
-            throw new IllegalArgumentException("The given accessToken can't be null.");
-        }
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-
-        HttpResponse response;
-        try {
-            URI uri = new URI(endpoint + "/token/validation");
-            HttpPost realWebResource = new HttpPost(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + tokenToValidate.getToken());
-            realWebResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-            response = httpclient.execute(realWebResource);
-        } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException("", e);
-        }
-        int httpStatus = response.getStatusLine().getStatusCode();
-
-        if (httpStatus == SC_UNAUTHORIZED) {
-            String errorMessage = getErrorMessage(response);
-            throw new AccessTokenValidationException(errorMessage);
-        }
-
-        checkAndHandleHttpStatus(response, httpStatus);
-
-        return getAccessToken(response);
-    }
-
-    /**
-=======
->>>>>>> [cleanup] ordered members, typos, formatting
      * The Builder class is used to construct instances of the {@link AuthService}.
      */
     public static class Builder {
