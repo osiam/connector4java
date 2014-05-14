@@ -133,7 +133,8 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     protected List<T> getAllResources(AccessToken accessToken) {
-        return searchResources(new QueryBuilder().build(), accessToken).getResources();
+        Query query = new QueryBuilder().count(Integer.MAX_VALUE).build();
+        return searchResources(query, accessToken).getResources();
     }
 
     protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
