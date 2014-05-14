@@ -79,11 +79,13 @@ import com.google.common.base.Strings;
 abstract class AbstractOsiamService<T extends Resource> {
 
     protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
+    private static final int CONNECT_TIMEOUT = 2500;
+    private static final int READ_TIMEOUT = 5000;
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
             .connectorProvider(new ApacheConnectorProvider())
             .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-            .property(ClientProperties.CONNECT_TIMEOUT, 2500)
-            .property(ClientProperties.READ_TIMEOUT, 5000)
+            .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
+            .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
             .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
 
     protected static final String AUTHORIZATION = "Authorization";
@@ -92,7 +94,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private final Class<T> type;
     private final String typeName;
-    protected final ObjectMapper mapper;
+    private final ObjectMapper mapper;
     private final String endpoint;
 
     protected final WebTarget targetEndpoint;
