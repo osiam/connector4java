@@ -38,7 +38,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.apache.http.entity.ContentType;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,11 +62,11 @@ public class OsiamUserMeTest {
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
     final static private String COUNTRY = "Germany";
-    final static private String ENDPOINT = "http://localhost:9090/osiam-server/";
+    final static private String ENDPOINT = "http://localhost:9090/osiam-server";
     final static private String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String URL_BASE = "/osiam-server//Users";
-    private static final String URL_BASE_USERS = "/osiam-server//Users";
-    private static final String URL_BASE_ME = "/osiam-server//me";
+    private static final String URL_BASE = "/osiam-server/Users";
+    private static final String URL_BASE_USERS = "/osiam-server/Users";
+    private static final String URL_BASE_ME = "/osiam-server/me";
 
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
@@ -96,7 +97,7 @@ public class OsiamUserMeTest {
         thenReturnedUserMatchesExpectations();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void accessToken_is_null_by_getting_me_user_raises_exception() throws Exception {
         givenIDisEmpty();
         accessToken = null;
@@ -119,7 +120,7 @@ public class OsiamUserMeTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void whenMeIsLookedUp() {
@@ -130,7 +131,7 @@ public class OsiamUserMeTest {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
@@ -148,13 +149,13 @@ public class OsiamUserMeTest {
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_ME))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -262,7 +263,7 @@ public class OsiamUserMeTest {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_me.json")));
     }
 
@@ -271,13 +272,13 @@ public class OsiamUserMeTest {
         stubFor(givenUserIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + USER_ID + ".json")));
     }
 
     private MappingBuilder givenUserIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_USERS + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 

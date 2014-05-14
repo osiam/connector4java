@@ -26,11 +26,8 @@ package org.osiam.client;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -41,29 +38,26 @@ import static org.junit.Assert.fail;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
 import junit.framework.Assert;
 
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
-import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.PhoneNumber;
-import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,23 +66,20 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamUserServiceTest {
 
-    private static final String URL_BASE = "/osiam-server//Users";
+    private static final String URL_BASE = "/osiam-server/Users";
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
 
-    private final static String COUNTRY = "Germany";
-    private final static String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private final static String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
-    private final static String endpoint = "http://localhost:9090/osiam-server/";
-    private final static String SIMPLE_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
+    private static final String COUNTRY = "Germany";
+    private static final String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private static final String INVALID_USER_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d";
+    private static final String endpoint = "http://localhost:9090/osiam-server";
 
     private String searchedID;
     private AccessToken accessToken;
     private AccessTokenMockProvider tokenProvider;
 
     private User singleUserResult;
-    private Query query;
-    private SCIMSearchResult<User> searchResult;
     private List<User> allUsers;
 
     OsiamUserService service;
@@ -128,7 +119,7 @@ public class OsiamUserServiceTest {
         fail("Exception expected");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
         givenIDisEmpty();
         accessToken = null;
@@ -136,19 +127,11 @@ public class OsiamUserServiceTest {
         fail("Exception expected");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void accessToken_is_null_by_getting_all_group_raises_exception() throws Exception {
         givenIDisEmpty();
         accessToken = null;
         whenAllUsersAreLookedUp();
-        fail("Exception expected");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void accessToken_is_null_by_searching_for_group_by_string_raises_exception() throws Exception {
-        givenIDisEmpty();
-        accessToken = null;
-        whenSearchIsUsedByString("meta.version=3");
         fail("Exception expected");
     }
 
@@ -201,40 +184,14 @@ public class OsiamUserServiceTest {
         thenNumberOfAllUsersIs(1);
     }
 
-    @Test
-    public void search_for_single_user_is_successful() {
-        givenASingleUserCanBeSearchedByQuery();
-        whenSearchIsUsedByString(SIMPLE_QUERY_STRING);
-        thenQueryWasValid();
-        thenNumberOfReturnedUsersIs(1);
-        thenReturnedListOfSearchedUsersIsAsExpected();
-    }
-
-    @Test
-    public void query_string_is_split_correctly() throws UnsupportedEncodingException {
-        givenAQueryContainingDifficultCharacters();
-        givenAUserCanBeSearchedByQuery();
-        whenSearchIsUsedByQuery();
-        thenQueryStringIsSplitCorrectly();
-
-    }
-
-    @Test
-    public void sort_order_is_split_correctly() throws UnsupportedEncodingException{
-        givenAQueryContainingDifficultCharactersAndSortBy();
-        givenAUserCanBeSearchedByQuery();
-        whenSearchIsUsedByQuery();
-        thenSortedQueryStringIsSplitCorrectly();
-    }
-
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void create_null_user_raises_exception(){
         User newUser = null;
         service.createUser(newUser, accessToken);
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void create_user_with_null_accestoken_raises_exception(){
         User newUser = new User.Builder("cuwna").build();
         service.createUser(newUser, null);
@@ -248,7 +205,7 @@ public class OsiamUserServiceTest {
         Assert.fail("Exception excpected");
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void delete_user_with_null_accestoken_raises_exception(){
         String id = "HelloWorld";
         service.deleteUser(id, null);
@@ -256,42 +213,25 @@ public class OsiamUserServiceTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenAnUserID() {
-        this.searchedID = USER_ID;
-    }
-
-    private void givenAQueryContainingDifficultCharactersAndSortBy() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class, User_.Name.formatted.contains("Schulz & Schulz Industries"));
-        query = new Query.Builder(User.class).setFilter(filter).setSortBy(User_.userName).build();
-    }
-
-    private void givenAQueryContainingDifficultCharacters() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class, User_.Name.formatted.contains("Schulz & Schulz Industries"));
-        query = new Query.Builder(User.class).setFilter(filter).build();
-    }
-
-    private void givenAUserCanBeSearchedByQuery() {
-        stubFor(get(urlMatching(URL_BASE + "\\?filter=.+"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
-                .willReturn(aResponse()
-                        .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("query_user_by_name.json")));
+        searchedID = USER_ID;
     }
 
     private void givenExpiredAccessTokenIsUsedForLookup() {
         stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(SC_UNAUTHORIZED)));
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void givenInvalidAccessTokenIsUsedForLookup() {
         stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
-                        .withStatus(SC_UNAUTHORIZED)));
+                        .withStatus(SC_UNAUTHORIZED)
+                        .withHeader("WWW-Authenticate", "None")));
     }
 
     private void givenIDcanNotBeFound() {
@@ -304,7 +244,7 @@ public class OsiamUserServiceTest {
         stubFor(givenIDisLookedUp(USER_ID, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + USER_ID + ".json")));
     }
 
@@ -312,7 +252,7 @@ public class OsiamUserServiceTest {
         stubFor(givenIDisLookedUp("", accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
@@ -330,27 +270,18 @@ public class OsiamUserServiceTest {
 
     private MappingBuilder givenIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+        stubFor(get(urlEqualTo(URL_BASE + "?count=2147483647"))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
-    }
-
-    private void givenASingleUserCanBeSearchedByQuery() {
-        stubFor(get(urlEqualTo(URL_BASE + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
-                .willReturn(aResponse()
-                        .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("query_user_by_name.json")));
     }
 
     private void whenSingleIDisLookedUp() {
@@ -361,41 +292,8 @@ public class OsiamUserServiceTest {
         allUsers = service.getAllUsers(accessToken);
     }
 
-    private void whenSearchIsUsedByQuery() {
-        searchResult = service.searchUsers(query, accessToken);
-    }
-
-    private void whenSearchIsUsedByString(String queryString) {
-        searchResult = service.searchUsers(queryString, accessToken);
-    }
-
-    private void thenQueryStringIsSplitCorrectly() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
-    }
-
-    private void thenSortedQueryStringIsSplitCorrectly() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22&sortBy=userName"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
-    }
-
     private void thenReturnedUserHasID(String id) {
         assertEquals(id, singleUserResult.getId());
-    }
-
-    private void thenQueryWasValid() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
-    }
-
-    private void thenReturnedListOfSearchedUsersIsAsExpected() {
-        assertEquals(1, searchResult.getTotalResults());
-        assertEquals("BarbaraJ.", searchResult.getResources().iterator().next().getDisplayName());
-    }
-
-    private void thenNumberOfReturnedUsersIs(int numberOfUsers) {
-        assertEquals(numberOfUsers, searchResult.getTotalResults());
-        assertEquals(numberOfUsers, searchResult.getResources().size());
     }
 
     private void thenNumberOfAllUsersIs(int numberOfUsers) {

@@ -21,17 +21,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.osiam.client.connector;
+package org.osiam.client;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,24 +37,20 @@ import static org.junit.Assert.fail;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.osiam.client.AccessTokenMockProvider;
+import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
-import org.osiam.client.query.Query;
-import org.osiam.client.query.metamodel.User_;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
@@ -66,7 +59,6 @@ import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.Meta;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.PhoneNumber;
-import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,23 +67,21 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class OsiamConnectorTest {
 
-    private final static String ENDPOINT = "http://localhost:9090/";
-    static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server/";
-    private static final String URL_BASE_USERS = "/osiam-resource-server//Users";
-    private static final String URL_BASE_ME = "/osiam-resource-server//me";
-    private static final String URL_BASE_GROUPS = "/osiam-resource-server//Groups";
-    private final static String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
+    private final static String ENDPOINT = "http://localhost:9090";
+    private static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:9090/osiam-auth-server";
+    private static final String URL_BASE_USERS = "/osiam-resource-server/Users";
+    private static final String URL_BASE_ME = "/osiam-resource-server/me";
+    private static final String URL_BASE_GROUPS = "/osiam-resource-server/Groups";
+    private static final String userIdString = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private final static String COUNTRY = "Germany";
+    private static final String COUNTRY = "Germany";
     private static final String IRRELEVANT = "irrelevant";
-    private final static String SIMPLE_USER_QUERY_STRING = "filter=displayName+eq+BarbaraJ.";
-    private final static String SIMPLE_GROUP_QUERY_STRING = "filter=displayName+eq+test_group01";
-    private final static int NUMBER_OF_EXPECTED_GROUPS = 7;
-    private final static String VALID_CLIENT_ID = "valid-client";
-    private final static String VALID_CLIENT_SECRET = "valid_secret";
-    private final static String VALID_USERNAME = "valid-username";
-    private final static String VALID_PASSWORD = "valid-password";
-    private final static String TOKEN_PATH = "/oauth/token";
+    private static final int NUMBER_OF_EXPECTED_GROUPS = 7;
+    private static final String VALID_CLIENT_ID = "valid-client";
+    private static final String VALID_CLIENT_SECRET = "valid_secret";
+    private static final String VALID_USERNAME = "valid-username";
+    private static final String VALID_PASSWORD = "valid-password";
+    private static final String TOKEN_PATH = "/oauth/token";
 
     private AccessToken accessToken;
     private User singleUserResult;
@@ -99,11 +89,8 @@ public class OsiamConnectorTest {
     private String searchedUserID;
     private String searchedGroupId;
     private AccessTokenMockProvider tokenProvider;
-    private SCIMSearchResult<User> userQueryResult;
-    private SCIMSearchResult<Group> groupQueryResult;
     private List<User> allUsers;
     private List<Group> allGroups;
-    private Query query;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9090); // No-args constructor defaults to port 8080
@@ -113,11 +100,8 @@ public class OsiamConnectorTest {
     public void setUp() throws Exception {
         oConnector = new OsiamConnector.Builder()
                 .setEndpoint(ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(IRRELEVANT)
                 .setClientSecret(IRRELEVANT)
-                .setUserName(IRRELEVANT)
-                .setPassword(IRRELEVANT)
                 .build();
         tokenProvider = new AccessTokenMockProvider("/__files/valid_accesstoken.json");
 
@@ -142,23 +126,6 @@ public class OsiamConnectorTest {
         givenAllUsersAreLookedUpSuccessfully();
         whenAllUsersAreLookedUp();
         thenNumberOfAllUsersIs(1);
-    }
-
-    @Test
-    public void searchUsers_by_string_is_transferred_correctly() {
-        givenASingleUserCanBeSearchedByQuery();
-        whenSearchIsUsedByString(SIMPLE_USER_QUERY_STRING);
-        thenUserQueryWasValid();
-        thenNumberOfReturnedUsersIs(1);
-        thenReturnedListOfSearchedUsersIsAsExpected();
-    }
-
-    @Test
-    public void searchUsers_by_query_is_transferred_correctly() throws UnsupportedEncodingException {
-        givenAQueryContainingDifficultCharacters();
-        givenAUserCanBeSearchedByQuery();
-        whenSearchIsUsedByQuery();
-        thenQueryStringIsSplitCorrectly();
     }
 
     @Test
@@ -190,14 +157,6 @@ public class OsiamConnectorTest {
     }
 
     @Test
-    public void searchGroups_by_string_is_transferred_correctly() {
-        givenASingleGroupCanBeLookedUpByQuery();
-        whenSingleGroupIsSearchedByQueryString(SIMPLE_GROUP_QUERY_STRING);
-        thenGroupQueryWasValid();
-        thenReturnedListOfSearchedGroupsIsAsExpected();
-    }
-
-    @Test
     public void retrieveAccessToken_is_transferred_correctly() throws Exception {
         given_a_correctly_configured_auth_service();
         given_oauth_server_issues_access_token();
@@ -223,7 +182,7 @@ public class OsiamConnectorTest {
         stubFor(givenUserIDisLookedUp(userIdString, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_" + userIdString + ".json")));
     }
 
@@ -231,19 +190,19 @@ public class OsiamConnectorTest {
         stubFor(givenGroupIDisLookedUp(GROUP_ID_STRING, accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("group_" + GROUP_ID_STRING + ".json")));
     }
 
     private MappingBuilder givenUserIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_USERS + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
     private MappingBuilder givenGroupIDisLookedUp(String id, AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_GROUPS + "/" + id))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -298,20 +257,20 @@ public class OsiamConnectorTest {
     }
 
     private void givenAnAccessToken() throws IOException {
-        this.accessToken = tokenProvider.valid_access_token();
+        accessToken = tokenProvider.valid_access_token();
     }
 
     private void givenAnUserID() {
-        this.searchedUserID = userIdString;
+        searchedUserID = userIdString;
     }
 
     private void givenAllUsersAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE_USERS + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+        stubFor(get(urlEqualTo(URL_BASE_USERS + "?count=2147483647"))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_users.json")));
     }
 
@@ -319,67 +278,15 @@ public class OsiamConnectorTest {
         allUsers = oConnector.getAllUsers(accessToken);
     }
 
-    private void thenNumberOfReturnedUsersIs(int numberOfUsers) {
-        assertEquals(numberOfUsers, userQueryResult.getTotalResults());
-        assertEquals(numberOfUsers, userQueryResult.getResources().size());
-    }
-
     private void thenNumberOfAllUsersIs(int numberOfUsers) {
         assertEquals(numberOfUsers, allUsers.size());
-    }
-
-    private void givenASingleUserCanBeSearchedByQuery() {
-        stubFor(get(urlEqualTo(URL_BASE_USERS + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
-                .willReturn(aResponse()
-                        .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("query_user_by_name.json")));
-    }
-
-    private void whenSearchIsUsedByString(String queryString) {
-        userQueryResult = oConnector.searchUsers(queryString, accessToken);
-    }
-
-    private void thenUserQueryWasValid() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE_USERS + "?filter=displayName+eq+BarbaraJ."))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
-    }
-
-    private void thenReturnedListOfSearchedUsersIsAsExpected() {
-        assertEquals(1, userQueryResult.getTotalResults());
-        assertEquals("BarbaraJ.", userQueryResult.getResources().iterator().next().getDisplayName());
-    }
-
-    private void givenAQueryContainingDifficultCharacters() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class, User_.Name.formatted.contains("Schulz & Schulz Industries"));
-        query = new Query.Builder(User.class).setFilter(filter).build();
-    }
-
-    private void givenAUserCanBeSearchedByQuery() {
-        stubFor(get(urlMatching(URL_BASE_USERS + "\\?filter=.+"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
-                .willReturn(aResponse()
-                        .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("query_user_by_name.json")));
-    }
-
-    private void whenSearchIsUsedByQuery() {
-        userQueryResult = oConnector.searchUsers(query, accessToken);
-    }
-
-    private void thenQueryStringIsSplitCorrectly() {
-        verify(getRequestedFor(
-                urlEqualTo(URL_BASE_USERS + "?filter=name.formatted+co+%22Schulz+%26+Schulz+Industries%22"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
     }
 
     private void givenAccessTokenForCurrentUserBasicIsValid() {
         stubFor(givenMeIsLookedUp(accessToken)
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("user_me.json")));
     }
 
@@ -390,7 +297,7 @@ public class OsiamConnectorTest {
 
     private MappingBuilder givenMeIsLookedUp(AccessToken accessToken) {
         return get(urlEqualTo(URL_BASE_ME))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()));
     }
 
@@ -502,7 +409,7 @@ public class OsiamConnectorTest {
     }
 
     private void givenAGroupID() {
-        this.searchedGroupId = GROUP_ID_STRING;
+        searchedGroupId = GROUP_ID_STRING;
     }
 
     private void thenReturnedGroupHasID(String id) {
@@ -511,12 +418,12 @@ public class OsiamConnectorTest {
     }
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE_GROUPS + "?count=" + Integer.MAX_VALUE))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
+        stubFor(get(urlEqualTo(URL_BASE_GROUPS + "?count=2147483647"))
+                .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
                         .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                         .withBodyFile("query_all_groups.json")));
     }
 
@@ -537,67 +444,31 @@ public class OsiamConnectorTest {
         }
     }
 
-    private void givenASingleGroupCanBeLookedUpByQuery() {
-        stubFor(get(urlEqualTo(URL_BASE_GROUPS + "?filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType()))
-                .willReturn(aResponse()
-                        .withStatus(SC_OK)
-                        .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                        .withBodyFile("query_group_by_name.json")));
-    }
-
-    private void thenGroupQueryWasValid() {
-        verify(getRequestedFor(urlEqualTo(URL_BASE_GROUPS + "?filter=displayName+eq+test_group01"))
-                .withHeader("Content-Type", equalTo(ContentType.APPLICATION_JSON.getMimeType())));
-    }
-
-    private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        groupQueryResult = oConnector.searchGroups(queryString, accessToken);
-    }
-
-    private void thenReturnedListOfSearchedGroupsIsAsExpected() {
-        assertEquals(1, groupQueryResult.getTotalResults());
-        assertEquals(1, groupQueryResult.getResources().size());
-        assertEquals("test_group01", groupQueryResult.getResources().iterator().next().getDisplayName());
-    }
-
     private void given_a_correctly_configured_auth_service() {
         oConnector = new OsiamConnector.Builder()
                 .setEndpoint(ENDPOINT)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void givenAConfiguredServiceWithoutEndpoint() {
         oConnector = new OsiamConnector.Builder()
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void givenAConfiguredServiceWithoutResourceEndpoint() {
         oConnector = new OsiamConnector.Builder()
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
-                .setUserName(VALID_USERNAME)
-                .setPassword(VALID_PASSWORD)
-                .setScope(Scope.GET)
                 .build();
     }
 
     private void given_oauth_server_issues_access_token() {
-        stubFor(post(urlEqualTo("/osiam-auth-server/" + TOKEN_PATH)).
+        stubFor(post(urlEqualTo("/osiam-auth-server" + TOKEN_PATH)).
                 willReturn(aResponse()
                         .withStatus(HttpStatus.SC_OK)
                         .withBodyFile("valid_accesstoken.json")));

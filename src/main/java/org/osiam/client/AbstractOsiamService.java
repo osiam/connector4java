@@ -23,352 +23,310 @@
 
 package org.osiam.client;
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_CONFLICT;
-import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.ws.rs.core.Response.StatusType;
+
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.OsiamRequestException;
 import org.osiam.client.exception.ScimErrorMessage;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.helper.UserDeserializer;
 import org.osiam.resources.scim.Resource;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.common.base.Strings;
 
 /**
- * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
- * installation. For the construction of an instance please use the included {@link AbstractOsiamService.Builder}
+ * AbstractOsiamService provides all basic methods necessary to manipulate the
+ * Entities registered in the given OSIAM installation. For the construction of
+ * an instance please use the included {@link AbstractOsiamService.Builder}
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
-    private static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    private final HttpGet webResource;
-    private Class<T> type;
-    private String typeName;
-    private ObjectMapper mapper;
+    protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
+    private static final Client client = ClientBuilder.newClient(new ClientConfig()
+            .connectorProvider(new ApacheConnectorProvider())
+            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+            .property(ClientProperties.CONNECT_TIMEOUT, 2500)
+            .property(ClientProperties.READ_TIMEOUT, 5000)
+            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
+
     protected static final String AUTHORIZATION = "Authorization";
     protected static final String ACCEPT = "Accept";
     protected static final String BEARER = "Bearer ";
-    private DefaultHttpClient httpclient;
-    private ContentType contentType;
-    private String endpoint;
 
-    @SuppressWarnings("unchecked")
-    protected AbstractOsiamService(@SuppressWarnings("rawtypes") Builder builder) {
+    private final Class<T> type;
+    private final String typeName;
+    protected final ObjectMapper mapper;
+    private final String endpoint;
+
+    protected final WebTarget targetEndpoint;
+
+    protected AbstractOsiamService(Builder<T> builder) {
+        type = builder.type;
+        typeName = builder.typeName;
+        endpoint = builder.endpoint;
+
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
                 .addDeserializer(User.class, new UserDeserializer(User.class));
         mapper.registerModule(userDeserializerModule);
 
-        contentType = ContentType.create("application/json");
-        webResource = builder.getWebResource();
-        type = (Class<T>)
-                ((ParameterizedType) getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0];
-        typeName = type.getSimpleName();
-        endpoint = builder.endpoint;
+        targetEndpoint = client.target(endpoint);
     }
 
     protected T getResource(String id, AccessToken accessToken) {
-        ensureReferenceIsNotNull(id, "The given id can't be null.");
-        ensureAccessTokenIsNotNull(accessToken);
-        httpclient = new DefaultHttpClient();
+        checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
+        checkAccessTokenIsNotNull(accessToken);
 
-        HttpResponse response;
+        StatusType status;
+        String content;
         try {
-            URI uri = new URI(webResource.getURI() + "/" + id);
+            Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .get();
 
-            HttpGet realWebResource = new HttpGet(uri);
-            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-
-            response = httpclient.execute(realWebResource);
-        } catch (IOException | URISyntaxException e) {
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
-        int httpStatus = response.getStatusLine().getStatusCode();
 
-        if (httpStatus != SC_OK) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
-                throw new NoResultException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "get");
-                throw new ForbiddenException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamRequestException(httpStatus, errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, "get", id);
 
-        try {
-            InputStream content = response.getEntity().getContent();
-            return mapSingleResourceResponse(content);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
+        return mapToResource(content);
     }
 
     protected List<T> getAllResources(AccessToken accessToken) {
-        return searchResources("count=" + Integer.MAX_VALUE, accessToken).getResources();
-    }
-
-    protected SCIMSearchResult<T> searchResources(String queryString, AccessToken accessToken) {
-        ensureAccessTokenIsNotNull(accessToken);
-
-        httpclient = new DefaultHttpClient();
-
-        HttpResponse response;
-        try {
-            URI uri = new URI(webResource.getURI() + (queryString.isEmpty() ? "" : "?" + queryString));
-
-            HttpGet realWebResource = new HttpGet(uri);
-            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-
-            realWebResource.setURI(uri);
-            response = httpclient.execute(realWebResource);
-        } catch (IOException | URISyntaxException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
-
-        int httpStatus = response.getStatusLine().getStatusCode();
-
-        if (httpStatus != SC_OK) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "get");
-                throw new ForbiddenException(errorMessage);
-            case SC_CONFLICT:
-                errorMessage = getErrorMessage(response, "Unable to search with the search string '" + queryString
-                        + "': "
-                        + response.getStatusLine().getReasonPhrase());
-                throw new ConflictException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamRequestException(httpStatus, errorMessage);
-            }
-        }
-
-        try {
-            InputStream queryResult = response.getEntity().getContent();
-            JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class,
-                    type);
-
-            return mapper.readValue(queryResult, queryResultType);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException("Unable to deserialize query result", e);
-        }
+        Query query = new QueryBuilder().count(Integer.MAX_VALUE).build();
+        return searchResources(query, accessToken).getResources();
     }
 
     protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
-        if (query == null) {
-            throw new IllegalArgumentException("The given queryBuilder can't be null.");
+        checkNotNull(query, "The given query must not be null.");
+        checkAccessTokenIsNotNull(accessToken);
+
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path(typeName + "s")
+                    .queryParam("attributes", query.getAttributes())
+                    .queryParam("filter", query.getFilter())
+                    .queryParam("sortBy", query.getSortBy())
+                    .queryParam("sortOrder", query.getSortOrder())
+                    .queryParam("startIndex",
+                            query.getStartIndex() != QueryBuilder.DEFAULT_START_INDEX ? query.getStartIndex() : null)
+                    .queryParam("count",
+                            query.getCount() != QueryBuilder.DEFAULT_COUNT ? query.getCount() : null)
+                    .request(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .get();
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
-        return searchResources(query.toString(), accessToken);
+
+        checkAndHandleResponse(content, status, accessToken, String.format("search with query: %s", query), null);
+
+        try {
+            JavaType queryResultType = TypeFactory.defaultInstance()
+                    .constructParametricType(SCIMSearchResult.class, type);
+
+            return mapper.readValue(content, queryResultType);
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to deserialize search result: %s", content), e);
+        }
     }
 
     protected void deleteResource(String id, AccessToken accessToken) {
-        ensureReferenceIsNotNull(id, "The given id can't be null.");
-        ensureAccessTokenIsNotNull(accessToken);
-        httpclient = new DefaultHttpClient();
+        checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
+        checkAccessTokenIsNotNull(accessToken);
 
-        URI uri;
-        HttpResponse response;
+        StatusType status;
+        String content;
         try {
-            uri = new URI(webResource.getURI() + "/" + id);
-            HttpDelete realWebResource = new HttpDelete(uri);
-            realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
+            Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .delete();
 
-            response = httpclient.execute(realWebResource);
-        } catch (URISyntaxException | IOException e) {
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        int httpStatus = response.getStatusLine().getStatusCode();
-
-        if (httpStatus != SC_OK) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response, "No " + typeName + " with given id " + id);
-                throw new NoResultException(errorMessage);
-            case SC_CONFLICT:
-                errorMessage = getErrorMessage(response, "Unable to delete: "
-                        + response.getStatusLine().getReasonPhrase());
-                throw new ConflictException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "delete");
-                throw new ForbiddenException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamRequestException(httpStatus, errorMessage);
-            }
-        }
+        checkAndHandleResponse(content, status, accessToken, "delete", id);
     }
 
     protected T createResource(T resource, AccessToken accessToken) {
-        ensureReferenceIsNotNull(resource, "The given " + typeName + " can't be null.");
-        ensureAccessTokenIsNotNull(accessToken);
+        checkNotNull(resource, "The given %s must not be null nor empty.", typeName);
+        checkAccessTokenIsNotNull(accessToken);
 
-        HttpPost realWebResource = new HttpPost(webResource.getURI());
-        realWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-
-        httpclient = new DefaultHttpClient();
-
-        HttpResponse response;
+        String resourceAsString;
         try {
-            String userAsString = mapper.writeValueAsString(resource);
-            realWebResource.setEntity(new StringEntity(userAsString, contentType));
-            response = httpclient.execute(realWebResource);
-        } catch (IOException e) {
+            resourceAsString = mapper.writeValueAsString(resource);
+        } catch (JsonProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        int httpStatus = response.getStatusLine().getStatusCode();
-
-        if (httpStatus != SC_CREATED) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_CONFLICT:
-                errorMessage = getErrorMessage(response, "Unable to save");
-                throw new ConflictException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "create");
-                throw new ForbiddenException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamRequestException(httpStatus, errorMessage);
-            }
-        }
-
+        StatusType status;
+        String content;
         try {
-            InputStream content = response.getEntity().getContent();
-            return mapSingleResourceResponse(content);
-        } catch (IOException e) {
+            Response response = targetEndpoint.path(typeName + "s").request(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .post(Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
+
+        checkAndHandleResponse(content, status, accessToken, "create", null);
+
+        return mapToResource(content);
     }
 
     protected T updateResource(String id, T resource, AccessToken accessToken) {
-        HttpPatch realWebResource = new HttpPatch(webResource.getURI() + "/" + id);
-        return modifyResource(id, resource, accessToken, realWebResource);
+        return modifyResource(id, resource, "PATCH", accessToken);
     }
 
     protected T replaceResource(String id, T resource, AccessToken accessToken) {
-        HttpPut realWebResource = new HttpPut(webResource.getURI() + "/" + id);
-        return modifyResource(id, resource, accessToken, realWebResource);
+        return modifyResource(id, resource, "PUT", accessToken);
     }
 
-    private T modifyResource(String id, T resource, AccessToken accessToken,
-            HttpEntityEnclosingRequestBase realWebResource) {
-        ensureReferenceIsNotNull(resource, "The given " + typeName + " can't be null.");
-        ensureAccessTokenIsNotNull(accessToken);
-        ensureReferenceIsNotNull(id, "The given id can't be null.");
+    private T modifyResource(String id, T resource, String method, AccessToken accessToken) {
+        checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
+        checkNotNull(resource, "The given %s must not be null nor empty.", typeName);
+        checkAccessTokenIsNotNull(accessToken);
 
-        HttpEntityEnclosingRequestBase finalWebResource = addDefaultHeaderToRequest(realWebResource, accessToken);
-        httpclient = new DefaultHttpClient();
-
-        HttpResponse response;
-        String userAsString;
+        String resourceAsString;
         try {
-            userAsString = mapper.writeValueAsString(resource);
-            finalWebResource.setEntity(new StringEntity(userAsString, contentType));
-            response = httpclient.execute(finalWebResource);
-        } catch (IOException e) {
+            resourceAsString = mapper.writeValueAsString(resource);
+        } catch (JsonProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        int httpStatus = response.getStatusLine().getStatusCode();
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .method(method, Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
 
-        if (httpStatus != SC_OK) {
-            String errorMessage;
-            switch (httpStatus) {
-            case SC_UNAUTHORIZED:
-                errorMessage = getErrorMessageUnauthorized(response);
-                throw new UnauthorizedException(errorMessage);
-            case SC_BAD_REQUEST:
-                errorMessage = getErrorMessage(response, "Wrong " + typeName + ". Unable to update");
-                throw new ConflictException(errorMessage);
-            case SC_CONFLICT:
-                errorMessage = getErrorMessage(response, typeName + " with Conflicts. Unable to update");
-                throw new ConflictException(errorMessage);
-            case SC_NOT_FOUND:
-                errorMessage = getErrorMessage(response, "A " + typeName + " with the id " + id
-                        + " could be found to be updated.");
-                throw new NoResultException(errorMessage);
-            case SC_FORBIDDEN:
-                errorMessage = getErrorMessageForbidden(accessToken, "update");
-                throw new ForbiddenException(errorMessage);
-            default:
-                errorMessage = getErrorMessageDefault(response, httpStatus);
-                throw new OsiamRequestException(httpStatus, errorMessage);
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
+        }
+
+        checkAndHandleResponse(content, status, accessToken, method.equals("PUT") ? "replace" : "update", id);
+
+        return mapToResource(content);
+    }
+
+    protected T mapToResource(String content) {
+        return mapToType(content, type);
+    }
+
+    protected <U> U mapToType(String content, Class<U> type) {
+        try {
+            return mapper.readValue(content, type);
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to parse %s: %s", typeName, content), e);
+        }
+    }
+
+    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken, String action,
+            String id) {
+        if (status.getFamily() == Family.SUCCESSFUL) {
+            return;
+        }
+
+        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
+            String errorMessage = extractErrorMessageUnauthorized(content, status);
+            throw new UnauthorizedException(errorMessage);
+        } else if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+            throw new ConflictException(errorMessage);
+        } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+            throw new NoResultException(errorMessage);
+        } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
+            String errorMessage = extractErrorMessageForbidden(accessToken, action);
+            throw new ForbiddenException(errorMessage);
+        } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+            throw new ConflictException(errorMessage);
+        } else {
+            String errorMessage = extractErrorMessageDefault(content, status);
+            throw new OsiamRequestException(status.getStatusCode(), errorMessage);
+        }
+
+    }
+
+    protected String extractErrorMessageForbidden(AccessToken accessToken, String process) {
+        return "Insufficient scope (" + accessToken.getScopes() + ") to " + process + " this " + typeName + ".";
+    }
+
+    protected String extractErrorMessageUnauthorized(String content, StatusType status) {
+        return extractErrorMessage(content, status);
+    }
+
+    protected String extractErrorMessageDefault(String content, StatusType status) {
+        return extractErrorMessage(content, status);
+    }
+
+    protected String extractErrorMessage(String content, StatusType status) {
+        try {
+            ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
+
+            return error.getDescription();
+        } catch (ProcessingException | IOException e) {
+            String errorMessage = String.format("Could not deserialize the error response for the HTTP status '%s'.",
+                    status.getReasonPhrase());
+            if (content != null) {
+                errorMessage += String.format(" Original response: %s", content);
             }
-        }
 
-        try {
-            InputStream content = response.getEntity().getContent();
-            return mapSingleResourceResponse(content);
-        } catch (IOException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
-    }
-
-    private void ensureAccessTokenIsNotNull(AccessToken accessToken) {
-        ensureReferenceIsNotNull(accessToken, "The given accessToken can't be null.");
-    }
-
-    private void ensureReferenceIsNotNull(Object reference, String message) {
-        if (reference == null) {
-            throw new IllegalArgumentException(message);
+            return errorMessage;
         }
     }
 
@@ -376,50 +334,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         return endpoint;
     }
 
-    private String getErrorMessageForbidden(AccessToken accessToken, String process) {
-        return "Insufficient scope (" + accessToken.getScopes() + ") to " + process + " this " + typeName + ".";
-    }
-
-    private String getErrorMessageUnauthorized(HttpResponse httpResponse) {
-        return getErrorMessage(httpResponse,
-                "You are not authorized to access OSIAM. Please make sure your access token is valid");
-    }
-
-    private String getErrorMessageDefault(HttpResponse httpResponse, int httpStatus) {
-        return getErrorMessage(httpResponse,
-                String.format("Unable to setup connection (HTTP Status Code: %d)", httpStatus));
-    }
-
-    protected String getErrorMessage(HttpResponse httpResponse, String defaultErrorMessage) {
-        String errorMessage;
-        InputStream content = null;
-        String inputStreamStringValue = null;
-
-        try {
-            content = httpResponse.getEntity().getContent();
-            inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-            ObjectMapper errorMapper = new ObjectMapper();
-            ScimErrorMessage error = errorMapper.readValue(inputStreamStringValue, ScimErrorMessage.class);
-            errorMessage = error.getDescription();
-        } catch (Exception e) { // NOSONAR - we catch everything
-            errorMessage = " Could not deserialize the error response for the status code \""
-                    + httpResponse.getStatusLine().getReasonPhrase() + "\".";
-            if (inputStreamStringValue != null) {
-                errorMessage += " Original response: " + inputStreamStringValue;
-            }
-        }
-
-        return errorMessage;
-    }
-
-    protected T mapSingleResourceResponse(InputStream content) throws IOException {
-        return mapper.readValue(content, type);
-    }
-
-    private <R extends HttpRequestBase> R addDefaultHeaderToRequest(R request, AccessToken accessToken) {
-        request.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
-        request.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-        return request;
+    protected static void checkAccessTokenIsNotNull(AccessToken accessToken) {
+        checkNotNull(accessToken, "The given accessToken must not be null.");
     }
 
     protected static class Builder<T> {
@@ -434,18 +350,6 @@ abstract class AbstractOsiamService<T extends Resource> {
                     ((ParameterizedType) getClass().getGenericSuperclass())
                             .getActualTypeArguments()[0];
             typeName = type.getSimpleName();
-        }
-
-        protected HttpGet getWebResource() {
-            HttpGet webResource;
-            try {
-                webResource = new HttpGet(new URI(endpoint + "/" + typeName + "s"));
-                webResource.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
-            } catch (URISyntaxException e) {
-                throw new ConnectionInitializationException("Unable to setup connection " + endpoint +
-                        "is not a valid URI.", e);
-            }
-            return webResource;
         }
     }
 }

@@ -193,7 +193,7 @@ public class AccessToken {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((token == null) ? 0 : token.hashCode());
+        result = prime * result + (token == null ? 0 : token.hashCode());
         return result;
     }
 
@@ -265,7 +265,7 @@ public class AccessToken {
          * @return the Builder itself
          */
         public Builder setExpiresAt(Date expireDate) {
-            this.expiresAt = expireDate;
+            expiresAt = expireDate;
             return this;
         }
 
@@ -276,7 +276,7 @@ public class AccessToken {
          * @return the Builder itself
          */
         public Builder addScope(Scope scope) {
-            this.scopes.add(scope);
+            scopes.add(scope);
             return this;
         }
 
@@ -311,7 +311,7 @@ public class AccessToken {
          * @return the Builder itself
          */
         public Builder setRefreshTokenExpiresAt(Date expireDate) {
-            this.refreshTokenExpiresAt = expireDate;
+            refreshTokenExpiresAt = expireDate;
             return this;
         }
 
