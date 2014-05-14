@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 
-
 public class QueryTest {
 
     @Test

@@ -24,7 +24,6 @@ package org.osiam.client.query;
 
 import static com.google.common.base.Preconditions.checkState;
 
-
 /**
  * This class represents query for submission to the resource server.
  */
