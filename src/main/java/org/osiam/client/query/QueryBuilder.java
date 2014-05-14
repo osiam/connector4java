@@ -134,10 +134,6 @@ public class QueryBuilder {
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.4
      */
     public QueryBuilder startIndex(long startIndex) {
-        if (startIndex == DEFAULT_START_INDEX) {
-            return this;
-        }
-
         this.startIndex = startIndex < 1 ? DEFAULT_START_INDEX : startIndex;
         return this;
     }
@@ -150,11 +146,7 @@ public class QueryBuilder {
      * @see http://tools.ietf.org/html/draft-ietf-scim-api-04#section-3.2.2.4
      */
     public QueryBuilder count(int count) {
-        if (count == DEFAULT_COUNT) {
-            return this;
-        }
-
-        this.count = count < 1 || count > MAX_COUNT ? DEFAULT_COUNT : count;
+        this.count = count < 1 ? DEFAULT_COUNT : count;
         return this;
     }
 

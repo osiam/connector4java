@@ -65,7 +65,7 @@ public class Query {
     /**
      * Create a new query that is moved backward the result set by one page.
      *
-     * @return A new query paged backward by one.
+     * @return A new query paged backward by one. The minimum start index will be 1.
      * @throws IllegalStateException
      *         in case you are already at the first page
      */

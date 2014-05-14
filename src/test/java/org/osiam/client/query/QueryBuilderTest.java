@@ -80,15 +80,6 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void count_cannot_be_greater_than_one_hundred() {
-        Query query = queryBuilder
-                .count(101)
-                .build();
-
-        assertThat(query.getCount(), is(100));
-    }
-
-    @Test
     public void sorting_ascending_works() {
         Query query = queryBuilder
                 .ascending("sortByAttribute")

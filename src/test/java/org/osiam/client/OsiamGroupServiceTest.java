@@ -266,7 +266,7 @@ public class OsiamGroupServiceTest {
     }
 
     private void givenAllGroupsAreLookedUpSuccessfully() {
-        stubFor(get(urlEqualTo(URL_BASE))
+        stubFor(get(urlEqualTo(URL_BASE + "?count=2147483647"))
                 .withHeader("Accept", equalTo(MediaType.APPLICATION_JSON))
                 .withHeader("Authorization", equalTo("Bearer " + accessToken.getToken()))
                 .willReturn(aResponse()
