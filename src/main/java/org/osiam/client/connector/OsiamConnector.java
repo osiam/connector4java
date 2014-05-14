@@ -638,8 +638,6 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      * 
      * @param tokenToValidate
      *            The AccessToken to be validated
-     * @param tokenToAuthorize
-     *            The AccessToken for authorization
      * @return The validated AccessToken if the AccessToken is valid
      * @throws UnauthorizedException
      *             if the request could not be authorized.
@@ -648,8 +646,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      * @throws ConnectionInitializationException
      *             if the connection to the given OSIAM service could not be initialized
      */
-    public AccessToken validateAccessToken(AccessToken tokenToValidate, AccessToken tokenToAuthorize) {
-        return authService().validateAccessToken(tokenToValidate, tokenToAuthorize);
+    public AccessToken validateAccessToken(AccessToken tokenToValidate) {
+        return authService().validateAccessToken(tokenToValidate);
     }
 
     /**

@@ -367,19 +367,19 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
     }
 
     /**
-     * @see OsiamConnector#validateAccessToken(AccessToken, AccessToken)
+     * @see OsiamConnector#validateAccessToken(AccessToken)
      */
-    public AccessToken validateAccessToken(AccessToken tokenToValidate, AccessToken tokenToAuthorize) {
-        if (tokenToValidate == null || tokenToAuthorize == null) {
+    public AccessToken validateAccessToken(AccessToken tokenToValidate) {
+        if (tokenToValidate == null) {
             throw new IllegalArgumentException("The given accessToken can't be null.");
         }
         DefaultHttpClient httpclient = new DefaultHttpClient();
 
         HttpResponse response;
         try {
-            URI uri = new URI(endpoint + "/token/validation/" + tokenToValidate.getToken());
+            URI uri = new URI(endpoint + "/token/validation");
             HttpPost realWebResource = new HttpPost(uri);
-            realWebResource.addHeader(AUTHORIZATION, BEARER + tokenToAuthorize.getToken());
+            realWebResource.addHeader(AUTHORIZATION, BEARER + tokenToValidate.getToken());
             realWebResource.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
             response = httpclient.execute(realWebResource);
         } catch (IOException | URISyntaxException e) {
@@ -387,7 +387,7 @@ public final class AuthService { // NOSONAR - Builder constructs instances of th
         }
         int httpStatus = response.getStatusLine().getStatusCode();
 
-        if (httpStatus == SC_BAD_REQUEST) {
+        if (httpStatus == SC_UNAUTHORIZED) {
             String errorMessage = getErrorMessage(response);
             throw new AccessTokenValidationException(errorMessage);
         }
