@@ -69,11 +69,14 @@ import com.google.common.base.Strings;
 class AuthService {
 
     private static final String BEARER = "Bearer ";
+    private static final String TOKEN_ENDPOINT = "/oauth/token";
+    private static final int CONNECT_TIMEOUT = 2500;
+    private static final int READ_TIMEOUT = 5000;
     private static final Client client = ClientBuilder.newClient(new ClientConfig()
             .connectorProvider(new ApacheConnectorProvider())
             .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-            .property(ClientProperties.CONNECT_TIMEOUT, 2500)
-            .property(ClientProperties.READ_TIMEOUT, 5000)
+            .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
+            .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
             .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
 
     private final String endpoint;
@@ -103,14 +106,14 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token")
+            Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
         } catch (ProcessingException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+            throw createGeneralConnectionInitializationException(e);
         }
 
         checkAndHandleResponse(content, status);
@@ -130,14 +133,14 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token")
+            Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
         } catch (ProcessingException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+            throw createGeneralConnectionInitializationException(e);
         }
 
         checkAndHandleResponse(content, status);
@@ -148,7 +151,7 @@ class AuthService {
     public AccessToken retrieveAccessToken(String authCode) {
         checkArgument(!Strings.isNullOrEmpty(authCode), "The given authentication code can't be null.");
         ensureClientCredentialsAreSet();
-        
+
         Form form = new Form();
         form.param("code", authCode);
         form.param("grant_type", "authorization_code");
@@ -157,14 +160,14 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token")
+            Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
         } catch (ProcessingException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+            throw createGeneralConnectionInitializationException(e);
         }
 
         if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
@@ -190,7 +193,7 @@ class AuthService {
         checkArgument(accessToken.getRefreshToken() != null,
                 "Unable to perform a refresh_token_grant request without refresh token.");
         ensureClientCredentialsAreSet();
-        
+
         String formattedScopes = getScopesAsString(scopes);
 
         Form form = new Form();
@@ -201,14 +204,14 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/oauth/token")
+            Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
         } catch (ProcessingException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+            throw createGeneralConnectionInitializationException(e);
         }
 
         // need to override default behavior of checkAndHandleResponse
@@ -222,7 +225,7 @@ class AuthService {
 
     public URI getAuthorizationUri(Scope... scopes) {
         checkState(!Strings.isNullOrEmpty(clientRedirectUri), "Can't create the login uri: redirect URI was not set.");
-        try {            
+        try {
             String formattedScopes = getScopesAsString(scopes);
 
             return UriBuilder.fromUri(endpoint).path("/oauth/authorize")
@@ -253,7 +256,7 @@ class AuthService {
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
         } catch (ProcessingException e) {
-            throw new ConnectionInitializationException("Unable to retrieve access token.", e);
+            throw createGeneralConnectionInitializationException(e);
         }
 
         if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
@@ -305,10 +308,14 @@ class AuthService {
             throw new OsiamClientException(String.format("Unable to parse access token: %s", content), e);
         }
     }
-    
-    private void ensureClientCredentialsAreSet(){
+
+    private void ensureClientCredentialsAreSet() {
         checkState(!Strings.isNullOrEmpty(clientId), "The client id can't be null or empty.");
         checkState(!Strings.isNullOrEmpty(clientSecret), "The client secrect can't be null or empty.");
+    }
+
+    private ConnectionInitializationException createGeneralConnectionInitializationException(Throwable e) {
+        return new ConnectionInitializationException("Unable to retrieve access token.", e);
     }
 
     /**

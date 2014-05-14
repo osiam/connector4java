@@ -97,7 +97,10 @@ public class AccessToken {
      * @return The Date when the access token is not valid anymore.
      */
     public Date getExpiresAt() {
-        return expiresAt;
+        if (expiresAt != null) {
+            return new Date(expiresAt.getTime());
+        }
+        return null;
     }
 
     /**
@@ -133,7 +136,10 @@ public class AccessToken {
      * @return The Date when the refresh access token is not valid anymore.
      */
     public Date getRefreshTokenExpiresAt() {
-        return refreshTokenExpiresAt;
+        if (refreshTokenExpiresAt != null) {
+            return new Date(refreshTokenExpiresAt.getTime());
+        }
+        return null;
     }
 
     /**
@@ -265,7 +271,9 @@ public class AccessToken {
          * @return the Builder itself
          */
         public Builder setExpiresAt(Date expireDate) {
-            expiresAt = expireDate;
+            if (expireDate != null) {
+                expiresAt = new Date(expireDate.getTime());
+            }
             return this;
         }
 
@@ -311,7 +319,9 @@ public class AccessToken {
          * @return the Builder itself
          */
         public Builder setRefreshTokenExpiresAt(Date expireDate) {
-            refreshTokenExpiresAt = expireDate;
+            if (expireDate != null) {
+                refreshTokenExpiresAt = new Date(expireDate.getTime());
+            }
             return this;
         }
 
