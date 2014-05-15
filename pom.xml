@@ -237,6 +237,7 @@
                 <version>2.16</version>
                 <configuration>
                     <argLine>-XX:-UseSplitVerifier</argLine>
+                    <trimStackTrace>false</trimStackTrace>
                     <includes>
                         <include>**/*Test.*</include>
                     </includes>
