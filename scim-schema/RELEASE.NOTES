@@ -1,7 +1,7 @@
 # OSIAM SCIM Schema
 
 ## 1.0 - 2014-05-15
-Finally released version 1.0 of all important OSIAM projects!
+Finally released version 1.0!
 - [refactore] Renamed all setMultiValue-Methods to addMultiValues, add the method addMultiValue,
   deleteMultiValue, clearMultiValues -> MultiValue: Email, PhoneNumber, ...
   Migration: https://github.com/osiam/scim-schema/wiki/Migration#from-release-042-to-10
