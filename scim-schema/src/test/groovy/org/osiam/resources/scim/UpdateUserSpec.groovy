@@ -58,35 +58,27 @@ class UpdateUserSpec extends Specification {
         then:
         scimUser.getAddresses().size() == 1
         scimUser.getAddresses().get(0) == deleteAddress
-        scimUser.getAddresses().get(0).getOperation() == DELETE
 
         scimUser.getEmails().size() == 1
         scimUser.getEmails().get(0) == deleteEmail
-        scimUser.getEmails().get(0).getOperation() == DELETE
 
         scimUser.getEntitlements().size() == 1
         scimUser.getEntitlements().get(0) == deleteEntit
-        scimUser.getEntitlements().get(0).getOperation() == DELETE
 
         scimUser.getIms().size() == 1
         scimUser.getIms().get(0) == deleteIm
-        scimUser.getIms().get(0).getOperation() == DELETE
 
         scimUser.getPhoneNumbers().size() == 1
         scimUser.getPhoneNumbers().get(0) == deletePhoneNumber
-        scimUser.getPhoneNumbers().get(0).getOperation() == DELETE
 
         scimUser.getPhotos().size() == 1
         scimUser.getPhotos().get(0) == deletePhoto
-        scimUser.getPhotos().get(0).getOperation() == DELETE
 
         scimUser.getRoles().size() == 1
         scimUser.getRoles().get(0) == deleteRole
-        scimUser.getRoles().get(0).getOperation() == DELETE
 
         scimUser.getX509Certificates().size() == 1
         scimUser.getX509Certificates().get(0) == deleteX509Certificate
-        scimUser.getX509Certificates().get(0).getOperation() == DELETE
 
         scimUser.getMeta().getAttributes().contains('addresses')
         scimUser.getMeta().getAttributes().contains('displayName')
@@ -219,42 +211,58 @@ class UpdateUserSpec extends Specification {
         deleteAddress = new Address.Builder()
                 .setCountry('del country')
                 .setFormatted('delete formatted address')
-                .setLocality('del local').build()
+                .setLocality('del local')
+                .setOperation(DELETE)
+                .build()
 
         newEmail = new Email.Builder()
                 .setValue('newEmail@test.com').build()
         deleteEmail = new Email.Builder()
-                .setValue('deleteEmail@test.com').build()
+                .setValue('deleteEmail@test.com')
+                .setOperation(DELETE)
+                .build()
 
         newEntit = new Entitlement.Builder()
                 .setValue('new Entitlement').build()
         deleteEntit = new Entitlement.Builder()
-                .setValue('delete Entitlement').build()
+                .setValue('delete Entitlement')
+                .setOperation(DELETE)
+                .build()
 
         newIm = new Im.Builder()
                 .setValue('icq').build()
         deleteIm = new Im.Builder()
-                .setValue('msn').build()
+                .setValue('msn')
+                .setOperation(DELETE)
+                .build()
 
         newPhoneNumber = new PhoneNumber.Builder()
                 .setValue('new PhoneNumber').build()
         deletePhoneNumber = new PhoneNumber.Builder()
-                .setValue('delete PhoneNumber').build()
+                .setValue('delete PhoneNumber')
+                .setOperation(DELETE)
+                .build()
 
         newPhoto = new Photo.Builder()
                 .setValue('new Photo').build()
         deletePhoto = new Photo.Builder()
-                .setValue(new URI('delete_Photo')).build()
+                .setValue(new URI('delete_Photo'))
+                .setOperation(DELETE)
+                .build()
 
         newRole = new Role.Builder()
                 .setValue('new Role').build()
         deleteRole = new Role.Builder()
-                .setValue('delete Role').build()
+                .setValue('delete Role')
+                .setOperation(DELETE)
+                .build()
 
         newX509Certificate = new X509Certificate.Builder()
                 .setValue('new X509Certificate').build()
         deleteX509Certificate = new X509Certificate.Builder()
-                .setValue('delete X509Certificate').build()
+                .setValue('delete X509Certificate')
+                .setOperation(DELETE)
+                .build()
 
         extension = new Extension.Builder('extension').setField('field', 'value').build()
     }
@@ -358,12 +366,12 @@ class UpdateUserSpec extends Specification {
                 .setGivenName('given').build()
 
         List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>()
-        entitlements.add(newPhoneNumber)
-        entitlements.add(deletePhoneNumber)
+        phoneNumbers.add(newPhoneNumber)
+        phoneNumbers.add(deletePhoneNumber)
 
         List<Photo> photos = new ArrayList<Photo>()
-        entitlements.add(newPhoto)
-        entitlements.add(deletePhoto)
+        photos.add(newPhoto)
+        photos.add(deletePhoto)
 
         List<Role> roles = new ArrayList<Role>()
         roles.add(newRole)
@@ -375,23 +383,23 @@ class UpdateUserSpec extends Specification {
 
         User.Builder userBuilder = new User.Builder('username')
         userBuilder.setActive(true)
-        userBuilder.setAddresses(addresses)
+        userBuilder.addAddresses(addresses)
         userBuilder.setDisplayName('displayN')
-        userBuilder.setEmails(emails)
-        userBuilder.setEntitlements(entitlements)
+        userBuilder.addEmails(emails)
+        userBuilder.addEntitlements(entitlements)
         userBuilder.setExternalId('external id')
-        userBuilder.setIms(ims)
+        userBuilder.addIms(ims)
         userBuilder.setLocale('locale')
         userBuilder.setName(name)
         userBuilder.setNickName('nick')
         userBuilder.setPassword('password')
-        userBuilder.setPhoneNumbers(phoneNumbers)
-        userBuilder.setPhotos(photos)
+        userBuilder.addPhoneNumbers(phoneNumbers)
+        userBuilder.addPhotos(photos)
         userBuilder.setPreferredLanguage('pr language')
-        userBuilder.setRoles(roles)
+        userBuilder.addRoles(roles)
         userBuilder.setTimezone('timez')
         userBuilder.setTitle('title')
-        userBuilder.setX509Certificates(x509Certificates)
+        userBuilder.addX509Certificates(x509Certificates)
         userBuilder.setUserType('King Jorge')
 
         userBuilder.build()

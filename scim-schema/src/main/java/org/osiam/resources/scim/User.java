@@ -24,6 +24,7 @@
 package org.osiam.resources.scim;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,10 +50,9 @@ import com.google.common.base.Strings;
  * </p>
  * 
  * <p>
- * client info: The scim schema is mainly meant as a connection link between the 
- * OSIAM server and by a client like the connector4Java. 
- * Some values will be not accepted by the OSIAM server.
- * These specific values have an own client info documentation section.
+ * client info: The scim schema is mainly meant as a connection link between the OSIAM server and by a client like the
+ * connector4Java. Some values will be not accepted by the OSIAM server. These specific values have an own client info
+ * documentation section.
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -448,7 +448,7 @@ public class User extends Resource {
 
         return extensions.get(urn);
     }
-    
+
     /**
      * Checks if an extension with the given urn is present because an extension is not returned if no field is set
      * 
@@ -712,62 +712,262 @@ public class User extends Resource {
         }
 
         /**
-         * Sets the E-mail addresses for the User (See {@link User#getEmails()}).
+         * Adds the E-mail addresses for the User (See {@link User#getEmails()}).
          * 
          * @param emails
-         *        the emails as Set
+         *        a collection of email to be added
          * @return the builder itself
          */
-        public Builder setEmails(List<Email> emails) {
-            this.emails = emails;
+        public Builder addEmails(Collection<Email> emails) {
+            if (emails != null) {
+                for (Email email : emails) {
+                    addEmail(email);
+                }
+            }
             return this;
         }
 
         /**
-         * Sets the phone numbers for the User (See {@link User#getPhoneNumbers()}).
+         * adds an email to the User
+         * 
+         * @param email
+         *        an email to add
+         * @return the builder itself
+         */
+        public Builder addEmail(Email email) {
+            if (email != null) {
+                this.emails.add(new Email.Builder(email).build());
+            }
+            return this;
+        }
+
+        /**
+         * removes all email from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeEmails() {
+            this.emails.clear();
+            return this;
+        }
+
+        /**
+         * removes one single email from the User
+         * 
+         * @param email
+         *        an email to be removed
+         * @return the builder itself
+         */
+        public Builder removeEmail(Email email) {
+            this.emails.remove(email);
+            return this;
+        }
+
+        /**
+         * Adds the phone numbers for the User (See {@link User#getPhoneNumbers()}).
          * 
          * @param phoneNumbers
          *        the phone numbers of the the {@link User}
          * @return the builder itself
          */
-        public Builder setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
-            this.phoneNumbers = phoneNumbers;
+        public Builder addPhoneNumbers(Collection<PhoneNumber> phoneNumbers) {
+            if (phoneNumbers != null) {
+                for (PhoneNumber phoneNumber : phoneNumbers) {
+                    addPhoneNumber(phoneNumber);
+                }
+            }
             return this;
         }
 
         /**
-         * Sets the instant messaging addresses for the User (See {@link User#getIms()}).
+         * adds an phoneNumber to the User
          * 
-         * @param ims
-         *        a list of the ims of the {@link User}
+         * @param phoneNumber
+         *        a phoneNumber to add
          * @return the builder itself
          */
-        public Builder setIms(List<Im> ims) {
-            this.ims = ims;
+        public Builder addPhoneNumber(PhoneNumber phoneNumber) {
+            if (phoneNumber != null) {
+                this.phoneNumbers.add(new PhoneNumber.Builder(phoneNumber).build());
+            }
             return this;
         }
 
         /**
-         * Sets the URL's of photo's of the User (See {@link User#getPhotos()}).
+         * removes all phoneNumbers from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removePhoneNumbers() {
+            this.phoneNumbers.clear();
+            return this;
+        }
+
+        /**
+         * removes one single phoneNumber from the User
+         * 
+         * @param phoneNumber
+         *        an phoneNumber to be removed
+         * @return the builder itself
+         */
+        public Builder removePhoneNumber(PhoneNumber phoneNumber) {
+            this.phoneNumbers.remove(phoneNumber);
+            return this;
+        }
+
+        /**
+         * Adds the instant messaging addresses for the User (See {@link User#getIms()}).
+         * 
+         * @param ims
+         *        a collection of the ims of the {@link User}
+         * @return the builder itself
+         */
+        public Builder addIms(Collection<Im> ims) {
+            if (ims != null) {
+                for (Im im : ims) {
+                    addIm(im);
+                }
+            }
+            return this;
+        }
+
+        /**
+         * adds an Im to the User
+         * 
+         * @param im
+         *        a Im to add
+         * @return the builder itself
+         */
+        public Builder addIm(Im im) {
+            if (im != null) {
+                this.ims.add(new Im.Builder(im).build());
+            }
+            return this;
+        }
+
+        /**
+         * removes all ims from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeIms() {
+            this.ims.clear();
+            return this;
+        }
+
+        /**
+         * removes one single im from the User
+         * 
+         * @param im
+         *        a im to be removed
+         * @return the builder itself
+         */
+        public Builder removeIm(Im im) {
+            this.ims.remove(im);
+            return this;
+        }
+
+        /**
+         * Adds the URL's of photo's of the User (See {@link User#getPhotos()}).
          * 
          * @param photos
          *        the photos of the {@link User}
          * @return the builder itself
          */
-        public Builder setPhotos(List<Photo> photos) {
-            this.photos = photos;
+        public Builder addPhotos(Collection<Photo> photos) {
+            if (photos != null) {
+                for (Photo photo : photos) {
+                    addPhoto(photo);
+                }
+            }
             return this;
         }
 
         /**
-         * Sets the physical mailing addresses for this User (See {@link User#getAddresses()}).
+         * adds an Photo to the User
          * 
-         * @param addresses
-         *        a list of the addresses of the {@link User}
+         * @param photo
+         *        a Photo to add
          * @return the builder itself
          */
-        public Builder setAddresses(List<Address> addresses) {
-            this.addresses = addresses;
+        public Builder addPhoto(Photo photo) {
+            if (photo != null) {
+                this.photos.add(new Photo.Builder(photo).build());
+            }
+            return this;
+        }
+
+        /**
+         * removes all Photos from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removePhotos() {
+            this.photos.clear();
+            return this;
+        }
+
+        /**
+         * removes one single Photo from the User
+         * 
+         * @param photo
+         *        a photo to be removed
+         * @return the builder itself
+         */
+        public Builder removePhoto(Photo photo) {
+            this.photos.remove(photo);
+            return this;
+        }
+
+        /**
+         * Adds the physical mailing addresses for this User (See {@link User#getAddresses()}).
+         * 
+         * @param addresses
+         *        a collection of the addresses of the {@link User}
+         * @return the builder itself
+         */
+        public Builder addAddresses(Collection<Address> addresses) {
+            if (addresses != null) {
+                for (Address address : addresses) {
+                    addAddress(address);
+                }
+            }
+            return this;
+        }
+
+        /**
+         * adds an Address to the User
+         * 
+         * @param address
+         *        a Address to add
+         * @return the builder itself
+         */
+        public Builder addAddress(Address address) {
+            if (address != null) {
+                this.addresses.add(new Address.Builder(address).build());
+            }
+            return this;
+        }
+
+        /**
+         * removes all Addresses from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeAddresses() {
+            this.addresses.clear();
+            return this;
+        }
+
+        /**
+         * removes one single Photo from the User
+         * 
+         * @param address
+         *        a Address to be removed
+         * @return the builder itself
+         */
+        public Builder removeAddress(Address address) {
+            this.addresses.remove(address);
             return this;
         }
 
@@ -775,11 +975,11 @@ public class User extends Resource {
          * Sets a list of groups that the user belongs to (See {@link User#getGroups()})
          * 
          * <p>
-         * client info: The groups where the user is a member of will only be set from the OSIAM server. 
-         * If you want to put a user into a group, you have to add the user as a member to the group.
-         * If a {@link User} which is send to the OSIAM server has this value filled, the value will be ignored or the action will be
-         * rejected.
+         * client info: The groups where the user is a member of will only be set from the OSIAM server. If you want to
+         * put a user into a group, you have to add the user as a member to the group. If a {@link User} which is send
+         * to the OSIAM server has this value filled, the value will be ignored or the action will be rejected.
          * </p>
+         * 
          * @param groups
          *        groups of the User
          * @return the builder itself
@@ -790,14 +990,54 @@ public class User extends Resource {
         }
 
         /**
-         * Sets a list of entitlements for the User (See {@link User#getEntitlements()}).
+         * Adds a collection of entitlements for the User (See {@link User#getEntitlements()}).
          * 
          * @param entitlements
          *        the entitlements of the {@link User}
          * @return the builder itself
          */
-        public Builder setEntitlements(List<Entitlement> entitlements) {
-            this.entitlements = entitlements;
+        public Builder addEntitlements(Collection<Entitlement> entitlements) {
+            if (entitlements != null) {
+                for (Entitlement entitlement : entitlements) {
+                    addEntitlement(entitlement);
+                }
+            }
+            return this;
+        }
+
+        /**
+         * adds an Entitlement to the User
+         * 
+         * @param entitlement
+         *        a Entitlement to add
+         * @return the builder itself
+         */
+        public Builder addEntitlement(Entitlement entitlement) {
+            if (entitlement != null) {
+                this.entitlements.add(new Entitlement.Builder(entitlement).build());
+            }
+            return this;
+        }
+
+        /**
+         * removes all Entitlements from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeEntitlements() {
+            this.entitlements.clear();
+            return this;
+        }
+
+        /**
+         * removes one single Entitlement from the User
+         * 
+         * @param entitlement
+         *        a Entitlement to be removed
+         * @return the builder itself
+         */
+        public Builder removeEntitlement(Entitlement entitlement) {
+            this.entitlements.remove(entitlement);
             return this;
         }
 
@@ -808,36 +1048,115 @@ public class User extends Resource {
          *        a list of roles
          * @return the builder itself
          */
-        public Builder setRoles(List<Role> roles) {
-            this.roles = roles;
+        public Builder addRoles(Collection<Role> roles) {
+            if (roles != null) {
+                for (Role role : roles) {
+                    addRole(role);
+                }
+            }
             return this;
         }
 
         /**
-         * Sets a list of certificates issued to the User (See {@link User#getX509Certificates()}).
+         * adds an Role to the User
+         * 
+         * @param role
+         *        a Role to add
+         * @return the builder itself
+         */
+        public Builder addRole(Role role) {
+            if (role != null) {
+                this.roles.add(new Role.Builder(role).build());
+            }
+            return this;
+        }
+
+        /**
+         * removes all Roles from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeRoles() {
+            this.roles.clear();
+            return this;
+        }
+
+        /**
+         * removes one single Role from the User
+         * 
+         * @param role
+         *        a Role to be removed
+         * @return the builder itself
+         */
+        public Builder removeRole(Role role) {
+            this.roles.remove(role);
+            return this;
+        }
+
+        /**
+         * Sets a collection of certificates issued to the User (See {@link User#getX509Certificates()}).
          * 
          * @param x509Certificates
          *        the certificates of the {@link User}
          * @return the builder itself
          */
-        public Builder setX509Certificates(List<X509Certificate> x509Certificates) {
-            this.x509Certificates = x509Certificates;
+        public Builder addX509Certificates(Collection<X509Certificate> x509Certificates) {
+            if (x509Certificates != null) {
+                for (X509Certificate x509Certificate : x509Certificates) {
+                    addX509Certificate(x509Certificate);
+                }
+            }
             return this;
         }
 
         /**
-         * Sets a List of Extension to the User (See {@link User#getExtensions()}).
+         * adds an X509Certificate to the User
          * 
-         * @param extensions
-         *        a list of extensions
+         * @param x509Certificate
+         *        a X509Certificate to add
          * @return the builder itself
          */
-        public Builder addExtensions(Set<Extension> extensions) {
-            if (extensions == null) {
-                throw new IllegalArgumentException("The given extensions must not be null.");
+        public Builder addX509Certificate(X509Certificate x509Certificate) {
+            if (x509Certificate != null) {
+                this.x509Certificates.add(new X509Certificate.Builder(x509Certificate).build());
             }
-            for (Extension entry : extensions) {
-                this.addExtension(entry);
+            return this;
+        }
+
+        /**
+         * removes all X509Certificates from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeX509Certificates() {
+            this.x509Certificates.clear();
+            return this;
+        }
+
+        /**
+         * removes one single X509Certificate from the User
+         * 
+         * @param x509Certificate
+         *        a X509Certificate to be removed
+         * @return the builder itself
+         */
+        public Builder removeX509Certificate(X509Certificate x509Certificate) {
+            this.x509Certificates.remove(x509Certificate);
+            return this;
+        }
+
+        /**
+         * Adds a collection of Extension to the User (See {@link User#getExtensions()}).
+         * 
+         * @param extensions
+         *        a collection of extensions
+         * @return the builder itself
+         */
+        public Builder addExtensions(Collection<Extension> extensions) {
+            if (extensions != null) {
+                for (Extension entry : extensions) {
+                    this.addExtension(entry);
+                }
             }
             return this;
         }
@@ -850,11 +1169,32 @@ public class User extends Resource {
          * @return the builder itself
          */
         public Builder addExtension(Extension extension) {
-            if (extension == null) {
-                throw new IllegalArgumentException("The given extension must not be null.");
+            if (extension != null) {
+                extensions.put(extension.getUrn(), extension);
+                addSchema(extension.getUrn());
             }
-            extensions.put(extension.getUrn(), extension);
-            addSchema(extension.getUrn());
+            return this;
+        }
+
+        /**
+         * removes all Extensions from the actual User
+         * 
+         * @return the builder itself
+         */
+        public Builder removeExtensions() {
+            this.extensions.clear();
+            return this;
+        }
+
+        /**
+         * removes one single Extension from the User
+         * 
+         * @param urn
+         *        the urn from the Extension to be removed
+         * @return the builder itself
+         */
+        public Builder removeExtension(String urn) {
+            this.extensions.remove(urn);
             return this;
         }
 
