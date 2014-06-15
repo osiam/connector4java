@@ -18,7 +18,7 @@ It is possible to run a dedicated OSIAM User and Group Server or to connect to a
 
 OSIAM provides three different ways to log in:
 
-- 2 Step login: The consuming application redirects the user to a central Osiam Sever where the user can login and the consuming applicationis granted access to the needed user information (for instance if the facebook acount of the user is used for login)
+- 2 Step login: The consuming application redirects the user to a central Osiam Sever where the user can login and the consuming applications granted access to the needed user information (for instance if the facebook acount of the user is used for login)
 
 - 1 Step login: The user can provide his login and password to your application and you can get the security credentials directly from the OSIAM server without a required authorization from the user
 
