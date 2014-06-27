@@ -598,6 +598,16 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     public AccessToken validateAccessToken(AccessToken tokenToValidate) {
         return authService().validateAccessToken(tokenToValidate);
     }
+    
+    /**
+     * Revokes the given access token if it is valid.
+     * 
+     * @param tokenToRevoke
+     *        the {@link AccessToken} to be revoked
+     */
+    public void revokeAccessToken(AccessToken tokenToRevoke) {
+        authService().revokeAccessToken(tokenToRevoke);
+    }
 
     /**
      * Creates a new {@link QueryBuilder}.
