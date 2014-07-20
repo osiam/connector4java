@@ -72,13 +72,8 @@ class AuthService {
     private static final String TOKEN_ENDPOINT = "/oauth/token";
     private static final int CONNECT_TIMEOUT = 2500;
     private static final int READ_TIMEOUT = 5000;
-    private static final Client client = ClientBuilder.newClient(new ClientConfig()
-            .connectorProvider(new ApacheConnectorProvider())
-            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-            .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
-            .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
-            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
 
+    private final Client client;
     private final String endpoint;
     private final String clientId;
     private final String clientSecret;
@@ -92,8 +87,15 @@ class AuthService {
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
 
-        targetEndpoint = client.target(endpoint)
-                .register(HttpAuthenticationFeature.basic(clientId, clientSecret));
+        client = ClientBuilder.newClient(new ClientConfig()
+                .connectorProvider(new ApacheConnectorProvider())
+                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+                .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
+                .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
+                .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager())
+                .register(HttpAuthenticationFeature.basic(clientId, clientSecret)));
+
+        targetEndpoint = client.target(endpoint);
     }
 
     public AccessToken retrieveAccessToken(Scope... scopes) {
