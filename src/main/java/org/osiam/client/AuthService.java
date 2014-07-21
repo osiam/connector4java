@@ -268,6 +268,29 @@ class AuthService {
 
         return getAccessToken(content);
     }
+    
+    public void revokeAccessToken(AccessToken tokenToRevoke) {
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("/token/revocation")
+                    .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + tokenToRevoke.getToken())
+                    .post(null);
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+        
+        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+            throw new UnauthorizedException(errorMessage);
+        }
+        
+        checkAndHandleResponse(content, status);
+    }
 
     private void checkAndHandleResponse(String content, StatusType status) {
         if (status.getStatusCode() == Status.OK.getStatusCode()) {

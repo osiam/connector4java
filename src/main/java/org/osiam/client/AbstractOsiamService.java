@@ -51,6 +51,7 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.OsiamRequestException;
 import org.osiam.client.exception.ScimErrorMessage;
@@ -72,9 +73,8 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
 
 /**
- * AbstractOsiamService provides all basic methods necessary to manipulate the
- * Entities registered in the given OSIAM installation. For the construction of
- * an instance please use the included {@link AbstractOsiamService.Builder}
+ * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
+ * installation. For the construction of an instance please use the included {@link AbstractOsiamService.Builder}
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
@@ -317,18 +317,36 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     protected String extractErrorMessage(String content, StatusType status) {
-        try {
-            ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
 
-            return error.getDescription();
-        } catch (ProcessingException | IOException e) {
-            String errorMessage = String.format("Could not deserialize the error response for the HTTP status '%s'.",
+        String message = getScimErrorMessage(content);
+        if (message == null) {
+            message = getOAuthErrorMessage(content);
+        }
+        if (message == null) {
+            message = String.format("Could not deserialize the error response for the HTTP status '%s'.",
                     status.getReasonPhrase());
             if (content != null) {
-                errorMessage += String.format(" Original response: %s", content);
+                message += String.format(" Original response: %s", content);
             }
+        }
+        return message;
+    }
 
-            return errorMessage;
+    private String getScimErrorMessage(String content) {
+        try {
+            ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
+            return error.getDescription();
+        } catch (ProcessingException | IOException e) {
+            return null;
+        }
+    }
+
+    private String getOAuthErrorMessage(String content) {
+        try {
+            OAuthErrorMessage error = new ObjectMapper().readValue(content, OAuthErrorMessage.class);
+            return error.getDescription();
+        } catch (ProcessingException | IOException e) {
+            return null;
         }
     }
 
