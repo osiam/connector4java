@@ -293,6 +293,25 @@ class AuthService {
         
         checkAndHandleResponse(content, status);
     }
+    
+
+    public void revokeAccessTokens(String id, AccessToken accessToken) {
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("/token/revocation").path(id)
+                    .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + accessToken.getToken())
+                    .post(null);
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+
+        checkAndHandleResponse(content, status);
+    }
 
     private void checkAndHandleResponse(String content, StatusType status) {
         if (status.getStatusCode() == Status.OK.getStatusCode()) {
