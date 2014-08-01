@@ -261,11 +261,6 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status);
-            throw new UnauthorizedException(errorMessage);
-        }
-
         checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
