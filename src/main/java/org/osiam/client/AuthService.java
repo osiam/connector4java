@@ -261,11 +261,6 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status);
-            throw new UnauthorizedException(errorMessage);
-        }
-
         checkAndHandleResponse(content, status);
 
         return getAccessToken(content);
@@ -286,11 +281,25 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
         
-        if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
-            String errorMessage = extractErrorMessage(content, status);
-            throw new UnauthorizedException(errorMessage);
+        checkAndHandleResponse(content, status);
+    }
+    
+
+    public void revokeAccessTokens(String id, AccessToken accessToken) {
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("/token/revocation").path(id)
+                    .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + accessToken.getToken())
+                    .post(null);
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
         }
-        
+
         checkAndHandleResponse(content, status);
     }
 

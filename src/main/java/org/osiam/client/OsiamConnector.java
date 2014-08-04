@@ -608,6 +608,16 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     public void revokeAccessToken(AccessToken tokenToRevoke) {
         authService().revokeAccessToken(tokenToRevoke);
     }
+    
+    /**
+     * Revokes the access tokens of the given user.
+     * 
+     * @param id the user ID
+     * @param accessToken the access token used to access the service
+     */
+    public void revokeAccessTokens(String id, AccessToken accessToken) {
+        authService().revokeAccessTokens(id, accessToken);
+    }
 
     /**
      * Creates a new {@link QueryBuilder}.
