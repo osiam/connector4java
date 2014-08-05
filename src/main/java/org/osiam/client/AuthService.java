@@ -285,7 +285,7 @@ class AuthService {
     }
     
 
-    public void revokeAccessTokens(String id, AccessToken accessToken) {
+    public void revokeAllAccessTokens(String id, AccessToken accessToken) {
         StatusType status;
         String content;
         try {

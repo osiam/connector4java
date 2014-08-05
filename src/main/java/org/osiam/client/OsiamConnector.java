@@ -610,13 +610,13 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
     
     /**
-     * Revokes the access tokens of the given user.
+     * Revokes all access tokens of the user with the given ID.
      * 
      * @param id the user ID
      * @param accessToken the access token used to access the service
      */
-    public void revokeAccessTokens(String id, AccessToken accessToken) {
-        authService().revokeAccessTokens(id, accessToken);
+    public void revokeAllAccessTokens(String id, AccessToken accessToken) {
+        authService().revokeAllAccessTokens(id, accessToken);
     }
 
     /**
