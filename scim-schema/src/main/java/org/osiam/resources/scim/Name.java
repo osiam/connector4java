@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Strings;
 
@@ -148,6 +149,7 @@ public class Name {
      *
      * @return true if all properties are null or empty, else false
      */
+    @JsonIgnore
     public boolean isEmpty() {
         if(!Strings.isNullOrEmpty(formatted)) {
             return false;
