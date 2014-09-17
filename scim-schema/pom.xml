@@ -35,7 +35,7 @@
     <name>scim-schema</name>
     <packaging>jar</packaging>
 
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
 
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
     <licenses>
@@ -65,7 +65,7 @@
         <connection>scm:git://git@github.com/osiam/scim-schema.git</connection>
         <url>git@github.com/osiam/scim-schema.git</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/scim-schema.git</developerConnection>
-        <tag>scim-schema-1.1</tag>
+        <tag>scim-schema-0.23</tag>
     </scm>
 
     <developers>
