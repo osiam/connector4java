@@ -257,11 +257,21 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
                                     <resources>
                                         <resource>META-INF/services/org.glassfish.hk2.extension.ServiceLocatorGenerator</resource>
+                                        <resource>META-INF/services/com.fasterxml.jackson.core.JsonFactory</resource>
+                                        <resource>META-INF/services/com.fasterxml.jackson.core.ObjectCodec</resource>
                                     </resources>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
                                     <resource>META-INF/services/org.osiam.bundled.org.glassfish.hk2.extension.ServiceLocatorGenerator</resource>
                                     <file>${project.basedir}/src/main/shade/org.osiam.bundled.org.glassfish.hk2.extension.ServiceLocatorGenerator</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/services/org.osiam.bundled.com.fasterxml.jackson.core.ObjectCodec</resource>
+                                    <file>${project.basedir}/src/main/shade/org.osiam.bundled.com.fasterxml.jackson.core.ObjectCodec</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/services/org.osiam.bundled.com.fasterxml.jackson.core.JsonFactory</resource>
+                                    <file>${project.basedir}/src/main/shade/org.osiam.bundled.com.fasterxml.jackson.core.JsonFactory</file>
                                 </transformer>
                             </transformers>
                             <artifactSet>
@@ -279,6 +289,10 @@
                                     <include>javax.annotation</include>
                                     <include>javax.ws.rs</include>
                                     <include>org.javassist</include>
+                                    <include>com.google.guava</include>
+                                    <include>org.osiam:scim-schema</include>
+                                    <include>com.fasterxml.jackson.core</include>
+                                    <include>org.apache.tika</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -341,6 +355,18 @@
                                 <relocation>
                                     <pattern>javassist</pattern>
                                     <shadedPattern>org.osiam.bundled.javassist</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google</pattern>
+                                    <shadedPattern>org.osiam.bundled.com.google</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>org.osiam.bundled.com.fasterxml.jackson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.tika</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.apache.tika</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
