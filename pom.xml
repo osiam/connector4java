@@ -241,6 +241,112 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Shade all dependencies for compatibility reasons -->
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                    <resources>
+                                        <resource>META-INF/services/org.glassfish.hk2.extension.ServiceLocatorGenerator</resource>
+                                    </resources>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/services/org.osiam.bundled.org.glassfish.hk2.extension.ServiceLocatorGenerator</resource>
+                                    <file>${project.basedir}/src/shade/org.osiam.bundled.org.glassfish.hk2.extension.ServiceLocatorGenerator</file>
+                                </transformer>
+                            </transformers>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.glassfish.jersey.connectors</include>
+                                    <include>org.glassfish.jersey.core</include>
+                                    <include>org.glassfish.jersey.bundles.repackaged</include>
+                                    <include>org.glassfish.hk2.external</include>
+                                    <include>org.glassfish.hk2</include>
+                                    <include>org.apache.httpcomponents</include>
+                                    <include>commons-logging</include>
+                                    <include>commons-codec</include>
+                                    <include>commons-io</include>
+                                    <include>joda-time</include>
+                                    <include>javax.annotation</include>
+                                    <include>javax.ws.rs</include>
+                                    <include>org.javassist</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.glassfish.jersey</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.glassfish.jersey</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>jersey.repackaged</pattern>
+                                    <shadedPattern>org.osiam.bundled.jersey.repackaged</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.aopalliance</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.aopalliance</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.inject</pattern>
+                                    <shadedPattern>org.osiam.bundled.javax.inject</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.glassfish.hk2</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.glassfish.hk2</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.jvnet.hk2</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.jvnet.hk2</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.jvnet.tiger_types</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.jvnet.tiger_types</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.http</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.apache.http</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.codec</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.apache.commons.codec</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.io</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.apache.commons.io</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.logging</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.apache.commons.logging</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.joda.time</pattern>
+                                    <shadedPattern>org.osiam.bundled.org.joda.time</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.annotation</pattern>
+                                    <shadedPattern>org.osiam.bundled.javax.annotation</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.ws.rs</pattern>
+                                    <shadedPattern>org.osiam.bundled.javax.ws.rs</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javassist</pattern>
+                                    <shadedPattern>org.osiam.bundled.javassist</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <!-- override sonatype parent pom settings by default -->
