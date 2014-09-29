@@ -23,21 +23,14 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- refer to sonatype parent pom for publishment to maven central -->
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
 
     <groupId>org.osiam</groupId>
     <artifactId>scim-schema</artifactId>
-    <name>scim-schema</name>
-    <packaging>jar</packaging>
-
     <version>1.2-SNAPSHOT</version>
 
+    <name>scim-schema</name>
     <description>SCIM conform data types used by OSIAM services and OSIAM connector4Java for data exchange</description>
+    <url>https://github.com/osiam/scim-schema</url>
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
@@ -46,37 +39,33 @@
         </license>
     </licenses>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.7</java.version>
-        <jackson.version>2.4.2</jackson.version>
-        <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
-
-        <sonar.core.codeCoveragePlugin>cobertura</sonar.core.codeCoveragePlugin>
-        <!-- force sonar to reuse reports generated during build cycle -->
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <!-- Explicitly define property so we don't end up with literal string if it's not set -->
-        <!-- We need a value, too. Otherwise (if the property tag is empty) the arguments definition -->
-        <!-- in the sonatype parent pom is merged. -->
-        <release.arguments>-Ddo-not-trigger-sonatype-oss-release-profile-by-default</release.arguments>
-    </properties>
+    <developers>
+        <developer>
+            <name>OSIAM Team</name>
+            <email>info@osiam.org</email>
+            <timezone>+1</timezone>
+            <organization>tarent solutions GmbH</organization>
+            <organizationUrl>http://www.tarent.de</organizationUrl>
+        </developer>
+    </developers>
 
     <scm>
         <connection>scm:git://git@github.com/osiam/scim-schema.git</connection>
         <url>git@github.com/osiam/scim-schema.git</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/scim-schema.git</developerConnection>
-        <tag>scim-schema-0.23</tag>
+        <tag>HEAD</tag>
     </scm>
 
-    <developers>
-        <developer>
-            <id>trossn</id>
-            <name>Thorsten Rossner</name>
-            <email>info@osiam.org</email>
-            <timezone>+1</timezone>
-            <organization>OSIAM</organization>
-        </developer>
-    </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+        <jackson.version>2.4.2</jackson.version>
+
+        <sonar.core.codeCoveragePlugin>cobertura</sonar.core.codeCoveragePlugin>
+        <!-- force sonar to reuse reports generated during build cycle -->
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    </properties>
+
 
     <dependencies>
         <!-- JSON -->
@@ -131,16 +120,56 @@
     </dependencies>
 
     <build>
-        <!-- extension needed for integration deployment -->
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh-external</artifactId>
-                <version>2.6</version>
-            </extension>
-        </extensions>
-
         <plugins>
+            <!-- enforce to user maven 3.0.4 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.3.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.0.4</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Needed due to a problem with SSH -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh-external</artifactId>
+                        <version>2.6</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <!-- Configure the compiler plugin for Groovy -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -184,16 +213,6 @@
                 </configuration>
             </plugin>
 
-            <!-- override sonatype parent pom settings by default -->
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <arguments>${release.arguments}</arguments>
-                    <goals>deploy</goals>
-                </configuration>
-            </plugin>
-
             <!-- Build Helper: will add Groovy sources to path -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -215,119 +234,9 @@
                 </executions>
             </plugin>
         </plugins>
-
-        <!-- override sonatype parent pom settings by default -->
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5</version>
-                    <inherited>false</inherited>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.3.1</version>
-                    <executions>
-                        <execution>
-                            <id>enforce-versions</id>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                            <configuration>
-                                <rules>
-                                    <requireMavenVersion>
-                                        <version>3.0.4</version>
-                                    </requireMavenVersion>
-                                </rules>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
     </build>
+
     <profiles>
-        <!-- ==================== Profile: release ==================== -->
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <!-- During release:perform, enable the "release" profile -->
-                    <!--
-                        ~ Extra parameters are passed using the "release.arguments" property on the command line.
-                        ~ In Jenkins configure Maven release build / Release goals and options (in one line):
-                        ~ -Dresume=false release:clean release:prepare release:perform
-                        ~ -Drelease.arguments="-Dgpg.passphrase=$PASSPHRASE -Dgpg.keyname=Signing\\ Key "
-                        ~ (Take care of proper quoting/escaping: Spaces within the key's uid have to be escaped!)
-                    -->
-                    <plugin>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.5</version>
-                        <configuration>
-                            <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
-                            <goals>deploy</goals>
-                        </configuration>
-                    </plugin>
-
-                    <!-- Needed to publish releases to sonatype staging repo -->
-                    <!-- which leads to maven central -->
-                    <!-- Note: In order for this to work you need to have the -->
-                    <!-- appropriate server tag in your .m2/settings.xml -->
-                    <!-- with your username/password for the sonatype jira -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6</version>
-                        <extensions>true</extensions>
-                        <executions>
-                            <execution>
-                                <id>default-deploy</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <serverId>sonatype-nexus-staging</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        </configuration>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- ==================== Profile: sign ==================== -->
-        <profile>
-            <id>sign</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <!-- call as "mvn verify -Dgpg.passphrase=thephrase" or set -Dgpg.skip=true -->
-                    <!-- If not given, gpg passphrase has to be provided interactively -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <!-- ==================== Profile: coverage ==================== -->
         <profile>
             <id>coverage</id>
@@ -362,11 +271,10 @@
             </build>
         </profile>
 
-        <!-- ==================== Profile: build internally for integration runs ==================== -->
-        <!-- Deployment needs to be run from jenkins server which has credentials to access the internal repository -->
+        <!-- ==================== Profile: build internally for snapshot runs ==================== -->
+        <!-- Deployment needs to be run from jenkins server which has credentials to access the internal snapshot repository -->
         <profile>
-            <id>integration</id>
-
+            <id>snapshot</id>
             <distributionManagement>
                 <repository>
                     <id>osiam-repository</id>
@@ -374,20 +282,11 @@
                     <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
                 </repository>
                 <snapshotRepository>
-                    <id>OSIAM-NG-SNAPSHOT-repository</id>
-                    <name>public evolvis release repository</name>
-                    <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/snapshots/</url>
+                    <id>osiam-snapshot-repository</id>
+                    <name>public evolvis snapshot repository</name>
+                    <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/snapshots</url>
                 </snapshotRepository>
-
             </distributionManagement>
-
-            <repositories>
-                <repository>
-                    <id>osiam releases repo</id>
-                    <url>https://maven-repo.evolvis.org/releases</url>
-                </repository>
-            </repositories>
-
             <build>
                 <plugins>
                     <plugin>
@@ -410,6 +309,70 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- ==================== Profile: build for release runs ==================== -->
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <repository>
+                    <id>sonatype-nexus-staging</id>
+                    <name>Nexus Release Repository</name>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.3</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5</version>
+                        <configuration>
+                            <arguments>-Prelease ${release.arguments}</arguments>
+                            <tagNameFormat>v@{project.version}</tagNameFormat>
+                            <mavenExecutorId>forked-path</mavenExecutorId>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <goals>deploy</goals>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
