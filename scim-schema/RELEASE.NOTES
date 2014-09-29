@@ -1,5 +1,12 @@
 # OSIAM SCIM Schema
 
+## 1.2 - 2014-09-30
+- release because of fixes in addon-self-administration
+
+## 1.1 - 2014-09-17
+- mostly dependency version updates
+- removed invalid field 'empty' in JSON output, which is not defined by SCIM
+
 ## 1.0 - 2014-05-15
 Finally released version 1.0!
 - [refactore] Renamed all setMultiValue-Methods to addMultiValues, add the method addMultiValue,
