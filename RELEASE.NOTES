@@ -19,7 +19,7 @@
   method is for used for authentication).
 - [enhancement] updated dependencies: Jersey 2.12, Joda Time 2.4
 - [fix] memory leak caused by Jersey client
-  Jersey from leaking cloned instaces of
+  Jersey is leaking cloned instaces of
   org.glassfish.jersey.client.ClientConfig.State on each request. see
   https://java.net/jira/browse/JERSEY-2378 for further details.
 - [fix] OAuth error message will not be consumed
