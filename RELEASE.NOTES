@@ -1,5 +1,32 @@
 # OSIAM Connector4Java
 
+## 1.2 - 2014-09-30
+- [feature] shading all 3rd-party dependencies
+  3rd-party dependencies are shaded and packages relocated to eliminate
+  possible dependency and jar hell issues. this enables the usage with
+  Dropwizard and other projects depending on a different version of JAX-RS
+  or Jersey. Note: Because of this you cannot rely on transitive dependencies
+  which may have been introduced by the connector to your project. If your
+  build goes red after updating to 1.2, just fix your dependencies.
+
+## 1.1 - 2014-09-17
+- [feature] revocation of access tokens
+  It is now possible to revoke access tokens by using
+  OsiamConnector#revokeAccessToken(AccessToken tokenToRevoke) to revoke a
+  single access token and
+  OsiamConnector#revokeAllAccessTokens(String id, AccessToken accessToken) to
+  revoke all access tokens of a given user (the access token supplied to this
+  method is for used for authentication).
+- [enhancement] updated dependencies: Jersey 2.12, Joda Time 2.4
+- [fix] memory leak caused by Jersey client
+  Jersey from leaking cloned instaces of
+  org.glassfish.jersey.client.ClientConfig.State on each request. see
+  https://java.net/jira/browse/JERSEY-2378 for further details.
+- [fix] OAuth error message will not be consumed
+  In case of an error with OAuth the resulting error message was not consumed
+  by the connector, only SCIM errors were.
+- [fix] many typos in README.md
+
 ## 1.0 - 2014-05-15
 Finally released version 1.0 of all important OSIAM projects!
 - [enhancement] You can check if an accesstoken is valid
@@ -11,7 +38,7 @@ Finally released version 1.0 of all important OSIAM projects!
   For detailed information: https://github.com/osiam/connector4java/wiki/Migration#from-015-to-10
 
 ## 0.15 - 2014-04-30
-- [feature] added class StringQueryBuilder 
+- [feature] added class StringQueryBuilder
 - [feature] added class QueryHelper
 - [refactor] renaming some methods in the OsiamConnector.Builder
   For detailed information: https://github.com/osiam/connector4java/wiki/Migration#from-014-to-015
