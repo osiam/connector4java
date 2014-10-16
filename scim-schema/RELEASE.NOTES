@@ -1,5 +1,8 @@
 # OSIAM SCIM Schema
 
+## X.X - 2014-xx-xx
+- removed JSONAssert due to licensing issues (https://github.com/skyscreamer/JSONassert/issues/44)
+
 ## 1.2 - 2014-09-30
 - release because of fixes in addon-self-administration
 
@@ -25,16 +28,16 @@ Finally released version 1.0!
 - [feature] Added new constructor to Builder of User and Group.
   For Group: Builder(String displayName, Group group) -> easy copy of Group with new displayName
   For User: Builder(String userName, User user) -> easy copy of User with new userName
-  
+
 ## 0.40 - 2014-03-17
-- [feature] The Photo object can take and return a URI and a ImageDataURI as value. The getter and setter for the 
+- [feature] The Photo object can take and return a URI and a ImageDataURI as value. The getter and setter for the
   string value have been removed. The ImageDataURI can also take an image InputStream as value.
 
 ## 0.39 - 2014-03-04
-- [feature] add methods User.getExtensions() and Extension.getFields() and set methods User.getAllExtensions() and 
+- [feature] add methods User.getExtensions() and Extension.getFields() and set methods User.getAllExtensions() and
   Extension.getAllFields() to @Deprecated
 
 ## 0.38 - 2014-02-14
 - [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
   For migration see: https://github.com/osiam/scim-schema/wiki/Migration#wiki-from-release-037-to-038
-  
+

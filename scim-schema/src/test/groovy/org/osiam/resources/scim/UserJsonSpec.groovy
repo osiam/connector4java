@@ -24,8 +24,7 @@
 package org.osiam.resources.scim
 
 import org.osiam.test.util.JsonFixturesHelper
-import org.skyscreamer.jsonassert.JSONAssert
-
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -37,13 +36,22 @@ class UserJsonSpec extends Specification {
 
     private final static ObjectMapper mapper = new ObjectMapper()
 
+    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
+            test has to be re-activated when:
+
+              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
+              2) An alternative library for comparing JSON has been found
+
+            Beware of the following: Whenever you change things in this project
+            that might affect the generated JSON you HAVE TO re-activate this
+            test, either using method 1), 2), or implementing an own JSON
+            test mechanism!''')
     @Unroll
     def 'A #userType User is correctly serialized' () {
         when:
         def json = mapper.writeValueAsString(user)
         then:
-        println json
-        JSONAssert.assertEquals(expectedJson, json, false)
+        false
 
         where:
         userType   | expectedJson                  | user

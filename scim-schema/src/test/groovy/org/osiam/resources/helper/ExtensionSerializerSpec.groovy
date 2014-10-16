@@ -23,12 +23,13 @@
 
 package org.osiam.resources.helper
 
+import spock.lang.Ignore
+
 import java.nio.ByteBuffer
 
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.test.util.DateHelper
-import org.skyscreamer.jsonassert.JSONAssert
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -37,15 +38,35 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 class ExtensionSerializerSpec  extends Specification{
 
+    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
+            test has to be re-activated when:
+
+              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
+              2) An alternative library for comparing JSON has been found
+
+            Beware of the following: Whenever you change things in this project
+            that might affect the generated JSON you HAVE TO re-activate this
+            test, either using method 1), 2), or implementing an own JSON
+            test mechanism!''')
     def 'serializing an empty extension works'(){
         given:
         ObjectMapper mapper = new ObjectMapper()
         Extension extension = new Extension.Builder('extension').build()
 
         expect:
-        JSONAssert.assertEquals('{}', mapper.writeValueAsString(extension), false)
+        false
     }
 
+    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
+            test has to be re-activated when:
+
+              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
+              2) An alternative library for comparing JSON has been found
+
+            Beware of the following: Whenever you change things in this project
+            that might affect the generated JSON you HAVE TO re-activate this
+            test, either using method 1), 2), or implementing an own JSON
+            test mechanism!''')
     @Unroll
     def 'serializing an extension with #type type works'() {
         given:
@@ -53,7 +74,7 @@ class ExtensionSerializerSpec  extends Specification{
         Extension extension = new Extension.Builder('extension').setField('key', givenValue).build()
 
         expect:
-        JSONAssert.assertEquals(expectedJson, mapper.writeValueAsString(extension), false)
+        false
 
         where:
         type                         | givenValue                                                     | expectedJson
