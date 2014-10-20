@@ -327,7 +327,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *         if the request could not be authorized.
      */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
-        return authService.refreshAccessToken(accessToken, scopes);
+        return authService().refreshAccessToken(accessToken, scopes);
     }
 
     /**
