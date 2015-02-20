@@ -25,6 +25,7 @@ package org.osiam.client;
 import java.net.URI;
 import java.util.List;
 
+import org.osiam.client.AuthService.Builder;
 import org.osiam.client.exception.ConflictException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ConnectionInitializationException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.ForbiddenException; // NOSONAR : needed for Javadoc
@@ -32,6 +33,7 @@ import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Javadoc
 import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
@@ -55,6 +57,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     private String authServiceEndpoint;
     private String resourceServiceEndpoint;
     private String clientRedirectUri;
+    private Integer connectTimeout;
+    private Integer readTimeout;
 
     private AuthService authService;
     private OsiamUserService userService;
@@ -73,6 +77,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         resourceServiceEndpoint = builder.resourceServiceEndpoint;
         genEndpoint = builder.genEndpoint;
         clientRedirectUri = builder.clientRedirectUri;
+        connectTimeout = builder.connectTimeout;
+        readTimeout = builder.readTimeout;
     }
 
     /**
@@ -91,6 +97,12 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             }
             if (clientRedirectUri != null) {
                 builder = builder.setClientRedirectUri(clientRedirectUri);
+            }
+            if(connectTimeout != null){
+                builder = builder.setConnectTimeout(connectTimeout);
+            }
+            if(readTimeout != null){
+                builder = builder.setReadTimeout(readTimeout);
             }
             authService = builder.build();
         }
@@ -133,7 +145,14 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      */
     private OsiamUserService userService() {
         if (userService == null) {
-            userService = new OsiamUserService.Builder(getResourceServiceEndPoint()).build();
+            OsiamUserService.Builder builder = new OsiamUserService.Builder(getResourceServiceEndPoint());
+            if(connectTimeout != null){
+                builder = builder.setConnectTimeout(connectTimeout);
+            }
+            if(readTimeout != null){
+                builder = builder.setReadTimeout(readTimeout);
+            }
+            userService = builder.build();
         }
         return userService;
     }
@@ -144,7 +163,14 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      */
     private OsiamGroupService groupService() {
         if (groupService == null) {
-            groupService = new OsiamGroupService.Builder(getResourceServiceEndPoint()).build();
+            OsiamGroupService.Builder builder = new OsiamGroupService.Builder(getResourceServiceEndPoint());
+            if(connectTimeout != null){
+                builder = builder.setConnectTimeout(connectTimeout);
+            }
+            if(readTimeout != null){
+                builder = builder.setReadTimeout(readTimeout);
+            }
+            groupService = builder.build();
         }
         return groupService;
     }
@@ -625,6 +651,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         private String authServiceEndpoint;
         private String resourceServiceEndpoint;
         private String clientRedirectUri;
+        private Integer connectTimeout;
+        private Integer readTimeout;
 
         /**
          * use the given basic endpoint for communication with the OAuth2-Service for authentication and the SCIM2
@@ -701,6 +729,32 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             return this;
         }
 
+        /**
+         * Connect timeout interval, in milliseconds. A value of <= 0 is equivalent to an interval of infinity.
+         * The default value is 2500.
+         * 
+         * @param connectTimeout
+         *        the connect timeout of the client to the Osiam Server
+         * @return The builder itself
+         */
+        public Builder setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Read timeout interval, in milliseconds. A value of <= 0 is equivalent to an interval of infinity.
+         * The default value is 5000.
+         * 
+         * @param readTimeout
+         *        the read timeout of the client to the Osiam Server
+         * @return The builder itself
+         */
+        public Builder setReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
+            return this;
+        }
+        
         /**
          * Construct the {@link OsiamConnector} with the parameters passed to this builder.
          *

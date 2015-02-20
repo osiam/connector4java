@@ -79,15 +79,6 @@ import com.google.common.base.Strings;
 abstract class AbstractOsiamService<T extends Resource> {
 
     protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    private static final int CONNECT_TIMEOUT = 2500;
-    private static final int READ_TIMEOUT = 5000;
-    private static final Client client = ClientBuilder.newClient(new ClientConfig()
-            .connectorProvider(new ApacheConnectorProvider())
-            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-            .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
-            .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
-            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
-
     protected static final String AUTHORIZATION = "Authorization";
     protected static final String ACCEPT = "Accept";
     protected static final String BEARER = "Bearer ";
@@ -96,6 +87,9 @@ abstract class AbstractOsiamService<T extends Resource> {
     private final String typeName;
     private final ObjectMapper mapper;
     private final String endpoint;
+    private final int connectTimeout;
+    private final int readTimeout;
+    private final Client client; 
 
     protected final WebTarget targetEndpoint;
 
@@ -103,7 +97,10 @@ abstract class AbstractOsiamService<T extends Resource> {
         type = builder.type;
         typeName = builder.typeName;
         endpoint = builder.endpoint;
-
+        connectTimeout = builder.connectTimeout;
+        readTimeout = builder.readTimeout;
+        client = createClient();
+        
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
                 .addDeserializer(User.class, new UserDeserializer(User.class));
@@ -112,6 +109,15 @@ abstract class AbstractOsiamService<T extends Resource> {
         targetEndpoint = client.target(endpoint);
     }
 
+    private Client createClient() {
+        return ClientBuilder.newClient(new ClientConfig()
+        .connectorProvider(new ApacheConnectorProvider())
+        .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+        .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+        .property(ClientProperties.READ_TIMEOUT, readTimeout)
+        .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
+
+    }
     protected T getResource(String id, AccessToken accessToken) {
         checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
         checkAccessTokenIsNotNull(accessToken);
@@ -344,6 +350,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         private String endpoint;
         private Class<T> type;
         private String typeName;
+        protected int connectTimeout = 2500;
+        protected int readTimeout = 5000;
 
         @SuppressWarnings("unchecked")
         protected Builder(String endpoint) {
@@ -353,5 +361,6 @@ abstract class AbstractOsiamService<T extends Resource> {
                             .getActualTypeArguments()[0];
             typeName = type.getSimpleName();
         }
+
     }
 }

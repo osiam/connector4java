@@ -25,6 +25,7 @@ package org.osiam.client;
 
 import java.util.List;
 
+import org.osiam.client.OsiamUserService.Builder;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.resources.scim.Group;
@@ -119,6 +120,32 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
          */
         public Builder(String endpoint) {
             super(endpoint);
+        }
+        
+        /**
+         * Connect timeout interval, in milliseconds. A value of <= 0 is equivalent to an interval of infinity.
+         * The default value is 2500.
+         * 
+         * @param connectTimeout
+         *        the connect timeout of the client to the Osiam Resource Server
+         * @return The builder itself
+         */
+        public Builder setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Read timeout interval, in milliseconds. A value of <= 0 is equivalent to an interval of infinity.
+         * The default value is 5000.
+         * 
+         * @param readTimeout
+         *        the read timeout of the client to the Osiam Resource Server
+         * @return The builder itself
+         */
+        public Builder setReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
+            return this;
         }
 
         /**

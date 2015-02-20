@@ -70,19 +70,14 @@ class AuthService {
 
     private static final String BEARER = "Bearer ";
     private static final String TOKEN_ENDPOINT = "/oauth/token";
-    private static final int CONNECT_TIMEOUT = 2500;
-    private static final int READ_TIMEOUT = 5000;
-    private static final Client client = ClientBuilder.newClient(new ClientConfig()
-            .connectorProvider(new ApacheConnectorProvider())
-            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-            .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
-            .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
-            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
 
     private final String endpoint;
     private final String clientId;
     private final String clientSecret;
     private final String clientRedirectUri;
+    private final int connectTimeout;
+    private final int readTimeout;
+    private final Client client;
 
     private final WebTarget targetEndpoint;
 
@@ -91,9 +86,20 @@ class AuthService {
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
-
+        connectTimeout = builder.connectTimeout;
+        readTimeout = builder.readTimeout;
+        client = createClient();
         targetEndpoint = client.target(endpoint)
                 .register(HttpAuthenticationFeature.basic(clientId, clientSecret));
+    }
+
+    private Client createClient() {
+        return ClientBuilder.newClient(new ClientConfig()
+                .connectorProvider(new ApacheConnectorProvider())
+                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+                .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+                .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
     }
 
     public AccessToken retrieveAccessToken(Scope... scopes) {
@@ -327,6 +333,8 @@ class AuthService {
         private String clientSecret;
         private String endpoint;
         private String clientRedirectUri;
+        private int connectTimeout = 2500;
+        private int readTimeout = 5000;
 
         /**
          * Set up the Builder for the construction of an {@link AuthService} instance for the OAuth2 service at the
@@ -372,6 +380,32 @@ class AuthService {
          */
         public Builder setClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
+            return this;
+        }
+
+        /**
+         * Connect timeout interval, in milliseconds. A value of <= 0 is equivalent to an interval of infinity.
+         * The default value is 2500.
+         * 
+         * @param connectTimeout
+         *        the connect timeout of the client to the Osiam Auth Server
+         * @return The builder itself
+         */
+        public Builder setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Read timeout interval, in milliseconds. A value of <= 0 is equivalent to an interval of infinity.
+         * The default value is 5000.
+         * 
+         * @param readTimeout
+         *        the read timeout of the client to the Osiam Auth Server
+         * @return The builder itself
+         */
+        public Builder setReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
             return this;
         }
 
