@@ -137,7 +137,7 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
     }
 
     /**
-     * See {@link OsiamConnector#replaceUser(User, AccessToken)}
+     * See {@link OsiamConnector#replaceUser(String, User, AccessToken)}
      */
     public User replaceUser(String id, User user, AccessToken accessToken) {
         if (user == null) {

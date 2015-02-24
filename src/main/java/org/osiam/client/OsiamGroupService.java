@@ -92,7 +92,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
     }
 
     /**
-     * See {@link OsiamConnector#updateGroup(String, Group, AccessToken)}
+     * See {@link OsiamConnector#updateGroup(String, UpdateGroup, AccessToken)}
      */
     public Group updateGroup(String id, Group group, AccessToken accessToken) {
         return updateResource(id, group, accessToken);

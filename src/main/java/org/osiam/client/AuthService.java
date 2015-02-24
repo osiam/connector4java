@@ -23,38 +23,21 @@
 
 package org.osiam.client;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 
 import java.io.IOException;
 import java.net.URI;
 
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriBuilderException;
 
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.glassfish.jersey.apache.connector.ApacheClientProperties;
-import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
-import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
-import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.OAuthErrorMessage;
-import org.osiam.client.exception.OsiamClientException;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -70,10 +53,7 @@ class AuthService {
 
     private static final String BEARER = "Bearer ";
     private static final String TOKEN_ENDPOINT = "/oauth/token";
-    private static final int CONNECT_TIMEOUT = 2500;
-    private static final int READ_TIMEOUT = 5000;
 
-    private final Client client;
     private final String endpoint;
     private final String clientId;
     private final String clientSecret;
@@ -83,19 +63,12 @@ class AuthService {
 
     private AuthService(Builder builder) {
         endpoint = builder.endpoint;
+
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
 
-        client = ClientBuilder.newClient(new ClientConfig()
-                .connectorProvider(new ApacheConnectorProvider())
-                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-                .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
-                .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
-                .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager())
-                .register(HttpAuthenticationFeature.basic(clientId, clientSecret)));
-
-        targetEndpoint = client.target(endpoint);
+        targetEndpoint = OsiamConnector.getClient().target(endpoint);
     }
 
     public AccessToken retrieveAccessToken(Scope... scopes) {
@@ -110,6 +83,8 @@ class AuthService {
         try {
             Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -137,6 +112,8 @@ class AuthService {
         try {
             Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -164,6 +141,8 @@ class AuthService {
         try {
             Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -208,6 +187,8 @@ class AuthService {
         try {
             Response response = targetEndpoint.path(TOKEN_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -242,7 +223,7 @@ class AuthService {
     }
 
     /**
-     * @see OsiamConnector#validateAccessToken(AccessToken, AccessToken)
+     * @see OsiamConnector#validateAccessToken(AccessToken)
      */
     public AccessToken validateAccessToken(AccessToken tokenToValidate) {
         checkNotNull(tokenToValidate, "The tokenToValidate must not be null.");
@@ -252,6 +233,8 @@ class AuthService {
         try {
             Response response = targetEndpoint.path("/token/validation")
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .header("Authorization", BEARER + tokenToValidate.getToken())
                     .post(null);
 
@@ -265,13 +248,15 @@ class AuthService {
 
         return getAccessToken(content);
     }
-    
+
     public void revokeAccessToken(AccessToken tokenToRevoke) {
         StatusType status;
         String content;
         try {
             Response response = targetEndpoint.path("/token/revocation")
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .header("Authorization", BEARER + tokenToRevoke.getToken())
                     .post(null);
 
@@ -280,10 +265,9 @@ class AuthService {
         } catch (ProcessingException e) {
             throw createGeneralConnectionInitializationException(e);
         }
-        
+
         checkAndHandleResponse(content, status);
     }
-    
 
     public void revokeAllAccessTokens(String id, AccessToken accessToken) {
         StatusType status;
@@ -291,6 +275,8 @@ class AuthService {
         try {
             Response response = targetEndpoint.path("/token/revocation").path(id)
                     .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .header("Authorization", BEARER + accessToken.getToken())
                     .post(null);
 
@@ -365,7 +351,7 @@ class AuthService {
         /**
          * Set up the Builder for the construction of an {@link AuthService} instance for the OAuth2 service at the
          * given endpoint
-         * 
+         *
          * @param endpoint
          *        The URL at which the OAuth2 service lives.
          */
@@ -375,7 +361,7 @@ class AuthService {
 
         /**
          * Add a ClientId to the OAuth2 request
-         * 
+         *
          * @param clientId
          *        The client-Id
          * @return The builder itself
@@ -387,7 +373,7 @@ class AuthService {
 
         /**
          * Add a Client redirect URI to the OAuth2 request
-         * 
+         *
          * @param clientRedirectUri
          *        the clientRedirectUri which is known to the OSIAM server
          * @return The builder itself
@@ -399,7 +385,7 @@ class AuthService {
 
         /**
          * Add a clientSecret to the OAuth2 request
-         * 
+         *
          * @param clientSecret
          *        The client secret
          * @return The builder itself
@@ -411,7 +397,7 @@ class AuthService {
 
         /**
          * Construct the {@link AuthService} with the parameters passed to this builder.
-         * 
+         *
          * @return An {@link AuthService} configured accordingly.
          */
         public AuthService build() {

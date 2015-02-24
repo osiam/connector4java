@@ -23,16 +23,13 @@
 
 package org.osiam.client;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -41,21 +38,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.glassfish.jersey.apache.connector.ApacheClientProperties;
-import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
-import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
-import org.glassfish.jersey.client.RequestEntityProcessing;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.OAuthErrorMessage;
-import org.osiam.client.exception.OsiamClientException;
-import org.osiam.client.exception.OsiamRequestException;
-import org.osiam.client.exception.ScimErrorMessage;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
@@ -79,37 +63,26 @@ import com.google.common.base.Strings;
 abstract class AbstractOsiamService<T extends Resource> {
 
     protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
-    private static final int CONNECT_TIMEOUT = 2500;
-    private static final int READ_TIMEOUT = 5000;
-    private static final Client client = ClientBuilder.newClient(new ClientConfig()
-            .connectorProvider(new ApacheConnectorProvider())
-            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-            .property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT)
-            .property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT)
-            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()));
 
     protected static final String AUTHORIZATION = "Authorization";
-    protected static final String ACCEPT = "Accept";
     protected static final String BEARER = "Bearer ";
 
     private final Class<T> type;
     private final String typeName;
     private final ObjectMapper mapper;
-    private final String endpoint;
 
     protected final WebTarget targetEndpoint;
 
     protected AbstractOsiamService(Builder<T> builder) {
         type = builder.type;
         typeName = builder.typeName;
-        endpoint = builder.endpoint;
 
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
                 .addDeserializer(User.class, new UserDeserializer(User.class));
         mapper.registerModule(userDeserializerModule);
 
-        targetEndpoint = client.target(endpoint);
+        targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
     }
 
     protected T getResource(String id, AccessToken accessToken) {
@@ -348,10 +321,6 @@ abstract class AbstractOsiamService<T extends Resource> {
         } catch (ProcessingException | IOException e) {
             return null;
         }
-    }
-
-    protected String getEndpoint() {
-        return endpoint;
     }
 
     protected static void checkAccessTokenIsNotNull(AccessToken accessToken) {
