@@ -1,0 +1,11 @@
+{
+    "access_token": "c5d116cb-2758-4e7c-9aca-4a115bc4f19e",
+    "expires_at": "2015-08-01T08:29:49.000Z",
+    "scope": "DELETE GET PATCH POST PUT",
+    "refresh_token": "c5d116cb-2758-4e7c-9aca-4a115bc4f19e",
+    "refresh_token_expires_at": "2015-08-01T08:29:49.000Z",
+    "token_type": "bearer",
+    "client_id": "example client",
+    "user_id": "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4",
+    "user_name": "marissa"
+}
