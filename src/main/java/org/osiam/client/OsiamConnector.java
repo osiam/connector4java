@@ -25,22 +25,23 @@ package org.osiam.client;
 import java.net.URI;
 import java.util.List;
 
-import org.osiam.client.exception.ConflictException; // NOSONAR : needed for Javadoc
-import org.osiam.client.exception.ConnectionInitializationException; // NOSONAR : needed for Javadoc
-import org.osiam.client.exception.ForbiddenException; // NOSONAR : needed for Javadoc
-import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.NoResultException; // NOSONAR : needed for Javadoc
-import org.osiam.client.exception.UnauthorizedException; // NOSONAR : needed for Javadoc
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 
 /**
  * OsiamConnector provides access to the OAuth2 service used to authorize requests and all methods necessary to
@@ -49,12 +50,56 @@ import org.osiam.resources.scim.User;
  */
 public class OsiamConnector {// NOSONAR - Builder constructs instances of this class
 
-    private String clientId;
-    private String clientSecret;
-    private String genEndpoint;
-    private String authServiceEndpoint;
-    private String resourceServiceEndpoint;
-    private String clientRedirectUri;
+    private static final Client client = ClientBuilder.newClient(new ClientConfig()
+            .connectorProvider(new ApacheConnectorProvider())
+            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+            .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()))
+            .register(HttpAuthenticationFeature.basicBuilder().build())
+            .property(ClientProperties.CONNECT_TIMEOUT, 2500)
+            .property(ClientProperties.READ_TIMEOUT, 5000);
+
+    static Client getClient() {
+        return client;
+    }
+
+    /**
+     * Set the connect timeout interval, in milliseconds.
+     *
+     * <p>
+     * A value of zero (0) is equivalent to an interval of infinity. The default value is 2500. This property will be
+     * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
+     * instances at the same time.
+     * <p/>
+     *
+     * @param connectTimeout
+     *        the connect timeout interval, in milliseconds
+     */
+    public static void setConnectTimeout(int connectTimeout) {
+        client.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
+    }
+
+    /**
+     * Set the read timeout interval, in milliseconds.
+     *
+     * <p>
+     * A value of zero (0) is equivalent to an interval of infinity. The default value is 5000. This property will be
+     * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
+     * instances at the same time.
+     * <p/>
+     *
+     * @param readTimeout
+     *        the read timeout interval, in milliseconds
+     */
+    public static void setReadTimeout(int readTimeout) {
+        client.property(ClientProperties.READ_TIMEOUT, readTimeout);
+    }
+
+    private final String clientId;
+    private final String clientSecret;
+    private final String genEndpoint;
+    private final String authServiceEndpoint;
+    private final String resourceServiceEndpoint;
+    private final String clientRedirectUri;
 
     private AuthService authService;
     private OsiamUserService userService;
@@ -69,10 +114,11 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     private OsiamConnector(Builder builder) {
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
+        clientRedirectUri = builder.clientRedirectUri;
+
         authServiceEndpoint = builder.authServiceEndpoint;
         resourceServiceEndpoint = builder.resourceServiceEndpoint;
         genEndpoint = builder.genEndpoint;
-        clientRedirectUri = builder.clientRedirectUri;
     }
 
     /**
@@ -81,7 +127,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      */
     private AuthService authService() {// NOSONAR - its ok if the Cyclomatic Complexity is > 10
         if (authService == null) {
-            AuthService.Builder builder = new AuthService.Builder(getAuthServiceEndPoint());
+            AuthService.Builder builder = new AuthService.Builder(getAuthServiceEndpoint());
 
             if (clientId != null) {
                 builder = builder.setClientId(clientId);
@@ -92,12 +138,13 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
             if (clientRedirectUri != null) {
                 builder = builder.setClientRedirectUri(clientRedirectUri);
             }
+
             authService = builder.build();
         }
         return authService;
     }
 
-    private String getAuthServiceEndPoint() {
+    private String getAuthServiceEndpoint() {
         if (!(authServiceEndpoint == null || authServiceEndpoint.isEmpty())) {
             return authServiceEndpoint;
         }
@@ -112,7 +159,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         throw new InvalidAttributeException("No endpoint to the OSIAM server has been set");
     }
 
-    private String getResourceServiceEndPoint() {
+    private String getResourceServiceEndpoint() {
         if (!(resourceServiceEndpoint == null || resourceServiceEndpoint.isEmpty())) {
             return resourceServiceEndpoint;
         }
@@ -133,7 +180,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      */
     private OsiamUserService userService() {
         if (userService == null) {
-            userService = new OsiamUserService.Builder(getResourceServiceEndPoint()).build();
+            userService = new OsiamUserService.Builder(getResourceServiceEndpoint())
+                    .build();
         }
         return userService;
     }
@@ -144,7 +192,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      */
     private OsiamGroupService groupService() {
         if (groupService == null) {
-            groupService = new OsiamGroupService.Builder(getResourceServiceEndPoint()).build();
+            groupService = new OsiamGroupService.Builder(getResourceServiceEndpoint())
+                    .build();
         }
         return groupService;
     }
@@ -333,7 +382,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     /**
      * provides the needed URI which is needed to reconnect the User to the OSIAM server to login. A detailed example
      * how to use this method, can be seen in our wiki in gitHub
-     * 
+     *
      * @param scopes
      *        the wanted scopes for the user who want's to log in with the oauth workflow
      * @return the needed redirect Uri
@@ -345,8 +394,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
 
     /**
-     * Provide an {@link AccessToken} for the {@link GrantType} CLIENT_CREDENTIALS.
-     * 
+     * Provide an {@link AccessToken} for the {@link org.osiam.client.oauth.GrantType} CLIENT_CREDENTIALS.
+     *
      * @param scopes
      *        the wanted Scopes of the {@link AccessToken}
      * @return an valid {@link AccessToken}
@@ -356,8 +405,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
 
     /**
-     * Provide an {@link AccessToken} for the {@link GrantType} RESOURCE_OWNER_PASSWORD_CREDENTIALS.
-     * 
+     * Provide an {@link AccessToken} for the {@link org.osiam.client.oauth.GrantType} RESOURCE_OWNER_PASSWORD_CREDENTIALS.
+     *
      * @param userName
      *        the userName of the actual User
      * @param password
@@ -371,8 +420,8 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     }
 
     /**
-     * Provide an {@link AccessToken} for the {@link GrantType} AUTHORIZATION_CODE (oauth2 login).
-     * 
+     * Provide an {@link AccessToken} for the {@link org.osiam.client.oauth.GrantType} AUTHORIZATION_CODE (oauth2 login).
+     *
      * @param authCode
      *            authentication code retrieved from the OSIAM Server by using the oauth2 login flow. For more
      *            information please look at the wiki at github
@@ -504,7 +553,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
 
     /**
      * replaces the {@link User} with the given id with the given {@link User}
-     * 
+     *
      * @param id
      *        The id of the User to be replaced
      * @param user
@@ -559,10 +608,10 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
 
     /**
      * replaces the {@link Group} with the given id with the given {@link Group}
-     * 
+     *
      * @param id
      *        The id of the Group to be replaced
-     * @param user
+     * @param group
      *        The {@link Group} who will repleace the old {@link Group}
      * @param accessToken
      *        the OSIAM access token from for the current session
@@ -598,20 +647,20 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
     public AccessToken validateAccessToken(AccessToken tokenToValidate) {
         return authService().validateAccessToken(tokenToValidate);
     }
-    
+
     /**
      * Revokes the given access token if it is valid.
-     * 
+     *
      * @param tokenToRevoke
      *        the {@link AccessToken} to be revoked
      */
     public void revokeAccessToken(AccessToken tokenToRevoke) {
         authService().revokeAccessToken(tokenToRevoke);
     }
-    
+
     /**
      * Revokes all access tokens of the user with the given ID.
-     * 
+     *
      * @param id the user ID
      * @param accessToken the access token used to access the service
      */
@@ -732,6 +781,5 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
         public OsiamConnector build() {
             return new OsiamConnector(this);
         }
-
     }
 }
