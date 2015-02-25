@@ -26,7 +26,7 @@ package org.osiam.client.user;
 import java.util.Date;
 
 import org.osiam.resources.helper.JsonDateSerializer;
-import org.osiam.resources.scim.User; // NOSONAR : needed for Javadoc
+import org.osiam.resources.scim.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -230,5 +230,5 @@ public class BasicUser {
         result = prime * result + ((userName == null) ? 0 : userName.hashCode());
         return result;
     }
-   
+
 }
