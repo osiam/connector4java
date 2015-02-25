@@ -22,7 +22,7 @@
  */
 package org.osiam.client.query;
 
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * This class represents query for submission to the resource server.

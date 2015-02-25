@@ -50,16 +50,18 @@ import org.osiam.resources.scim.*;
  */
 public class OsiamConnector {// NOSONAR - Builder constructs instances of this class
 
-    private static final Client client = ClientBuilder.newClient(new ClientConfig()
+    private static final int DEFAULT_CONNECT_TIMEOUT = 2500;
+    private static final int DEFAULT_READ_TIMEOUT = 5000;
+    private static final Client CLIENT = ClientBuilder.newClient(new ClientConfig()
             .connectorProvider(new ApacheConnectorProvider())
             .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
             .property(ApacheClientProperties.CONNECTION_MANAGER, new PoolingHttpClientConnectionManager()))
             .register(HttpAuthenticationFeature.basicBuilder().build())
-            .property(ClientProperties.CONNECT_TIMEOUT, 2500)
-            .property(ClientProperties.READ_TIMEOUT, 5000);
+            .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+            .property(ClientProperties.READ_TIMEOUT, DEFAULT_READ_TIMEOUT);
 
     static Client getClient() {
-        return client;
+        return CLIENT;
     }
 
     /**
@@ -75,7 +77,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *        the connect timeout interval, in milliseconds
      */
     public static void setConnectTimeout(int connectTimeout) {
-        client.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
+        CLIENT.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
     }
 
     /**
@@ -91,7 +93,7 @@ public class OsiamConnector {// NOSONAR - Builder constructs instances of this c
      *        the read timeout interval, in milliseconds
      */
     public static void setReadTimeout(int readTimeout) {
-        client.property(ClientProperties.READ_TIMEOUT, readTimeout);
+        CLIENT.property(ClientProperties.READ_TIMEOUT, readTimeout);
     }
 
     private final String clientId;

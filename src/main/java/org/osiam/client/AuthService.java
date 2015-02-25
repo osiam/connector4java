@@ -35,7 +35,6 @@ import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
 
-import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
