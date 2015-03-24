@@ -1,3 +1,6 @@
+connector4java [![Build Status](https://travis-ci.org/osiam/server.png?branch=master)](https://travis-ci.org/osiam/server)
+==============
+
 For detailed information and documentation visit the [connector4java Wiki](https://github.com/osiam/connector4java/wiki).
 
 If you are interested to use the OSIAM connector4java please watch or, even better, join us on Github.
