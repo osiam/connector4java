@@ -1,4 +1,5 @@
-#scim schema
+scim-schema [![Build Status](https://travis-ci.org/osiam/scim-schema.png?branch=master)](https://travis-ci.org/osiam/scim-schema)
+==========
 
 This repository contains the scim schema.
 
