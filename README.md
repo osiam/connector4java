@@ -1,4 +1,4 @@
-connector4java [![Build Status](https://travis-ci.org/osiam/server.png?branch=master)](https://travis-ci.org/osiam/server)
+connector4java [![Circle CI](https://circleci.com/gh/osiam/connector4java.svg?style=svg)](https://circleci.com/gh/osiam/connector4java)
 ==============
 
 For detailed information and documentation visit the [connector4java Wiki](https://github.com/osiam/connector4java/wiki).
