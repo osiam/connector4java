@@ -23,10 +23,15 @@
 
 package org.osiam.client.oauth;
 
+import org.osiam.resources.scim.User;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * access scopes by the OSIAM Server. The default scopes get be created by e.g. Scope.GET
+ * Scope represents an OAuth 2.0 scope.
+ * <p>
+ * Scopes defined by OSIAM are available as static constants of this class, e.g. {@link Scope#GET}.
+ * </p>
  */
 public class Scope {
 
@@ -37,6 +42,24 @@ public class Scope {
     public static final Scope DELETE = new Scope("DELETE");
     public static final Scope ALL = new Scope(Scope.GET + " " + Scope.POST + " " + Scope.PUT + " "
             + Scope.PATCH + " " + Scope.DELETE);
+
+    /**
+     * {@code ME} is a scope that allows read and write access to the data of the user associated with the access token.
+     * <p>
+     * This includes:
+     * <ul>
+     * <li>Retrieving the complete {@link User} resource</li>
+     * <li>Modifying all attributes of the {@link User} resource</li>
+     * <li>Deleting the {@link User} resource</li>
+     * <li>Revoking the access tokens of the {@link User}</li>
+     * <li>Access the {@code /me} resource</li>
+     * <li>Validate the access token</li>
+     * </ul>
+     * Note that this only works with a user-bound access token, i.e. a token with scope {@code ME} that has been
+     * retrieved via client credentials grant <strong>CANNOT</strong> access any user's data.
+     * </p>
+     */
+    public static final Scope ME = new Scope("ME");
 
     private String value;
 
