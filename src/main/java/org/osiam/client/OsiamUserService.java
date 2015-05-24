@@ -85,7 +85,7 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "get me", null);
+        checkAndHandleResponse(content, status, accessToken, "get me");
 
         return mapToType(content, BasicUser.class);
     }

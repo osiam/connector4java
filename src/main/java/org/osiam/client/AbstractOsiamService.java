@@ -101,7 +101,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "get", id);
+        checkAndHandleResponse(content, status, accessToken, "get");
 
         return mapToResource(content);
     }
@@ -137,11 +137,11 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, String.format("search with query: %s", query), null);
+        checkAndHandleResponse(content, status, accessToken, String.format("search with query: %s", query));
 
         try {
             JavaType queryResultType = TypeFactory.defaultInstance()
-                    .constructParametricType(SCIMSearchResult.class, type);
+                    .constructParametrizedType(SCIMSearchResult.class, SCIMSearchResult.class, type);
 
             return mapper.readValue(content, queryResultType);
         } catch (IOException e) {
@@ -166,7 +166,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "delete", id);
+        checkAndHandleResponse(content, status, accessToken, "delete");
     }
 
     protected T createResource(T resource, AccessToken accessToken) {
@@ -193,7 +193,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "create", null);
+        checkAndHandleResponse(content, status, accessToken, "create");
 
         return mapToResource(content);
     }
@@ -231,7 +231,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, method.equals("PUT") ? "replace" : "update", id);
+        checkAndHandleResponse(content, status, accessToken, method.equals("PUT") ? "replace" : "update");
 
         return mapToResource(content);
     }
@@ -248,8 +248,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken, String action,
-            String id) {
+    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken, String action) {
         if (status.getFamily() == Family.SUCCESSFUL) {
             return;
         }
