@@ -45,8 +45,7 @@ import com.google.common.base.Strings;
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
  * installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
  */
-class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder constructs instances of
-                                                                         // this class
+class OsiamUserService extends AbstractOsiamService<User> {
 
     /**
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
@@ -85,7 +84,7 @@ class OsiamUserService extends AbstractOsiamService<User> { // NOSONAR - Builder
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "get me");
+        checkAndHandleResponse(content, status, accessToken);
 
         return mapToType(content, BasicUser.class);
     }
