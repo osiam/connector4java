@@ -101,7 +101,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "get");
+        checkAndHandleResponse(content, status, accessToken);
 
         return mapToResource(content);
     }
@@ -137,7 +137,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, String.format("search with query: %s", query));
+        checkAndHandleResponse(content, status, accessToken);
 
         try {
             JavaType queryResultType = TypeFactory.defaultInstance()
@@ -166,7 +166,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "delete");
+        checkAndHandleResponse(content, status, accessToken);
     }
 
     protected T createResource(T resource, AccessToken accessToken) {
@@ -193,7 +193,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, "create");
+        checkAndHandleResponse(content, status, accessToken);
 
         return mapToResource(content);
     }
@@ -231,7 +231,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
-        checkAndHandleResponse(content, status, accessToken, method.equals("PUT") ? "replace" : "update");
+        checkAndHandleResponse(content, status, accessToken);
 
         return mapToResource(content);
     }
@@ -248,7 +248,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken, String action) {
+    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
         if (status.getFamily() == Family.SUCCESSFUL) {
             return;
         }
@@ -263,7 +263,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             String errorMessage = extractErrorMessage(content, status);
             throw new NoResultException(errorMessage);
         } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
-            String errorMessage = extractErrorMessageForbidden(accessToken, action);
+            String errorMessage = extractErrorMessageForbidden(accessToken);
             throw new ForbiddenException(errorMessage);
         } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
@@ -275,8 +275,8 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     }
 
-    protected String extractErrorMessageForbidden(AccessToken accessToken, String process) {
-        return "Insufficient scope (" + accessToken.getScopes() + ") to " + process + " this " + typeName + ".";
+    protected String extractErrorMessageForbidden(AccessToken accessToken) {
+        return "Insufficient scopes: " + accessToken.getScopes();
     }
 
     protected String extractErrorMessageUnauthorized(String content, StatusType status) {

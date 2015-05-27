@@ -50,7 +50,7 @@ public class AccessToken {
     @JsonSerialize(using = ScopeSerializer.class)
     @JsonDeserialize(using = ScopeDeserializer.class)
     @JsonProperty("scope")
-    private Set<Scope> scopes = new HashSet<Scope>();
+    private Set<Scope> scopes = new HashSet<>();
     @JsonProperty("refresh_token")
     private String refreshToken;
     @JsonProperty("refresh_token_expires_at")
@@ -84,7 +84,7 @@ public class AccessToken {
 
     /**
      * Retrieve the string value of the access token used to authenticate against the provider.
-     * 
+     *
      * @return The access token string
      */
     public String getToken() {
@@ -93,7 +93,7 @@ public class AccessToken {
 
     /**
      * The Date when the access token is not valid anymore
-     * 
+     *
      * @return The Date when the access token is not valid anymore.
      */
     public Date getExpiresAt() {
@@ -105,7 +105,7 @@ public class AccessToken {
 
     /**
      * checks if the time the access token will be valid are over
-     * 
+     *
      * @return true if the access token is not valid anymore
      */
     public boolean isExpired() {
@@ -114,7 +114,7 @@ public class AccessToken {
 
     /**
      * Retrieve the possible Scopes of this AccessToken
-     * 
+     *
      * @return The scopes
      */
     public Set<Scope> getScopes() {
@@ -123,7 +123,7 @@ public class AccessToken {
 
     /**
      * Retrieve the refresh token for this access token
-     * 
+     *
      * @return The refresh token as String
      */
     public String getRefreshToken() {
@@ -132,7 +132,7 @@ public class AccessToken {
 
     /**
      * The Date when the refresh access token is not valid anymore
-     * 
+     *
      * @return The Date when the refresh access token is not valid anymore.
      */
     public Date getRefreshTokenExpiresAt() {
@@ -144,7 +144,7 @@ public class AccessToken {
 
     /**
      * checks if the time the refresh access token will be valid are over
-     * 
+     *
      * @return true if the refresh access token is not valid anymore
      */
     public boolean isRefreshTokenExpired() {
@@ -153,7 +153,7 @@ public class AccessToken {
 
     /**
      * type of the access token
-     * 
+     *
      * @return the type of the access token
      */
     public String getType() {
@@ -161,7 +161,7 @@ public class AccessToken {
     }
 
     /**
-     * 
+     *
      * @return the client Id where the AccessToken belongs to
      */
     public String getClientId() {
@@ -169,7 +169,7 @@ public class AccessToken {
     }
 
     /**
-     * 
+     *
      * @return the userId of the User the Access token belongs to. Will be empty if the AccessToken was created with an
      *         ClientCredentials Flow
      */
@@ -178,16 +178,16 @@ public class AccessToken {
     }
 
     /**
-     * 
+     *
      * @return the userName of the User the Access token belongs to. Will be empty if the AccessToken was created with
      *         an ClientCredentials Flow
      */
     public String getUserName() {
         return userName;
     }
-    
+
     /**
-     * 
+     *
      * @return if this access token is only refers to a client. Will be true if the AccessToken was created with
      *         an ClientCredentials Flow
      */
@@ -239,7 +239,7 @@ public class AccessToken {
 
         private String token;
         private Date expiresAt = new Date(Long.MIN_VALUE);
-        private Set<Scope> scopes = new HashSet<Scope>();
+        private Set<Scope> scopes = new HashSet<>();
         private String refreshToken = "";
         private Date refreshTokenExpiresAt = new Date(Long.MIN_VALUE);
         private String type = "";
@@ -247,13 +247,13 @@ public class AccessToken {
         private String userId = "";
         private String userName = "";
 
-        
+
         /**
          * Constructs a new builder with a token
-         * 
+         *
          * @param token
          *        The token string (See {@link AccessToken#getToken()})
-         * 
+         *
          * @throws IllegalArgumentException
          *         if the given token is null or empty
          */
@@ -263,9 +263,9 @@ public class AccessToken {
                 throw new IllegalArgumentException("token must not be null or empty.");
             }
         }
-        
+
         /**
-         * 
+         *
          * @param expireDate
          *        sets the expire Date of the AccessToken
          * @return the Builder itself
@@ -278,7 +278,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param scope
          *        adds one scope of the AccessToken
          * @return the Builder itself
@@ -289,7 +289,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param scopes
          *        adds an set of scopes to the AccessToken
          * @return the Builder itself
@@ -302,7 +302,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param refreshToken
          *        the refresh token
          * @return the Builder itself
@@ -313,7 +313,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param expireDate
          *        sets the expire Date of the refresh token
          * @return the Builder itself
@@ -326,7 +326,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param type
          *        the type of the access token
          * @return the Builder itself
@@ -337,7 +337,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param clientId
          *        the client id of the client where the AccessToken belongs to
          * @return the Builder itself
@@ -348,7 +348,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param userId
          *        the id of the user the AccessToken belongs to
          * @return the Builder itself
@@ -359,7 +359,7 @@ public class AccessToken {
         }
 
         /**
-         * 
+         *
          * @param userName
          *        the userName of the user the AccessToken belongs to
          * @return the Builder itself
@@ -368,10 +368,10 @@ public class AccessToken {
             this.userName = userName;
             return this;
         }
-        
+
         /**
          * Construct the {@link AccessToken} with the parameters passed to this builder.
-         * 
+         *
          * @return An AccessToken configured accordingly.
          */
         public AccessToken build() {

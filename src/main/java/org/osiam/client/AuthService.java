@@ -92,7 +92,7 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, new AccessToken.Builder("n/a").build());
 
         return getAccessToken(content);
     }
@@ -121,7 +121,7 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, new AccessToken.Builder("n/a").build());
 
         return getAccessToken(content);
     }
@@ -154,7 +154,7 @@ class AuthService {
             String errorMessage = extractErrorMessage(content, status);
             throw new ConflictException(errorMessage);
         }
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, new AccessToken.Builder("n/a").build());
 
         return getAccessToken(content);
     }
@@ -200,7 +200,7 @@ class AuthService {
         if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
             throw new ConflictException(extractErrorMessage(content, status));
         }
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, accessToken);
 
         return getAccessToken(content);
     }
@@ -243,7 +243,7 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, tokenToValidate);
 
         return getAccessToken(content);
     }
@@ -265,7 +265,7 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, tokenToRevoke);
     }
 
     public void revokeAllAccessTokens(String id, AccessToken accessToken) {
@@ -285,21 +285,25 @@ class AuthService {
             throw createGeneralConnectionInitializationException(e);
         }
 
-        checkAndHandleResponse(content, status);
+        checkAndHandleResponse(content, status, accessToken);
     }
 
-    private void checkAndHandleResponse(String content, StatusType status) {
+    private void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
         if (status.getStatusCode() == Status.OK.getStatusCode()) {
             return;
         }
 
-        final String errorMessage = extractErrorMessage(content, status);
-
         if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
             throw new ConnectionInitializationException(errorMessage);
         } else if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
             throw new UnauthorizedException(errorMessage);
+        } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
+            String errorMessage = extractErrorMessageForbidden(accessToken);
+            throw new ForbiddenException(errorMessage);
         } else {
+            String errorMessage = extractErrorMessage(content, status);
             throw new ConnectionInitializationException(errorMessage);
         }
     }
@@ -320,6 +324,10 @@ class AuthService {
         }
     }
 
+    protected String extractErrorMessageForbidden(AccessToken accessToken) {
+        return "Insufficient scopes: " + accessToken.getScopes();
+    }
+
     private AccessToken getAccessToken(String content) {
         try {
             return new ObjectMapper().readValue(content, AccessToken.class);
@@ -330,7 +338,7 @@ class AuthService {
 
     private void ensureClientCredentialsAreSet() {
         checkState(!Strings.isNullOrEmpty(clientId), "The client id can't be null or empty.");
-        checkState(!Strings.isNullOrEmpty(clientSecret), "The client secrect can't be null or empty.");
+        checkState(!Strings.isNullOrEmpty(clientSecret), "The client secret can't be null or empty.");
     }
 
     private ConnectionInitializationException createGeneralConnectionInitializationException(Throwable e) {
