@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Scope represents an OAuth 2.0 scope.
  * <p>
- * Scopes defined by OSIAM are available as static constants of this class, e.g. {@link Scope#GET}.
+ * Scopes defined by OSIAM are available as static constants of this class, e.g. {@link Scope#ME}.
  * </p>
  */
 public class Scope {
@@ -60,6 +60,11 @@ public class Scope {
      * </p>
      */
     public static final Scope ME = new Scope("ME");
+
+    /**
+     * {@code ADMIN} is a scope that allows full access to any resource.
+     */
+    public static final Scope ADMIN = new Scope("ADMIN");
 
     private String value;
 
