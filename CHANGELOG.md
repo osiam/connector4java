@@ -1,5 +1,17 @@
 # OSIAM Connector4Java
 
+## Unreleased
+
+### Features
+
+- add ADMIN scope
+- add ME scope
+- handle HTTP Forbidden from auth-server
+
+### Changes
+
+- bump dependencies
+
 ## 1.4 - 2015-02-25
 - [feature] allow configuration of connect and read timeout
 
