@@ -1,6 +1,6 @@
 # OSIAM Connector4Java
 
-## Unreleased
+## 1.5 - 2015-06-01
 
 ### Features
 
