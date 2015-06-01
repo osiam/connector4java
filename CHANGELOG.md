@@ -1,5 +1,11 @@
 # OSIAM Connector4Java
 
+## 1.5.1 - 2015-06-01
+
+### Fixes
+
+- IllegalArgumentException from Jackson when searching for resources
+
 ## 1.5 - 2015-06-01
 
 ### Features
