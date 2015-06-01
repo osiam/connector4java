@@ -21,13 +21,12 @@
     ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5</version>
 
     <name>OSIAM Connector 4 Java</name>
     <description>Native Java API to connect to the REST based OSIAM services</description>
@@ -58,7 +57,7 @@
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
         <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v1.5</tag>
     </scm>
 
     <properties>
@@ -208,16 +207,14 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
                                     <resources>
                                         <resource>
                                             META-INF/services/org.glassfish.hk2.extension.ServiceLocatorGenerator
                                         </resource>
                                     </resources>
                                 </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
                                     <resource>
                                         META-INF/services/org.osiam.bundled.org.glassfish.hk2.extension.ServiceLocatorGenerator
                                     </resource>
@@ -323,7 +320,7 @@
                         <artifactId>cobertura-maven-plugin</artifactId>
                         <version>2.7</version>
                         <configuration>
-                            <check/>
+                            <check />
                             <formats>
                                 <format>xml</format>
                             </formats>
