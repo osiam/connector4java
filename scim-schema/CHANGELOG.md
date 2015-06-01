@@ -1,5 +1,12 @@
 # OSIAM SCIM Schema
 
+## Unreleased
+
+### Changes
+
+- bump dependencies
+- renamed `RELEASE.NOTES` to `CHANGELOG.md`
+
 ## 1.3.2 - 2014-11-24
 - release because of fixes in addon-administration
 
