@@ -26,22 +26,37 @@ package org.osiam.resources.scim
 import org.osiam.resources.exception.SCIMDataValidationException
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class EmailSpec extends Specification {
 
     def 'a valid email can be put into an Email'() {
         when:
         Email email = new Email.Builder().setValue('infor@osiam.de').build()
-        
+
         then:
         email
     }
-    
+
     def 'an invalid email can be put into an Email'() {
         when:
         new Email.Builder().setValue('wrong')
-        
+
         then:
         thrown(SCIMDataValidationException)
+    }
+
+    @Unroll
+    def '#value is considered a valid email address'() {
+        when:
+        def email = new Email.Builder()
+                .setValue(value)
+                .build();
+
+        then:
+        email.value == value
+
+        where:
+        value << ['user@example.com', 'USER@EXAMPLE.COM', 'user@localhost']
     }
 }

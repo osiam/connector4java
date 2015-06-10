@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+### Fixes
+
+- Email validation does not allow upper-cased TLD
+
 ### Changes
 
+- improve email address validation
 - bump dependencies
 - renamed `RELEASE.NOTES` to `CHANGELOG.md`
 

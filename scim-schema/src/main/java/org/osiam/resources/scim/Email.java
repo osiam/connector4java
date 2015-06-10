@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This class represents a email attribute.
- * 
+ *
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
@@ -60,11 +60,6 @@ public class Email extends MultiValuedAttribute {
 
     @Override
     public String getValue() {
-        Pattern pattern = Pattern.compile(".+@.+\\.[a-z]+");
-        Matcher matcher = pattern.matcher(super.getValue());
-        if (!matcher.matches()) {
-            throw new SCIMDataValidationException("The value '" + super.getValue() + "' is not a well-formed email.");
-        }
         return super.getValue();
     }
 
@@ -80,14 +75,14 @@ public class Email extends MultiValuedAttribute {
 
     /**
      * Gets the type of the attribute.
-     * 
+     *
      * <p>
      * For more detailed information please look at the <a href=
      * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
-     * 
+     *
      * @return
-     * 
+     *
      * @return the actual type
      */
     public Type getType() {
@@ -135,6 +130,12 @@ public class Email extends MultiValuedAttribute {
      */
     public static class Builder extends MultiValuedAttribute.Builder {
 
+        /**
+         * Pattern comes from: http://www.w3.org/TR/html5/forms.html#valid-e-mail-address
+         */
+        public static final Pattern VALIDATION_PATTERN = Pattern.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
+                "[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$");
+
         private Type type;
 
         public Builder() {
@@ -142,7 +143,7 @@ public class Email extends MultiValuedAttribute {
 
         /**
          * builds an Builder based of the given Attribute
-         * 
+         *
          * @param email
          *        existing Attribute
          */
@@ -165,7 +166,7 @@ public class Email extends MultiValuedAttribute {
 
         /**
          * Sets the email value.
-         * 
+         *
          * @param value
          *        the email attribute
          * @return the builder itself
@@ -173,8 +174,7 @@ public class Email extends MultiValuedAttribute {
          */
         @Override
         public Builder setValue(String value) {
-            Pattern pattern = Pattern.compile(".+@.+\\.[a-z]+");
-            Matcher matcher = pattern.matcher(value);
+            Matcher matcher = VALIDATION_PATTERN.matcher(value);
             if (!matcher.matches()) {
                 throw new SCIMDataValidationException("The value '" + value + "' is not a well-formed email.");
             }
@@ -184,7 +184,7 @@ public class Email extends MultiValuedAttribute {
 
         /**
          * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
+         *
          * @param type
          *        the type of the attribute
          * @return the builder itself
