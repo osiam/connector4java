@@ -1,5 +1,11 @@
 # OSIAM Connector4Java
 
+## Unreleased
+
+### Changes
+
+- Bump scim-schema to version 1.3.3
+
 ## 1.5.1 - 2015-06-01
 
 ### Fixes
