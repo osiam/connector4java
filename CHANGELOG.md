@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Features
+
+- Allow configuration of maximum number of HTTP connections and connections
+  per route
+
+    Related methods:
+
+    * `OsiamConnector#setMaxConnections(int)`
+    * `OsiamConnector#setMaxConnectionsPerRoute(int)`
+
 ### Changes
 
 - Bump scim-schema to version 1.3.3
