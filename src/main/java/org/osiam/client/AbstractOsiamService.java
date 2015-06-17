@@ -141,7 +141,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
         try {
             JavaType queryResultType = TypeFactory.defaultInstance()
-                    .constructParametricType(SCIMSearchResult.class, type);
+                    .constructParametrizedType(SCIMSearchResult.class, SCIMSearchResult.class, type);
 
             return mapper.readValue(content, queryResultType);
         } catch (IOException e) {
