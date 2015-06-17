@@ -1,6 +1,6 @@
 # OSIAM SCIM Schema
 
-## Unreleased
+## 1.4 - 2015-06-17
 
 ### Fixes
 
@@ -8,9 +8,9 @@
 
 ### Changes
 
-- improve email address validation
-- bump dependencies
-- renamed `RELEASE.NOTES` to `CHANGELOG.md`
+- Improve email address validation
+- Bump dependencies
+- Rename `RELEASE.NOTES` to `CHANGELOG.md`
 
 ## 1.3.2 - 2014-11-24
 - release because of fixes in addon-administration
