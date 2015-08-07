@@ -39,7 +39,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
     /**
      * the Scim conform Group to be used to update a existing Group
-     * 
+     *
      * @return Group to update
      */
     public Group getScimConformUpdateGroup() {
@@ -60,17 +60,17 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * delete the external Id of a existing group
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteExternalId() {
-            deleteFields.add(Group_.externalId.getName());
+            deleteFields.add("externalId");
             return this;
         }
 
         /**
          * updates the external id of a existing group
-         * 
+         *
          * @param externalID
          *        new external id
          * @return The builder itself
@@ -82,7 +82,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * updates the display name of a existing group
-         * 
+         *
          * @param displayName
          *        new display name
          * @return The builder itself
@@ -94,7 +94,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * deletes all group members of a existing group
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteMembers() {
@@ -104,7 +104,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * removes the membership of the given group or user in a existing group
-         * 
+         *
          * @param memberId
          *        group or user id to be removed
          * @return The builder itself
@@ -119,7 +119,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * adds a new membership of a group or a user to a existing group
-         * 
+         *
          * @param memberId
          *        user or group id to be added
          * @return The builder itself
@@ -133,7 +133,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
 
         /**
          * constructs a {@link UpdateGroup} with the given values
-         * 
+         *
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build() {

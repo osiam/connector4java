@@ -54,7 +54,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
     /**
      * the Scim conform User to be used to update a existing User
-     * 
+     *
      * @return User to update
      */
     public User getScimConformUpdateUser() {
@@ -63,7 +63,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
     /**
      * The Builder is used to construct instances of the {@link UpdateUser}
-     * 
+     *
      */
     public static class Builder {
 
@@ -98,7 +98,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the nickName of a existing user
-         * 
+         *
          * @param userName
          *        the new user name
          * @return The builder itself
@@ -110,7 +110,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * adds a new address to the existing addresses of a existing user
-         * 
+         *
          * @param address
          *        the new address
          * @return The builder itself
@@ -122,7 +122,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given address from the list of existing addresses of a existing user
-         * 
+         *
          * @param address
          *        address to be deleted
          * @return The builder itself
@@ -137,7 +137,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all existing addresses of the a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteAddresses() {
@@ -147,7 +147,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Address with the new one
-         * 
+         *
          * @param oldAddress
          *        to be replaced
          * @param newAddress
@@ -162,17 +162,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the nickName of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteNickName() {
-            deleteFields.add(User_.nickName.getName());
+            deleteFields.add("nickName");
             return this;
         }
 
         /**
          * updates the nickName of a existing user
-         * 
+         *
          * @param nickName
          *        the new nickName
          * @return The builder itself
@@ -184,17 +184,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * delete the external Id of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteExternalId() {
-            deleteFields.add(User_.externalId.getName());
+            deleteFields.add("externalId");
             return this;
         }
 
         /**
          * updates the external id of a existing user
-         * 
+         *
          * @param externalId
          *        new external id
          * @return The builder itself
@@ -206,17 +206,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * delete the local value of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteLocal() {
-            deleteFields.add(User_.locale.getName());
+            deleteFields.add("locale");
             return this;
         }
 
         /**
          * updates the local of a existing user
-         * 
+         *
          * @param locale
          *        new local
          * @return The builder itself
@@ -228,7 +228,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the password of a existing user
-         * 
+         *
          * @param password
          *        new password
          * @return The builder itself
@@ -240,17 +240,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * delete the preferred Language of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deletePreferredLanguage() {
-            deleteFields.add(User_.preferredLanguage.getName());
+            deleteFields.add("preferredLanguage");
             return this;
         }
 
         /**
          * updates the preferred language of a existing user
-         * 
+         *
          * @param preferredLanguage
          *        new preferred language
          * @return The builder itself
@@ -262,17 +262,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the profil Url of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteProfileUrl() {
-            deleteFields.add(User_.profileUrl.getName());
+            deleteFields.add("profileUrl");
             return this;
         }
 
         /**
          * updates the profil URL of a existing user
-         * 
+         *
          * @param profileUrl
          *        new profilUrl
          * @return The builder itself
@@ -284,17 +284,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the timezone of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteTimezone() {
-            deleteFields.add(User_.timezone.getName());
+            deleteFields.add("timezone");
             return this;
         }
 
         /**
          * updates the timezone of a existing user
-         * 
+         *
          * @param timezone
          *        new timeZone
          * @return The builder itself
@@ -306,17 +306,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the title of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteTitle() {
-            deleteFields.add(User_.title.getName());
+            deleteFields.add("title");
             return this;
         }
 
         /**
          * updates the title of a existing user
-         * 
+         *
          * @param title
          *        new tile
          * @return The builder itself
@@ -328,7 +328,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the name of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteName() {
@@ -338,7 +338,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the name of a existing user
-         * 
+         *
          * @param name
          *        new Name
          * @return The builder itself
@@ -350,17 +350,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the user type of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteUserType() {
-            deleteFields.add(User_.userType.getName());
+            deleteFields.add("userType");
             return this;
         }
 
         /**
          * updates the user type of a existing user
-         * 
+         *
          * @param userType
          *        new user type
          * @return The builder itself
@@ -372,17 +372,17 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the display name of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteDisplayName() {
-            deleteFields.add(User_.displayName.getName());
+            deleteFields.add("displayName");
             return this;
         }
 
         /**
          * updates the display name of a existing user
-         * 
+         *
          * @param displayName
          *        new display name
          * @return The builder itself
@@ -394,7 +394,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all emails of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteEmails() {
@@ -404,7 +404,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given email of a existing user
-         * 
+         *
          * @param email
          *        to be deleted
          * @return The builder itself
@@ -421,7 +421,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a emil of an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         * 
+         *
          * @param email
          *        new email
          * @return The builder itself
@@ -433,7 +433,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Email with the new one
-         * 
+         *
          * @param oldEmail
          *        to be replaced
          * @param newEmail
@@ -448,7 +448,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all X509Certificates of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteX509Certificates() {
@@ -458,7 +458,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given certificate of a existing user
-         * 
+         *
          * @param certificate
          *        to be deleted
          * @return The builder itself
@@ -474,7 +474,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates certificate to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
-         * 
+         *
          * @param certificate
          *        new certificate
          * @return The builder itself
@@ -486,7 +486,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old X509Certificate with the new one
-         * 
+         *
          * @param oldCertificate
          *        to be replaced
          * @param newCertificate
@@ -501,7 +501,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all roles of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteRoles() {
@@ -511,7 +511,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given role of a existing user
-         * 
+         *
          * @param role
          *        to be deleted
          * @return The builder itself
@@ -526,7 +526,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given role of a existing user
-         * 
+         *
          * @param role
          *        to be deleted
          * @return The builder itself
@@ -542,7 +542,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a role of an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         * 
+         *
          * @param role
          *        new role
          * @return The builder itself
@@ -554,7 +554,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Role with the new one
-         * 
+         *
          * @param oldRole
          *        to be replaced
          * @param newRole
@@ -569,7 +569,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all ims of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteIms() {
@@ -579,7 +579,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the ims of a existing user
-         * 
+         *
          * @param im
          *        to be deleted
          * @return The builder itself
@@ -596,7 +596,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a ims to an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         * 
+         *
          * @param im
          *        new ims
          * @return The builder itself
@@ -608,7 +608,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Ims with the new one
-         * 
+         *
          * @param oldIm
          *        to be replaced
          * @param newIm
@@ -624,7 +624,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a phoneNumber to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
-         * 
+         *
          * @param phoneNumber
          *        new phoneNumber
          * @return The builder itself
@@ -636,7 +636,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the phonenumber of a existing user
-         * 
+         *
          * @param phoneNumber
          *        to be deleted
          * @return The builder itself
@@ -652,7 +652,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all phonenumbers of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deletePhoneNumbers() {
@@ -662,7 +662,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old PhoneNumber with the new one
-         * 
+         *
          * @param oldPhoneNumber
          *        to be replaced
          * @param newPhoneNumber
@@ -678,7 +678,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a photo to an existing user if the .getValue() already exists a update will be done. If not a
          * new one will be added
-         * 
+         *
          * @param photo
          *        new photo
          * @return The builder itself
@@ -690,7 +690,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the photo of a existing user
-         * 
+         *
          * @param photo
          *        to be deleted
          * @return The builder itself
@@ -707,7 +707,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all photos of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deletePhotos() {
@@ -717,7 +717,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Photo with the new one
-         * 
+         *
          * @param oldPhoto
          *        to be replaced
          * @param newPhoto
@@ -732,7 +732,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes all entitlements of a existing user
-         * 
+         *
          * @return The builder itself
          */
         public Builder deleteEntitlements() {
@@ -742,7 +742,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the entitlement of a existing user
-         * 
+         *
          * @param entitlement
          *        to be deleted
          * @return The builder itself
@@ -760,7 +760,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * adds or updates a entitlement to an existing user if the .getValue() already exists a update will be done. If
          * not a new one will be added
-         * 
+         *
          * @param entitlement
          *        new entitlement
          * @return The builder itself
@@ -772,7 +772,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the old Entitlement with the new one
-         * 
+         *
          * @param oldEntitlement
          *        to be replaced
          * @param newEntitlement
@@ -787,7 +787,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * updates the active status of a existing User to the given value
-         * 
+         *
          * @param active
          *        new active status
          * @return The builder itself
@@ -799,7 +799,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given extension of a existing user
-         * 
+         *
          * @param urn
          *        the id of the extension to be deleted
          * @return The builder itself
@@ -811,7 +811,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * deletes the given extension field of a existing user
-         * 
+         *
          * @param urn
          *        the id of the extension to be deleted
          * @param fieldName
@@ -826,7 +826,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
         /**
          * updates the given fields in the extension. If the User doesn't have the given extension fields, they will be
          * added.
-         * 
+         *
          * @param extension
          *        extension with all fields that need to be updated or added
          * @return The builder itself
@@ -838,7 +838,7 @@ public final class UpdateUser {// NOSONAR - Builder constructs instances of this
 
         /**
          * constructs a UpdateUser with the given values
-         * 
+         *
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build() {// NOSONAR - Since we build a User it is ok that the Cyclomatic Complexity is over 10
