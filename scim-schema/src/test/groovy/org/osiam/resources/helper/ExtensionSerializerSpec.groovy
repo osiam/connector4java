@@ -23,74 +23,61 @@
 
 package org.osiam.resources.helper
 
-import spock.lang.Ignore
-
-import java.nio.ByteBuffer
-
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.jayway.restassured.path.json.JsonPath
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.test.util.DateHelper
-
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import java.nio.ByteBuffer
 
-class ExtensionSerializerSpec  extends Specification{
+import static com.jayway.restassured.path.json.JsonPath.from
 
-    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
-            test has to be re-activated when:
+class ExtensionSerializerSpec extends Specification {
 
-              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
-              2) An alternative library for comparing JSON has been found
+    @Shared
+    ObjectMapper mapper = new ObjectMapper()
 
-            Beware of the following: Whenever you change things in this project
-            that might affect the generated JSON you HAVE TO re-activate this
-            test, either using method 1), 2), or implementing an own JSON
-            test mechanism!''')
-    def 'serializing an empty extension works'(){
+    def 'serializing an empty extension works'() {
         given:
-        ObjectMapper mapper = new ObjectMapper()
         Extension extension = new Extension.Builder('extension').build()
 
-        expect:
-        false
+        when:
+        JsonPath json = from(mapper.writeValueAsString(extension))
+
+        then:
+        json.getMap('$').isEmpty()
     }
 
-    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
-            test has to be re-activated when:
-
-              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
-              2) An alternative library for comparing JSON has been found
-
-            Beware of the following: Whenever you change things in this project
-            that might affect the generated JSON you HAVE TO re-activate this
-            test, either using method 1), 2), or implementing an own JSON
-            test mechanism!''')
     @Unroll
     def 'serializing an extension with #type type works'() {
         given:
-        ObjectMapper mapper = new ObjectMapper()
         Extension extension = new Extension.Builder('extension').setField('key', givenValue).build()
 
-        expect:
-        false
+        when:
+        JsonPath json = from(mapper.writeValueAsString(extension))
+
+        then:
+        json.get('key') == expectedValue
 
         where:
-        type                         | givenValue                                                     | expectedJson
-        ExtensionFieldType.STRING    | 'example'                                                      | '{"key" : "example"}'
-        ExtensionFieldType.INTEGER   | 123G                                                           | '{"key" : 123}'
-        ExtensionFieldType.DECIMAL   | 12.3G                                                          | '{"key" : 12.3}'
-        ExtensionFieldType.BOOLEAN   | true                                                          | '{"key" : true}'
-        ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22)                  | '{"key" : "2008-01-23T04:56:22.000Z"}'
+        type                         | givenValue                                    | expectedValue
+        ExtensionFieldType.STRING    | 'example'                                     | 'example'
+        ExtensionFieldType.INTEGER   | 123G                                          | 123
+        ExtensionFieldType.DECIMAL   | 12.3G                                         | 12.3F
+        ExtensionFieldType.BOOLEAN   | true                                          | true
+        ExtensionFieldType.DATE_TIME | DateHelper.createDate(2008, 0, 23, 4, 56, 22) | '2008-01-23T04:56:22.000Z'
         ExtensionFieldType.BINARY    | ByteBuffer.wrap([
-            101,
-            120,
-            97,
-            109,
-            112,
-            108,
-            101] as byte[]) | '{"key" : "ZXhhbXBsZQ=="}'
-        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')                        | '{"key" : "https://example.com/Users/28"}'
+                101,
+                120,
+                97,
+                109,
+                112,
+                108,
+                101] as byte[])                                                      | 'ZXhhbXBsZQ=='
+        ExtensionFieldType.REFERENCE | new URI('https://example.com/Users/28')       | 'https://example.com/Users/28'
     }
 }

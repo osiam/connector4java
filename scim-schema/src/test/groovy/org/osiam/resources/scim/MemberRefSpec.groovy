@@ -23,25 +23,18 @@
 
 package org.osiam.resources.scim
 
-import spock.lang.Ignore
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.jayway.restassured.path.json.JsonPath
+import spock.lang.Shared
 import spock.lang.Specification
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import static com.jayway.restassured.path.json.JsonPath.from
 
 class MemberRefSpec extends Specification {
 
-    private ObjectMapper mapper = new ObjectMapper()
+    @Shared
+    ObjectMapper mapper = new ObjectMapper()
 
-    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
-            test has to be re-activated when:
-
-              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
-              2) An alternative library for comparing JSON has been found
-
-            Beware of the following: Whenever you change things in this project
-            that might affect the generated JSON you HAVE TO re-activate this
-            test, either using method 1), 2), or implementing an own JSON
-            test mechanism!''')
     def 'serializing member ref results in correct json'() {
         given:
         MemberRef memberRef = new MemberRef.Builder()
@@ -49,10 +42,10 @@ class MemberRefSpec extends Specification {
                 .build();
 
         when:
-        def json = mapper.writeValueAsString(memberRef)
+        JsonPath json = from(mapper.writeValueAsString(memberRef))
 
         then:
-        false
+        json.get('$ref') == 'irrelevant'
     }
 
     def 'deserializing member ref results in correct MemberRef object'() {
