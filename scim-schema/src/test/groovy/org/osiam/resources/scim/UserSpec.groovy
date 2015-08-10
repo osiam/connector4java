@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim
 
+import com.sun.corba.se.impl.orbutil.closure.Constant
+
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
@@ -60,11 +62,11 @@ class UserSpec extends Specification {
     }
 
     def 'should be able to contain schemas'() {
-        def schemas = ['urn:wtf', 'urn:hajo'] as Set
         when:
-        User user = new User.Builder('username').setSchemas(schemas).build()
+        User user = new User.Builder('username').build()
+
         then:
-        user.schemas == schemas
+        user.schemas[0] == Constants.USER_CORE_SCHEMA
     }
 
     @Unroll
@@ -114,7 +116,6 @@ class UserSpec extends Specification {
                 .addRoles([role] as List)
                 .setTimezone('MEZ')
                 .setTitle('title')
-                .setSchemas(['schema'] as Set)
                 .addX509Certificates([x509Certificat] as List)
                 .setMeta(meta)
                 .setUserType('userType')
@@ -147,7 +148,7 @@ class UserSpec extends Specification {
         user.id == 'id'
         user.meta == meta
         user.externalId == 'externalId'
-        user.schemas.first() == 'schema'
+        user.schemas.containsAll([Constants.USER_CORE_SCHEMA,'extension'])
         user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING)
     }
 
@@ -292,16 +293,16 @@ class UserSpec extends Specification {
         then:
         thrown(IllegalArgumentException)
     }
-    
+
     def 'the copied user should have the given username'(){
         given:
         User oldUser = new User.Builder("oldUserName").setActive(true).build()
         String newUserName = 'newUserName'
         User newUser
-        
+
         when:
         newUser = new User.Builder(newUserName, oldUser).build()
-        
+
         then:
         newUser.isActive() == true
         newUser.getUserName() == newUserName
