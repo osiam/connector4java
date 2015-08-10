@@ -24,45 +24,48 @@
 package org.osiam.resources.helper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.osiam.resources.scim.Constants;
 import org.osiam.resources.scim.Extension;
+import org.osiam.resources.scim.ExtensionFieldType;
 import org.osiam.resources.scim.User;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 
 public class UserDeserializer extends StdDeserializer<User> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-	public UserDeserializer(Class<?> valueClass) {
+    static {
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+    public UserDeserializer(Class<?> valueClass) {
         super(valueClass);
     }
 
     @Override
     public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        JsonNode rootNode = jp.readValueAsTree();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        JsonNode rootNode;
+        try {
+            rootNode = jp.readValueAsTree();
+        } finally {
+            jp.close();
+        }
 
-        ExtensionDeserializer deserializer = new ExtensionDeserializer(Extension.class);
-        SimpleModule testModule = new SimpleModule("ExtensionDeserializerModule", Version.unknownVersion())
-                .addDeserializer(Extension.class, deserializer);
-        mapper.registerModule(testModule);
-
-        User user = mapper.readValue(rootNode.toString(), User.class);
+        User user = MAPPER.readValue(rootNode.traverse(), User.class);
         if (user.getSchemas() == null) {
-            throw new JsonMappingException("Required field Schema is missing");
+            throw new JsonMappingException("Required field 'schemas' is missing");
         }
         if (user.getSchemas().size() == 1) {
             return user;
@@ -77,15 +80,51 @@ public class UserDeserializer extends StdDeserializer<User> {
 
             JsonNode extensionNode = rootNode.get(urn);
             if (extensionNode == null) {
-                throw new JsonParseException("Registered extension not present.", JsonLocation.NA);
+                throw new JsonParseException("Registered extension not present: " + urn, JsonLocation.NA);
             }
 
-            deserializer.setUrn(urn);
-            Extension extension = mapper.readValue(extensionNode.toString(), Extension.class);
-            builder.addExtension(extension);
+            builder.addExtension(deserializeExtension(extensionNode, urn));
 
         }
         return builder.build();
+    }
+
+    public Extension deserializeExtension(JsonNode rootNode, String urn) throws IOException {
+        if (urn == null || urn.isEmpty()) {
+            throw new IllegalStateException("The URN cannot be null or empty");
+        }
+        if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
+            throw new JsonMappingException("Extension is of wrong JSON type");
+        }
+        Extension.Builder extensionBuilder = new Extension.Builder(urn);
+        Iterator<Map.Entry<String, JsonNode>> fieldIterator = rootNode.fields();
+        while (fieldIterator.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fieldIterator.next();
+            switch (entry.getValue().getNodeType()) {
+            case BOOLEAN:
+                Boolean boolValue = ExtensionFieldType.BOOLEAN.fromString(entry.getValue().asText());
+                extensionBuilder.setField(entry.getKey(), boolValue);
+                break;
+            case STRING:
+                String stringValue = ExtensionFieldType.STRING.fromString(entry.getValue().asText());
+                extensionBuilder.setField(entry.getKey(), stringValue);
+                break;
+            case NUMBER:
+                String numberValueAsString = entry.getValue().asText();
+                if (numberValueAsString.contains(".")) {
+                    BigDecimal decimalValue = ExtensionFieldType.DECIMAL.fromString(numberValueAsString);
+                    extensionBuilder.setField(entry.getKey(), decimalValue);
+                } else {
+                    BigInteger integerValue = ExtensionFieldType.INTEGER.fromString(numberValueAsString);
+                    extensionBuilder.setField(entry.getKey(), integerValue);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("JSON type not supported: " + entry.getValue().getNodeType());
+            }
+        }
+
+        return extensionBuilder.build();
     }
 
 }
