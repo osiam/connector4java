@@ -24,32 +24,26 @@
 package org.osiam.resources.scim
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import spock.lang.Ignore
+import com.jayway.restassured.path.json.JsonPath
+import spock.lang.Shared
 import spock.lang.Specification
+
+import static com.jayway.restassured.path.json.JsonPath.from
 
 class NameJsonSpec extends Specification {
 
-    private final static ObjectMapper mapper = new ObjectMapper()
+    @Shared
+    ObjectMapper mapper = new ObjectMapper()
 
-    @Ignore('''We cannot use JSONAssert anymore, because of licensing issues. This
-            test has to be re-activated when:
-
-              1) JSONAssert fixes its licensing issues (see https://github.com/skyscreamer/JSONassert/issues/44)
-              2) An alternative library for comparing JSON has been found
-
-            Beware of the following: Whenever you change things in this project
-            that might affect the generated JSON you HAVE TO re-activate this
-            test, either using method 1), 2), or implementing an own JSON
-            test mechanism!''')
     def 'isEmpty method should not be serialized to a field called empty'() {
         given:
         def name = new Name.Builder().build()
 
         when:
-        def json = mapper.writeValueAsString(name)
+        JsonPath json = from(mapper.writeValueAsString(name))
 
         then:
-        false
+        json.getMap('$').containsKey('empty') == false
     }
 
 }
