@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim
 
+import com.fasterxml.jackson.databind.type.TypeFactory
+import org.osiam.test.util.JsonFixturesHelper
 import spock.lang.Specification
 
 class SCIMSearchResultSpec extends Specification {
@@ -66,5 +68,66 @@ class SCIMSearchResultSpec extends Specification {
 
         then:
         result
+    }
+
+    def 'Mapping a SCIMSearchResult from JSON works'() {
+        given:
+        def json = '''{
+          "totalResults":2,
+          "itemsPerPage":100,
+          "startIndex":1,
+          "schemas":["urn:scim:schemas:core:2.0:User"],
+          "Resources":[
+            {
+              "id":"834b410a-943b-4c80-817a-4465aed037bc",
+              "externalId":"bjensen",
+              "meta":{
+                "created":"2013-08-08T19:51:34.498+02:00",
+                "lastModified":"2013-08-08T19:51:34.498+02:00",
+                "resourceType":"User"
+              },
+              "schemas":["urn:scim:schemas:core:2.0:User"],
+              "userName":"bjensen",
+              "name":{
+                "formatted":"Ms. Barbara J Jensen III",
+                "familyName":"Jensen",
+                "givenName":"Barbara"
+              },
+              "displayName":"BarbaraJ.",
+              "nickName":"Barbara",
+              "profileUrl":"http://babaraJ.com",
+              "title":"Dr.",
+              "userType":"user",
+              "preferredLanguage":"de",
+              "locale":"de",
+              "timezone":"UTC",
+              "groups":[{
+                "value":"69e1a5dc-89be-4343-976c-b5541af249f4",
+                "display":"test_group01"
+              }],
+              "active":true
+            }, {
+              "id":"cef9452e-00a9-4cec-a086-d171374ffbef",
+              "meta":{
+                "created":"2011-10-10T00:00:00.000+02:00",
+                "lastModified":"2011-10-10T00:00:00.000+02:00",
+                "resourceType":"User"
+              },
+              "schemas":["urn:scim:schemas:core:2.0:User"],
+              "userName":"marissa",
+              "active":true
+            }
+          ]
+        }'''
+        def mapper = new JsonFixturesHelper().configuredObjectMapper()
+
+        when:
+        SCIMSearchResult<User> result = mapper.readValue(json, TypeFactory.defaultInstance().constructParametrizedType(
+                SCIMSearchResult, SCIMSearchResult, User))
+
+        then:
+        result.getTotalResults() == 2
+        result.getResources()[0].getId() == "834b410a-943b-4c80-817a-4465aed037bc"
+        result.getResources()[1].getId() == "cef9452e-00a9-4cec-a086-d171374ffbef"
     }
 }
