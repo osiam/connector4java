@@ -56,12 +56,7 @@ public class UserDeserializer extends StdDeserializer<User> {
 
     @Override
     public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        JsonNode rootNode;
-        try {
-            rootNode = jp.readValueAsTree();
-        } finally {
-            jp.close();
-        }
+        JsonNode rootNode = jp.readValueAsTree();
 
         User user = MAPPER.readValue(rootNode.traverse(), User.class);
         if (user.getSchemas() == null) {
@@ -126,5 +121,4 @@ public class UserDeserializer extends StdDeserializer<User> {
 
         return extensionBuilder.build();
     }
-
 }
