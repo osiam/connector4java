@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>scim-schema</artifactId>
-            <version>1.4</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
 
         <dependency>
