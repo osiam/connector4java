@@ -1,5 +1,15 @@
 # OSIAM SCIM Schema
 
+## Unreleased
+
+### Fixes
+
+- Refactor UserDeserializer to significantly improve performance
+
+### Changes
+
+- Remove unused meta classes and package
+
 ## 1.4 - 2015-06-17
 
 ### Fixes
