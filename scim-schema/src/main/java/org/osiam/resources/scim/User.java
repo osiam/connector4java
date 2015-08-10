@@ -38,8 +38,8 @@ import com.google.common.base.Strings;
  * used to store all customized data.
  *
  * <p>
- * For more detailed information please look at the <a
- * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+ * For more detailed information please look at the
+ * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
  * </p>
  *
  * <p>
@@ -111,8 +111,8 @@ public class User extends Resource {
      * Gets the unique identifier for the User.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the user name
@@ -125,8 +125,8 @@ public class User extends Resource {
      * Gets the components of the User's real name.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the real {@link Name} of the {@link User}
@@ -139,8 +139,8 @@ public class User extends Resource {
      * Gets the name of the User, suitable for display to end-users.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the display name of the {@link User}
@@ -153,8 +153,8 @@ public class User extends Resource {
      * Gets the casual way to address the user in real life,
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the nickname of the {@link User}
@@ -167,8 +167,8 @@ public class User extends Resource {
      * Gets a fully qualified URL to a page representing the User's online profile.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the progile URL of the {@link User}
@@ -190,8 +190,8 @@ public class User extends Resource {
      * Gets the type of the {@link User}
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the type of the {@link User}
@@ -204,8 +204,8 @@ public class User extends Resource {
      * Gets the preferred written or spoken language of the User in ISO 3166-1 alpha 2 format, e.g. "DE" or "US".
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the preferred language of the {@link User}
@@ -218,8 +218,8 @@ public class User extends Resource {
      * Gets the default location of the User in ISO 639-1 two letter language code, e.g. 'de_DE' or 'en_US'
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the default location of the {@link User}
@@ -232,8 +232,8 @@ public class User extends Resource {
      * Gets the User's time zone in the "Olson" timezone database format
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the time zone of the {@link User}
@@ -246,8 +246,8 @@ public class User extends Resource {
      * Gets a Boolean that indicates the User's administrative status.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * @return the active status of the {@link User}
@@ -260,8 +260,8 @@ public class User extends Resource {
      * Gets the password from the User.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
      * </p>
      *
      * <p>
@@ -278,8 +278,8 @@ public class User extends Resource {
      * Gets all E-mail addresses for the User.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -293,8 +293,8 @@ public class User extends Resource {
      * Gets the phone numbers for the user.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -308,8 +308,8 @@ public class User extends Resource {
      * Gets the instant messaging address for the user.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -323,8 +323,8 @@ public class User extends Resource {
      * Gets the URL's of the photos of the user.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -338,8 +338,8 @@ public class User extends Resource {
      * Gets the physical mailing addresses for this user.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -353,8 +353,8 @@ public class User extends Resource {
      * Gets a list of groups that the user belongs to.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -368,8 +368,8 @@ public class User extends Resource {
      * Gets a list of entitlements for the user that represent a thing the User has.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -383,8 +383,8 @@ public class User extends Resource {
      * Gets a list of roles for the user that collectively represent who the User is e.g., 'Student', "Faculty"
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -398,8 +398,8 @@ public class User extends Resource {
      * Gets a list of certificates issued to the user. Values are Binary and DER encoded x509.
      *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0, section
      * 6.2</a>
      * </p>
      *
@@ -1209,7 +1209,12 @@ public class User extends Resource {
             return this;
         }
 
+        /**
+         * @deprecated Don't use this method - let the extensions add their schema themselves. Will be removed in
+         *             version 1.8 or 2.0
+         */
         @Override
+        @Deprecated
         public Builder setSchemas(Set<String> schemas) {
             super.setSchemas(schemas);
             return this;

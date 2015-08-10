@@ -45,7 +45,6 @@ class UserJsonSpec extends Specification {
                 .setMeta(new Meta.Builder()
                         .setLocation('https://example.com/v1/Users/2819c223...')
                         .setResourceType('User').build())
-                .setSchemas(['urn:scim:schemas:core:2.0:User'] as Set)
                 .setExternalId('bjensen')
                 .setName(new Name.Builder()
                         .setFormatted('Ms. Barbara J Jensen III')

@@ -31,18 +31,17 @@ class GroupSpec extends Specification {
 
     def 'should be able to generate a group'() {
         given:
-        
+
         User user = new User.Builder('userName').setId('some ID').build()
-        
+
         MemberRef memberRef = new MemberRef.Builder(user).build()
-        
+
         Meta meta = new Meta.Builder().build()
-        
+
         Group.Builder builder = new Group.Builder('display')
                 .setExternalId('externalId')
                 .setId('id')
                 .setMeta(meta)
-                .setSchemas(['schema'] as Set)
                 .setMembers([memberRef] as Set)
 
         when:
@@ -52,7 +51,7 @@ class GroupSpec extends Specification {
         group.members.iterator().next().value == memberRef.value
         group.displayName == 'display'
         group.externalId == 'externalId'
-        group.schemas.first() == 'schema'
+        group.schemas.first() == Constants.GROUP_CORE_SCHEMA
         group.id == 'id'
     }
 
@@ -105,16 +104,16 @@ class GroupSpec extends Specification {
         then:
         thrown(SCIMDataValidationException)
     }
-    
+
     def 'the copied group should have the given displayname'(){
         given:
         Group oldGroup = new Group.Builder("oldDisplayName").setExternalId("externalId").build()
         String newDisplayName = 'newDisplayName'
         Group newGroup
-        
+
         when:
         newGroup = new Group.Builder(newDisplayName, oldGroup).build()
-        
+
         then:
         newGroup.getExternalId() == 'externalId'
         newGroup.getDisplayName() == newDisplayName

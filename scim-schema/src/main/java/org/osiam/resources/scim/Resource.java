@@ -23,10 +23,10 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This class represents a SCIM Resource and is the base class for {@link User}s and {@link Group}s.
@@ -54,7 +54,7 @@ public abstract class Resource {
 
     /**
      * Gets the Id of the resource.
-     * 
+     *
      * @return the id of the resource
      */
     public String getId() {
@@ -63,15 +63,15 @@ public abstract class Resource {
 
     /**
      * Gets the external Id of the resource.
-     * 
+     *
      * <p>
-     * For more information please look at <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5.1">SCIM core schema 2.0, section
+     * For more information please look at
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5.1">SCIM core schema 2.0, section
      * 5.1</a>
      * </p>
-     * 
+     *
      * @return the externalId
-     * 
+     *
      */
     public String getExternalId() {
         return externalId;
@@ -79,7 +79,7 @@ public abstract class Resource {
 
     /**
      * Gets the meta attribute
-     * 
+     *
      * @return the meta
      */
     public Meta getMeta() {
@@ -88,7 +88,7 @@ public abstract class Resource {
 
     /**
      * Gets the list of defined schemas
-     * 
+     *
      * @return a the list of schemas as a {@link Set}
      */
     public Set<String> getSchemas() {
@@ -114,19 +114,17 @@ public abstract class Resource {
         }
 
         /**
-         * sets the schemas of the Resource
-         * 
-         * @param schemas
-         *            actual schemas
-         * @return the builder itself
+         * @deprecated Don't use this method - let the extensions add their schema themselves. Will be removed in
+         *             version 1.8 or 2.0
          */
+        @Deprecated
         public Builder setSchemas(Set<String> schemas) {
             this.schemas = schemas;
             return this;
         }
-        
-        protected void addSchema(String schema){
-            if(schemas == null){
+
+        protected void addSchema(String schema) {
+            if (schemas == null) {
                 schemas = new HashSet<>();
             }
             schemas.add(schema);
@@ -134,15 +132,15 @@ public abstract class Resource {
 
         /**
          * Sets the id of the resource.
-         * 
+         *
          * <p>
-         * client info: The id of a User will be created and set by the OSIAM server. 
-         * If a {@link User} or {@link Group} which is send to the OSIAM server has this value filled, 
-         * the value will be ignored or the action will be rejected.
+         * client info: The id of a User will be created and set by the OSIAM server. If a {@link User} or {@link Group}
+         * which is send to the OSIAM server has this value filled, the value will be ignored or the action will be
+         * rejected.
          * </p>
-         * 
+         *
          * @param id
-         *            if of the resource
+         *        if of the resource
          * @return the builder itself
          */
         public Builder setId(String id) {
@@ -152,10 +150,10 @@ public abstract class Resource {
 
         /**
          * Sets the external id (See {@link Resource#getExternalId()}).
-         * 
+         *
          * @param externalId
-         *            the external id
-         * 
+         *        the external id
+         *
          * @return the builder itself
          */
         public Builder setExternalId(String externalId) {
@@ -165,17 +163,16 @@ public abstract class Resource {
 
         /**
          * Sets the meta data
-         * 
+         *
          * <p>
-         * client info: The meta information of a User will be created and set by the OSIAM server. 
-         * If a {@link User} or {@link Group} which is send to the OSIAM server has this value filled, 
-         * the value will be ignored or the action will be rejected. 
-         * For an update(PATCH) the attribute value can be set by the client. In normal case this 
-         * should be set by the {@link UpdateUser} or {@link UpdateGroup} and not by the client directly. 
+         * client info: The meta information of a User will be created and set by the OSIAM server. If a {@link User} or
+         * {@link Group} which is send to the OSIAM server has this value filled, the value will be ignored or the
+         * action will be rejected. For an update(PATCH) the attribute value can be set by the client. In normal case
+         * this should be set by the {@link UpdateUser} or {@link UpdateGroup} and not by the client directly.
          * </p>
-         * 
+         *
          * @param meta
-         *            the meta object
+         *        the meta object
          * @return the builder itself
          */
         public Builder setMeta(Meta meta) {
@@ -185,7 +182,7 @@ public abstract class Resource {
 
         /**
          * Builds the Object of the Builder
-         * 
+         *
          * @return a new main Object of the Builder
          */
         public abstract <T> T build();

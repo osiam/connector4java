@@ -34,17 +34,16 @@ import com.google.common.base.Strings;
 
 /**
  * This class represent a Group resource.
- * 
+ *
  * <p>
- * For more detailed information please look at the <a
- * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+ * For more detailed information please look at the
+ * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
  * </p>
- * 
+ *
  * <p>
- * client info: The scim schema is mainly meant as a connection link between the 
- * OSIAM server and by a client like the connector4Java. 
- * Some values will be not accepted by the OSIAM server.
- * These specific values have an own client info documentation section.
+ * client info: The scim schema is mainly meant as a connection link between the OSIAM server and by a client like the
+ * connector4Java. Some values will be not accepted by the OSIAM server. These specific values have an own client info
+ * documentation section.
  * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
@@ -67,7 +66,7 @@ public class Group extends Resource {
 
     /**
      * Gets the human readable name of this {@link Group}.
-     * 
+     *
      * @return the display name
      */
     public String getDisplayName() {
@@ -76,12 +75,13 @@ public class Group extends Resource {
 
     /**
      * Gets the list of members of this Group.
-     * 
+     *
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections
+     * 8</a>
      * </p>
-     * 
+     *
      * @return the list of Members as a Set
      */
     public Set<MemberRef> getMembers() {
@@ -106,7 +106,7 @@ public class Group extends Resource {
         /**
          * creates a new Group.Builder based on the given displayName and group. All values of the given group will be
          * copied expect the displayName will be be overridden by the given one
-         * 
+         *
          * @param displayName
          *        the new displayName of the group
          * @param group
@@ -133,10 +133,10 @@ public class Group extends Resource {
 
         /**
          * Constructs a new builder by copying all values from the given {@link Group}
-         * 
+         *
          * @param group
          *        {@link Group} to be copied from
-         * 
+         *
          * @throws SCIMDataValidationException
          *         if the given group is null
          */
@@ -149,10 +149,10 @@ public class Group extends Resource {
 
         /**
          * Constructs a new builder and sets the display name (See {@link Group#getDisplayName()}).
-         * 
+         *
          * @param displayName
          *        the display name
-         * 
+         *
          * @throws SCIMDataValidationException
          *         if the displayName is null or empty
          */
@@ -181,7 +181,12 @@ public class Group extends Resource {
             return this;
         }
 
+        /**
+         * @deprecated Don't use this method - let the extensions add their schema themselves. Will be removed in
+         *             version 1.8 or 2.0
+         */
         @Override
+        @Deprecated
         public Builder setSchemas(Set<String> schemas) {
             super.setSchemas(schemas);
             return this;
@@ -189,7 +194,7 @@ public class Group extends Resource {
 
         /**
          * Sets the list of members as {@link Set} (See {@link Group#getMembers()}).
-         * 
+         *
          * @param members
          *        the set of members
          * @return the builder itself
