@@ -53,11 +53,11 @@ public class AuthServiceTest {
                 .setClientRedirectUri(REDIRECT_URI)
                 .build();
 
-        URI redirectUri = service.getAuthorizationUri(Scope.ALL);
+        URI redirectUri = service.getAuthorizationUri(Scope.ADMIN);
 
         URI expectedUri = new URI(String.format(
                 "%s/oauth/authorize?client_id=%s&response_type=code&redirect_uri=%s&scope=%s",
-                ENDPOINT, VALID_CLIENT_ID, REDIRECT_URI, encodeExpectedString(Scope.ALL.toString())));
+                ENDPOINT, VALID_CLIENT_ID, REDIRECT_URI, encodeExpectedString(Scope.ADMIN.toString())));
         assertThat(redirectUri, is(equalTo(expectedUri)));
     }
 

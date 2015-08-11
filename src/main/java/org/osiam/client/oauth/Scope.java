@@ -35,11 +35,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Scope {
 
+    /**
+     * @deprecated Use {@link Scope#ME} or {@link Scope#ADMIN}. This field will be removed in version 1.10 or 2.0.
+     */
+    @Deprecated
     public static final Scope GET = new Scope("GET");
+    /**
+     * @deprecated Use {@link Scope#ME} or {@link Scope#ADMIN}. This field will be removed in version 1.10 or 2.0.
+     */
+    @Deprecated
     public static final Scope POST = new Scope("POST");
+    /**
+     * @deprecated Use {@link Scope#ME} or {@link Scope#ADMIN}. This field will be removed in version 1.10 or 2.0.
+     */
+    @Deprecated
     public static final Scope PUT = new Scope("PUT");
+    /**
+     * @deprecated Use {@link Scope#ME} or {@link Scope#ADMIN}. This field will be removed in version 1.10 or 2.0.
+     */
+    @Deprecated
     public static final Scope PATCH = new Scope("PATCH");
+    /**
+     * @deprecated Use {@link Scope#ME} or {@link Scope#ADMIN}. This field will be removed in version 1.10 or 2.0.
+     */
+    @Deprecated
     public static final Scope DELETE = new Scope("DELETE");
+    /**
+     * @deprecated Use {@link Scope#ME} or {@link Scope#ADMIN}. This field will be removed in version 1.10 or 2.0.
+     */
+    @Deprecated
     public static final Scope ALL = new Scope(Scope.GET + " " + Scope.POST + " " + Scope.PUT + " "
             + Scope.PATCH + " " + Scope.DELETE);
 
