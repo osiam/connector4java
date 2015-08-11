@@ -23,18 +23,21 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.oauth.Scope;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 
-import org.junit.Test;
-import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.oauth.Scope;
+import static com.jcabi.matchers.RegexMatchers.containsPattern;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class AuthServiceTest {
 
@@ -71,6 +74,19 @@ public class AuthServiceTest {
         oConnector.retrieveAccessToken();
 
         fail("Exception expected");
+    }
+
+    @Test
+    public void double_slash_is_removed_from_path() throws Exception {
+        service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT + "/")
+                .setClientId(VALID_CLIENT_ID)
+                .setClientSecret(VALID_CLIENT_SECRET)
+                .setClientRedirectUri(REDIRECT_URI)
+                .build();
+
+        URI redirectUri = service.getAuthorizationUri(Scope.ADMIN);
+        System.out.println(redirectUri.toString());
+        assertThat(redirectUri.getPath(), not(containsPattern("//")));
     }
 
     private static String encodeExpectedString(String string) {
