@@ -1,5 +1,12 @@
 # OSIAM Connector4Java
 
+## Unreleased
+
+### Changes
+
+- Update scim-schema to solve performance issues when deserializing `User`s
+- Deprecate old, method-based scopes (GET, POST, PUT, PATCH, DELETE)
+
 ## 1.6 - 2015-06-17
 
 ### Features
