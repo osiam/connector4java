@@ -25,6 +25,10 @@ package org.osiam.resources.scim;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -44,7 +48,9 @@ import com.google.common.io.BaseEncoding;
  * @param <T>
  *            the actual type this {@link ExtensionFieldType} represents
  */
-public abstract class ExtensionFieldType<T> {
+public abstract class ExtensionFieldType<T> implements Serializable {
+
+    private static final long serialVersionUID = 5665143978696725609L;
 
     private String name;
 
@@ -205,13 +211,17 @@ public abstract class ExtensionFieldType<T> {
     };
 
     /**
+     * Since this field can not be serialized, it will be created when the object is de-serialized (see readObject()).
+     */
+    private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
+
+    /**
      * ExtensionFieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO
      * DateTimeFormat with the timeZone UTC like '2011-08-01T18:29:49.000Z'
      */
     public static final ExtensionFieldType<Date> DATE_TIME = new ExtensionFieldType<Date>("DATE_TIME") { // NOSONAR -
         // it is ok if the inner class is over 20 characters long
 
-        private DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
 
         @Override
         public Date fromString(String stringValue) {
@@ -292,5 +302,4 @@ public abstract class ExtensionFieldType<T> {
     protected void ensureValueIsNotNull(Object value) {
         checkArgument(value != null, "The given value cannot be null.");
     }
-
 }

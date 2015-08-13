@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.util.*;
 
 import org.osiam.resources.exception.SCIMDataValidationException;
@@ -49,7 +50,9 @@ import com.google.common.base.Strings;
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class User extends Resource {
+public class User extends Resource implements Serializable {
+
+    private static final long serialVersionUID = -4076516708797425414L;
 
     private String userName;
     private Name name;

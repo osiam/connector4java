@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +32,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * This class represents a SCIM Resource and is the base class for {@link User}s and {@link Group}s.
  */
-public abstract class Resource {
+public abstract class Resource implements Serializable {
+
+    private static final long serialVersionUID = 1726103518645055449L;
 
     private String id;
     private String externalId;

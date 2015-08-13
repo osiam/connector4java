@@ -24,7 +24,10 @@
 package org.osiam.resources.scim
 
 import com.sun.corba.se.impl.orbutil.closure.Constant
+import org.apache.commons.lang3.SerializationUtils
+import org.osiam.test.util.DateHelper
 
+import java.nio.ByteBuffer
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
@@ -148,7 +151,7 @@ class UserSpec extends Specification {
         user.id == 'id'
         user.meta == meta
         user.externalId == 'externalId'
-        user.schemas.containsAll([Constants.USER_CORE_SCHEMA,'extension'])
+        user.schemas.containsAll([Constants.USER_CORE_SCHEMA, 'extension'])
         user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING)
     }
 
@@ -260,7 +263,6 @@ class UserSpec extends Specification {
         def extensions = new HashSet<Extension>()
         extensions.add(EXTENSION_EMPTY)
         def user = new User.Builder('test')
-                //.addExtensions([(EXTENSION_URN): EXTENSION_EMPTY])
                 .addExtensions(extensions)
                 .build()
 
@@ -294,7 +296,7 @@ class UserSpec extends Specification {
         thrown(IllegalArgumentException)
     }
 
-    def 'the copied user should have the given username'(){
+    def 'the copied user should have the given username'() {
         given:
         User oldUser = new User.Builder("oldUserName").setActive(true).build()
         String newUserName = 'newUserName'
@@ -331,7 +333,7 @@ class UserSpec extends Specification {
 
     Extension getExtension(urn) {
         Extension extension = new Extension.Builder(urn)
-            .setField('gender', 'male').build()
+                .setField('gender', 'male').build()
         return extension
     }
 
@@ -389,5 +391,73 @@ class UserSpec extends Specification {
                 .setPrimary(true)
                 .setValue('x509Certificat')
                 .build()
+    }
+
+    def 'user can be serialized and deserialized'() {
+        def date = DateHelper.createDate(2008, 0, 23, 18, 29, 49)
+        given:
+        User user = new User.Builder('bjensen')
+                .setId('a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4')
+                .setMeta(new Meta.Builder()
+                .setLocation('https://example.com/v1/Users/2819c223...')
+                .setResourceType('User').build())
+                .setExternalId('bjensen')
+                .setName(new Name.Builder()
+                .setFormatted('Ms. Barbara J Jensen III')
+                .setFamilyName('Jensen')
+                .setGivenName('Barbara').build())
+                .setDisplayName('BarbaraJ.')
+                .setNickName('Barbara')
+                .setTitle('Dr.')
+                .setLocale('de')
+                .addEmail(new Email.Builder()
+                .setValue('bjensen@example.com')
+                .setType(Email.Type.WORK).build())
+                .addPhoto(new Photo.Builder()
+                .setValue('example.png').build())
+                .addPhoneNumber(new PhoneNumber.Builder()
+                .setValue('555-555-8377')
+                .setType(PhoneNumber.Type.WORK).build())
+                .addAddress(new Address.Builder()
+                .setType(Address.Type.WORK)
+                .setStreetAddress('example street 42')
+                .setLocality('Bonn')
+                .setRegion('North Rhine-Westphalia')
+                .setPostalCode('11111')
+                .setCountry('Germany').build())
+                .addExtension(new Extension.Builder('urn:scim:schemas:extension:test:1.0:User')
+                .setField('keyString', 'example')
+                .setField('keyBoolean', true)
+                .setField('keyInteger', 123G)
+                .setField('keyDecimal', 123.456G)
+                .setField('keyBinary', ByteBuffer.wrap([101, 120, 97, 109, 112, 108, 101] as byte[]))
+                .setField('keyReference', new URI('https://example.com/Users/28'))
+                .setField('keyDateTime', date).build())
+                .build()
+
+        when:
+        def newUser = (User) SerializationUtils.deserialize(SerializationUtils.serialize(user))
+
+        then:
+        user == newUser
+        user.getEmails().get(0) == newUser.getEmails().get(0)
+        user.getEmails().get(0).getValue() == newUser.getEmails().get(0).getValue()
+        user.getEmails().get(0).getType() == newUser.getEmails().get(0).getType()
+        user.getPhoneNumbers().get(0) == newUser.getPhoneNumbers().get(0)
+        user.getPhoneNumbers().get(0).getDisplay() == newUser.getPhoneNumbers().get(0).getDisplay()
+        user.getPhoneNumbers().get(0).getType() == newUser.getPhoneNumbers().get(0).getType()
+        user.isActive() == newUser.isActive()
+
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsString('keyString') == 'example'
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsBoolean('keyBoolean') == true
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsInteger('keyInteger') == 123G
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsDecimal('keyDecimal') == 123.456G
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User')
+                .getFieldAsByteBuffer('keyBinary') == ByteBuffer.wrap([101, 120, 97, 109, 112, 108, 101] as byte[])
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User')
+                .getFieldAsReference('keyReference') == new URI('https://example.com/Users/28')
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User')
+                .getFieldAsDate('keyDateTime') == date
+
     }
 }

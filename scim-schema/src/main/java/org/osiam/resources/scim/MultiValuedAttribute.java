@@ -23,6 +23,8 @@
 
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
+
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -34,12 +36,15 @@ import com.google.common.base.Strings;
  * This class represents a multi valued attribute.
  * 
  * <p>
- * For more detailed information please look at the <a href=
- * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
+ * For more detailed information please look at the
+ * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
+ * 3.2</a>
  * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
-public abstract class MultiValuedAttribute {
+public abstract class MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = 5910207539638462247L;
 
     private String operation;
     private String value;
@@ -66,8 +71,9 @@ public abstract class MultiValuedAttribute {
      * Gets the attribute's significant value; e.g., the e-mail address, phone number etc.
      * 
      * <p>
-     * For more detailed information please look at the <a href=
-     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
+     * For more detailed information please look at the
+     * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
+     * 3.2</a>
      * </p>
      * 
      * @return the value of the actual multi value attribute
@@ -80,8 +86,9 @@ public abstract class MultiValuedAttribute {
      * Gets the human readable name, primarily used for display purposes.
      * 
      * <p>
-     * For more detailed information please look at the <a href=
-     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
+     * For more detailed information please look at the
+     * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
+     * 3.2</a>
      * </p>
      * 
      * @return the display attribute
@@ -94,8 +101,9 @@ public abstract class MultiValuedAttribute {
      * Gets a Boolean value indicating the 'primary' or preferred attribute value for this attribute.
      * 
      * <p>
-     * For more detailed information please look at the <a href=
-     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
+     * For more detailed information please look at the
+     * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
+     * 3.2</a>
      * </p>
      * 
      * @return the primary attribute
@@ -108,8 +116,9 @@ public abstract class MultiValuedAttribute {
      * Gets the operation applied during a PATCH request.
      * 
      * <p>
-     * For more detailed information please look at the <a href=
-     * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
+     * For more detailed information please look at the
+     * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
+     * 3.2</a>
      * </p>
      * 
      * @return the operation
@@ -122,8 +131,9 @@ public abstract class MultiValuedAttribute {
      * Gets the reference to the actual SCIM Resource.
      * 
      * <p>
-     * For more detailed information please look at the <a
-     * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
+     * For more detailed information please look at the
+     * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections
+     * 8</a>
      * </p>
      * 
      * @return the reference of the actual resource
@@ -228,7 +238,7 @@ public abstract class MultiValuedAttribute {
          * @return the builder itself
          */
         protected Builder setValue(String value) {
-            if(Strings.isNullOrEmpty(value)){
+            if (Strings.isNullOrEmpty(value)) {
                 throw new SCIMDataValidationException("The given value can't be null or empty.");
             }
             this.value = value;
@@ -239,10 +249,10 @@ public abstract class MultiValuedAttribute {
          * Sets the human readable name (See {@link MultiValuedAttribute#getDisplay()}).
          * 
          * <p>
-         * client info: the Display value is set by the OSIAM server.
-         * If a MultiValuedAttribute which is send to the OSIAM server has this value filled, 
-         * the value will be ignored or the action will be rejected. 
+         * client info: the Display value is set by the OSIAM server. If a MultiValuedAttribute which is send to the
+         * OSIAM server has this value filled, the value will be ignored or the action will be rejected.
          * </p>
+         * 
          * @param display
          *        a human readable name
          * @return the builder itself
@@ -282,9 +292,8 @@ public abstract class MultiValuedAttribute {
          * Sets the reference (See {@link MemberRef#getReference()}).
          * 
          * <p>
-         * client info: the Reference value is set by the OSIAM server.
-         * If a MultiValuedAttribute which is send to the OSIAM server has this value filled, 
-         * the value will be ignored or the action will be rejected. 
+         * client info: the Reference value is set by the OSIAM server. If a MultiValuedAttribute which is send to the
+         * OSIAM server has this value filled, the value will be ignored or the action will be rejected.
          * </p>
          * 
          * @param reference

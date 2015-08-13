@@ -22,6 +22,7 @@
  */
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -43,7 +44,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * </p>
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE)
-public class Photo extends MultiValuedAttribute {
+public class Photo extends MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = -3801047382575408796L;
 
     @JsonProperty
     private Type type;

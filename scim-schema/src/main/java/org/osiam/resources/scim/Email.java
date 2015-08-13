@@ -22,6 +22,7 @@
  */
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +38,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Email extends MultiValuedAttribute {
+public class Email extends MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = 5595340465249831012L;
 
     @JsonProperty
     private Type type;

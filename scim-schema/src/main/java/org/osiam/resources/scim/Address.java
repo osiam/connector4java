@@ -26,6 +26,8 @@ package org.osiam.resources.scim;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.Serializable;
+
 /**
  * A physical mailing address for a User
  * <p>
@@ -34,7 +36,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class Address extends MultiValuedAttribute { // NOSONAR - Builder constructs instances of this class
+public class Address extends MultiValuedAttribute implements Serializable { // NOSONAR - Builder constructs instances of this class
+
+    private static final long serialVersionUID = 2731087785568277294L;
 
     private String formatted;
     private String streetAddress;

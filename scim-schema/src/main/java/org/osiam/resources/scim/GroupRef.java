@@ -24,6 +24,8 @@ package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * This class represents a Reference of a Group
  * 
@@ -32,7 +34,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class GroupRef extends MultiValuedAttribute {
+public class GroupRef extends MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = -3765452569557089013L;
 
     @JsonProperty
     private Type type;
