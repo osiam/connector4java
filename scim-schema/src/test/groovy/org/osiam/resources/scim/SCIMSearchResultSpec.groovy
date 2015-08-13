@@ -76,7 +76,7 @@ class SCIMSearchResultSpec extends Specification {
           "totalResults":2,
           "itemsPerPage":100,
           "startIndex":1,
-          "schemas":["urn:scim:schemas:core:2.0:User"],
+          "schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],
           "Resources":[
             {
               "id":"834b410a-943b-4c80-817a-4465aed037bc",
@@ -86,7 +86,7 @@ class SCIMSearchResultSpec extends Specification {
                 "lastModified":"2013-08-08T19:51:34.498+02:00",
                 "resourceType":"User"
               },
-              "schemas":["urn:scim:schemas:core:2.0:User"],
+              "schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],
               "userName":"bjensen",
               "name":{
                 "formatted":"Ms. Barbara J Jensen III",
@@ -113,7 +113,7 @@ class SCIMSearchResultSpec extends Specification {
                 "lastModified":"2011-10-10T00:00:00.000+02:00",
                 "resourceType":"User"
               },
-              "schemas":["urn:scim:schemas:core:2.0:User"],
+              "schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],
               "userName":"marissa",
               "active":true
             }
