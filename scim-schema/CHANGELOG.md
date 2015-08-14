@@ -10,6 +10,7 @@
 
 - Remove unused meta classes and package
 - Deprecate User/Group/Resource#setSchemas(...)
+- Update schema URNs to SCIM draft 19
 
 ## 1.4 - 2015-06-17
 

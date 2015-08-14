@@ -28,9 +28,9 @@ package org.osiam.resources.scim;
  */
 public interface Constants {
 
-    String USER_CORE_SCHEMA = "urn:scim:schemas:core:2.0:User";
-    String GROUP_CORE_SCHEMA = "urn:scim:schemas:core:2.0:Group";
+    String USER_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User";
+    String GROUP_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group";
     String LIST_RESPONSE_CORE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse";
-    String SERVICE_PROVIDER_CORE_SCHEMA = "urn:scim:schemas:core:2.0:ServiceProviderConfig";
+    String SERVICE_PROVIDER_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig";
     int MAX_RESULT = 100;
 }

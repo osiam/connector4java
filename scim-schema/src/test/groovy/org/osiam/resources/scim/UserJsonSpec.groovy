@@ -86,7 +86,7 @@ class UserJsonSpec extends Specification {
         json.getString('id') == 'a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4'
         json.getString('meta.location') == 'https://example.com/v1/Users/2819c223...'
         json.getString('meta.resourceType') == 'User'
-        json.getList('schemas').containsAll(['urn:scim:schemas:core:2.0:User',
+        json.getList('schemas').containsAll(['urn:ietf:params:scim:schemas:core:2.0:User',
                                              'urn:scim:schemas:extension:test:1.0:User'])
         json.getString('externalId') == 'bjensen'
         json.getString('userName') == 'bjensen'
