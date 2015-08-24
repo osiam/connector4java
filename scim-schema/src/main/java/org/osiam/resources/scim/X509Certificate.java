@@ -22,6 +22,8 @@
  */
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
+
 /**
  * This class represents a x509Certificate attribute.
  * 
@@ -30,7 +32,9 @@ package org.osiam.resources.scim;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class X509Certificate extends MultiValuedAttribute {
+public class X509Certificate extends MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = 4858483299981855173L;
 
     private Type type;
 

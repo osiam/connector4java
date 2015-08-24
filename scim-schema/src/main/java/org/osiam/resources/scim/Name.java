@@ -27,6 +27,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Strings;
 
+import java.io.Serializable;
+
 /**
  * This class represents the User's real name.
  *
@@ -36,7 +38,9 @@ import com.google.common.base.Strings;
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class Name {
+public class Name implements Serializable {
+
+    private static final long serialVersionUID = -2090787512643160922L;
 
     private String formatted;
     private String familyName;

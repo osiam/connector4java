@@ -25,7 +25,11 @@ package org.osiam.resources.scim;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Strings;
 
-public abstract class MultiValuedAttributeType {
+import java.io.Serializable;
+
+public abstract class MultiValuedAttributeType implements Serializable {
+
+    private static final long serialVersionUID = 8664817830929663977L;
 
     private final String value;
 

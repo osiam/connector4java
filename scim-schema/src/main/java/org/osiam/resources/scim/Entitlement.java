@@ -24,6 +24,8 @@ package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * This class represents a entitlement attribute.
  * 
@@ -32,7 +34,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Entitlement extends MultiValuedAttribute {
+public class Entitlement extends MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = -1630551919515647349L;
 
     @JsonProperty
     private Type type;

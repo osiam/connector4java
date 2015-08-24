@@ -1,5 +1,6 @@
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 /*
  * Copyright (C) 2013 tarent AG
@@ -47,7 +48,9 @@ import com.google.common.collect.ImmutableMap;
  * </p>
  */
 @JsonSerialize(using = ExtensionSerializer.class)
-public class Extension {
+public class Extension implements Serializable {
+
+    private static final long serialVersionUID = -121658804932369438L;
 
     @JsonIgnore
     private String urn;
@@ -467,7 +470,10 @@ public class Extension {
     /**
      * This class represents a field of an extension with its type and value. Instances of this class are immutable.
      */
-    public static final class Field {
+    public static final class Field implements Serializable {
+
+        private static final long serialVersionUID = 5733905110534921573L;
+
         private final ExtensionFieldType<?> type;
         private final String value;
 

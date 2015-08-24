@@ -23,8 +23,8 @@
 
 package org.osiam.resources.scim
 
+import org.apache.commons.lang3.SerializationUtils
 import org.osiam.resources.exception.SCIMDataValidationException
-
 import spock.lang.Specification
 
 class GroupSpec extends Specification {
@@ -105,7 +105,7 @@ class GroupSpec extends Specification {
         thrown(SCIMDataValidationException)
     }
 
-    def 'the copied group should have the given displayname'(){
+    def 'the copied group should have the given displayname'() {
         given:
         Group oldGroup = new Group.Builder("oldDisplayName").setExternalId("externalId").build()
         String newDisplayName = 'newDisplayName'
@@ -119,4 +119,27 @@ class GroupSpec extends Specification {
         newGroup.getDisplayName() == newDisplayName
     }
 
+    def 'group can be serialized and deserialized'() {
+        given:
+        User user = new User.Builder('userName').setId('some ID').build()
+        MemberRef memberRef = new MemberRef.Builder(user).build()
+        Meta meta = new Meta.Builder().build()
+
+        Group.Builder builder = new Group.Builder('display')
+                .setExternalId('externalId')
+                .setId('id')
+                .setMeta(meta)
+                .setMembers([memberRef] as Set)
+
+        Group group = builder.build()
+
+        when:
+        def newGroup = (Group) SerializationUtils.deserialize(SerializationUtils.serialize(group))
+
+        then:
+        group == newGroup
+        group.getExternalId() == newGroup.getExternalId()
+        group.getMeta() == newGroup.getMeta()
+        group.getMembers().getAt(0) == newGroup.getMembers().getAt(0)
+    }
 }

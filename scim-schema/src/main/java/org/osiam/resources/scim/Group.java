@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,7 +48,9 @@ import com.google.common.base.Strings;
  * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
-public class Group extends Resource {
+public class Group extends Resource implements Serializable {
+
+    private static final long serialVersionUID = -2995603177584656028L;
 
     private String displayName;
     private Set<MemberRef> members = new HashSet<>();

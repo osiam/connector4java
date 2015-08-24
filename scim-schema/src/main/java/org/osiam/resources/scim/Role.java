@@ -22,6 +22,8 @@
  */
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
+
 /**
  * This class represents a role attribute.
  * 
@@ -30,7 +32,9 @@ package org.osiam.resources.scim;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Role extends MultiValuedAttribute {
+public class Role extends MultiValuedAttribute implements Serializable {
+
+    private static final long serialVersionUID = -4086224449976544553L;
 
     private Type type;
 

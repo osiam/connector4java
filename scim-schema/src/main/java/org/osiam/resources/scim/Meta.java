@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,14 +34,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * This class represents the meta data of a resource.
- * 
+ * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02">SCIM core schema 2.0</a>
  * </p>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class Meta {
+public class Meta implements Serializable {
+
+    private static final long serialVersionUID = -4536271487921469946L;
 
     @JsonSerialize(using = JsonDateSerializer.class)
     private Date created;
@@ -68,12 +71,12 @@ public class Meta {
 
     /**
      * Gets the URI of the Resource being returned.
-     * 
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5">SCIM core schema 2.0, section 5</a>
      * </p>
-     * 
+     *
      * @return the location
      */
     public String getLocation() {
@@ -82,12 +85,12 @@ public class Meta {
 
     /**
      * Gets the version of the Resource being returned.
-     * 
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5">SCIM core schema 2.0, section 5</a>
      * </p>
-     * 
+     *
      * @return the version
      */
     public String getVersion() {
@@ -96,12 +99,12 @@ public class Meta {
 
     /**
      * Gets the attributes to be deleted from the Resource
-     * 
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5">SCIM core schema 2.0, section 5</a>
      * </p>
-     * 
+     *
      * @return a set of attributes to be deleted
      */
     public Set<String> getAttributes() {
@@ -110,7 +113,7 @@ public class Meta {
 
     /**
      * Gets the date when the {@link Resource} was created
-     * 
+     *
      * @return the creation date
      */
     public Date getCreated() {
@@ -122,7 +125,7 @@ public class Meta {
 
     /**
      * Gets the date when the {@link Resource} was last modified
-     * 
+     *
      * @return the last modified date
      */
     public Date getLastModified() {
@@ -134,7 +137,7 @@ public class Meta {
 
     /**
      * Gets the type of the Resource (User or Group)
-     * 
+     *
      * @return the type of the actual resource
      */
     public String getResourceType() {
@@ -171,9 +174,8 @@ public class Meta {
 
         /**
          * Constructs a new builder with the created and last modified time set to the given values
-         * 
-         * @param meta
-         *            the meta object to copy from
+         *
+         * @param meta the meta object to copy from
          */
         public Builder(Meta meta) {
             if (meta == null) {
@@ -189,9 +191,8 @@ public class Meta {
 
         /**
          * Set the location (See {@link Meta#getLocation()}).
-         * 
-         * @param location
-         *            the resource uri
+         *
+         * @param location the resource uri
          * @return the builder itself
          */
         public Builder setLocation(String location) {
@@ -201,9 +202,8 @@ public class Meta {
 
         /**
          * Sets the version of the Resource (See {@link Meta#getVersion()}).
-         * 
-         * @param version
-         *            the version of the resource
+         *
+         * @param version the version of the resource
          * @return the builder itself
          */
         public Builder setVersion(String version) {
@@ -213,9 +213,8 @@ public class Meta {
 
         /**
          * Sets the type of the Resource (See {@link Meta#getResourceType()}).
-         * 
-         * @param resourceType
-         *            the type
+         *
+         * @param resourceType the type
          * @return the builder itself
          */
         public Builder setResourceType(String resourceType) {
@@ -225,9 +224,8 @@ public class Meta {
 
         /**
          * Sets the names of the attributes to be removed from the Resource.
-         * 
-         * @param attributes
-         *            name of attributes to be deleted
+         *
+         * @param attributes name of attributes to be deleted
          * @return the builder itself
          */
         public Builder setAttributes(Set<String> attributes) {
@@ -237,7 +235,7 @@ public class Meta {
 
         /**
          * Builds a Meta Object with the given parameters
-         * 
+         *
          * @return a new Meta Object
          */
         public Meta build() {
