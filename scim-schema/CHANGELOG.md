@@ -45,7 +45,7 @@
 Finally released version 1.0!
 - [refactore] Renamed all setMultiValue-Methods to addMultiValues, add the method addMultiValue,
   deleteMultiValue, clearMultiValues -> MultiValue: Email, PhoneNumber, ...
-  Migration: https://github.com/osiam/scim-schema/wiki/Migration#from-release-042-to-10
+  [Migration](docs/migration/README.md#from-release-042-to-10)
 
 ## 0.42 - 2014-04-30
 - [refactore] Extension have been refactored to the builder pattern
@@ -70,5 +70,5 @@ Finally released version 1.0!
 
 ## 0.38 - 2014-02-14
 - [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
-  For migration see: https://github.com/osiam/scim-schema/wiki/Migration#wiki-from-release-037-to-038
+  [Migration](docs/migration/README.md#from-release-037-to-038)
 
