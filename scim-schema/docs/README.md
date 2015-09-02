@@ -4,8 +4,8 @@
 
 ### SCIM Schema
 
-####[Overview](schema/scim-schema-overview.md)
-####[Integrate the SCIM Schema in your Project](schema/scim-schema-integration.md)
+* [Overview](schema/scim-schema-overview.md)
+* [Integrate the SCIM Schema in your Project](schema/scim-schema-integration.md)
 
 ### API Documentation
 
