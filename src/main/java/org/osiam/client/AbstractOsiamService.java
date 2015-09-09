@@ -306,7 +306,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     private String getScimErrorMessage(String content) {
         try {
             ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
-            return error.getDescription();
+            return error.getDetail();
         } catch (ProcessingException | IOException e) {
             return null;
         }

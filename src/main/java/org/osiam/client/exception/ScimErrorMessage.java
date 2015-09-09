@@ -23,8 +23,9 @@
 
 package org.osiam.client.exception;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.util.Arrays;
 
 /**
  * Scim conform error class
@@ -32,15 +33,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class ScimErrorMessage {
 
-    @JsonProperty("error_code")
-    private String errorCode;
-    private String description;
+    private String[] schemas;
+    private String status;
+    private String detail;
 
-    public String getErrorCode(){
-        return errorCode;
+    public String[] getSchemas() {
+        return Arrays.copyOf(schemas, schemas.length);
     }
 
-    public String getDescription(){
-        return description;
+    public String getStatus() {
+        return status;
+    }
+
+    public String getDetail() {
+        return detail;
     }
 }
