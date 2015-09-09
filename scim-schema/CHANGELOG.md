@@ -1,6 +1,6 @@
 # OSIAM SCIM Schema
 
-## Unreleased
+## 1.5 - 2015-09-09
 
 ### Fixes
 
@@ -12,6 +12,7 @@
 - Deprecate User/Group/Resource#setSchemas(...)
 - Update schema URNs to SCIM draft 19
 - Make User and Group serializable
+- Move documentation from Wiki to repo
 
 ## 1.4 - 2015-06-17
 
