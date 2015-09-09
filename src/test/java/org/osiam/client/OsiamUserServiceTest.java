@@ -59,14 +59,14 @@ public class OsiamUserServiceTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void accessToken_is_null_by_getting_single_user_raises_exception() throws Exception {
+    public void access_token_is_null_by_getting_single_user_raises_exception() throws Exception {
         service.getUser(searchedID, null);
 
         fail("Exception expected");
     }
 
     @Test(expected = NullPointerException.class)
-    public void accessToken_is_null_by_getting_all_group_raises_exception() throws Exception {
+    public void access_token_is_null_by_getting_all_group_raises_exception() throws Exception {
         service.getAllUsers(null);
 
         fail("Exception expected");
@@ -80,7 +80,7 @@ public class OsiamUserServiceTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void create_user_with_null_accestoken_raises_exception() {
+    public void create_user_with_null_access_token_raises_exception() {
         User newUser = new User.Builder("irrelevant").build();
 
         service.createUser(newUser, null);
@@ -96,10 +96,9 @@ public class OsiamUserServiceTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void delete_user_with_null_accestoken_raises_exception() {
+    public void delete_user_with_null_access_token_raises_exception() {
         service.deleteUser("irrelevant", null);
 
         fail("Exception excpected");
     }
-
 }
