@@ -23,11 +23,33 @@
 
 package org.osiam.client;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.common.base.Strings;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OAuthErrorMessage;
+import org.osiam.client.exception.OsiamClientException;
+import org.osiam.client.exception.OsiamRequestException;
+import org.osiam.client.exception.ScimErrorMessage;
+import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
+import org.osiam.resources.helper.UserDeserializer;
+import org.osiam.resources.scim.Resource;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.User;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
@@ -37,23 +59,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
-
-import org.osiam.client.exception.*;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryBuilder;
-import org.osiam.resources.helper.UserDeserializer;
-import org.osiam.resources.scim.Resource;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.User;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.google.common.base.Strings;
+import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
+import java.util.Map;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
@@ -289,7 +298,10 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected String extractErrorMessage(String content, StatusType status) {
 
-        String message = getScimErrorMessage(content);
+        String message = getScimErrorMessageSinceOsiam3(content);
+        if (message == null) {
+            message = getScimErrorMessageUpToOsiam2(content);
+        }
         if (message == null) {
             message = getOAuthErrorMessage(content);
         }
@@ -303,10 +315,19 @@ abstract class AbstractOsiamService<T extends Resource> {
         return message;
     }
 
-    private String getScimErrorMessage(String content) {
+    private String getScimErrorMessageSinceOsiam3(String content) {
         try {
-            ScimErrorMessage error = new ObjectMapper().readValue(content, ScimErrorMessage.class);
+            ScimErrorMessage error = mapper.readValue(content, ScimErrorMessage.class);
             return error.getDetail();
+        } catch (ProcessingException | IOException e) {
+            return null;
+        }
+    }
+
+    private String getScimErrorMessageUpToOsiam2(String content) {
+        try {
+            Map<String, String> error = mapper.readValue(content, new TypeReference<Map<String, String>>() {});
+            return error.get("description");
         } catch (ProcessingException | IOException e) {
             return null;
         }
@@ -314,7 +335,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String getOAuthErrorMessage(String content) {
         try {
-            OAuthErrorMessage error = new ObjectMapper().readValue(content, OAuthErrorMessage.class);
+            OAuthErrorMessage error = mapper.readValue(content, OAuthErrorMessage.class);
             return error.getDescription();
         } catch (ProcessingException | IOException e) {
             return null;
@@ -326,6 +347,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     protected static class Builder<T> {
+
         private String endpoint;
         private Class<T> type;
         private String typeName;
