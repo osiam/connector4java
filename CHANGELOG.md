@@ -1,12 +1,14 @@
 # OSIAM Connector4Java
 
-## 1.7 - 2015-09-09
+## 1.7 - 2015-09-10
 
 ### Changes
 
 - Update scim-schema to solve performance issues when deserializing `User`s
 - Deprecate old, method-based scopes (GET, POST, PUT, PATCH, DELETE)
 - Adjust the client to the SCIM compliant errors (Compatibility with OSIAM <= 2.x is provided)
+- Throws `IllegalStateException` when using a non-configured service endpoint
+  was `InvalidAttributeException`
 
 ## 1.6 - 2015-06-17
 
