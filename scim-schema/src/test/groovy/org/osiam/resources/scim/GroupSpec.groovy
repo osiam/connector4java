@@ -51,7 +51,7 @@ class GroupSpec extends Specification {
         group.members.iterator().next().value == memberRef.value
         group.displayName == 'display'
         group.externalId == 'externalId'
-        group.schemas.first() == Constants.GROUP_CORE_SCHEMA
+        group.schemas.first() == Group.SCHEMA
         group.id == 'id'
     }
 

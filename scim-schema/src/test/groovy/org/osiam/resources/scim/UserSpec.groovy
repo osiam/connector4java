@@ -23,15 +23,10 @@
 
 package org.osiam.resources.scim
 
-import com.sun.corba.se.impl.orbutil.closure.Constant
 import org.apache.commons.lang3.SerializationUtils
 import org.osiam.test.util.DateHelper
 
 import java.nio.ByteBuffer
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
-import java.util.Map
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -40,7 +35,7 @@ class UserSpec extends Specification {
 
     static def EXTENSION_URN = 'urn:org.osiam:schemas:test:1.0:Test'
     static def EXTENSION_EMPTY = new Extension.Builder(EXTENSION_URN).build()
-    static def CORE_SCHEMA_SET = [Constants.USER_CORE_SCHEMA] as Set
+    static def CORE_SCHEMA_SET = [User.SCHEMA] as Set
 
     def 'default constructor should be present due to json mappings'() {
         when:
@@ -69,7 +64,7 @@ class UserSpec extends Specification {
         User user = new User.Builder('username').build()
 
         then:
-        user.schemas[0] == Constants.USER_CORE_SCHEMA
+        user.schemas[0] == User.SCHEMA
     }
 
     @Unroll
@@ -151,7 +146,7 @@ class UserSpec extends Specification {
         user.id == 'id'
         user.meta == meta
         user.externalId == 'externalId'
-        user.schemas.containsAll([Constants.USER_CORE_SCHEMA, 'extension'])
+        user.schemas.containsAll([User.SCHEMA, 'extension'])
         user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING)
     }
 
@@ -238,7 +233,7 @@ class UserSpec extends Specification {
         def extension1 = new Extension.Builder(extension1Urn).build()
         def extension2Urn = 'urn:org.osiam:schemas:test:1.0:Test2'
         def extension2 = new Extension.Builder(extension2Urn).build()
-        def coreSchemaUrn = Constants.USER_CORE_SCHEMA
+        def coreSchemaUrn = User.SCHEMA
 
         when:
         def user = new User.Builder('test2')

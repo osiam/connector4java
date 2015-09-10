@@ -23,10 +23,7 @@
 
 package org.osiam.resources.scim;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -45,10 +42,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class SCIMSearchResult<T> {
 
+    public static final String SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse";
     private long totalResults;
     private long itemsPerPage;
     private long startIndex;
-    private Set<String> schemas;
+    private Set<String> schemas = new HashSet<>(Arrays.asList(SCHEMA));
     private List<T> resources = new ArrayList<>();
 
     /**
@@ -57,24 +55,13 @@ public class SCIMSearchResult<T> {
     SCIMSearchResult() {
     }
 
-    public SCIMSearchResult(List<T> resources, long totalResults, long itemsPerPage, long startIndex, String schema) {
+    public SCIMSearchResult(List<T> resources, long totalResults, long itemsPerPage, long startIndex) {
         this.resources = resources;
         this.totalResults = totalResults;
         this.itemsPerPage = itemsPerPage;
         this.startIndex = startIndex;
-
-        this.schemas = new HashSet<>();
-        this.schemas.add(schema);
     }
 
-    public SCIMSearchResult(List<T> resources, long totalResults, long itemsPerPage, long startIndex,
-            Set<String> schemas) {
-        this.resources = resources;
-        this.totalResults = totalResults;
-        this.itemsPerPage = itemsPerPage;
-        this.startIndex = startIndex;
-        this.schemas = schemas;
-    }
 
     /**
      * gets a list of found {@link User}s or {@link Group}s

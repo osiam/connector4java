@@ -52,6 +52,7 @@ import com.google.common.base.Strings;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class User extends Resource implements Serializable {
 
+    public static final String SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User";
     private static final long serialVersionUID = -4076516708797425414L;
 
     private String userName;
@@ -506,7 +507,7 @@ public class User extends Resource implements Serializable {
          */
         public Builder(String userName, User user) {
             super(user);
-            addSchema(Constants.USER_CORE_SCHEMA);
+            addSchema(SCHEMA);
             if (user != null) {
                 this.userName = user.userName;
                 this.name = user.name;

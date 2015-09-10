@@ -29,7 +29,6 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.osiam.resources.scim.Constants;
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.ExtensionFieldType;
 import org.osiam.resources.scim.User;
@@ -69,7 +68,7 @@ public class UserDeserializer extends StdDeserializer<User> {
         User.Builder builder = new User.Builder(user);
 
         for (String urn : user.getSchemas()) {
-            if (urn.equals(Constants.USER_CORE_SCHEMA)) {
+            if (urn.equals(User.SCHEMA)) {
                 continue;
             }
 
