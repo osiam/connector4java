@@ -1,6 +1,6 @@
 # OSIAM Connector4Java
 
-## 1.7 - 2015-09-10
+## 1.7 - 2015-09-11
 
 ### Changes
 
