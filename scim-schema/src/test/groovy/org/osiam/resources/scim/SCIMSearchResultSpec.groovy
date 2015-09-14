@@ -29,54 +29,13 @@ import spock.lang.Specification
 
 class SCIMSearchResultSpec extends Specification {
 
-    def "parametrized constructor and corresponding getter should be present"() {
-        given:
-        def result = ["searchResult"] as List
-        def schema = "schema1"
-        def schemas = [schema] as Set
-
-        when:
-        def a = new SCIMSearchResult(result, 2342, 100, 1, schema)
-
-        then:
-        a.resources == result
-        a.totalResults == 2342
-        a.itemsPerPage == 100
-        a.startIndex == 1
-        a.schemas == schemas
-    }
-
-    def "parametrized constructor with schema collection should be present"(){
-        given:
-        def result = ["searchResult"] as List
-        def schemas = ["schema1"] as Set
-
-        when:
-        def a = new SCIMSearchResult(result, 2342, 100, 1, schemas)
-
-        then:
-        a.resources == result
-        a.totalResults == 2342
-        a.itemsPerPage == 100
-        a.startIndex == 1
-        a.schemas == schemas
-    }
-
-    def "empty constructor should be present for jackson"() {
-        when:
-        def result = new SCIMSearchResult()
-
-        then:
-        result
-    }
-
     def 'Mapping a SCIMSearchResult from JSON works'() {
         given:
         def json = '''{
           "totalResults":2,
           "itemsPerPage":100,
           "startIndex":1,
-          "schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],
+          "schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
           "Resources":[
             {
               "id":"834b410a-943b-4c80-817a-4465aed037bc",

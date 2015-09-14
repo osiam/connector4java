@@ -50,6 +50,7 @@ import com.google.common.base.Strings;
 @JsonInclude(Include.NON_EMPTY)
 public class Group extends Resource implements Serializable {
 
+    public static final String SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group";
     private static final long serialVersionUID = -2995603177584656028L;
 
     private String displayName;
@@ -117,7 +118,7 @@ public class Group extends Resource implements Serializable {
          */
         public Builder(String displayName, Group group) {
             super(group);
-            addSchema(Constants.GROUP_CORE_SCHEMA);
+            addSchema(SCHEMA);
             if (group != null) {
                 this.displayName = group.displayName;
                 members = group.members;
