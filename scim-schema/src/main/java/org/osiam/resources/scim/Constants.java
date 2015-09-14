@@ -44,6 +44,12 @@ public interface Constants {
      * @deprecated please use {@link SCIMSearchResult}.SCHEMA
      */
     String LIST_RESPONSE_CORE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse";
+    /**
+     * @deprecated  This constant is going to be removed soon.
+     */
     String SERVICE_PROVIDER_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig";
+    /**
+     * @deprecated  This constant is going to be removed soon.
+     */
     int MAX_RESULT = 100;
 }
