@@ -23,9 +23,6 @@
 
 package org.osiam.client;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,19 +31,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.OAuthErrorMessage;
-import org.osiam.client.exception.OsiamClientException;
-import org.osiam.client.exception.OsiamRequestException;
-import org.osiam.client.exception.ScimErrorMessage;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.helper.UserDeserializer;
+import org.osiam.resources.scim.ErrorResponse;
 import org.osiam.resources.scim.Resource;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
@@ -63,6 +53,9 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
@@ -317,7 +310,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String getScimErrorMessageSinceOsiam3(String content) {
         try {
-            ScimErrorMessage error = mapper.readValue(content, ScimErrorMessage.class);
+            ErrorResponse error = mapper.readValue(content, ErrorResponse.class);
             return error.getDetail();
         } catch (ProcessingException | IOException e) {
             return null;
@@ -326,7 +319,8 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String getScimErrorMessageUpToOsiam2(String content) {
         try {
-            Map<String, String> error = mapper.readValue(content, new TypeReference<Map<String, String>>() {});
+            Map<String, String> error = mapper.readValue(content, new TypeReference<Map<String, String>>() {
+            });
             return error.get("description");
         } catch (ProcessingException | IOException e) {
             return null;
