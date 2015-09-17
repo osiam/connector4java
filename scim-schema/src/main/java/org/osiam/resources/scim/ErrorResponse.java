@@ -1,5 +1,7 @@
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Arrays;
@@ -11,7 +13,7 @@ public class ErrorResponse {
     private String status;
     private String detail;
 
-    public ErrorResponse(int statusCode, String message) {
+    public ErrorResponse(@JsonProperty("status") int statusCode, @JsonProperty("detail") String message) {
         status = Integer.toString(statusCode);
         detail = message;
     }
