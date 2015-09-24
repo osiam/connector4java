@@ -23,13 +23,8 @@
 
 package org.osiam.client;
 
-import java.util.List;
-
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.StatusType;
-
+import com.google.common.base.Strings;
+import org.glassfish.jersey.client.ClientProperties;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.oauth.AccessToken;
@@ -39,7 +34,11 @@ import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 
-import com.google.common.base.Strings;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.StatusType;
+import java.util.List;
 
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
@@ -51,8 +50,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
      * one.
      *
-     * @param builder
-     *        a Builder to build the service from
+     * @param builder a Builder to build the service from
      */
     private OsiamUserService(Builder builder) {
         super(builder);
@@ -76,6 +74,8 @@ class OsiamUserService extends AbstractOsiamService<User> {
         try {
             Response response = targetEndpoint.path("me").request(MediaType.APPLICATION_JSON)
                     .header("Authorization", BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, getConnectTimeout())
+                    .property(ClientProperties.READ_TIMEOUT, getReadTimeout())
                     .get();
 
             status = response.getStatusInfo();
@@ -157,11 +157,40 @@ class OsiamUserService extends AbstractOsiamService<User> {
          * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
          * given endpoint
          *
-         * @param endpoint
-         *        The URL at which the OSIAM server lives.
+         * @param endpoint The URL at which the OSIAM server lives.
          */
         public Builder(String endpoint) {
             super(endpoint);
+        }
+
+        /**
+         * Set the connect timeout per connector, in milliseconds.
+         * <p/>
+         * <p>
+         * A value of zero (0) is equivalent to an interval of infinity. Default: 2500
+         * </p>
+         *
+         * @param connectTimeout the connect timeout per connector, in milliseconds.
+         * @return The builder itself
+         */
+        public Builder withConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Set the read timeout per connector, in milliseconds.
+         * <p/>
+         * <p>
+         * A value of zero (0) is equivalent to an interval of infinity. Default: 5000
+         * </p>
+         *
+         * @param readTimeout the read timeout per connector, in milliseconds.
+         * @return The builder itself
+         */
+        public Builder withReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
+            return this;
         }
 
         /**

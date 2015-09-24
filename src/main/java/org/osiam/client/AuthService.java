@@ -23,26 +23,36 @@
 
 package org.osiam.client;
 
-import static com.google.common.base.Preconditions.*;
-
-import java.io.IOException;
-import java.net.URI;
-
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.StatusType;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.osiam.client.exception.*;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.OAuthErrorMessage;
+import org.osiam.client.exception.OsiamClientException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.StatusType;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriBuilderException;
+import java.io.IOException;
+import java.net.URI;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
@@ -50,13 +60,18 @@ import com.google.common.base.Strings;
  */
 class AuthService {
 
+    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER = "Bearer ";
     private static final String TOKEN_ENDPOINT = "/oauth/token";
+    private static final String TOKEN_REVOCATION_ENDPOINT = "/token/revocation";
+    private static final String TOKEN_VALIDATION_ENDPOINT = "/token/validation";
 
     private final String endpoint;
     private final String clientId;
     private final String clientSecret;
     private final String clientRedirectUri;
+    private final int connectionTimeout;
+    private final int readTimeout;
 
     private final WebTarget targetEndpoint;
 
@@ -66,6 +81,8 @@ class AuthService {
         clientId = builder.clientId;
         clientSecret = builder.clientSecret;
         clientRedirectUri = builder.clientRedirectUri;
+        connectionTimeout = builder.connectTimeout;
+        readTimeout = builder.readTimeout;
 
         targetEndpoint = OsiamConnector.getClient().target(endpoint);
     }
@@ -84,6 +101,8 @@ class AuthService {
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -113,6 +132,8 @@ class AuthService {
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -142,6 +163,8 @@ class AuthService {
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -188,6 +211,8 @@ class AuthService {
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
             status = response.getStatusInfo();
@@ -230,11 +255,13 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/token/validation")
+            Response response = targetEndpoint.path(TOKEN_VALIDATION_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
-                    .header("Authorization", BEARER + tokenToValidate.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + tokenToValidate.getToken())
                     .post(null);
 
             status = response.getStatusInfo();
@@ -252,11 +279,13 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/token/revocation")
+            Response response = targetEndpoint.path(TOKEN_REVOCATION_ENDPOINT)
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
-                    .header("Authorization", BEARER + tokenToRevoke.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + tokenToRevoke.getToken())
                     .post(null);
 
             status = response.getStatusInfo();
@@ -272,11 +301,13 @@ class AuthService {
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("/token/revocation").path(id)
+            Response response = targetEndpoint.path(TOKEN_REVOCATION_ENDPOINT).path(id)
                     .request(MediaType.APPLICATION_JSON)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
-                    .header("Authorization", BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
                     .post(null);
 
             status = response.getStatusInfo();
@@ -354,13 +385,14 @@ class AuthService {
         private String clientSecret;
         private String endpoint;
         private String clientRedirectUri;
+        private int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
+        private int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
 
         /**
          * Set up the Builder for the construction of an {@link AuthService} instance for the OAuth2 service at the
          * given endpoint
          *
-         * @param endpoint
-         *        The URL at which the OAuth2 service lives.
+         * @param endpoint The URL at which the OAuth2 service lives.
          */
         public Builder(String endpoint) {
             this.endpoint = endpoint;
@@ -369,8 +401,7 @@ class AuthService {
         /**
          * Add a ClientId to the OAuth2 request
          *
-         * @param clientId
-         *        The client-Id
+         * @param clientId The client-Id
          * @return The builder itself
          */
         public Builder setClientId(String clientId) {
@@ -381,8 +412,7 @@ class AuthService {
         /**
          * Add a Client redirect URI to the OAuth2 request
          *
-         * @param clientRedirectUri
-         *        the clientRedirectUri which is known to the OSIAM server
+         * @param clientRedirectUri the clientRedirectUri which is known to the OSIAM server
          * @return The builder itself
          */
         public Builder setClientRedirectUri(String clientRedirectUri) {
@@ -393,12 +423,41 @@ class AuthService {
         /**
          * Add a clientSecret to the OAuth2 request
          *
-         * @param clientSecret
-         *        The client secret
+         * @param clientSecret The client secret
          * @return The builder itself
          */
         public Builder setClientSecret(String clientSecret) {
             this.clientSecret = clientSecret;
+            return this;
+        }
+
+        /**
+         * Set the connect timeout per connector, in milliseconds.
+         * <p/>
+         * <p>
+         * A value of zero (0) is equivalent to an interval of infinity. Default: 0
+         * </p>
+         *
+         * @param connectTimeout the connect timeout per connector, in milliseconds.
+         * @return The builder itself
+         */
+        public Builder withConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Set the read timeout per connector, in milliseconds.
+         * <p/>
+         * <p>
+         * A value of zero (0) is equivalent to an interval of infinity. Default: 0
+         * </p>
+         *
+         * @param readTimeout the read timeout per connector, in milliseconds.
+         * @return The builder itself
+         */
+        public Builder withReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
             return this;
         }
 
@@ -410,6 +469,5 @@ class AuthService {
         public AuthService build() {
             return new AuthService(this);
         }
-
     }
 }
