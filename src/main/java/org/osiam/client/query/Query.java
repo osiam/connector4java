@@ -120,11 +120,8 @@ public class Query {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Query [attributes=").append(attributes).append(", filter=").append(filter).append(", sortBy=")
-                .append(sortBy).append(", sortOrder=").append(sortOrder).append(", startIndex=").append(startIndex)
-                .append(", count=").append(count).append("]");
-        return builder.toString();
+        return "Query [attributes=" + attributes + ", filter=" + filter + ", sortBy=" + sortBy +
+                ", sortOrder=" + sortOrder + ", startIndex=" + startIndex + ", count=" + count + "]";
     }
 
 }
