@@ -23,23 +23,22 @@
 
 package org.osiam.resources.scim;
 
-import java.util.*;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.util.*;
 
 /**
  * A class that holds all information from a search request
- *
+ * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02">SCIM core schema 2.0</a>
  * </p>
  *
- * @param <T>
- *            {@link User} or {@link Group}
+ * @param <T> {@link User} or {@link Group}
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SCIMSearchResult<T> {
 
     public static final String SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse";

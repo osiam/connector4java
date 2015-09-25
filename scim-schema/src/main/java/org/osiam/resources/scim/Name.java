@@ -24,20 +24,20 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Strings;
 
 import java.io.Serializable;
 
 /**
  * This class represents the User's real name.
- *
+ * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
  * </p>
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Name implements Serializable {
 
     private static final long serialVersionUID = -2090787512643160922L;
@@ -66,7 +66,7 @@ public class Name implements Serializable {
 
     /**
      * Gets the full name, including all middle names, titles, and suffixes as appropriate, formatted for display.
-     *
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -80,7 +80,7 @@ public class Name implements Serializable {
 
     /**
      * Gets the family name of the User.
-     *
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -94,7 +94,7 @@ public class Name implements Serializable {
 
     /**
      * Gets the given (first) name of the User.
-     *
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -108,7 +108,7 @@ public class Name implements Serializable {
 
     /**
      * Gets the middle name(s) of the User.
-     *
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -122,7 +122,7 @@ public class Name implements Serializable {
 
     /**
      * Gets the honorific prefix(es) of the User.
-     *
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -136,7 +136,7 @@ public class Name implements Serializable {
 
     /**
      * Gets the honorific suffix(es) of the User.
-     *
+     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -155,27 +155,27 @@ public class Name implements Serializable {
      */
     @JsonIgnore
     public boolean isEmpty() {
-        if(!Strings.isNullOrEmpty(formatted)) {
+        if (!Strings.isNullOrEmpty(formatted)) {
             return false;
         }
 
-        if(!Strings.isNullOrEmpty(familyName)) {
+        if (!Strings.isNullOrEmpty(familyName)) {
             return false;
         }
 
-        if(!Strings.isNullOrEmpty(givenName)) {
+        if (!Strings.isNullOrEmpty(givenName)) {
             return false;
         }
 
-        if(!Strings.isNullOrEmpty(middleName)) {
+        if (!Strings.isNullOrEmpty(middleName)) {
             return false;
         }
 
-        if(!Strings.isNullOrEmpty(honorificPrefix)) {
+        if (!Strings.isNullOrEmpty(honorificPrefix)) {
             return false;
         }
 
-        if(!Strings.isNullOrEmpty(honorificSuffix)) {
+        if (!Strings.isNullOrEmpty(honorificSuffix)) {
             return false;
         }
 
@@ -203,8 +203,7 @@ public class Name implements Serializable {
         /**
          * Sets the full name (See {@link Name#getFormatted()}).
          *
-         * @param formatted
-         *            the formatted name
+         * @param formatted the formatted name
          * @return the builder itself
          */
         public Builder setFormatted(String formatted) {
@@ -215,8 +214,7 @@ public class Name implements Serializable {
         /**
          * Sets the family name of the User (See {@link Name#getFamilyName()}).
          *
-         * @param familyName
-         *            the family name
+         * @param familyName the family name
          * @return the builder itself
          */
         public Builder setFamilyName(String familyName) {
@@ -227,8 +225,7 @@ public class Name implements Serializable {
         /**
          * Sets the given name of the User (See {@link Name#getGivenName()}).
          *
-         * @param givenName
-         *            the given name
+         * @param givenName the given name
          * @return the builder itself
          */
         public Builder setGivenName(String givenName) {
@@ -239,8 +236,7 @@ public class Name implements Serializable {
         /**
          * Sets the middle name(s) of the User (See {@link Name#getMiddleName()}).
          *
-         * @param middleName
-         *            the middle name
+         * @param middleName the middle name
          * @return the builder itself
          */
         public Builder setMiddleName(String middleName) {
@@ -251,8 +247,7 @@ public class Name implements Serializable {
         /**
          * Sets the honorific prefix(es) of the User (See {@link Name#getHonorificPrefix()}).
          *
-         * @param honorificPrefix
-         *            the honorific prefix
+         * @param honorificPrefix the honorific prefix
          * @return the builder itself
          */
         public Builder setHonorificPrefix(String honorificPrefix) {
@@ -263,8 +258,7 @@ public class Name implements Serializable {
         /**
          * Sets the honorific suffix(es) of the User (See {@link Name#getHonorificSuffix()}).
          *
-         * @param honorificSuffix
-         *            the honorific suffix
+         * @param honorificSuffix the honorific suffix
          * @return the builder itself
          */
         public Builder setHonorificSuffix(String honorificSuffix) {
