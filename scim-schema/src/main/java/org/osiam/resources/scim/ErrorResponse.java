@@ -1,12 +1,11 @@
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Arrays;
 
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ErrorResponse {
     public static final String ERROR_URN = "urn:ietf:params:scim:api:messages:2.0:Error";
     private String[] schemas = {ERROR_URN};

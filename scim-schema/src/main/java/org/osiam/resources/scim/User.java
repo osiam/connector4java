@@ -24,7 +24,7 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import org.osiam.resources.exception.SCIMDataValidationException;
@@ -33,20 +33,21 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * User resources are meant to enable expression of common User informations. With the core attributes it should be
- * possible to express most user data. If more information need to be saved in a user object the user extension can be
+ * User resources are meant to enable expression of common User information. It should be possible to express most user
+ * data with the core attributes. If more information need to be saved in a user object the user extension can be
  * used to store all customized data.
  * <p>
  * For more detailed information please look at the
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
  * </p>
  * <p>
- * client info: The scim schema is mainly meant as a connection link between the OSIAM server and by a client like the
- * connector4Java. Some values will be not accepted by the OSIAM server. These specific values have an own client info
+ * client info: The scim schema is mainly meant as a connection link between the OSIAM server and a client like the
+ * connector4Java. Some values will not be accepted by the OSIAM server. These specific values have an own client info
  * documentation section.
  * </p>
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends Resource implements Serializable {
 
     public static final String SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User";

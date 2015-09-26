@@ -23,8 +23,8 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
@@ -35,7 +35,7 @@ import java.io.Serializable;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2">SCIM core schema 2.0</a>
  * </p>
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address extends MultiValuedAttribute implements Serializable { // NOSONAR - Builder constructs instances of this class
 
     private static final long serialVersionUID = 2731087785568277294L;
@@ -68,7 +68,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the full mailing address, formatted for display or use with a mailing label.
-     * 
+     *
      * @return the formatted address
      */
     public String getFormatted() {
@@ -77,7 +77,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the full street address, which may include house number, street name, etc.
-     * 
+     *
      * @return the street address
      */
     public String getStreetAddress() {
@@ -86,7 +86,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the city or locality
-     * 
+     *
      * @return the city or locality
      */
     public String getLocality() {
@@ -95,7 +95,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the state or region
-     * 
+     *
      * @return region the region
      */
     public String getRegion() {
@@ -104,7 +104,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the postal code
-     * 
+     *
      * @return postalCode the postal code
      */
     public String getPostalCode() {
@@ -113,7 +113,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the country name in ISO 3166-1 alpha 2 format, e.g. "DE" or "US".
-     * 
+     *
      * @return the country
      */
     public String getCountry() {
@@ -122,14 +122,12 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
     /**
      * Gets the type of the attribute.
-     * 
+     * <p/>
      * <p>
      * For more detailed information please look at the <a href=
      * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
-     * 
-     * @return
-     * 
+     *
      * @return the actual type
      */
     public Type getType() {
@@ -249,9 +247,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * builds an Builder based of the given Attribute
-         * 
-         * @param address
-         *        existing Attribute
+         *
+         * @param address existing Attribute
          */
         public Builder(Address address) {
             super(address);
@@ -266,10 +263,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the full mailing address (See {@link Address#getFormatted()}).
-         * 
-         * @param formatted
-         *        the formatted address
-         * 
+         *
+         * @param formatted the formatted address
          * @return the builder itself
          */
         public Builder setFormatted(String formatted) {
@@ -279,10 +274,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the full street address component, (See {@link Address#getStreetAddress()}).
-         * 
-         * @param streetAddress
-         *        the street address
-         * 
+         *
+         * @param streetAddress the street address
          * @return the builder itself
          */
         public Builder setStreetAddress(String streetAddress) {
@@ -292,10 +285,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the city or locality.
-         * 
-         * @param locality
-         *        the locality
-         * 
+         *
+         * @param locality the locality
          * @return the builder itself
          */
         public Builder setLocality(String locality) {
@@ -305,10 +296,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the state or region.
-         * 
-         * @param region
-         *        the region
-         * 
+         *
+         * @param region the region
          * @return the builder itself
          */
         public Builder setRegion(String region) {
@@ -318,10 +307,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the postal code
-         * 
-         * @param postalCode
-         *        the postal code
-         * 
+         *
+         * @param postalCode the postal code
          * @return the builder itself
          */
         public Builder setPostalCode(String postalCode) {
@@ -331,9 +318,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
-         * @param type
-         *        the type of the attribute
+         *
+         * @param type the type of the attribute
          * @return the builder itself
          */
         public Builder setType(Type type) {
@@ -343,10 +329,8 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
 
         /**
          * Sets the country name (See {@link Address#getCountry()}).
-         * 
-         * @param country
-         *        the country
-         * 
+         *
+         * @param country the country
          * @return the builder itself
          */
         public Builder setCountry(String country) {
