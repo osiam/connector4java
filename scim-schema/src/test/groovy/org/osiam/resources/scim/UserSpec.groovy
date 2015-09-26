@@ -25,11 +25,10 @@ package org.osiam.resources.scim
 
 import org.apache.commons.lang3.SerializationUtils
 import org.osiam.test.util.DateHelper
-
-import java.nio.ByteBuffer
-
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.nio.ByteBuffer
 
 class UserSpec extends Specification {
 
@@ -301,8 +300,50 @@ class UserSpec extends Specification {
         newUser = new User.Builder(newUserName, oldUser).build()
 
         then:
-        newUser.isActive() == true
+        newUser.isActive()
         newUser.getUserName() == newUserName
+    }
+
+    def 'the primary email is returned'() {
+        given:
+        User user = new User.Builder("user")
+                .addEmail(getEmail())
+                .build()
+
+        expect:
+        user.getPrimaryOrFirstEmail().present
+        user.getPrimaryOrFirstEmail().get().primary
+    }
+
+    def 'the first nonprimary email is returned'() {
+        given:
+        def first = new Email.Builder()
+                .setPrimary(false)
+                .setValue('first@tarent.de')
+                .build()
+
+        def second = new Email.Builder()
+                .setPrimary(false)
+                .setValue('second@tarent.de')
+                .build()
+
+        when:
+        def user = new User.Builder("user")
+                .addEmail(first)
+                .addEmail(second)
+                .build()
+
+        then:
+        user.primaryOrFirstEmail.present
+        user.primaryOrFirstEmail.get() == first
+    }
+
+    def "no email is returned if the user doesn't have one"() {
+        given:
+        def user = new User.Builder("user").build()
+
+        expect:
+        !user.primaryOrFirstEmail.present
     }
 
     Email getEmail() {
@@ -444,7 +485,7 @@ class UserSpec extends Specification {
         user.isActive() == newUser.isActive()
 
         newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsString('keyString') == 'example'
-        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsBoolean('keyBoolean') == true
+        newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsBoolean('keyBoolean')
         newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsInteger('keyInteger') == 123G
         newUser.getExtension('urn:scim:schemas:extension:test:1.0:User').getFieldAsDecimal('keyDecimal') == 123.456G
         newUser.getExtension('urn:scim:schemas:extension:test:1.0:User')
