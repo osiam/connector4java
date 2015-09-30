@@ -29,28 +29,31 @@ import org.osiam.resources.scim.User;
 import com.google.common.base.Optional;
 
 /**
- * This class is a collection of different helper methods around the scim schema context  
+ * This class is a collection of different helper methods around the scim schema context
+ * This class has been deprecated. If You want to use the only method it contains please see
+ * {@link User#getPrimaryOrFirstEmail()}
  */
+@Deprecated
 public class SCIMHelper {
 
-    private SCIMHelper(){
-    }
-    
+
     /**
-     * try to extract an email from the User. 
+     * try to extract an email from the User.
      * If the User has a primary email address this email will be returned.
      * If not the first email address found will be returned.
-     * If no Email has been found email.isPresent() == false 
+     * If no Email has been found email.isPresent() == false
      * @param user a {@link User} with a possible email
      * @return an email if found
+     * @deprecated Please use the method {@link User#getPrimaryOrFirstEmail()}
      */
+    @Deprecated
     public static Optional<Email> getPrimaryOrFirstEmail(User user){
         for (Email email : user.getEmails()) {
             if (email.isPrimary()) {
                 return Optional.of(email);
             }
         }
-        
+
         if(user.getEmails().size() > 0){
             return Optional.of(user.getEmails().get(0));
         }

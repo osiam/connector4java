@@ -24,8 +24,10 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
@@ -276,6 +278,28 @@ public class User extends Resource implements Serializable {
      */
     public List<Email> getEmails() {
         return emails;
+    }
+
+    /**
+     * try to extract an email from the User.
+     * If the User has a primary email address this email will be returned.
+     * If not the first email address found will be returned.
+     * If no Email has been found email.isPresent() == false
+     *
+     * @return an email if found
+     */
+    @JsonIgnore
+    public Optional<Email> getPrimaryOrFirstEmail() {
+        for (Email email : emails) {
+            if (email.isPrimary()) {
+                return Optional.of(email);
+            }
+        }
+
+        if (emails.size() > 0) {
+            return Optional.of(getEmails().get(0));
+        }
+        return Optional.absent();
     }
 
     /**
