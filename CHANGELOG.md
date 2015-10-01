@@ -8,7 +8,7 @@
 - Deprecate old, method-based scopes (GET, POST, PUT, PATCH, DELETE)
 - Adjust the client to the SCIM compliant errors (Compatibility with OSIAM <= 2.x is provided)
 - Throws `IllegalStateException` when using a non-configured service endpoint
-  was `InvalidAttributeException`
+  (was `InvalidAttributeException`)
 
 ## 1.6 - 2015-06-17
 
