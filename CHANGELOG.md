@@ -1,5 +1,11 @@
 # OSIAM Connector4Java
 
+## Unreleased
+
+### Changes
+
+- Ability to set timeouts on per connector basis
+
 ## 1.7 - 2015-09-11
 
 ### Changes

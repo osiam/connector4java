@@ -31,7 +31,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
-import org.osiam.client.exception.*;
+import org.glassfish.jersey.client.ClientProperties;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OAuthErrorMessage;
+import org.osiam.client.exception.OsiamClientException;
+import org.osiam.client.exception.OsiamRequestException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
@@ -71,12 +79,16 @@ abstract class AbstractOsiamService<T extends Resource> {
     private final Class<T> type;
     private final String typeName;
     private final ObjectMapper mapper;
+    private final int connectTimeout;
+    private final int readTimeout;
 
     protected final WebTarget targetEndpoint;
 
     protected AbstractOsiamService(Builder<T> builder) {
         type = builder.type;
         typeName = builder.typeName;
+        connectTimeout = builder.connectTimeout;
+        readTimeout = builder.readTimeout;
 
         mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
@@ -95,6 +107,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         try {
             Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .get();
 
             status = response.getStatusInfo();
@@ -131,6 +145,8 @@ abstract class AbstractOsiamService<T extends Resource> {
                             query.getCount() != QueryBuilder.DEFAULT_COUNT ? query.getCount() : null)
                     .request(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .get();
 
             status = response.getStatusInfo();
@@ -159,6 +175,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         try {
             Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .delete();
 
             status = response.getStatusInfo();
@@ -186,6 +204,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         try {
             Response response = targetEndpoint.path(typeName + "s").request(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .post(Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
 
             status = response.getStatusInfo();
@@ -224,6 +244,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         try {
             Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .method(method, Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
 
             status = response.getStatusInfo();
@@ -339,11 +361,21 @@ abstract class AbstractOsiamService<T extends Resource> {
         checkNotNull(accessToken, "The given accessToken must not be null.");
     }
 
+    protected int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    protected int getReadTimeout() {
+        return readTimeout;
+    }
+
     protected static class Builder<T> {
 
         private String endpoint;
         private Class<T> type;
         private String typeName;
+        protected int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
+        protected int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
 
         @SuppressWarnings("unchecked")
         protected Builder(String endpoint) {

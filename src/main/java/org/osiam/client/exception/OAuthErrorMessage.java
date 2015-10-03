@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * OAuth conform error class 
+ * OAuth conform error class
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class OAuthErrorMessage {
@@ -37,11 +37,11 @@ public class OAuthErrorMessage {
     @JsonProperty("error_description")
     private String description;
 
-    public String getErrorCode(){
+    public String getErrorCode() {
         return errorCode;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 }

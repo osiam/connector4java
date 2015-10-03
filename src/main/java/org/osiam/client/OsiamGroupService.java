@@ -23,27 +23,26 @@
 
 package org.osiam.client;
 
-import java.util.List;
-
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateGroup;
 
+import java.util.List;
+
 /**
  * OsiamGroupService provides all methods necessary to manipulate the {@link Group} resources registered in the given
  * OSIAM installation. For the construction of an instance please use the {@link OsiamGroupService.Builder}
  */
 class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of
-                                                                           // this class
+    // this class
 
     /**
      * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder} to construct
      * one.
      *
-     * @param builder
-     *        The Builder to build the OsiamGroupService from
+     * @param builder The Builder to build the OsiamGroupService from
      */
     private OsiamGroupService(Builder builder) {
         super(builder);
@@ -114,11 +113,40 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
          * Set up the Builder for the construction of an {@link OsiamGroupService} instance for the OSIAM service at the
          * given endpoint
          *
-         * @param endpoint
-         *        The URL at which the OSIAM server lives.
+         * @param endpoint The URL at which the OSIAM server lives.
          */
         public Builder(String endpoint) {
             super(endpoint);
+        }
+
+        /**
+         * Set the connect timeout per connector, in milliseconds.
+         * <p/>
+         * <p>
+         * A value of zero (0) is equivalent to an interval of infinity. Default: 2500
+         * </p>
+         *
+         * @param connectTimeout the connect timeout per connector, in milliseconds.
+         * @return The builder itself
+         */
+        public Builder withConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Set the read timeout per connector, in milliseconds.
+         * <p/>
+         * <p>
+         * A value of zero (0) is equivalent to an interval of infinity. Default: 5000
+         * </p>
+         *
+         * @param readTimeout the read timeout per connector, in milliseconds.
+         * @return The builder itself
+         */
+        public Builder withReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
+            return this;
         }
 
         /**
