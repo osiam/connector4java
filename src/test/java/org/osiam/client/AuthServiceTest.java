@@ -58,7 +58,7 @@ public class AuthServiceTest {
 
         URI expectedUri = new URI(String.format(
                 "%s/oauth/authorize?client_id=%s&response_type=code&redirect_uri=%s&scope=%s",
-                ENDPOINT, VALID_CLIENT_ID, REDIRECT_URI, encodeExpectedString(Scope.ADMIN.toString())));
+                ENDPOINT, VALID_CLIENT_ID, encodeExpectedString(REDIRECT_URI), encodeExpectedString(Scope.ADMIN.toString())));
         assertThat(redirectUri, is(equalTo(expectedUri)));
     }
 
