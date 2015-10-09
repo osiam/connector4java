@@ -22,6 +22,7 @@
  */
 package org.osiam.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.glassfish.jersey.apache.connector.ApacheClientProperties;
@@ -30,6 +31,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.osiam.client.exception.ClientAlreadyExistsException;
+import org.osiam.client.exception.ClientNotFoundException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
@@ -37,6 +40,7 @@ import org.osiam.client.exception.InvalidAttributeException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Client;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
@@ -47,7 +51,6 @@ import org.osiam.resources.scim.UpdateGroup;
 import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import java.net.URI;
 import java.util.List;
@@ -65,7 +68,8 @@ public class OsiamConnector {
     private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 20;
 
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER;
-    private static final Client CLIENT;
+    private static final javax.ws.rs.client.Client client;
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
         CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
@@ -80,11 +84,11 @@ public class OsiamConnector {
                 .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
                 .property(ClientProperties.READ_TIMEOUT, DEFAULT_READ_TIMEOUT);
 
-        CLIENT = ClientBuilder.newClient(clientConfig);
+        client = ClientBuilder.newClient(clientConfig);
     }
 
-    static Client getClient() {
-        return CLIENT;
+    static javax.ws.rs.client.Client getClient() {
+        return client;
     }
 
     /**
@@ -99,7 +103,7 @@ public class OsiamConnector {
      * @param connectTimeout the connect timeout interval, in milliseconds
      */
     public static void setConnectTimeout(int connectTimeout) {
-        CLIENT.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
+        client.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
     }
 
     /**
@@ -114,7 +118,7 @@ public class OsiamConnector {
      * @param readTimeout the read timeout interval, in milliseconds
      */
     public static void setReadTimeout(int readTimeout) {
-        CLIENT.property(ClientProperties.READ_TIMEOUT, readTimeout);
+        client.property(ClientProperties.READ_TIMEOUT, readTimeout);
     }
 
     /**
@@ -377,8 +381,8 @@ public class OsiamConnector {
      * Provides a new and refreshed access token by getting the refresh token from the given access token.
      *
      * @param accessToken the access token to be refreshed
-     * @param scopes      an optional parameter if the scope of the token should be changed. Otherwise the scopes of the old
-     *                    token are used.
+     * @param scopes      an optional parameter if the scope of the token should be changed. Otherwise the scopes of the
+     *                    old token are used.
      * @return the new access token with the refreshed lifetime
      * @throws IllegalArgumentException          in case the accessToken has an empty refresh token
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
@@ -435,7 +439,8 @@ public class OsiamConnector {
      * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. For more
      *                 information please check the documentation
      * @return a valid AccessToken
-     * @throws ConflictException                 in case the given authCode could not be exchanged against a access token
+     * @throws ConflictException                 in case the given authCode could not be exchanged against a access
+     *                                           token
      * @throws ConnectionInitializationException If the Service is unable to connect to the configured OAuth2 service.
      * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @see <a href="https://github.com/osiam/connector4java/docs/login-and-getting-an-access-token
@@ -623,6 +628,81 @@ public class OsiamConnector {
     }
 
     /**
+     * Get client by the given client id.
+     *
+     * @param clientId    the client id
+     * @param accessToken the access token used to access the service
+     * @return The found client
+     * @throws IllegalStateException             If the auth-server endpoint is not configured
+     * @throws UnauthorizedException             if the accessToken is not valid
+     * @throws ForbiddenException                if access to this resource is not allowed
+     * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
+     * @throws ClientNotFoundException           if no client with the given id can be found
+     */
+    public Client getClient(String clientId, AccessToken accessToken) {
+        return authService().getClient(clientId, accessToken);
+    }
+
+    /**
+     * Get all clients.
+     *
+     * @param accessToken the access token used to access the service
+     * @return The found clients
+     * @throws IllegalStateException             If the auth-server endpoint is not configured
+     * @throws UnauthorizedException             if the accessToken is not valid
+     * @throws ForbiddenException                if access to this resource is not allowed
+     * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
+     */
+    public List<Client> getClients(AccessToken accessToken) {
+        return authService().getClients(accessToken);
+    }
+
+    /**
+     * Create a client.
+     *
+     * @param client      the client to create
+     * @param accessToken the access token used to access the service
+     * @return The created client
+     * @throws IllegalStateException             If the auth-server endpoint is not configured
+     * @throws UnauthorizedException             if the accessToken is not valid
+     * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
+     * @throws ClientAlreadyExistsException      if the client with the clientId already exists
+     */
+    public Client createClient(Client client, AccessToken accessToken) {
+        return authService().createClient(client, accessToken);
+    }
+
+    /**
+     * Get OSIAM OAuth client by the given ID.
+     *
+     * @param clientId    the id of the client which should be deleted
+     * @param accessToken the access token used to access the service
+     * @throws IllegalStateException             If the auth-server endpoint is not configured
+     * @throws UnauthorizedException             if the accessToken is not valid
+     * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
+     * @throws ConflictException                 if the client with the clientId already exists
+     */
+    public void deleteClient(String clientId, AccessToken accessToken) {
+        authService().deleteClient(clientId, accessToken);
+    }
+
+    /**
+     * Get OSIAM OAuth client by the given ID.
+     *
+     * @param clientId    the id of the client which should be updated
+     * @param client      the client
+     * @param accessToken the access token used to access the service
+     * @return The updated client
+     * @throws IllegalStateException             If the auth-server endpoint is not configured
+     * @throws UnauthorizedException             if the accessToken is not valid
+     * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
+     * @throws ConflictException                 if the client with the clientId already exists
+     */
+    public Client updateClient(String clientId, Client client, AccessToken accessToken) {
+        return authService().updateClient(clientId, client, accessToken);
+    }
+
+    /**
      * Creates a new {@link QueryBuilder}.
      */
     public QueryBuilder createQueryBuilder() {
@@ -756,8 +836,10 @@ public class OsiamConnector {
          * Construct the {@link OsiamConnector} with the parameters passed to this builder.
          *
          * @return An OsiamConnector configured accordingly.
-         * @throws ConnectionInitializationException If either the provided client credentials (clientId/clientSecret) or, if the requested grant type
-         *                                           is 'password', the user credentials (userName/password) are incomplete.
+         * @throws ConnectionInitializationException If either the provided client credentials
+         *                                           (clientId/clientSecret) or, if the requested grant type is
+         *                                           'password', the user credentials (userName/password) are
+         *                                           incomplete.
          */
         public OsiamConnector build() {
             return new OsiamConnector(this);
