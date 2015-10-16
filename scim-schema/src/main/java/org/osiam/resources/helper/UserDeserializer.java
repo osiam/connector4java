@@ -23,22 +23,21 @@
 
 package org.osiam.resources.helper;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.osiam.resources.scim.Extension;
-import org.osiam.resources.scim.ExtensionFieldType;
-import org.osiam.resources.scim.User;
-
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import org.osiam.resources.scim.Extension;
+import org.osiam.resources.scim.ExtensionFieldType;
+import org.osiam.resources.scim.User;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Map;
 
 public class UserDeserializer extends StdDeserializer<User> {
 
@@ -95,26 +94,26 @@ public class UserDeserializer extends StdDeserializer<User> {
         while (fieldIterator.hasNext()) {
             Map.Entry<String, JsonNode> entry = fieldIterator.next();
             switch (entry.getValue().getNodeType()) {
-            case BOOLEAN:
-                Boolean boolValue = ExtensionFieldType.BOOLEAN.fromString(entry.getValue().asText());
-                extensionBuilder.setField(entry.getKey(), boolValue);
-                break;
-            case STRING:
-                String stringValue = ExtensionFieldType.STRING.fromString(entry.getValue().asText());
-                extensionBuilder.setField(entry.getKey(), stringValue);
-                break;
-            case NUMBER:
-                String numberValueAsString = entry.getValue().asText();
-                if (numberValueAsString.contains(".")) {
-                    BigDecimal decimalValue = ExtensionFieldType.DECIMAL.fromString(numberValueAsString);
-                    extensionBuilder.setField(entry.getKey(), decimalValue);
-                } else {
-                    BigInteger integerValue = ExtensionFieldType.INTEGER.fromString(numberValueAsString);
-                    extensionBuilder.setField(entry.getKey(), integerValue);
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("JSON type not supported: " + entry.getValue().getNodeType());
+                case BOOLEAN:
+                    Boolean boolValue = ExtensionFieldType.BOOLEAN.fromString(entry.getValue().asText());
+                    extensionBuilder.setField(entry.getKey(), boolValue);
+                    break;
+                case STRING:
+                    String stringValue = ExtensionFieldType.STRING.fromString(entry.getValue().asText());
+                    extensionBuilder.setField(entry.getKey(), stringValue);
+                    break;
+                case NUMBER:
+                    String numberValueAsString = entry.getValue().asText();
+                    if (numberValueAsString.contains(".")) {
+                        BigDecimal decimalValue = ExtensionFieldType.DECIMAL.fromString(numberValueAsString);
+                        extensionBuilder.setField(entry.getKey(), decimalValue);
+                    } else {
+                        BigInteger integerValue = ExtensionFieldType.INTEGER.fromString(numberValueAsString);
+                        extensionBuilder.setField(entry.getKey(), integerValue);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("JSON type not supported: " + entry.getValue().getNodeType());
             }
         }
 

@@ -23,10 +23,9 @@
 
 package org.osiam.resources.helper;
 
+import com.google.common.base.Optional;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.User;
-
-import com.google.common.base.Optional;
 
 /**
  * This class is a collection of different helper methods around the scim schema context
@@ -42,19 +41,20 @@ public class SCIMHelper {
      * If the User has a primary email address this email will be returned.
      * If not the first email address found will be returned.
      * If no Email has been found email.isPresent() == false
+     *
      * @param user a {@link User} with a possible email
      * @return an email if found
      * @deprecated Please use the method {@link User#getPrimaryOrFirstEmail()}
      */
     @Deprecated
-    public static Optional<Email> getPrimaryOrFirstEmail(User user){
+    public static Optional<Email> getPrimaryOrFirstEmail(User user) {
         for (Email email : user.getEmails()) {
             if (email.isPrimary()) {
                 return Optional.of(email);
             }
         }
 
-        if(user.getEmails().size() > 0){
+        if (user.getEmails().size() > 0) {
             return Optional.of(user.getEmails().get(0));
         }
         return Optional.absent();

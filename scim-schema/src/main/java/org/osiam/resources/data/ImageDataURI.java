@@ -23,11 +23,11 @@
 
 package org.osiam.resources.data;
 
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-
-import org.osiam.resources.exception.SCIMDataValidationException;
 
 /**
  * A URI of the form data:image/[image extension][;base64],<data>
@@ -37,11 +37,8 @@ public class ImageDataURI extends DataURI {
     public static final String IMAGE_MIME_TYPE = "data:image/";
 
     /**
-     * 
-     * @param imageUri
-     *        A String presenting a URI of the form data:image/[image extension][;base64],<data>
-     * @throws SCIMDataValidationException
-     *         If the given string violates RFC 2396, as augmented by the above deviations
+     * @param imageUri A String presenting a URI of the form data:image/[image extension][;base64],<data>
+     * @throws SCIMDataValidationException If the given string violates RFC 2396, as augmented by the above deviations
      */
     public ImageDataURI(String imageUri) {
         super(imageUri);
@@ -52,11 +49,8 @@ public class ImageDataURI extends DataURI {
     }
 
     /**
-     * 
-     * @param dataUri
-     *        A URI of the form data:image/[image extension][;base64],<data>
-     * @throws SCIMDataValidationException
-     *         if the URI doesn't expects the schema
+     * @param imageUri A URI of the form data:image/[image extension][;base64],<data>
+     * @throws SCIMDataValidationException if the URI doesn't expects the schema
      */
     public ImageDataURI(URI imageUri) {
         super(imageUri);
@@ -67,13 +61,9 @@ public class ImageDataURI extends DataURI {
     }
 
     /**
-     * 
-     * @param inputStream
-     *        a inputStream which will be transformed into an DataURI
-     * @throws IOException
-     *         if the stream can not be read
-     * @throws SCIMDataValidationException
-     *         if the inputStream can't be converted into an URI
+     * @param inputStream a inputStream which will be transformed into an DataURI
+     * @throws IOException                 if the stream can not be read
+     * @throws SCIMDataValidationException if the inputStream can't be converted into an URI
      */
     public ImageDataURI(InputStream inputStream) throws IOException {
         super(inputStream);

@@ -23,21 +23,20 @@
 
 package org.osiam.resources.scim;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
- * 
  * This class represents a {@link User} or a {@link Group} which are members of an actual {@link Group}
- * 
+ * <p/>
  * <p>
  * For more detailed information please look at the
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
  * </p>
  */
-public class MemberRef extends MultiValuedAttribute implements Serializable { // NOSONAR - will be constructed by the
-                                                                              // builder or jackson
+public class MemberRef extends MultiValuedAttribute implements Serializable {
+    // builder or jackson
 
     private static final long serialVersionUID = 2965422671682767189L;
 
@@ -77,14 +76,11 @@ public class MemberRef extends MultiValuedAttribute implements Serializable { //
 
     /**
      * Gets the type of the attribute.
-     *
      * <p>
      * For more detailed information please look at the
      * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     *
-     * @return
      *
      * @return the actual type
      */
@@ -142,8 +138,7 @@ public class MemberRef extends MultiValuedAttribute implements Serializable { //
         /**
          * builds an Builder based of the given Attribute
          *
-         * @param member
-         *        existing Attribute
+         * @param member existing Attribute
          */
         public Builder(MemberRef member) {
             super(member);
@@ -153,8 +148,7 @@ public class MemberRef extends MultiValuedAttribute implements Serializable { //
         /**
          * builds an Builder based of the given {@link User} or {@link Group}
          *
-         * @param resource
-         *        existing {@link User} or {@link Group}
+         * @param resource existing {@link User} or {@link Group}
          */
         public Builder(Resource resource) {
             setValue(resource.getId());
@@ -179,10 +173,9 @@ public class MemberRef extends MultiValuedAttribute implements Serializable { //
         }
 
         /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
-         * @param type
-         *        the type of the attribute
+         * Sets the label indicating the attribute's function (See {@link MemberRef#getType()}).
+         *
+         * @param type the type of the attribute
          * @return the builder itself
          */
         public Builder setType(Type type) {

@@ -28,7 +28,7 @@ import java.io.Serializable;
 
 /**
  * This class represents a entitlement attribute.
- * 
+ * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
@@ -74,14 +74,11 @@ public class Entitlement extends MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the type of the attribute.
-     * 
      * <p>
      * For more detailed information please look at the <a href=
      * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
-     * 
-     * @return
-     * 
+     *
      * @return the actual type
      */
     public Type getType() {
@@ -136,9 +133,8 @@ public class Entitlement extends MultiValuedAttribute implements Serializable {
 
         /**
          * builds an Builder based of the given Attribute
-         * 
-         * @param entitlement
-         *        existing Attribute
+         *
+         * @param entitlement existing Attribute
          */
         public Builder(Entitlement entitlement) {
             super(entitlement);
@@ -165,10 +161,9 @@ public class Entitlement extends MultiValuedAttribute implements Serializable {
         }
 
         /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
-         * @param type
-         *        the type of the attribute
+         * Sets the label indicating the attribute's function (See {@link Entitlement#getType()}}).
+         *
+         * @param type the type of the attribute
          * @return the builder itself
          */
         public Builder setType(Type type) {

@@ -26,7 +26,6 @@ import java.io.Serializable;
 
 /**
  * This class represents a role attribute.
- * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
@@ -71,14 +70,11 @@ public class Role extends MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the type of the attribute.
-     * 
      * <p>
      * For more detailed information please look at the <a href=
      * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
-     * 
-     * @return
-     * 
+     *
      * @return the actual type
      */
     public Type getType() {
@@ -87,7 +83,7 @@ public class Role extends MultiValuedAttribute implements Serializable {
 
     @Override
     public String toString() {
-        return "Role [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary() 
+        return "Role [value=" + getValue() + ", type=" + type + ", primary=" + isPrimary()
                 + ", operation=" + getOperation() + "]";
     }
 
@@ -103,9 +99,8 @@ public class Role extends MultiValuedAttribute implements Serializable {
 
         /**
          * builds an Builder based of the given Attribute
-         * 
-         * @param role
-         *        existing Attribute
+         *
+         * @param role existing Attribute
          */
         public Builder(Role role) {
             super(role);
@@ -138,10 +133,9 @@ public class Role extends MultiValuedAttribute implements Serializable {
         }
 
         /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
-         * @param type
-         *        the type of the attribute
+         * Sets the label indicating the attribute's function (See {@link Role#getType()}).
+         *
+         * @param type the type of the attribute
          * @return the builder itself
          */
         public Builder setType(Type type) {

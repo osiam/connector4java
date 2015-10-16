@@ -31,7 +31,6 @@ import java.io.Serializable;
 
 /**
  * This class represents the User's real name.
- * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -66,7 +65,6 @@ public class Name implements Serializable {
 
     /**
      * Gets the full name, including all middle names, titles, and suffixes as appropriate, formatted for display.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -80,7 +78,6 @@ public class Name implements Serializable {
 
     /**
      * Gets the family name of the User.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -94,7 +91,6 @@ public class Name implements Serializable {
 
     /**
      * Gets the given (first) name of the User.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -108,7 +104,6 @@ public class Name implements Serializable {
 
     /**
      * Gets the middle name(s) of the User.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -122,7 +117,6 @@ public class Name implements Serializable {
 
     /**
      * Gets the honorific prefix(es) of the User.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -136,7 +130,6 @@ public class Name implements Serializable {
 
     /**
      * Gets the honorific suffix(es) of the User.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
@@ -187,6 +180,51 @@ public class Name implements Serializable {
         return "Name [formatted=" + formatted + ", familyName=" + familyName + ", givenName=" + givenName
                 + ", middleName=" + middleName + ", honorificPrefix=" + honorificPrefix + ", honorificSuffix="
                 + honorificSuffix + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Name other = (Name) o;
+
+        if (familyName != null ? !familyName.equals(other.familyName) : other.familyName != null) {
+            return false;
+        }
+        if (formatted != null ? !formatted.equals(other.formatted) : other.formatted != null) {
+            return false;
+        }
+        if (givenName != null ? !givenName.equals(other.givenName) : other.givenName != null) {
+            return false;
+        }
+        if (honorificPrefix != null ? !honorificPrefix.equals(other.honorificPrefix) : other.honorificPrefix != null) {
+            return false;
+        }
+        if (honorificSuffix != null ? !honorificSuffix.equals(other.honorificSuffix) : other.honorificSuffix != null) {
+            return false;
+        }
+        if (middleName != null ? !middleName.equals(other.middleName) : other.middleName != null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (familyName == null ? 0 : familyName.hashCode());
+        result = prime * result + (formatted == null ? 0 : formatted.hashCode());
+        result = prime * result + (givenName == null ? 0 : givenName.hashCode());
+        result = prime * result + (honorificPrefix == null ? 0 : honorificPrefix.hashCode());
+        result = prime * result + (honorificSuffix == null ? 0 : honorificSuffix.hashCode());
+        result = prime * result + (middleName == null ? 0 : middleName.hashCode());
+        return result;
     }
 
     /**
@@ -274,50 +312,5 @@ public class Name implements Serializable {
         public Name build() {
             return new Name(this);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Name other = (Name) o;
-
-        if (familyName != null ? !familyName.equals(other.familyName) : other.familyName != null) {
-            return false;
-        }
-        if (formatted != null ? !formatted.equals(other.formatted) : other.formatted != null) {
-            return false;
-        }
-        if (givenName != null ? !givenName.equals(other.givenName) : other.givenName != null) {
-            return false;
-        }
-        if (honorificPrefix != null ? !honorificPrefix.equals(other.honorificPrefix) : other.honorificPrefix != null) {
-            return false;
-        }
-        if (honorificSuffix != null ? !honorificSuffix.equals(other.honorificSuffix) : other.honorificSuffix != null) {
-            return false;
-        }
-        if (middleName != null ? !middleName.equals(other.middleName) : other.middleName != null) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (familyName == null ? 0 : familyName.hashCode());
-        result = prime * result + (formatted == null ? 0 : formatted.hashCode());
-        result = prime * result + (givenName == null ? 0 : givenName.hashCode());
-        result = prime * result + (honorificPrefix == null ? 0 : honorificPrefix.hashCode());
-        result = prime * result + (honorificSuffix == null ? 0 : honorificSuffix.hashCode());
-        result = prime * result + (middleName == null ? 0 : middleName.hashCode());
-        return result;
     }
 }
