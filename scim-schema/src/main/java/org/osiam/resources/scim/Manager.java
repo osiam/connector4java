@@ -38,9 +38,8 @@ public class Manager {
 
     /**
      * Gets the value of the managerId property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
      */
     public String getManagerId() {
         return managerId;
@@ -48,9 +47,8 @@ public class Manager {
 
     /**
      * Gets the value of the displayName property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
      */
     public String getDisplayName() {
         return displayName;

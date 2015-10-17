@@ -23,19 +23,18 @@
 
 package org.osiam.resources.helper;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import org.osiam.resources.scim.Extension;
+import org.osiam.resources.scim.Extension.Field;
+import org.osiam.resources.scim.ExtensionFieldType;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.osiam.resources.scim.Extension;
-import org.osiam.resources.scim.Extension.Field;
-import org.osiam.resources.scim.ExtensionFieldType;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class ExtensionSerializer extends JsonSerializer<Extension> {
 

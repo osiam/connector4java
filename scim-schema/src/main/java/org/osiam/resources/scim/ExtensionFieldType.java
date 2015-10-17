@@ -23,11 +23,10 @@
 
 package org.osiam.resources.scim;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.io.BaseEncoding;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,92 +35,15 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-
-import com.google.common.io.BaseEncoding;
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * This enum like class represents the valid extension field types. Instances of this class also define methods for
  * converting these types from and to {@link String}.
  *
- * @param <T>
- *            the actual type this {@link ExtensionFieldType} represents
+ * @param <T> the actual type this {@link ExtensionFieldType} represents
  */
 public abstract class ExtensionFieldType<T> implements Serializable {
-
-    private static final long serialVersionUID = 5665143978696725609L;
-
-    private String name;
-
-    private ExtensionFieldType(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Converts the given {@link String} to the actual type.
-     *
-     * @param stringValue
-     *            the {@link String} value to be converted
-     * @return the given {@link String} value converted to the actual Type
-     */
-    public abstract T fromString(String stringValue);
-
-    /**
-     * Converts a value of the actual type to {@link String}.
-     *
-     * @param value
-     *            the value to be converted
-     * @return the given value as {@link String}
-     */
-    public abstract String toString(T value);
-
-    /**
-     * Returns the name of the {@link ExtensionFieldType}
-     *
-     * @return the name of the {@link ExtensionFieldType}
-     */
-    public final String getName() {
-        return name;
-    }
-
-    /**
-     * Returns a string representation of the {@link ExtensionFieldType} which is its name.
-     */
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    /**
-     * Retrieves a {@link ExtensionFieldType} by its name.
-     *
-     * @param name
-     *            the name of the {@link ExtensionFieldType} as it is returned by toString()
-     * @return the {@link ExtensionFieldType} based on the given name
-     * @throws IllegalArgumentException
-     *             if there is no {@link ExtensionFieldType} with the given name
-     */
-    public static ExtensionFieldType<?> valueOf(String name) {
-        switch (name) {
-        case "STRING":
-            return STRING;
-        case "INTEGER":
-            return INTEGER;
-        case "DECIMAL":
-            return DECIMAL;
-        case "BOOLEAN":
-            return BOOLEAN;
-        case "DATE_TIME":
-            return DATE_TIME;
-        case "BINARY":
-            return BINARY;
-        case "REFERENCE":
-            return REFERENCE;
-        default:
-            throw new IllegalArgumentException("Type " + name + " does not exist");
-        }
-    }
 
     /**
      * ExtensionFieldType for the Scim type String (actual type is {@link String})
@@ -141,7 +63,6 @@ public abstract class ExtensionFieldType<T> implements Serializable {
         }
 
     };
-
     /**
      * ExtensionFieldType for the Scim type Integer (actual type is {@link BigInteger})
      */
@@ -164,7 +85,6 @@ public abstract class ExtensionFieldType<T> implements Serializable {
         }
 
     };
-
     /**
      * ExtensionFieldType for the Scim type Decimal (actual type is {@link BigDecimal})
      */
@@ -187,7 +107,6 @@ public abstract class ExtensionFieldType<T> implements Serializable {
         }
 
     };
-
     /**
      * ExtensionFieldType for the Scim type Boolean (actual type is {@link Boolean})
      */
@@ -209,39 +128,6 @@ public abstract class ExtensionFieldType<T> implements Serializable {
         }
 
     };
-
-    /**
-     * Since this field can not be serialized, it will be created when the object is de-serialized (see readObject()).
-     */
-    private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
-
-    /**
-     * ExtensionFieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO
-     * DateTimeFormat with the timeZone UTC like '2011-08-01T18:29:49.000Z'
-     */
-    public static final ExtensionFieldType<Date> DATE_TIME = new ExtensionFieldType<Date>("DATE_TIME") { // NOSONAR -
-        // it is ok if the inner class is over 20 characters long
-
-
-        @Override
-        public Date fromString(String stringValue) {
-            ensureValueIsNotNull(stringValue);
-            try {
-                long millis = dateTimeFormatter.parseDateTime(stringValue).getMillis();
-                return new Date(millis);
-            } catch (NumberFormatException e) {
-                throw createConversionException(stringValue, "Date", e);
-            }
-        }
-
-        @Override
-        public String toString(Date value) {
-            ensureValueIsNotNull(value);
-            return dateTimeFormatter.print(value.getTime());
-        }
-
-    };
-
     /**
      * ExtensionFieldType for the Scim type Binary (actual type is {@link ByteBuffer})
      */
@@ -264,7 +150,6 @@ public abstract class ExtensionFieldType<T> implements Serializable {
         }
 
     };
-
     /**
      * ExtensionFieldType for the Scim type Reference (actual type is {@link URI})
      */
@@ -287,6 +172,103 @@ public abstract class ExtensionFieldType<T> implements Serializable {
         }
 
     };
+    private static final long serialVersionUID = 5665143978696725609L;
+    /**
+     * Since this field can not be serialized, it will be created when the object is de-serialized (see readObject()).
+     */
+    private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime().withZoneUTC();
+    /**
+     * ExtensionFieldType for the Scim type DateTime (actual type is {@link Date}). Valid values are in ISO
+     * DateTimeFormat with the timeZone UTC like '2011-08-01T18:29:49.000Z'
+     */
+    public static final ExtensionFieldType<Date> DATE_TIME = new ExtensionFieldType<Date>("DATE_TIME") {
+        // it is ok if the inner class is over 20 characters long
+
+
+        @Override
+        public Date fromString(String stringValue) {
+            ensureValueIsNotNull(stringValue);
+            try {
+                long millis = dateTimeFormatter.parseDateTime(stringValue).getMillis();
+                return new Date(millis);
+            } catch (NumberFormatException e) {
+                throw createConversionException(stringValue, "Date", e);
+            }
+        }
+
+        @Override
+        public String toString(Date value) {
+            ensureValueIsNotNull(value);
+            return dateTimeFormatter.print(value.getTime());
+        }
+
+    };
+    private String name;
+
+    private ExtensionFieldType(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Retrieves a {@link ExtensionFieldType} by its name.
+     *
+     * @param name the name of the {@link ExtensionFieldType} as it is returned by toString()
+     * @return the {@link ExtensionFieldType} based on the given name
+     * @throws IllegalArgumentException if there is no {@link ExtensionFieldType} with the given name
+     */
+    public static ExtensionFieldType<?> valueOf(String name) {
+        switch (name) {
+            case "STRING":
+                return STRING;
+            case "INTEGER":
+                return INTEGER;
+            case "DECIMAL":
+                return DECIMAL;
+            case "BOOLEAN":
+                return BOOLEAN;
+            case "DATE_TIME":
+                return DATE_TIME;
+            case "BINARY":
+                return BINARY;
+            case "REFERENCE":
+                return REFERENCE;
+            default:
+                throw new IllegalArgumentException("Type " + name + " does not exist");
+        }
+    }
+
+    /**
+     * Converts the given {@link String} to the actual type.
+     *
+     * @param stringValue the {@link String} value to be converted
+     * @return the given {@link String} value converted to the actual Type
+     */
+    public abstract T fromString(String stringValue);
+
+    /**
+     * Converts a value of the actual type to {@link String}.
+     *
+     * @param value the value to be converted
+     * @return the given value as {@link String}
+     */
+    public abstract String toString(T value);
+
+    /**
+     * Returns the name of the {@link ExtensionFieldType}
+     *
+     * @return the name of the {@link ExtensionFieldType}
+     */
+    public final String getName() {
+        return name;
+    }
+
+    /**
+     * Returns a string representation of the {@link ExtensionFieldType} which is its name.
+     */
+    @Override
+    public String toString() {
+        return getName();
+    }
 
     protected IllegalArgumentException createConversionException(String stringValue, String targetType, Throwable cause) {
         IllegalArgumentException exception = createConversionException(stringValue, targetType);

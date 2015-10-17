@@ -210,6 +210,7 @@ public class Group extends Resource implements Serializable {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public Group build() {
             return new Group(this);
         }

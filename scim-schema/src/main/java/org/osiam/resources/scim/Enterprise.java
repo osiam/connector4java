@@ -26,7 +26,7 @@ package org.osiam.resources.scim;
 /**
  * Java class for extension enterprise.
  */
-public final class Enterprise { // NOSONAR - this class is instantiable with the builder
+public final class Enterprise {
 
     private final String employeeNumber;
     private final String costCenter;
@@ -42,6 +42,30 @@ public final class Enterprise { // NOSONAR - this class is instantiable with the
         this.division = builder.division;
         this.department = builder.department;
         this.manager = builder.manager;
+    }
+
+    public String getEmployeeNumber() {
+        return employeeNumber;
+    }
+
+    public String getCostCenter() {
+        return costCenter;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public String getDivision() {
+        return division;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public Manager getManager() {
+        return manager;
     }
 
     public static class Builder {
@@ -89,30 +113,6 @@ public final class Enterprise { // NOSONAR - this class is instantiable with the
         public Enterprise build() {
             return new Enterprise(this);
         }
-    }
-
-    public String getEmployeeNumber() {
-        return employeeNumber;
-    }
-
-    public String getCostCenter() {
-        return costCenter;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public String getDivision() {
-        return division;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public Manager getManager() {
-        return manager;
     }
 
 }

@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * Class to create a UpdateGroup Object to update a existing Group
  */
-public final class UpdateGroup {// NOSONAR - Builder constructs instances of this class
+public final class UpdateGroup {
 
     private Group group;
 
@@ -51,11 +51,11 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
      */
     public static class Builder {
 
+        private static final String DELETE = "delete";
         private Group.Builder updateGroup = null;
         private String displayName = null;
         private String externalId = null;
         private Set<String> deleteFields = new HashSet<>();
-        private static final String DELETE = "delete";
         private Set<MemberRef> members = new HashSet<>();
 
         /**
@@ -71,8 +71,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
         /**
          * updates the external id of a existing group
          *
-         * @param externalID
-         *        new external id
+         * @param externalID new external id
          * @return The builder itself
          */
         public Builder updateExternalId(String externalID) {
@@ -83,8 +82,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
         /**
          * updates the display name of a existing group
          *
-         * @param displayName
-         *        new display name
+         * @param displayName new display name
          * @return The builder itself
          */
         public Builder updateDisplayName(String displayName) {
@@ -105,8 +103,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
         /**
          * removes the membership of the given group or user in a existing group
          *
-         * @param memberId
-         *        group or user id to be removed
+         * @param memberId group or user id to be removed
          * @return The builder itself
          */
         public Builder deleteMember(String memberId) {
@@ -120,8 +117,7 @@ public final class UpdateGroup {// NOSONAR - Builder constructs instances of thi
         /**
          * adds a new membership of a group or a user to a existing group
          *
-         * @param memberId
-         *        user or group id to be added
+         * @param memberId user or group id to be added
          * @return The builder itself
          */
         public Builder addMember(String memberId) {

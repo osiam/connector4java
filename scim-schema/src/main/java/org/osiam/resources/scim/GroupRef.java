@@ -28,7 +28,6 @@ import java.io.Serializable;
 
 /**
  * This class represents a Reference of a Group
- * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
@@ -64,14 +63,11 @@ public class GroupRef extends MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the type of the attribute.
-     * 
      * <p>
      * For more detailed information please look at the <a href=
      * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
-     * 
-     * @return
-     * 
+     *
      * @return the actual type
      */
     public Type getType() {
@@ -115,8 +111,8 @@ public class GroupRef extends MultiValuedAttribute implements Serializable {
 
     @Override
     public String toString() {
-        return "GroupRef [display=" + getDisplay() +", value=" + getValue() + ", type=" + type + ", primary=" + isPrimary() 
-                + ", operation=" + getOperation() + ", ref=" + getReference() + "]";
+        return "GroupRef [display=" + getDisplay() + ", value=" + getValue() + ", type=" + type + ", primary="
+                + isPrimary() + ", operation=" + getOperation() + ", ref=" + getReference() + "]";
     }
 
     /**
@@ -139,10 +135,9 @@ public class GroupRef extends MultiValuedAttribute implements Serializable {
         }
 
         /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
-         * 
-         * @param type
-         *        the type of the attribute
+         * Sets the label indicating the attribute's function (See {@link GroupRef#getType()}).
+         *
+         * @param type the type of the attribute
          * @return the builder itself
          */
         public Builder setType(Type type) {
@@ -168,11 +163,11 @@ public class GroupRef extends MultiValuedAttribute implements Serializable {
      */
     public static class Type extends MultiValuedAttributeType {
         /**
-         * The User is direct in the actual Group
+         * The User is in the Group directly.
          */
         public static final Type DIRECT = new Type("direct");
         /**
-         * The User is not direct in the actual Group but in a Group that is in the actual Group
+         * The User is not directly in the  Group but in another Group that is in the  Group
          */
         public static final Type INDIRECT = new Type("indirect");
 

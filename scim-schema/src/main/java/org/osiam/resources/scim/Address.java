@@ -36,7 +36,7 @@ import java.io.Serializable;
  * </p>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Address extends MultiValuedAttribute implements Serializable { // NOSONAR - Builder constructs instances of this class
+public class Address extends MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = 2731087785568277294L;
 
@@ -317,7 +317,7 @@ public class Address extends MultiValuedAttribute implements Serializable { // N
         }
 
         /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
+         * Sets the label indicating the attribute's function (See {@link Address#getType()}).
          *
          * @param type the type of the attribute
          * @return the builder itself

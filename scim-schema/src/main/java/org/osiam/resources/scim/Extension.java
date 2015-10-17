@@ -1,7 +1,3 @@
-package org.osiam.resources.scim;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
 /*
  * Copyright (C) 2013 tarent AG
  *
@@ -24,7 +20,15 @@ import java.math.BigDecimal;
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.ImmutableMap;
+import org.osiam.resources.helper.ExtensionSerializer;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -33,15 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.osiam.resources.helper.ExtensionSerializer;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.collect.ImmutableMap;
-
 /**
  * This class represents a schema extension.
- * 
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-4">SCIM core schema 2.0, section 4</a>
@@ -70,7 +67,7 @@ public class Extension implements Serializable {
 
     /**
      * Returns the URN of this extension.
-     * 
+     *
      * @return The URN
      */
     public String getUrn() {
@@ -79,16 +76,12 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name and type.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
-     * @param extensionFieldType
-     *        The type of the field.
+     *
+     * @param field              The name of the field to retrieve the value of.
+     * @param extensionFieldType The type of the field.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public <T> T getField(String field, ExtensionFieldType<T> extensionFieldType) {
         if (field == null || field.isEmpty()) {
@@ -107,14 +100,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as String.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public String getFieldAsString(String field) {
         return getField(field, ExtensionFieldType.STRING);
@@ -122,14 +112,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as boolean.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public boolean getFieldAsBoolean(String field) {
         return getField(field, ExtensionFieldType.BOOLEAN);
@@ -137,14 +124,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as ByteBuffer.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public ByteBuffer getFieldAsByteBuffer(String field) {
         return getField(field, ExtensionFieldType.BINARY);
@@ -152,14 +136,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as Date.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public Date getFieldAsDate(String field) {
         return getField(field, ExtensionFieldType.DATE_TIME);
@@ -167,14 +148,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as BigDecimal.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public BigDecimal getFieldAsDecimal(String field) {
         return getField(field, ExtensionFieldType.DECIMAL);
@@ -182,14 +160,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as BigInteger.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public BigInteger getFieldAsInteger(String field) {
         return getField(field, ExtensionFieldType.INTEGER);
@@ -197,14 +172,11 @@ public class Extension implements Serializable {
 
     /**
      * Return the value for the field with a given name as URI.
-     * 
-     * @param field
-     *        The name of the field to retrieve the value of.
+     *
+     * @param field The name of the field to retrieve the value of.
      * @return The value for the field with the given name.
-     * @throws NoSuchElementException
-     *         if this schema does not contain a field of the given name.
-     * @throws IllegalArgumentException
-     *         if the given field is null or an empty string or if the extensionFieldType is null.
+     * @throws NoSuchElementException   if this schema does not contain a field of the given name.
+     * @throws IllegalArgumentException if the given field is null or an empty string or if the extensionFieldType is null.
      */
     public URI getFieldAsReference(String field) {
         return getField(field, ExtensionFieldType.REFERENCE);
@@ -212,7 +184,7 @@ public class Extension implements Serializable {
 
     /**
      * Provides a {@link Map} containing the entries of the extension. Note that the returned {@link Map} is immutable.
-     * 
+     *
      * @return The Entries of this schema as an map.
      */
     @JsonIgnore
@@ -223,9 +195,8 @@ public class Extension implements Serializable {
     /**
      * Checks if the given field is present in this extension because not every field is mandatory (according to scim
      * 2.0 spec).
-     * 
-     * @param field
-     *        Name of the field to check
+     *
+     * @param field Name of the field to check
      * @return true if the given field is present, else false
      */
     public boolean isFieldPresent(String field) {
@@ -300,9 +271,8 @@ public class Extension implements Serializable {
 
         /**
          * Constructs an extension with the given urn.
-         * 
-         * @param urn
-         *        the urn of the extension
+         *
+         * @param urn the urn of the extension
          */
         public Builder(String urn) {
             this.urn = urn;
@@ -310,9 +280,8 @@ public class Extension implements Serializable {
 
         /**
          * Constructs an extension based on the given extension.
-         * 
-         * @param extension
-         *        existing extension
+         *
+         * @param extension existing extension
          */
         public Builder(Extension extension) {
             this.urn = extension.urn;
@@ -322,11 +291,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, String value) {
@@ -337,11 +304,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, Boolean value) {
@@ -352,11 +317,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, ByteBuffer value) {
@@ -367,11 +330,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, BigInteger value) {
@@ -382,11 +343,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, BigDecimal value) {
@@ -397,11 +356,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, Date value) {
@@ -412,11 +369,9 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
+         *
+         * @param fieldName the field name
+         * @param value     the new value
          * @return the builder itself
          */
         public Builder setField(String fieldName, URI value) {
@@ -427,13 +382,10 @@ public class Extension implements Serializable {
         /**
          * Sets the field specified by the given field name with the given value of the given type. <br>
          * Can only be set and saved if extension field is registered in the database
-         * 
-         * @param fieldName
-         *        the field name
-         * @param value
-         *        the new value
-         * @param type
-         *        the scim type of the field
+         *
+         * @param fieldName the field name
+         * @param value     the new value
+         * @param type      the scim type of the field
          * @return the builder itself
          */
         public <T> Builder setField(String fieldName, T value, ExtensionFieldType<T> type) {
@@ -452,9 +404,8 @@ public class Extension implements Serializable {
 
         /**
          * removes one field and its value
-         * 
-         * @param fieldName
-         *        the field to be removed
+         *
+         * @param fieldName the field to be removed
          * @return the builder itself
          */
         public Builder removeField(String fieldName) {
@@ -479,11 +430,9 @@ public class Extension implements Serializable {
 
         /**
          * Constructs a new {@link Field} with the given type and value.
-         * 
-         * @param type
-         *        the type of the field
-         * @param value
-         *        the value of the field
+         *
+         * @param type  the type of the field
+         * @param value the value of the field
          */
         public Field(ExtensionFieldType<?> type, String value) {
             this.type = type;
@@ -492,7 +441,7 @@ public class Extension implements Serializable {
 
         /**
          * Returns the type of the {@link Field}
-         * 
+         *
          * @return the type of the {@link Field}
          */
         public ExtensionFieldType<?> getType() {
@@ -501,7 +450,7 @@ public class Extension implements Serializable {
 
         /**
          * Returns the value of the {@link Field}
-         * 
+         *
          * @return the value of the {@link Field}
          */
         public String getValue() {

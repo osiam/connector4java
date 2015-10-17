@@ -23,18 +23,17 @@
 
 package org.osiam.resources.scim;
 
-import java.io.Serializable;
-
-import org.osiam.resources.exception.SCIMDataValidationException;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
+import org.osiam.resources.exception.SCIMDataValidationException;
+
+import java.io.Serializable;
 
 /**
  * This class represents a multi valued attribute.
- * 
+ * <p/>
  * <p>
  * For more detailed information please look at the
  * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
@@ -69,13 +68,12 @@ public abstract class MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the attribute's significant value; e.g., the e-mail address, phone number etc.
-     * 
      * <p>
      * For more detailed information please look at the
      * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     * 
+     *
      * @return the value of the actual multi value attribute
      */
     protected String getValue() {
@@ -84,13 +82,12 @@ public abstract class MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the human readable name, primarily used for display purposes.
-     * 
      * <p>
      * For more detailed information please look at the
      * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     * 
+     *
      * @return the display attribute
      */
     protected String getDisplay() {
@@ -99,13 +96,12 @@ public abstract class MultiValuedAttribute implements Serializable {
 
     /**
      * Gets a Boolean value indicating the 'primary' or preferred attribute value for this attribute.
-     * 
      * <p>
      * For more detailed information please look at the
      * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     * 
+     *
      * @return the primary attribute
      */
     protected boolean isPrimary() {
@@ -114,13 +110,12 @@ public abstract class MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the operation applied during a PATCH request.
-     * 
      * <p>
      * For more detailed information please look at the
      * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section
      * 3.2</a>
      * </p>
-     * 
+     *
      * @return the operation
      */
     protected String getOperation() {
@@ -129,13 +124,13 @@ public abstract class MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the reference to the actual SCIM Resource.
-     * 
+     * <p/>
      * <p>
      * For more detailed information please look at the
      * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections
      * 8</a>
      * </p>
-     * 
+     *
      * @return the reference of the actual resource
      */
     protected String getReference() {
@@ -232,9 +227,8 @@ public abstract class MultiValuedAttribute implements Serializable {
 
         /**
          * Sets the attribute's significant value (See {@link MultiValuedAttribute#getValue()}).
-         * 
-         * @param value
-         *        the value attribute
+         *
+         * @param value the value attribute
          * @return the builder itself
          */
         protected Builder setValue(String value) {
@@ -247,14 +241,12 @@ public abstract class MultiValuedAttribute implements Serializable {
 
         /**
          * Sets the human readable name (See {@link MultiValuedAttribute#getDisplay()}).
-         * 
          * <p>
          * client info: the Display value is set by the OSIAM server. If a MultiValuedAttribute which is send to the
          * OSIAM server has this value filled, the value will be ignored or the action will be rejected.
          * </p>
-         * 
-         * @param display
-         *        a human readable name
+         *
+         * @param display a human readable name
          * @return the builder itself
          */
         protected Builder setDisplay(String display) {
@@ -264,9 +256,8 @@ public abstract class MultiValuedAttribute implements Serializable {
 
         /**
          * Sets the primary attribute (See {@link MultiValuedAttribute#isPrimary()}).
-         * 
-         * @param the
-         *        primary attribute
+         *
+         * @param primary indicates if this is the primary attribute
          * @return the builder itself
          */
         protected Builder setPrimary(boolean primary) {
@@ -276,11 +267,11 @@ public abstract class MultiValuedAttribute implements Serializable {
 
         /**
          * Sets the operation (See {@link MultiValuedAttribute#getOperation()}).
-         * 
+         * <p>
          * Will be automatically set by the {@link UpdateUser}
-         * 
-         * @param operation
-         *        only "delete" is supported at the moment
+         * </p>
+         *
+         * @param operation only "delete" is supported at the moment
          * @return the builder itself
          */
         protected Builder setOperation(String operation) {
@@ -290,14 +281,12 @@ public abstract class MultiValuedAttribute implements Serializable {
 
         /**
          * Sets the reference (See {@link MemberRef#getReference()}).
-         * 
          * <p>
          * client info: the Reference value is set by the OSIAM server. If a MultiValuedAttribute which is send to the
          * OSIAM server has this value filled, the value will be ignored or the action will be rejected.
          * </p>
-         * 
-         * @param reference
-         *        the scim conform reference to the member
+         *
+         * @param reference the scim conform reference to the member
          * @return the builder itself
          */
         protected Builder setReference(String reference) {
@@ -307,7 +296,7 @@ public abstract class MultiValuedAttribute implements Serializable {
 
         /**
          * Builds a new Attribute with the given parameters
-         * 
+         *
          * @return a new MultiValuedAttribute Object
          */
         protected abstract MultiValuedAttribute build();

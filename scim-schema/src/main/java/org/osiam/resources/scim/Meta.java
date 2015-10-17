@@ -34,7 +34,6 @@ import java.util.Set;
 
 /**
  * This class represents the meta data of a resource.
- * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02">SCIM core schema 2.0</a>
@@ -71,7 +70,6 @@ public class Meta implements Serializable {
 
     /**
      * Gets the URI of the Resource being returned.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5">SCIM core schema 2.0, section 5</a>
@@ -85,7 +83,6 @@ public class Meta implements Serializable {
 
     /**
      * Gets the version of the Resource being returned.
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5">SCIM core schema 2.0, section 5</a>
@@ -99,7 +96,6 @@ public class Meta implements Serializable {
 
     /**
      * Gets the attributes to be deleted from the Resource
-     * <p/>
      * <p>
      * For more detailed information please look at the <a
      * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-5">SCIM core schema 2.0, section 5</a>
@@ -142,6 +138,76 @@ public class Meta implements Serializable {
      */
     public String getResourceType() {
         return resourceType;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+        result = prime * result + ((created == null) ? 0 : created.hashCode());
+        result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        result = prime * result + ((resourceType == null) ? 0 : resourceType.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Meta other = (Meta) obj;
+        if (attributes == null) {
+            if (other.attributes != null) {
+                return false;
+            }
+        } else if (!attributes.equals(other.attributes)) {
+            return false;
+        }
+        if (created == null) {
+            if (other.created != null) {
+                return false;
+            }
+        } else if (!created.equals(other.created)) {
+            return false;
+        }
+        if (lastModified == null) {
+            if (other.lastModified != null) {
+                return false;
+            }
+        } else if (!lastModified.equals(other.lastModified)) {
+            return false;
+        }
+        if (location == null) {
+            if (other.location != null) {
+                return false;
+            }
+        } else if (!location.equals(other.location)) {
+            return false;
+        }
+        if (resourceType == null) {
+            if (other.resourceType != null) {
+                return false;
+            }
+        } else if (!resourceType.equals(other.resourceType)) {
+            return false;
+        }
+        if (version == null) {
+            if (other.version != null) {
+                return false;
+            }
+        } else if (!version.equals(other.version)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -242,75 +308,4 @@ public class Meta implements Serializable {
             return new Meta(this);
         }
     }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
-        result = prime * result + ((created == null) ? 0 : created.hashCode());
-        result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
-        result = prime * result + ((location == null) ? 0 : location.hashCode());
-        result = prime * result + ((resourceType == null) ? 0 : resourceType.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Meta other = (Meta) obj;
-        if (attributes == null) {
-            if (other.attributes != null) {
-                return false;
-            }
-        } else if (!attributes.equals(other.attributes)) {
-            return false;
-        }
-        if (created == null) {
-            if (other.created != null) {
-                return false;
-            }
-        } else if (!created.equals(other.created)) {
-            return false;
-        }
-        if (lastModified == null) {
-            if (other.lastModified != null) {
-                return false;
-            }
-        } else if (!lastModified.equals(other.lastModified)) {
-            return false;
-        }
-        if (location == null) {
-            if (other.location != null) {
-                return false;
-            }
-        } else if (!location.equals(other.location)) {
-            return false;
-        }
-        if (resourceType == null) {
-            if (other.resourceType != null) {
-                return false;
-            }
-        } else if (!resourceType.equals(other.resourceType)) {
-            return false;
-        }
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!version.equals(other.version)) {
-            return false;
-        }
-        return true;
-    }
-
 }

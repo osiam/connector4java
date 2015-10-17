@@ -23,38 +23,33 @@
 
 package org.osiam.resources.data;
 
+import com.google.common.base.Strings;
+import org.apache.tika.Tika;
+import org.apache.tika.io.IOUtils;
+import org.osiam.resources.exception.SCIMDataValidationException;
+
+import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.xml.bind.DatatypeConverter;
-
-import org.apache.tika.Tika;
-import org.apache.tika.io.IOUtils;
-import org.osiam.resources.exception.SCIMDataValidationException;
-
-import com.google.common.base.Strings;
-
 /**
  * A URI of the form data:[<mediatype>][;base64],<data>
  */
 public class DataURI {
 
-    private URI dataUri;
     public static final String DATA = "data:";
     public static final String BASE64 = ";base64,";
+    private URI dataUri;
 
     /**
-     * 
-     * @param dataUri
-     *        A String presenting a URI of the form data:[<mediatype>][;base64],<data>
-     * @throws SCIMDataValidationException
-     *         if the dataUri violates RFC 2396, as augmented by the above deviations
+     * @param dataUri A String presenting a URI of the form data:[<mediatype>][;base64],<data>
+     * @throws SCIMDataValidationException if the dataUri violates RFC 2396, as augmented by the above deviations
      */
     public DataURI(String dataUri) {
-        if(Strings.isNullOrEmpty(dataUri)){
+        if (Strings.isNullOrEmpty(dataUri)) {
             throw new SCIMDataValidationException("The given string can't be null or empty.");
         }
         if (!dataUri.startsWith(DATA) || !dataUri.contains(BASE64)) {
@@ -68,14 +63,11 @@ public class DataURI {
     }
 
     /**
-     * 
-     * @param dataUri
-     *        A URI of the form data:[<mediatype>][;base64],<data>
-     * @throws SCIMDataValidationException
-     *         if the URI doesn't expects the schema
+     * @param dataUri A URI of the form data:[<mediatype>][;base64],<data>
+     * @throws SCIMDataValidationException if the URI doesn't expects the schema
      */
     public DataURI(URI dataUri) {
-        if(dataUri == null){
+        if (dataUri == null) {
             throw new SCIMDataValidationException("The given dataUri can't be null.");
         }
         if (!dataUri.toString().startsWith(DATA) || !dataUri.toString().contains(BASE64)) {
@@ -85,16 +77,12 @@ public class DataURI {
     }
 
     /**
-     * 
-     * @param inputStream
-     *        a inputStream which will be transformed into an DataURI
-     * @throws IOException
-     *         if the stream can not be read or is closed
-     * @throws SCIMDataValidationException
-     *         if the inputStream can't be converted into an DataURI
+     * @param inputStream a inputStream which will be transformed into an DataURI
+     * @throws IOException                 if the stream can not be read or is closed
+     * @throws SCIMDataValidationException if the inputStream can't be converted into an DataURI
      */
     public DataURI(InputStream inputStream) throws IOException {
-        if(inputStream == null){
+        if (inputStream == null) {
             throw new SCIMDataValidationException("The given inputStream can't be null.");
         }
         String mimeType = new Tika().detect(inputStream);
@@ -119,7 +107,6 @@ public class DataURI {
     }
 
     /**
-     * 
      * @return gets the dataURI as java.net.URI
      */
     public URI getAsURI() {
@@ -127,7 +114,6 @@ public class DataURI {
     }
 
     /**
-     * 
      * @return gets the dataURI as InputStream
      */
     public InputStream getAsInputStream() {
@@ -139,7 +125,7 @@ public class DataURI {
 
     /**
      * a mime type e.g. image/png
-     * 
+     *
      * @return the mime type of the DataURI
      */
     public String getMimeType() {

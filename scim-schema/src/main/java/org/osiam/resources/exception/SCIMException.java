@@ -30,9 +30,9 @@ public class SCIMException extends RuntimeException {
     public SCIMException(String message) {
         super(message);
     }
-    
+
     public SCIMException(String message, Throwable e) {
         super(message, e);
     }
-    
+
 }

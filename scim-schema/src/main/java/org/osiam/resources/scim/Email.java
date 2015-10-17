@@ -22,17 +22,16 @@
  */
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.osiam.resources.exception.SCIMDataValidationException;
+
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.osiam.resources.exception.SCIMDataValidationException;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * This class represents a email attribute.
- *
+ * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
@@ -78,13 +77,10 @@ public class Email extends MultiValuedAttribute implements Serializable {
 
     /**
      * Gets the type of the attribute.
-     *
      * <p>
      * For more detailed information please look at the <a href=
      * "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2" >SCIM core schema 2.0, section 3.2</a>
      * </p>
-     *
-     * @return
      *
      * @return the actual type
      */
@@ -147,8 +143,7 @@ public class Email extends MultiValuedAttribute implements Serializable {
         /**
          * builds an Builder based of the given Attribute
          *
-         * @param email
-         *        existing Attribute
+         * @param email existing Attribute
          */
         public Builder(Email email) {
             super(email);
@@ -170,8 +165,7 @@ public class Email extends MultiValuedAttribute implements Serializable {
         /**
          * Sets the email value.
          *
-         * @param value
-         *        the email attribute
+         * @param value the email attribute
          * @return the builder itself
          * @throws SCIMDataValidationException in case the value is not a well-formed email
          */
@@ -186,10 +180,9 @@ public class Email extends MultiValuedAttribute implements Serializable {
         }
 
         /**
-         * Sets the label indicating the attribute's function (See {@link MultiValuedAttribute#getType()}).
+         * Sets the label indicating the attribute's function (See {@link Email#getType()}).
          *
-         * @param type
-         *        the type of the attribute
+         * @param type the type of the attribute
          * @return the builder itself
          */
         public Builder setType(Type type) {

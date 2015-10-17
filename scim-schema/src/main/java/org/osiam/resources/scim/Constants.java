@@ -27,7 +27,6 @@ package org.osiam.resources.scim;
  * Some needed Constants
  *
  * @deprecated This interface has been deprecated and is going to be removed in a future release.
- *
  */
 @Deprecated
 public interface Constants {
@@ -45,11 +44,11 @@ public interface Constants {
      */
     String LIST_RESPONSE_CORE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse";
     /**
-     * @deprecated  This constant is going to be removed soon.
+     * @deprecated This constant is going to be removed soon.
      */
     String SERVICE_PROVIDER_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig";
     /**
-     * @deprecated  This constant is going to be removed soon.
+     * @deprecated This constant is going to be removed soon.
      */
     int MAX_RESULT = 100;
 }

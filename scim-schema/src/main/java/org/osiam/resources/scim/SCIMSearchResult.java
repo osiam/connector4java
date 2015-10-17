@@ -30,7 +30,6 @@ import java.util.*;
 
 /**
  * A class that holds all information from a search request
- * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02">SCIM core schema 2.0</a>
