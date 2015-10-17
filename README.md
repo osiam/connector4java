@@ -1,10 +1,10 @@
 # connector4java [![Circle CI](https://circleci.com/gh/osiam/connector4java.svg?style=svg)](https://circleci.com/gh/osiam/connector4java)
 
-For detailed information and documentation visit the [connector4java Wiki]
-(https://github.com/osiam/connector4java/wiki).
+For more information and documentation please take a look in the
+[docs](docs/README.md).
 
 If you are interested to use the OSIAM connector4java please watch or, even
-better, join us on Github.
+better, join us on GitHub.
 
 ## Overview
 
@@ -18,10 +18,10 @@ login for Java.
 ## Short OSIAM introduction
 
 OSIAM provides an easy and secure oauth2 standard login of users. It is also
-possible to asign users to groups with different roles.
+possible to assign users to groups with different roles.
 
 It is possible to run a dedicated OSIAM User and Group Server or to connect to
-an existing identitiy provider (like login over facebook).
+an existing identity provider (like login over facebook).
 
 OSIAM provides three different ways to log in:
 
@@ -53,7 +53,7 @@ It is
 ## OSIAM Connector for Java
 
 The connector4java enables easy and convenient use of OSIAM authentication and
-user management in a Java enviroment.
+user management in a Java environment.
 
 It provides a easy to use API, a step by step documentation how to set up a test
 system and also offers different “ready to go” examples that should enable the

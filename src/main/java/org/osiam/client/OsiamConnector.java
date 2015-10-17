@@ -357,7 +357,7 @@ public class OsiamConnector {
 
     /**
      * Search for existing groups by a given {@link org.osiam.client.query.Query Query}. For more detailed information
-     * about the possible logical operators and usable fields please have a look into the wiki.
+     * about the possible logical operators and usable fields please have a look into the documentation.
      *
      * @param query       containing the needed search where statement
      * @param accessToken the OSIAM access token from for the current session
@@ -366,9 +366,8 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             If the resource-server endpoint is not configured
-     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups#search-for-groups">https://github.
-     * <p/>
-     * com/osiam/connector4java/wiki/Working-with-groups#search-for-groups</a>
+     * @see <a href="https://github.com/osiam/connector4java/docs/working-with-groups
+     * .md#search-for-groups#search-for-groups">Search for groups</a>
      */
     public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
         return groupService().searchGroups(query, accessToken);
@@ -392,14 +391,13 @@ public class OsiamConnector {
 
     /**
      * provides the needed URI which is needed to reconnect the User to the OSIAM server to login. A detailed example
-     * how to use this method, can be seen in our wiki in gitHub
+     * how to use this method, can be seen in the documentation
      *
      * @param scopes the wanted scopes for the user who want's to log in with the oauth workflow
      * @return the needed redirect Uri
      * @throws IllegalStateException If the auth-server endpoint is not configured
-     * @see <a href=
-     * "https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">
-     * https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
+     * @see <a href="https://github.com/osiam/connector4java/docs/login-and-getting-an-access-token
+     * .md#grant-authorization-code">Grant authorization code</a>
      */
     public URI getAuthorizationUri(Scope... scopes) {
         return authService().getAuthorizationUri(scopes);
@@ -435,14 +433,13 @@ public class OsiamConnector {
      * login).
      *
      * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. For more
-     *                 information please look at the wiki at github
+     *                 information please check the documentation
      * @return a valid AccessToken
      * @throws ConflictException                 in case the given authCode could not be exchanged against a access token
      * @throws ConnectionInitializationException If the Service is unable to connect to the configured OAuth2 service.
      * @throws IllegalStateException             If the auth-server endpoint is not configured
-     * @see <a href=
-     * "https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code">
-     * https://github.com/osiam/connector4java/wiki/Login-and-getting-an-access-token#grant-authorization-code</a>
+     * @see <a href="https://github.com/osiam/connector4java/docs/login-and-getting-an-access-token
+     * .md#grant-authorization-code">Grant authorization code</a>
      */
     public AccessToken retrieveAccessToken(String authCode) {
         return authService().retrieveAccessToken(authCode);
@@ -514,7 +511,7 @@ public class OsiamConnector {
 
     /**
      * update the user of the given id with the values given in the User Object. For more detailed information how to
-     * set new field, update Fields or to delete Fields please look in the wiki
+     * set new field, update Fields or to delete Fields please look in the documentation
      *
      * @param id          if of the User to be updated
      * @param updateUser  all Fields that need to be updated
@@ -526,8 +523,7 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             If the resource-server endpoint is not configured
-     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-user">https://github.com/osiam/
-     * connector4java/wiki/Working-with-user</a>
+     * @see <a href="https://github.com/osiam/connector4java/docs/working-with-user.md">Working with user</a>
      */
     public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
         return userService().updateUser(id, updateUser, accessToken);
@@ -554,7 +550,7 @@ public class OsiamConnector {
 
     /**
      * update the group of the given id with the values given in the Group Object. For more detailed information how to
-     * set new field. Update Fields or to delete Fields please look in the wiki
+     * set new field. Update Fields or to delete Fields please look in the documentation
      *
      * @param id          id of the Group to be updated
      * @param updateGroup all Fields that need to be updated
@@ -566,8 +562,8 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             If the resource-server endpoint is not configured
-     * @see <a href="https://github.com/osiam/connector4java/wiki/Working-with-groups">https://github.com/osiam/
-     * connector4java/wiki/Working-with-groups</a>
+     * @see <a href="https://github.com/osiam/connector4java/docs/working-with-groups
+     * .md#search-for-groups">Working with groups</a>
      */
     public Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken) {
         return groupService().updateGroup(id, updateGroup, accessToken);

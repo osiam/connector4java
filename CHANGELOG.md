@@ -91,19 +91,19 @@
 
 ## 1.0 - 2014-05-15
 Finally released version 1.0 of all important OSIAM projects!
-- [enhancement] You can check if an accesstoken is valid
+- [enhancement] You can check if an access token is valid
 - [enhancement] AccessToken provides additional information about the user it belongs to and the
   expiration date of the refresh token. The AccessToken can be created with a Builder.
 - [refactor] The OsiamConnector.Builder doesn't need all information to create an AccessToken. You can set
   the needed information directly in the retrieveAccessToken(...) methods. The OsiamConnector provides one
   retrieveAccessToken-method for each grant
-  For detailed information: https://github.com/osiam/connector4java/wiki/Migration#from-015-to-10
+  For detailed information, please checkout the [migration](migration.md#from-015-to-10)
 
 ## 0.15 - 2014-04-30
 - [feature] added class StringQueryBuilder
 - [feature] added class QueryHelper
 - [refactor] renaming some methods in the OsiamConnector.Builder
-  For detailed information: https://github.com/osiam/connector4java/wiki/Migration#from-014-to-015
+  For detailed information, please checkout the [migration](migration.md#from-014-to-015)
 
 ## 0.14 - 2014-04-02
 - [enhancement] Raised SCIM-Schema version to 0.41. No migration necessary.
@@ -113,6 +113,6 @@ Finally released version 1.0 of all important OSIAM projects!
 
 ## 0.13 - 2014-02-14
 - [feature] OSNG-215 - Develop PATCH "Delete" support on extensions
-  For migration see: https://github.com/osiam/connector4java/wiki/Migration#wiki-from-012-to-013
+  For migration see: [migration](migration.md#from-012-to-013)
 - Updating a user is only possible by using an UpdateUser, updating with User is not supported anymore
-  https://github.com/osiam/connector4java/wiki/Migration#wiki-from-012-to-013
+  [migration](migration.md#from-012-to-013)
