@@ -4,7 +4,7 @@ For general information about the different OAuth 2.0 grant types please see
 the [Overview of Osiam]
 (https://github.com/osiam/osiam/blob/master/docs/OSIAM-Overview.md#oauth-20).
 A more technical explanation can be found in the [API documentation]
-(https://github.com/osiam/auth-server/blob/master/docs/api_documentation.md#oauth2).
+(https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#oauth2).
 
 Table of contents
 - [Retrieving an access token](login-and-getting-an-access-token.md#retrieving-an-access-token)
@@ -18,25 +18,25 @@ Table of contents
 You access token will have some scopes to grant access to the different
 procedures.
 
-The supported scopes in OSIAM are listed [here](https://github.com/osiam/auth-server/blob/master/docs/api_documentation
+The supported scopes in OSIAM are listed [here](https://github.com/osiam/osiam/blob/master/docs/api_documentation
 .md#supported-scopes)
 
 With **new Scope("your scope");** you can also create and add your own scopes that you need an your application
 
 # Retrieving an access token
 
-In a trusted environment getting an access token from the OAuth 2.0 server
-implies a successful login of the user. 
+In a trusted environment getting an access token from OSIAM implies a successful
+login of the user. 
 
-## [Authorization Code Grant](https://github.com/osiam/auth-server/blob/master/docs/api_documentation.md#authorization-code-grant)
+## [Authorization Code Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#authorization-code-grant)
 
 The authorization code grant should always be used as default grant, as other
 grants are less secure and should only be used if you know what you are doing.
 
 It takes to steps to get an access token using the authorization code grant:
 
-1. Redirect the user to the OAuth 2.0 server and let the user login. You will
-get an **auth code**.
+1. Redirect the user to OSIAM and let the user login. You will get an
+   **auth code**.
 2. Send the auth code to the OAuth 2.0 in exchange for the access token.
 
 To do so follow these steps:
@@ -45,12 +45,12 @@ To do so follow these steps:
 
     OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md#grant-authorization-code)
 
-* Redirect the user to the Auth Server. You can get the redirect URI with the
+* Redirect the user to OSIAM. You can get the redirect URI with the
 following command:
 
     URI redirectURI = oConnector.getRedirectLoginUri(Scope.GET, Scope.PUT);
 
-* After the user is successfully authenticated the auth server redirects the
+* After the user is successfully authenticated, OSIAM redirects the
 user back to your application's redirect URI.
 
 * If everything went fine you will receive the following parameter
@@ -61,7 +61,7 @@ user back to your application's redirect URI.
 
     <YOUR_REDIRECT_URI>?error=access_denied&error_description=User+denied+access
 
-* Send the auth code to the auth server in order to get the access token
+* Send the auth code to OSIAM in order to get the access token
 
     AccessToken accessToken = oConnector.retrieveAccessToken(<AUTHENTICATION_CODE>);	
 
@@ -73,9 +73,9 @@ AccessToken the following way
 
     AccessToken accessToken = new AccessToken.Builder(<token>).build();
 
-## [Resource Owner Password Credentials Grant](https://github.com/osiam/auth-server/blob/master/docs/api_documentation.md#resource-owner-password-credentials-grant) 
+## [Resource Owner Password Credentials Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#resource-owner-password-credentials-grant) 
 and
-## [Client Credentials Grant](https://github.com/osiam/auth-server/blob/master/docs/api_documentation.md#client-credentials-grant)
+## [Client Credentials Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#client-credentials-grant)
 
 The OSIAM Connector4java allows you to retrieve an
 **org.osiam.client.oauth.accessToken**. The access token is required to access

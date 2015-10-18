@@ -71,7 +71,7 @@ import static org.osiam.client.OsiamConnector.objectMapper;
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
-    protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to server";
+    protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to OSIAM";
 
     protected static final String AUTHORIZATION = "Authorization";
     protected static final String BEARER = "Bearer ";

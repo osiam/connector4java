@@ -12,16 +12,14 @@ This repository contains the OSIAM Connector for Java.
 
 The current version can be found at http://search.maven.org/#search|ga|1|osiam.
 
-Together with the OSIAM server it provides an easy to use OAuth2 SCIM based user
-login for Java.
+Together with OSIAM it provides an easy to use OAuth2 SCIM based user login for
+Java.
 
 ## Short OSIAM introduction
 
 OSIAM provides an easy and secure oauth2 standard login of users. It is also
-possible to assign users to groups with different roles.
-
-It is possible to run a dedicated OSIAM User and Group Server or to connect to
-an existing identity provider (like login over facebook).
+possible to assign users to groups with different roles. It is also possible to
+connect to an existing identity provider (like login over facebook).
 
 OSIAM provides three different ways to log in:
 
@@ -31,13 +29,13 @@ OSIAM provides three different ways to log in:
   user is used for login)
 
 - 1 Step login: The user can provide his login and password to your application
-  and you can get the security credentials directly from the OSIAM server
-  without a required authorization from the user
+  and you can get the security credentials directly from OSIAM without a
+  required authorization from the user
 
-- direct login: It is possible to get a security credentials directly from the
-  OSIAM server without the need of any user data
+- direct login: It is possible to get a security credentials directly from OSIAM
+  without the need of any user data
 
-The different ways to login depend on the configured grants on the OSIAM server.
+The different ways to login depend on the configured grants in OSIAM.
 
 
 OSIAM does not depend on any programming language.

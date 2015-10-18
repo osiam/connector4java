@@ -587,7 +587,7 @@ class AuthService {
         /**
          * Add a Client redirect URI to the OAuth2 request
          *
-         * @param clientRedirectUri the clientRedirectUri which is known to the OSIAM server
+         * @param clientRedirectUri the clientRedirectUri which is known to OSIAM
          * @return The builder itself
          */
         public Builder setClientRedirectUri(String clientRedirectUri) {

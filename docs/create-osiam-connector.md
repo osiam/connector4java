@@ -4,19 +4,7 @@ using the `OsiamConnector.Builder()` class.
 
 ```java
 OsiamConnector osiamConnector = new OsiamConnector.Builder()
-       .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-       .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-       .setClientId(CLIENT_ID)
-       .setClientSecret(CLIENT_SECRET)
-       .build();
-```
-
-In case your auth and resource server are located at the same location and
-follow the specified naming convention you can also use:
-
-```java
-OsiamConnector osiamConnector = new OsiamConnector.Builder()
-       .setEndpoint(SERVER_ENDPOINT_ADDRESS)
+       .setEndpoint(OSIAM_ENDPOINT)
        .setClientId(CLIENT_ID)
        .setClientSecret(CLIENT_SECRET)
        .build();

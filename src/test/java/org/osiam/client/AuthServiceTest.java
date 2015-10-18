@@ -23,23 +23,22 @@
 
 package org.osiam.client;
 
-import static com.jcabi.matchers.RegexMatchers.containsPattern;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.osiam.client.oauth.Scope;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 
-import org.junit.Test;
-import org.osiam.client.oauth.Scope;
+import static com.jcabi.matchers.RegexMatchers.containsPattern;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class AuthServiceTest {
 
-    private final static String ENDPOINT = "http://localhost:9090/osiam-server";
+    private final static String ENDPOINT = "http://localhost:9090/osiam";
     private final static String REDIRECT_URI = "http://mypage.com";
     private final static String VALID_CLIENT_ID = "valid-client";
     private final static String VALID_CLIENT_SECRET = "valid-secret";
@@ -48,7 +47,7 @@ public class AuthServiceTest {
 
     @Test
     public void service_returns_valid_redirect_Uri() throws Exception {
-        service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT)
+        service = new OsiamConnector.Builder().setEndpoint(ENDPOINT)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
@@ -64,7 +63,7 @@ public class AuthServiceTest {
 
     @Test
     public void double_slash_is_removed_from_path() throws Exception {
-        service = new OsiamConnector.Builder().setAuthServerEndpoint(ENDPOINT + "/")
+        service = new OsiamConnector.Builder().setEndpoint(ENDPOINT + "/")
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
