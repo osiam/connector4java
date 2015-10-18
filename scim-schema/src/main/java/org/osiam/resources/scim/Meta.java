@@ -24,6 +24,7 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.osiam.resources.helper.JsonDateSerializer;
 
@@ -40,23 +41,31 @@ import java.util.Set;
  * </p>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Meta implements Serializable {
+public final class Meta implements Serializable {
 
     private static final long serialVersionUID = -4536271487921469946L;
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    private Date created;
+    private final Date created;
     @JsonSerialize(using = JsonDateSerializer.class)
-    private Date lastModified;
-    private String location;
-    private String version;
-    private Set<String> attributes = new HashSet<>();
-    private String resourceType;
+    private final Date lastModified;
+    private final String location;
+    private final String version;
+    private final Set<String> attributes;
+    private final String resourceType;
 
-    /**
-     * Default constructor for Jackson
-     */
-    private Meta() {
+    public Meta(@JsonProperty("created") @JsonSerialize(using = JsonDateSerializer.class) Date created,
+                @JsonProperty("lastModified") @JsonSerialize(using = JsonDateSerializer.class) Date lastModified,
+                @JsonProperty("location") String location,
+                @JsonProperty("version") String version,
+                @JsonProperty("attributes") Set<String> attributes,
+                @JsonProperty("resourceType") String resourceType) {
+        this.created = created;
+        this.lastModified = lastModified;
+        this.location = location;
+        this.version = version;
+        this.attributes = attributes;
+        this.resourceType = resourceType;
     }
 
     private Meta(Builder builder) {

@@ -22,31 +22,38 @@
  */
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 /**
  * This class represents a entitlement attribute.
- * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Entitlement extends MultiValuedAttribute implements Serializable {
+public final class Entitlement extends MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = -1630551919515647349L;
 
-    @JsonProperty
-    private Type type;
+    private final Type type;
 
-    /**
-     * Default constructor for Jackson
-     */
-    private Entitlement() {
+    @JsonCreator
+    private Entitlement(@JsonProperty("operation") String operation,
+                        @JsonProperty("value") String value,
+                        @JsonProperty("display") String display,
+                        @JsonProperty("primary") boolean primary,
+                        @JsonProperty("$ref") String reference,
+                        @JsonProperty("type") Type type) {
+        super(operation, value, display, primary, reference);
+        this.type = type;
     }
 
+    /**
+     * Constructor for deserialization, it is not intended for general use.
+     */
     private Entitlement(Builder builder) {
         super(builder);
         type = builder.type;

@@ -44,7 +44,7 @@ public class SCIMSearchResult<T> {
     private long totalResults;
     private long itemsPerPage;
     private long startIndex;
-    private Set<String> schemas = new HashSet<>(Arrays.asList(SCHEMA));
+    private Set<String> schemas = new HashSet<>(Collections.singletonList(SCHEMA));
     private List<T> resources = new ArrayList<>();
 
     /**

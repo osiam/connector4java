@@ -29,13 +29,6 @@ import spock.lang.Specification
 
 class MetaSpec extends Specification {
 
-    def "should contain empty constructor for json serializing"() {
-        when:
-        def meta = new Meta()
-        then:
-        meta
-    }
-
     def "should be able to create without explicit created, last modified"() {
         given:
         def oldSysTime = System.currentTimeMillis()

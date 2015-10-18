@@ -36,13 +36,6 @@ class UserSpec extends Specification {
     static def EXTENSION_EMPTY = new Extension.Builder(EXTENSION_URN).build()
     static def CORE_SCHEMA_SET = [User.SCHEMA] as Set
 
-    def 'default constructor should be present due to json mappings'() {
-        when:
-        def user = new User()
-        then:
-        user != null
-    }
-
     def 'should contain core schemas as default'() {
         when:
         def user = new User.Builder('username').build()
@@ -152,10 +145,12 @@ class UserSpec extends Specification {
     @Unroll
     def 'creating a user with copy builder copies #field field if present'() {
         given:
-        def user = new User.Builder('user').build()
+        def builder = new User.Builder('user')
+
 
         when:
-        user[(field)] = value
+        builder[(field)] = value
+        def user = builder.build()
         def copiedUser = new User.Builder(user).build()
 
         then:
@@ -178,10 +173,11 @@ class UserSpec extends Specification {
     @Unroll
     def 'creating a user with copy builder initializes #field empty if missing in original'() {
         given:
-        def user = new User.Builder('user').build()
+        def builder = new User.Builder('user')
 
         when:
-        user[(field)] = value
+        builder[(field)] = value
+        def user = builder.build()
         def copiedUser = new User.Builder(user).build()
 
         then:

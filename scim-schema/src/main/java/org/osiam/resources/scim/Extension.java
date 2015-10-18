@@ -22,7 +22,9 @@
  */
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
 import org.osiam.resources.helper.ExtensionSerializer;
@@ -45,19 +47,19 @@ import java.util.NoSuchElementException;
  * </p>
  */
 @JsonSerialize(using = ExtensionSerializer.class)
-public class Extension implements Serializable {
+public final class Extension implements Serializable {
 
     private static final long serialVersionUID = -121658804932369438L;
 
     @JsonIgnore
-    private String urn;
+    private final String urn;
 
-    private Map<String, Field> fields = new HashMap<>();
+    private final Map<String, Field> fields;
 
-    /**
-     * Default constructor for Jackson
-     */
-    protected Extension() {
+    @JsonCreator
+    private Extension(@JsonProperty("urn") String urn, @JsonProperty("fields") Map<String, Field> fields) {
+        this.urn = urn;
+        this.fields = fields;
     }
 
     private Extension(Builder builder) {

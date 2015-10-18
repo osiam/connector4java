@@ -13,6 +13,7 @@
 ### Changes
 
 - Deprecate `UserDeserializer#UserDeserializer(Class<?> valueClass)`
+- All scim-schema classes are now immutable.
 
 ## 1.5 - 2015-09-09
 

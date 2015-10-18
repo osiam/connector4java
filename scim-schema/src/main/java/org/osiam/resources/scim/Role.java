@@ -22,6 +22,9 @@
  */
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -31,16 +34,21 @@ import java.io.Serializable;
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
-public class Role extends MultiValuedAttribute implements Serializable {
+public final class Role extends MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = -4086224449976544553L;
 
-    private Type type;
+    private final Type type;
 
-    /**
-     * Default constructor for Jackson
-     */
-    private Role() {
+    @JsonCreator
+    public Role(@JsonProperty("operation") String operation,
+                @JsonProperty("value") String value,
+                @JsonProperty("display") String display,
+                @JsonProperty("primary") boolean primary,
+                @JsonProperty("$ref") String reference,
+                @JsonProperty("type") Type type) {
+        super(operation, value, display, primary, reference);
+        this.type = type;
     }
 
     private Role(Builder builder) {
