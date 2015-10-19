@@ -23,10 +23,13 @@
 
 package org.osiam.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Strings;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.osiam.client.exception.ClientAlreadyExistsException;
+import org.osiam.client.exception.ClientNotFoundException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.exception.ForbiddenException;
@@ -34,6 +37,7 @@ import org.osiam.client.exception.OAuthErrorMessage;
 import org.osiam.client.exception.OsiamClientException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Client;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 
@@ -49,10 +53,12 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static org.osiam.client.OsiamConnector.objectMapper;
 
 /**
  * The AuthService provides access to the OAuth2 service used to authorize requests. Please use the
@@ -65,6 +71,7 @@ class AuthService {
     private static final String TOKEN_ENDPOINT = "/oauth/token";
     private static final String TOKEN_REVOCATION_ENDPOINT = "/token/revocation";
     private static final String TOKEN_VALIDATION_ENDPOINT = "/token/validation";
+    private static final String CLIENT_ENDPOINT = "/Client";
 
     private final String endpoint;
     private final String clientId;
@@ -319,8 +326,164 @@ class AuthService {
         checkAndHandleResponse(content, status, accessToken);
     }
 
+    public Client createClient(Client client, AccessToken accessToken) {
+        StatusType status;
+        String createdClient;
+
+        String clientAsString;
+        try {
+            clientAsString = objectMapper.writeValueAsString(client);
+        } catch (JsonProcessingException e) {
+            throw new OsiamClientException(String.format("Unable to parse Client: %s", client), e);
+        }
+
+        try {
+            Response response = targetEndpoint.path(CLIENT_ENDPOINT)
+                    .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
+                    .post(Entity.entity(clientAsString, MediaType.APPLICATION_JSON));
+
+            status = response.getStatusInfo();
+            createdClient = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+
+        // need to override default behavior of checkAndHandleResponse
+        if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
+            throw new ClientAlreadyExistsException(extractErrorMessage(createdClient, status));
+        }
+
+        checkAndHandleResponse(createdClient, status, accessToken);
+
+        try {
+            return objectMapper.readValue(createdClient, Client.class);
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to parse Client: %s", createdClient), e);
+        }
+    }
+
+    public Client getClient(String getClientId, AccessToken accessToken) {
+        StatusType status;
+        String client;
+        try {
+            Response response = targetEndpoint.path(CLIENT_ENDPOINT).path(getClientId)
+                    .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
+                    .get();
+
+            status = response.getStatusInfo();
+            client = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+
+        checkAndHandleResponse(client, status, accessToken);
+
+        try {
+            return objectMapper.readValue(client, Client.class);
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to parse Client: %s", client), e);
+        }
+    }
+
+    public List<Client> getClients(AccessToken accessToken) {
+        StatusType status;
+        String clients;
+        try {
+            Response response = targetEndpoint.path(CLIENT_ENDPOINT)
+                    .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
+                    .get();
+
+            status = response.getStatusInfo();
+            clients = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+
+        checkAndHandleResponse(clients, status, accessToken);
+
+        try {
+            return objectMapper.readValue(clients, new TypeReference<List<Client>>() {
+            });
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to parse list of Clients: %s", clients), e);
+        }
+    }
+
+    public void deleteClient(String deleteClientId, AccessToken accessToken) {
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path(CLIENT_ENDPOINT).path(deleteClientId)
+                    .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
+                    .delete();
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+
+        checkAndHandleResponse(content, status, accessToken);
+    }
+
+    public Client updateClient(String updateClientId, Client client, AccessToken accessToken) {
+        StatusType status;
+        String clientResponse;
+
+        String clientAsString;
+        try {
+            clientAsString = objectMapper.writeValueAsString(client);
+        } catch (JsonProcessingException e) {
+            throw new OsiamClientException(String.format("Unable to parse Client: %s", client), e);
+        }
+
+        try {
+            Response response = targetEndpoint.path(CLIENT_ENDPOINT).path(updateClientId)
+                    .request(MediaType.APPLICATION_JSON)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_USERNAME, clientId)
+                    .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
+                    .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
+                    .property(ClientProperties.READ_TIMEOUT, readTimeout)
+                    .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
+                    .put(Entity.entity(clientAsString, MediaType.APPLICATION_JSON));
+
+            status = response.getStatusInfo();
+            clientResponse = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw createGeneralConnectionInitializationException(e);
+        }
+
+        checkAndHandleResponse(clientResponse, status, accessToken);
+
+        try {
+            return objectMapper.readValue(clientResponse, Client.class);
+        } catch (IOException e) {
+            throw new OsiamClientException(String.format("Unable to parse Client: %s", clientResponse), e);
+        }
+    }
+
     private void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
-        if (status.getStatusCode() == Status.OK.getStatusCode()) {
+        if (status.getFamily() == Status.Family.SUCCESSFUL) {
             return;
         }
 
@@ -333,6 +496,12 @@ class AuthService {
         } else if (status.getStatusCode() == Status.FORBIDDEN.getStatusCode()) {
             String errorMessage = extractErrorMessageForbidden(accessToken);
             throw new ForbiddenException(errorMessage);
+        } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+            throw new ClientNotFoundException(errorMessage);
+        } else if (status.getStatusCode() == Status.CONFLICT.getStatusCode()) {
+            String errorMessage = extractErrorMessage(content, status);
+            throw new ConflictException(errorMessage);
         } else {
             String errorMessage = extractErrorMessage(content, status);
             throw new ConnectionInitializationException(errorMessage);
@@ -341,7 +510,7 @@ class AuthService {
 
     private String extractErrorMessage(String content, StatusType status) {
         try {
-            OAuthErrorMessage error = new ObjectMapper().readValue(content, OAuthErrorMessage.class);
+            OAuthErrorMessage error = objectMapper.readValue(content, OAuthErrorMessage.class);
             return error.getDescription();
         } catch (IOException e) {
             String errorMessage = String.format("Could not deserialize the error response for the HTTP status '%s'.",
@@ -361,7 +530,7 @@ class AuthService {
 
     private AccessToken getAccessToken(String content) {
         try {
-            return new ObjectMapper().readValue(content, AccessToken.class);
+            return objectMapper.readValue(content, AccessToken.class);
         } catch (IOException e) {
             throw new OsiamClientException(String.format("Unable to parse access token: %s", content), e);
         }

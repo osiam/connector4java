@@ -5,6 +5,7 @@
 ### Changes
 
 - Ability to set timeouts on per connector basis
+- Add client management
 
 ## 1.7 - 2015-09-11
 

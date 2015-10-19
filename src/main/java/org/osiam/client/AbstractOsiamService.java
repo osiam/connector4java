@@ -27,7 +27,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
@@ -64,6 +63,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.osiam.client.OsiamConnector.objectMapper;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
@@ -78,7 +78,6 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private final Class<T> type;
     private final String typeName;
-    private final ObjectMapper mapper;
     private final int connectTimeout;
     private final int readTimeout;
 
@@ -90,10 +89,9 @@ abstract class AbstractOsiamService<T extends Resource> {
         connectTimeout = builder.connectTimeout;
         readTimeout = builder.readTimeout;
 
-        mapper = new ObjectMapper();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
                 .addDeserializer(User.class, new UserDeserializer(User.class));
-        mapper.registerModule(userDeserializerModule);
+        objectMapper.registerModule(userDeserializerModule);
 
         targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
     }
@@ -158,9 +156,9 @@ abstract class AbstractOsiamService<T extends Resource> {
         checkAndHandleResponse(content, status, accessToken);
 
         try {
-            JavaType queryResultType =
-                    TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class, type);
-            return mapper.readValue(content, queryResultType);
+            JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class,
+                    type);
+            return objectMapper.readValue(content, queryResultType);
         } catch (IOException e) {
             throw new OsiamClientException(String.format("Unable to deserialize search result: %s", content), e);
         }
@@ -194,7 +192,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
         String resourceAsString;
         try {
-            resourceAsString = mapper.writeValueAsString(resource);
+            resourceAsString = objectMapper.writeValueAsString(resource);
         } catch (JsonProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
@@ -234,7 +232,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
         String resourceAsString;
         try {
-            resourceAsString = mapper.writeValueAsString(resource);
+            resourceAsString = objectMapper.writeValueAsString(resource);
         } catch (JsonProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
@@ -265,7 +263,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected <U> U mapToType(String content, Class<U> type) {
         try {
-            return mapper.readValue(content, type);
+            return objectMapper.readValue(content, type);
         } catch (IOException e) {
             throw new OsiamClientException(String.format("Unable to parse %s: %s", typeName, content), e);
         }
@@ -331,7 +329,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String getScimErrorMessageSinceOsiam3(String content) {
         try {
-            ErrorResponse error = mapper.readValue(content, ErrorResponse.class);
+            ErrorResponse error = objectMapper.readValue(content, ErrorResponse.class);
             return error.getDetail();
         } catch (ProcessingException | IOException e) {
             return null;
@@ -340,7 +338,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String getScimErrorMessageUpToOsiam2(String content) {
         try {
-            Map<String, String> error = mapper.readValue(content, new TypeReference<Map<String, String>>() {
+            Map<String, String> error = objectMapper.readValue(content, new TypeReference<Map<String, String>>() {
             });
             return error.get("description");
         } catch (ProcessingException | IOException e) {
@@ -350,7 +348,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String getOAuthErrorMessage(String content) {
         try {
-            OAuthErrorMessage error = mapper.readValue(content, OAuthErrorMessage.class);
+            OAuthErrorMessage error = objectMapper.readValue(content, OAuthErrorMessage.class);
             return error.getDescription();
         } catch (ProcessingException | IOException e) {
             return null;
