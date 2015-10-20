@@ -492,7 +492,7 @@ class AuthService {
         if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
             if (errorMessage.equals("Bad credentials")) {
-                throw new BadCredentialsException(content);
+                throw new BadCredentialsException(errorMessage);
             } else {
                 throw new BadRequestException(errorMessage);
             }
