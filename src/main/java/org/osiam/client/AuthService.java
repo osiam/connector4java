@@ -28,6 +28,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Strings;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.osiam.client.exception.BadCredentialsException;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.exception.ClientAlreadyExistsException;
 import org.osiam.client.exception.ClientNotFoundException;
 import org.osiam.client.exception.ConflictException;
@@ -489,7 +491,11 @@ class AuthService {
 
         if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
-            throw new ConnectionInitializationException(errorMessage);
+            if (errorMessage.equals("Bad credentials")) {
+                throw new BadCredentialsException(content);
+            } else {
+                throw new BadRequestException(errorMessage);
+            }
         } else if (status.getStatusCode() == Status.UNAUTHORIZED.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
             throw new UnauthorizedException(errorMessage);
