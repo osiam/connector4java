@@ -23,21 +23,20 @@
 
 package org.osiam.client.oauth;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.osiam.client.helper.ScopeDeserializer;
-import org.osiam.client.helper.ScopeSerializer;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Strings;
+import org.osiam.client.helper.ScopeDeserializer;
+import org.osiam.client.helper.ScopeSerializer;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Objects of this type represent an access token. Access tokens are granted by the OSIAM server and allows access to
+ * Objects of this type represent an access token. Access tokens are granted by OSIAM and allows access to
  * restricted resources.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -26,7 +26,7 @@ public class Main {
 
             {
                 oConnector = new OsiamConnector.Builder()
-                .setEndpoint("http://localhost:8180/osiam-server")
+                .setEndpoint("http://localhost:8180/osiam")
                 .setClientId("example-client")
                 .setClientSecret("secret")
                 .setClientRedirectUri("http://localhost:5000/oauth2")

@@ -28,26 +28,26 @@ thrown if an invalid argument has been given (e.g. an AccessToken that is null).
 ### ConnectionInitializationException
 
 The ConnectionInitializationException extends the OsiamClientException and will
-be thrown if no connection to the OSIAM server could be created.
+be thrown if no connection to OSIAM could be created.
 
 ### OsiamRequestException
 
 The OsiamRequestException extends the OsiamClientException. It is the base
-exception of all exceptions that indicate that the connection to the server was
+exception of all exceptions that indicate that the connection to OSIAM was
 successful but something else went wrong. This and all child exceptions will
 also provide a method to retrieve the HTTP status code which raised the
 exception. 
 
     int getHttpStatusCode()
 
-This exception will be raised if an unknown error is returned by the server.
-Known errors are represented by child exceptions described below.
+This exception will be raised if an unknown error is returned by OSIAM. Known
+errors are represented by child exceptions described below.
 
 #### ConflictException
 
 The ConflictException extends the OsiamRequestException and will be thrown if
-any conflicts happened while processing the request on the server (HTTP status
-code 409).
+any conflicts happened while processing the request by OSIAM (HTTP status code
+409).
 
 #### ForbiddenException
 

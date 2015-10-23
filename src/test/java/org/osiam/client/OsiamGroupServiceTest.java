@@ -23,20 +23,20 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.Date;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.resources.scim.Group;
 
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.Assert.fail;
+
 public class OsiamGroupServiceTest {
 
     private static final String GROUP_ID_STRING = "55bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String ENDPOINT = "http://localhost:9090/osiam-server";
+    private static final String ENDPOINT = "http://localhost:9090/osiam";
 
     private String searchedId;
     private AccessToken accessToken;

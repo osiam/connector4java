@@ -45,15 +45,13 @@ import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 
 import javax.ws.rs.client.ClientBuilder;
 import java.net.URI;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * OsiamConnector provides access to the OAuth2 service used to authorize requests and all methods necessary to
@@ -62,29 +60,25 @@ import java.util.List;
  */
 public class OsiamConnector {
 
-    public static final int DEFAULT_CONNECT_TIMEOUT = 2500;
-    public static final int DEFAULT_READ_TIMEOUT = 5000;
+    static final int DEFAULT_CONNECT_TIMEOUT = 2500;
+    static final int DEFAULT_READ_TIMEOUT = 5000;
     private static final int DEFAULT_MAX_CONNECTIONS = 40;
-    private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 20;
 
-    private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER;
-    private static final javax.ws.rs.client.Client client;
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final PoolingHttpClientConnectionManager connectionManager =
+            new PoolingHttpClientConnectionManager();
+
+    private static final javax.ws.rs.client.Client client = ClientBuilder.newClient(new ClientConfig()
+            .connectorProvider(new ApacheConnectorProvider())
+            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+            .property(ApacheClientProperties.CONNECTION_MANAGER, connectionManager)
+            .register(HttpAuthenticationFeature.basicBuilder().build())
+            .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+            .property(ClientProperties.READ_TIMEOUT, DEFAULT_READ_TIMEOUT));
+
     static {
-        CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
-        CONNECTION_MANAGER.setMaxTotal(DEFAULT_MAX_CONNECTIONS);
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(DEFAULT_MAX_CONNECTIONS_PER_ROUTE);
-
-        ClientConfig clientConfig = new ClientConfig()
-                .connectorProvider(new ApacheConnectorProvider())
-                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
-                .property(ApacheClientProperties.CONNECTION_MANAGER, CONNECTION_MANAGER)
-                .register(HttpAuthenticationFeature.basicBuilder().build())
-                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
-                .property(ClientProperties.READ_TIMEOUT, DEFAULT_READ_TIMEOUT);
-
-        client = ClientBuilder.newClient(clientConfig);
+        setMaxConnections(DEFAULT_MAX_CONNECTIONS);
     }
 
     static javax.ws.rs.client.Client getClient() {
@@ -122,128 +116,59 @@ public class OsiamConnector {
     }
 
     /**
-     * Sets the maximum number of connections that the underlying HTTP connection pool will allocate.
-     * <p/>
+     * Sets the maximum number of connections that the underlying HTTP connection pool will allocate
      * <p>
-     * This setting correlates with {@link OsiamConnector#setMaxConnectionsPerRoute(int)}. The default value is 40. This
-     * property will be set application global, so you can only define this timeout for all
-     * {@link org.osiam.client.OsiamConnector} instances at the same time.
-     * </p>
+     * The default value is 40. This property will be set application global, so you can only
+     * define this timeout for all {@link org.osiam.client.OsiamConnector} instances at the same
+     * time.
      *
      * @param maxConnections The maximum number of HTTP connections
-     * @see OsiamConnector#setMaxConnectionsPerRoute(int)
      */
     public static void setMaxConnections(int maxConnections) {
-        CONNECTION_MANAGER.setMaxTotal(maxConnections);
+        connectionManager.setMaxTotal(maxConnections);
+        connectionManager.setDefaultMaxPerRoute(maxConnections);
     }
 
-    /**
-     * Sets the maximum number of connections that the underlying HTTP connection pool will allocate for single route.
-     * <p/>
-     * <p>
-     * A single route means a single FQDN, hostname or IP address. In the context of OSIAM this means the OSIAM server
-     * or the auth- or resource-server if they will be accessed under a different hostname. Remember to also set the
-     * number of maximum connections via {@link OsiamConnector#setMaxConnections(int)} based on the value set here, e.g.
-     * if you have 2 separate endpoints, in sense of the hostname, for auth- and resource-server and set this value to
-     * {@code 20} you should set the maximum number of connections to {@code 40}. The default value is 20. This property
-     * will be set application global, so you can only define this timeout for all
-     * {@link org.osiam.client.OsiamConnector} instances at the same time.
-     * </p>
-     *
-     * @param maxConnectionsPerRoute The maximum number of HTTP connections per route
-     */
-    public static void setMaxConnectionsPerRoute(int maxConnectionsPerRoute) {
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(maxConnectionsPerRoute);
-    }
-
-    private AuthService authService;
-    private OsiamUserService userService;
-    private OsiamGroupService groupService;
+    private final AuthService authService;
+    private final OsiamUserService userService;
+    private final OsiamGroupService groupService;
 
     /**
      * The private constructor for the OsiamConnector. Please use the {@link OsiamConnector.Builder} to construct one.
      *
      * @param builder a valid Builder that holds all needed variables
+     * @throws IllegalStateException If OSIAM's endpoint is not configured
      */
     private OsiamConnector(Builder builder) {
+        checkState(!Strings.isNullOrEmpty(builder.endpoint), "OSIAM's endpoint is not configured.");
 
-        String authServiceEndpoint = authServiceEndpoint(builder.authServiceEndpoint, builder.combinedEndpoint);
-
-        if (!Strings.isNullOrEmpty(authServiceEndpoint)) {
-            AuthService.Builder authServiceBuilder = new AuthService.Builder(authServiceEndpoint);
-            if (builder.clientId != null) {
-                authServiceBuilder = authServiceBuilder.setClientId(builder.clientId);
-            }
-            if (builder.clientSecret != null) {
-                authServiceBuilder = authServiceBuilder.setClientSecret(builder.clientSecret);
-            }
-            if (builder.clientRedirectUri != null) {
-                authServiceBuilder = authServiceBuilder.setClientRedirectUri(builder.clientRedirectUri);
-            }
-            authService = authServiceBuilder.withConnectTimeout(builder.connectTimeout)
-                    .withReadTimeout(builder.readTimeout).build();
+        String endpoint = cleanEndpoint(builder.endpoint);
+        AuthService.Builder authServiceBuilder = new AuthService.Builder(endpoint);
+        if (builder.clientId != null) {
+            authServiceBuilder = authServiceBuilder.setClientId(builder.clientId);
         }
-
-        String resourceServiceEndpoint = resourceServiceEndpoint(builder.resourceServiceEndpoint,
-                builder.combinedEndpoint);
-
-        if (!Strings.isNullOrEmpty(resourceServiceEndpoint)) {
-            userService = new OsiamUserService.Builder(resourceServiceEndpoint)
-                    .withConnectTimeout(builder.connectTimeout).withReadTimeout(builder.readTimeout).build();
-            groupService = new OsiamGroupService.Builder(resourceServiceEndpoint)
-                    .withConnectTimeout(builder.connectTimeout).withReadTimeout(builder.readTimeout).build();
+        if (builder.clientSecret != null) {
+            authServiceBuilder = authServiceBuilder.setClientSecret(builder.clientSecret);
         }
+        if (builder.clientRedirectUri != null) {
+            authServiceBuilder = authServiceBuilder.setClientRedirectUri(builder.clientRedirectUri);
+        }
+        authService = authServiceBuilder
+                .withConnectTimeout(builder.connectTimeout)
+                .withReadTimeout(builder.readTimeout)
+                .build();
+        userService = new OsiamUserService.Builder(endpoint)
+                .withConnectTimeout(builder.connectTimeout)
+                .withReadTimeout(builder.readTimeout)
+                .build();
+        groupService = new OsiamGroupService.Builder(endpoint)
+                .withConnectTimeout(builder.connectTimeout)
+                .withReadTimeout(builder.readTimeout)
+                .build();
     }
 
-    private AuthService authService() {
-        if (authService == null) {
-            throw new IllegalStateException("The auth-server endpoint is not configured.");
-        }
-        return authService;
-    }
-
-    private OsiamUserService userService() {
-        if (userService == null) {
-            throw new IllegalStateException("The resource-server endpoint is not configured.");
-        }
-        return userService;
-    }
-
-    private OsiamGroupService groupService() {
-        if (groupService == null) {
-            throw new IllegalStateException("The resource-server endpoint is not configured.");
-        }
-        return groupService;
-    }
-
-    private String authServiceEndpoint(String authServiceEndpoint, String combinedEndpoint) {
-        if (!Strings.isNullOrEmpty(authServiceEndpoint)) {
-            return authServiceEndpoint;
-        }
-        if (!Strings.isNullOrEmpty(combinedEndpoint)) {
-            StringBuilder endpoint = new StringBuilder(combinedEndpoint);
-            if (!combinedEndpoint.endsWith("/")) {
-                endpoint.append("/");
-            }
-            endpoint.append("osiam-auth-server");
-            return endpoint.toString();
-        }
-        return null;
-    }
-
-    private String resourceServiceEndpoint(String resourceServiceEndpoint, String baseEndpoint) {
-        if (!Strings.isNullOrEmpty(resourceServiceEndpoint)) {
-            return resourceServiceEndpoint;
-        }
-        if (!Strings.isNullOrEmpty(baseEndpoint)) {
-            StringBuilder endpoint = new StringBuilder(baseEndpoint);
-            if (!baseEndpoint.endsWith("/")) {
-                endpoint.append("/");
-            }
-            endpoint.append("osiam-resource-server");
-            return endpoint.toString();
-        }
-        return null;
+    private String cleanEndpoint(String endpoint) {
+        return !endpoint.endsWith("/") ? endpoint + "/" : endpoint;
     }
 
     /**
@@ -257,10 +182,9 @@ public class OsiamConnector {
      * @throws NoResultException                 if no user with the given id can be found
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public User getUser(String id, AccessToken accessToken) {
-        return userService().getUser(id, accessToken);
+        return userService.getUser(id, accessToken);
     }
 
     /**
@@ -273,10 +197,9 @@ public class OsiamConnector {
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public List<User> getAllUsers(AccessToken accessToken) {
-        return userService().getAllUsers(accessToken);
+        return userService.getAllUsers(accessToken);
     }
 
     /**
@@ -288,10 +211,9 @@ public class OsiamConnector {
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
-        return userService().searchResources(query, accessToken);
+        return userService.searchResources(query, accessToken);
     }
 
     /**
@@ -304,10 +226,9 @@ public class OsiamConnector {
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public User getCurrentUser(AccessToken accessToken) {
-        return userService().getCurrentUser(accessToken);
+        return userService.getCurrentUser(accessToken);
     }
 
     /**
@@ -320,10 +241,9 @@ public class OsiamConnector {
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
-        return userService().getCurrentUserBasic(accessToken);
+        return userService.getCurrentUserBasic(accessToken);
     }
 
     /**
@@ -337,10 +257,9 @@ public class OsiamConnector {
      * @throws NoResultException                 if no user with the given id can be found
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public Group getGroup(String id, AccessToken accessToken) {
-        return groupService().getGroup(id, accessToken);
+        return groupService.getGroup(id, accessToken);
     }
 
     /**
@@ -353,10 +272,9 @@ public class OsiamConnector {
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public List<Group> getAllGroups(AccessToken accessToken) {
-        return groupService().getAllGroups(accessToken);
+        return groupService.getAllGroups(accessToken);
     }
 
     /**
@@ -369,12 +287,11 @@ public class OsiamConnector {
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      * @see <a href="https://github.com/osiam/connector4java/docs/working-with-groups
      * .md#search-for-groups#search-for-groups">Search for groups</a>
      */
     public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
-        return groupService().searchGroups(query, accessToken);
+        return groupService.searchGroups(query, accessToken);
     }
 
     /**
@@ -387,24 +304,22 @@ public class OsiamConnector {
      * @throws IllegalArgumentException          in case the accessToken has an empty refresh token
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws UnauthorizedException             if the request could not be authorized.
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      */
     public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
-        return authService().refreshAccessToken(accessToken, scopes);
+        return authService.refreshAccessToken(accessToken, scopes);
     }
 
     /**
-     * provides the needed URI which is needed to reconnect the User to the OSIAM server to login. A detailed example
+     * provides the needed URI which is needed to reconnect the User to OSIAM to login. A detailed example
      * how to use this method, can be seen in the documentation
      *
      * @param scopes the wanted scopes for the user who want's to log in with the oauth workflow
      * @return the needed redirect Uri
-     * @throws IllegalStateException If the auth-server endpoint is not configured
      * @see <a href="https://github.com/osiam/connector4java/docs/login-and-getting-an-access-token
      * .md#grant-authorization-code">Grant authorization code</a>
      */
     public URI getAuthorizationUri(Scope... scopes) {
-        return authService().getAuthorizationUri(scopes);
+        return authService.getAuthorizationUri(scopes);
     }
 
     /**
@@ -412,10 +327,9 @@ public class OsiamConnector {
      *
      * @param scopes the wanted Scopes of the {@link AccessToken}
      * @return an valid {@link AccessToken}
-     * @throws IllegalStateException If the auth-server endpoint is not configured
      */
     public AccessToken retrieveAccessToken(Scope... scopes) {
-        return authService().retrieveAccessToken(scopes);
+        return authService.retrieveAccessToken(scopes);
     }
 
     /**
@@ -426,28 +340,26 @@ public class OsiamConnector {
      * @param password the password of the actual User
      * @param scopes   the wanted Scopes of the {@link AccessToken}
      * @return an valid {@link AccessToken}
-     * @throws IllegalStateException If the auth-server endpoint is not configured
      */
     public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
-        return authService().retrieveAccessToken(userName, password, scopes);
+        return authService.retrieveAccessToken(userName, password, scopes);
     }
 
     /**
      * Provide an {@link AccessToken} for the {@link org.osiam.client.oauth.GrantType} AUTHORIZATION_CODE (oauth2
      * login).
      *
-     * @param authCode authentication code retrieved from the OSIAM Server by using the oauth2 login flow. For more
+     * @param authCode authentication code retrieved from OSIAM by using the oauth2 login flow. For more
      *                 information please check the documentation
      * @return a valid AccessToken
      * @throws ConflictException                 in case the given authCode could not be exchanged against a access
      *                                           token
      * @throws ConnectionInitializationException If the Service is unable to connect to the configured OAuth2 service.
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @see <a href="https://github.com/osiam/connector4java/docs/login-and-getting-an-access-token
      * .md#grant-authorization-code">Grant authorization code</a>
      */
     public AccessToken retrieveAccessToken(String authCode) {
-        return authService().retrieveAccessToken(authCode);
+        return authService.retrieveAccessToken(authCode);
     }
 
     /**
@@ -460,10 +372,9 @@ public class OsiamConnector {
      * @throws ConflictException                 if the User could not be created
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public User createUser(User user, AccessToken accessToken) {
-        return userService().createUser(user, accessToken);
+        return userService.createUser(user, accessToken);
     }
 
     /**
@@ -476,10 +387,9 @@ public class OsiamConnector {
      * @throws ConflictException                 if the Group could not be created
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public Group createGroup(Group group, AccessToken accessToken) {
-        return groupService().createGroup(group, accessToken);
+        return groupService.createGroup(group, accessToken);
     }
 
     /**
@@ -492,10 +402,9 @@ public class OsiamConnector {
      * @throws ConflictException                 if the Group could not be deleted
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public void deleteGroup(String id, AccessToken accessToken) {
-        groupService().deleteGroup(id, accessToken);
+        groupService.deleteGroup(id, accessToken);
     }
 
     /**
@@ -508,10 +417,9 @@ public class OsiamConnector {
      * @throws ConflictException                 if the User could not be deleted
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public void deleteUser(String id, AccessToken accessToken) {
-        userService().deleteUser(id, accessToken);
+        userService.deleteUser(id, accessToken);
     }
 
     /**
@@ -527,11 +435,10 @@ public class OsiamConnector {
      * @throws NoResultException                 if no user with the given id can be found
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      * @see <a href="https://github.com/osiam/connector4java/docs/working-with-user.md">Working with user</a>
      */
     public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
-        return userService().updateUser(id, updateUser, accessToken);
+        return userService.updateUser(id, updateUser, accessToken);
     }
 
     /**
@@ -547,10 +454,9 @@ public class OsiamConnector {
      * @throws NoResultException                 if no user with the given id can be found
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public User replaceUser(String id, User user, AccessToken accessToken) {
-        return userService().replaceUser(id, user, accessToken);
+        return userService.replaceUser(id, user, accessToken);
     }
 
     /**
@@ -566,12 +472,11 @@ public class OsiamConnector {
      * @throws NoResultException                 if no group with the given id can be found
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      * @see <a href="https://github.com/osiam/connector4java/docs/working-with-groups
      * .md#search-for-groups">Working with groups</a>
      */
     public Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken) {
-        return groupService().updateGroup(id, updateGroup, accessToken);
+        return groupService.updateGroup(id, updateGroup, accessToken);
     }
 
     /**
@@ -587,10 +492,9 @@ public class OsiamConnector {
      * @throws NoResultException                 if no Group with the given id can be found
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the resource-server endpoint is not configured
      */
     public Group replaceGroup(String id, Group group, AccessToken accessToken) {
-        return groupService().updateGroup(id, group, accessToken);
+        return groupService.updateGroup(id, group, accessToken);
     }
 
     /**
@@ -600,20 +504,18 @@ public class OsiamConnector {
      * @return The validated AccessToken if the AccessToken is valid
      * @throws UnauthorizedException             if the tokenToValidate is not valid
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      */
     public AccessToken validateAccessToken(AccessToken tokenToValidate) {
-        return authService().validateAccessToken(tokenToValidate);
+        return authService.validateAccessToken(tokenToValidate);
     }
 
     /**
      * Revokes the given access token if it is valid.
      *
      * @param tokenToRevoke the {@link AccessToken} to be revoked
-     * @throws IllegalStateException If the auth-server endpoint is not configured
      */
     public void revokeAccessToken(AccessToken tokenToRevoke) {
-        authService().revokeAccessToken(tokenToRevoke);
+        authService.revokeAccessToken(tokenToRevoke);
     }
 
     /**
@@ -621,10 +523,9 @@ public class OsiamConnector {
      *
      * @param id          the user ID
      * @param accessToken the access token used to access the service
-     * @throws IllegalStateException If the auth-server endpoint is not configured
      */
     public void revokeAllAccessTokens(String id, AccessToken accessToken) {
-        authService().revokeAllAccessTokens(id, accessToken);
+        authService.revokeAllAccessTokens(id, accessToken);
     }
 
     /**
@@ -633,14 +534,13 @@ public class OsiamConnector {
      * @param clientId    the client id
      * @param accessToken the access token used to access the service
      * @return The found client
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @throws UnauthorizedException             if the accessToken is not valid
      * @throws ForbiddenException                if access to this resource is not allowed
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws ClientNotFoundException           if no client with the given id can be found
      */
     public Client getClient(String clientId, AccessToken accessToken) {
-        return authService().getClient(clientId, accessToken);
+        return authService.getClient(clientId, accessToken);
     }
 
     /**
@@ -648,13 +548,12 @@ public class OsiamConnector {
      *
      * @param accessToken the access token used to access the service
      * @return The found clients
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @throws UnauthorizedException             if the accessToken is not valid
      * @throws ForbiddenException                if access to this resource is not allowed
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      */
     public List<Client> getClients(AccessToken accessToken) {
-        return authService().getClients(accessToken);
+        return authService.getClients(accessToken);
     }
 
     /**
@@ -663,13 +562,12 @@ public class OsiamConnector {
      * @param client      the client to create
      * @param accessToken the access token used to access the service
      * @return The created client
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @throws UnauthorizedException             if the accessToken is not valid
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws ClientAlreadyExistsException      if the client with the clientId already exists
      */
     public Client createClient(Client client, AccessToken accessToken) {
-        return authService().createClient(client, accessToken);
+        return authService.createClient(client, accessToken);
     }
 
     /**
@@ -677,13 +575,12 @@ public class OsiamConnector {
      *
      * @param clientId    the id of the client which should be deleted
      * @param accessToken the access token used to access the service
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @throws UnauthorizedException             if the accessToken is not valid
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws ConflictException                 if the client with the clientId already exists
      */
     public void deleteClient(String clientId, AccessToken accessToken) {
-        authService().deleteClient(clientId, accessToken);
+        authService.deleteClient(clientId, accessToken);
     }
 
     /**
@@ -693,13 +590,12 @@ public class OsiamConnector {
      * @param client      the client
      * @param accessToken the access token used to access the service
      * @return The updated client
-     * @throws IllegalStateException             If the auth-server endpoint is not configured
      * @throws UnauthorizedException             if the accessToken is not valid
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws ConflictException                 if the client with the clientId already exists
      */
     public Client updateClient(String clientId, Client client, AccessToken accessToken) {
-        return authService().updateClient(clientId, client, accessToken);
+        return authService.updateClient(clientId, client, accessToken);
     }
 
     /**
@@ -721,48 +617,21 @@ public class OsiamConnector {
      */
     public static class Builder {
 
+        private String endpoint;
         private String clientId;
         private String clientSecret;
-        private String combinedEndpoint;
-        private String authServiceEndpoint;
-        private String resourceServiceEndpoint;
         private String clientRedirectUri;
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
         private int readTimeout = DEFAULT_READ_TIMEOUT;
 
         /**
-         * use the given combined endpoint for communication with the OAuth2-Service for authentication and the SCIM2
-         * resource server. The schema will be <endpoint>/osiam-auth-server and <endpoint>/osiam-resource-server. This
-         * method can be used if the authentication and the resource server are at the same location and have the
-         * standard names.
+         * Use the given endpoint for communication with OSIAM
          *
          * @param endpoint The endpoint to use for communication
          * @return The builder itself
          */
         public Builder setEndpoint(String endpoint) {
-            combinedEndpoint = endpoint;
-            return this;
-        }
-
-        /**
-         * use the given endpoint for communication with the OAuth2-Service for authentication
-         *
-         * @param endpoint The AuthService endpoint to use for communication
-         * @return The builder itself
-         */
-        public Builder setAuthServerEndpoint(String endpoint) {
-            authServiceEndpoint = endpoint;
-            return this;
-        }
-
-        /**
-         * use the given endpoint for communication with the SCIM2 resource server.
-         *
-         * @param endpoint The resource service endpoint to use
-         * @return The builder itself
-         */
-        public Builder setResourceServerEndpoint(String endpoint) {
-            resourceServiceEndpoint = endpoint;
+            this.endpoint = endpoint;
             return this;
         }
 
@@ -791,7 +660,7 @@ public class OsiamConnector {
         /**
          * Add a Client redirect URI to the OAuth2 request
          *
-         * @param clientRedirectUri the clientRedirectUri which is known to the OSIAM server
+         * @param clientRedirectUri the clientRedirectUri which is known to OSIAM
          * @return The builder itself
          */
         public Builder setClientRedirectUri(String clientRedirectUri) {

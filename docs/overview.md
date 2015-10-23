@@ -3,9 +3,9 @@ and provides an easy to use Java API that enables user logins or the
 administration of users, groups and their interactions.
 
 OSIAM provides a time limited access token that regulates the access to
-resources at any one time.
-For this purpose the Connector4java API enables an easy way to retrieve this
-token on different ways depending on your rights at the OSIAM server.
+resources at any one time. For this purpose the Connector4java API enables an
+easy way to retrieve this token on different ways depending on your rights in
+OSIAM.
 
 More information about the login, retrieving an access token and the possible
 grants can be found [here](login-and-getting-an-access-token.md).

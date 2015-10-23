@@ -113,7 +113,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
          * Set up the Builder for the construction of an {@link OsiamGroupService} instance for the OSIAM service at the
          * given endpoint
          *
-         * @param endpoint The URL at which the OSIAM server lives.
+         * @param endpoint The URL at which OSIAM lives.
          */
         public Builder(String endpoint) {
             super(endpoint);

@@ -25,7 +25,7 @@ package org.osiam.client.query;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * This class represents query for submission to the resource server.
+ * This class represents query for submission to OSIAM.
  */
 public class Query {
     private final String attributes;

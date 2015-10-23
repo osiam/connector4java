@@ -23,14 +23,14 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+
 public class OsiamUserMeTest {
 
-    final static private String ENDPOINT = "http://localhost:9090/osiam-server";
+    final static private String ENDPOINT = "http://localhost:9090/osiam";
 
     private OsiamUserService service;
 
