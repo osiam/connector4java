@@ -1,6 +1,6 @@
 # OSIAM Connector4Java
 
-## Unreleased
+## 1.8 - Unreleased
 
 ### Changes
 
