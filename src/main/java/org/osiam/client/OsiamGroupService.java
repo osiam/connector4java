@@ -38,6 +38,8 @@ import java.util.List;
 class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of
     // this class
 
+    static final String LEGACY_SCHEMA = "urn:scim:schemas:core:2.0:Group";
+
     /**
      * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder} to construct
      * one.
@@ -104,6 +106,16 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
         return replaceResource(id, group, accessToken);
     }
 
+    @Override
+    protected String getSchema() {
+        return Group.SCHEMA;
+    }
+
+    @Override
+    protected String getLegacySchema() {
+        return LEGACY_SCHEMA;
+    }
+
     /**
      * See {@link OsiamConnector.Builder}
      */
@@ -146,6 +158,22 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
          */
         public Builder withReadTimeout(int readTimeout) {
             this.readTimeout = readTimeout;
+            return this;
+        }
+
+        /**
+         * Configures the group service to use legacy schemas, i.e. schemas that were defined
+         * before SCIM 2 draft 09.
+         *
+         * <p/>This enables compatibility with OSIAM releases up to version 2.3
+         * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
+         * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.
+         *
+         * @param legacySchemas should legacy schemas be used
+         * @return The builder itself
+         */
+        public Builder withLegacySchemas(boolean legacySchemas) {
+            this.legacySchemas = legacySchemas;
             return this;
         }
 

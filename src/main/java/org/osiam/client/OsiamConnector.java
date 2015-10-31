@@ -62,6 +62,7 @@ public class OsiamConnector {
 
     static final int DEFAULT_CONNECT_TIMEOUT = 2500;
     static final int DEFAULT_READ_TIMEOUT = 5000;
+    static final boolean DEFAULT_LEGACY_SCHEMAS = false;
     private static final int DEFAULT_MAX_CONNECTIONS = 40;
 
     public static final ObjectMapper objectMapper = new ObjectMapper();
@@ -160,10 +161,12 @@ public class OsiamConnector {
         userService = new OsiamUserService.Builder(endpoint)
                 .withConnectTimeout(builder.connectTimeout)
                 .withReadTimeout(builder.readTimeout)
+                .withLegacySchemas(builder.legacySchemas)
                 .build();
         groupService = new OsiamGroupService.Builder(endpoint)
                 .withConnectTimeout(builder.connectTimeout)
                 .withReadTimeout(builder.readTimeout)
+                .withLegacySchemas(builder.legacySchemas)
                 .build();
     }
 
@@ -623,6 +626,7 @@ public class OsiamConnector {
         private String clientRedirectUri;
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
         private int readTimeout = DEFAULT_READ_TIMEOUT;
+        private boolean legacySchemas = DEFAULT_LEGACY_SCHEMAS;
 
         /**
          * Use the given endpoint for communication with OSIAM
@@ -698,6 +702,22 @@ public class OsiamConnector {
          */
         public Builder withReadTimeout(int readTimeout) {
             this.readTimeout = readTimeout;
+            return this;
+        }
+
+        /**
+         * Configures the connector to use legacy schemas, i.e. schemas that were defined before
+         * SCIM 2 draft 09.
+         *
+         * <p/>This enables compatibility with OSIAM releases up to version 2.3
+         * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
+         * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.
+         *
+         * @param legacySchemas should legacy schemas be used
+         * @return The builder itself
+         */
+        public Builder withLegacySchemas(boolean legacySchemas) {
+            this.legacySchemas = legacySchemas;
             return this;
         }
 

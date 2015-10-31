@@ -46,6 +46,8 @@ import java.util.List;
  */
 class OsiamUserService extends AbstractOsiamService<User> {
 
+    static final String LEGACY_SCHEMA = "urn:scim:schemas:core:2.0:User";
+
     /**
      * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
      * one.
@@ -148,6 +150,16 @@ class OsiamUserService extends AbstractOsiamService<User> {
         return replaceResource(id, user, accessToken);
     }
 
+    @Override
+    protected String getSchema() {
+        return User.SCHEMA;
+    }
+
+    @Override
+    protected String getLegacySchema() {
+        return LEGACY_SCHEMA;
+    }
+
     /**
      * See {@link OsiamConnector.Builder}
      */
@@ -190,6 +202,22 @@ class OsiamUserService extends AbstractOsiamService<User> {
          */
         public Builder withReadTimeout(int readTimeout) {
             this.readTimeout = readTimeout;
+            return this;
+        }
+
+        /**
+         * Configures the user service to use legacy schemas, i.e. schemas that were defined before
+         * SCIM 2 draft 09.
+         *
+         * <p/>This enables compatibility with OSIAM releases up to version 2.3
+         * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
+         * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.
+         *
+         * @param legacySchemas should legacy schemas be used
+         * @return The builder itself
+         */
+        public Builder withLegacySchemas(boolean legacySchemas) {
+            this.legacySchemas = legacySchemas;
             return this;
         }
 
