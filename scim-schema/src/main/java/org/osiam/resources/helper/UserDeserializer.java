@@ -48,6 +48,13 @@ public class UserDeserializer extends StdDeserializer<User> {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    public UserDeserializer() {
+        super(User.class);
+    }
+
+    /**
+     * @deprecated Use {@link UserDeserializer#UserDeserializer()}. Will be removed in 1.9 or 2.0.
+     */
     public UserDeserializer(Class<?> valueClass) {
         super(valueClass);
     }
