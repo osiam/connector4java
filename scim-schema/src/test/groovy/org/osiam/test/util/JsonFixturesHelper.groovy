@@ -55,7 +55,7 @@ class JsonFixturesHelper {
     public ObjectMapper configuredObjectMapper() {
         ObjectMapper mapper = new ObjectMapper()
         SimpleModule testModule = new SimpleModule('MyModule', new Version(1, 0, 0, null))
-                .addDeserializer(User, new UserDeserializer(User))
+                .addDeserializer(User, new UserDeserializer())
         mapper.registerModule(testModule)
         return mapper
     }

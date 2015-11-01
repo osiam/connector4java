@@ -1,5 +1,19 @@
 # OSIAM SCIM Schema
 
+## 1.6 - Unreleased
+
+### Features
+
+- Make validated schema in `UserDeserializer` configurable
+
+    This adds the ability to set the schema that the `UserDeserializer`
+    implicitly validates to a custom value using the new constructor
+    `UserDeserializer#UserDeserializer(String schema)`.
+
+### Changes
+
+- Deprecate `UserDeserializer#UserDeserializer(Class<?> valueClass)`
+
 ## 1.5 - 2015-09-09
 
 ### Fixes

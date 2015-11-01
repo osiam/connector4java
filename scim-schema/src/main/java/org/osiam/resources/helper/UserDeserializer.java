@@ -48,8 +48,31 @@ public class UserDeserializer extends StdDeserializer<User> {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    private final String schema;
+
+    /**
+     * Create a {@link UserDeserializer} that validates the {@link User} against {@link User#SCHEMA}.
+     */
+    public UserDeserializer() {
+        this(User.SCHEMA);
+    }
+
+    /**
+     * Create a {@link UserDeserializer} that validates the {@link User} against the given schema
+     * instead of {@link User#SCHEMA}.
+     */
+    public UserDeserializer(String schema) {
+        super(User.class);
+        this.schema = schema;
+    }
+
+    /**
+     * @deprecated Use {@link UserDeserializer#UserDeserializer()} or
+     * {@link UserDeserializer#UserDeserializer(String)}. Will be removed in 1.9 or 2.0.
+     */
     public UserDeserializer(Class<?> valueClass) {
         super(valueClass);
+        this.schema = User.SCHEMA;
     }
 
     @Override
@@ -67,7 +90,7 @@ public class UserDeserializer extends StdDeserializer<User> {
         User.Builder builder = new User.Builder(user);
 
         for (String urn : user.getSchemas()) {
-            if (urn.equals(User.SCHEMA)) {
+            if (urn.equals(schema)) {
                 continue;
             }
 
