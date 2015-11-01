@@ -26,7 +26,7 @@ With **new Scope("your scope");** you can also create and add your own scopes th
 # Retrieving an access token
 
 In a trusted environment getting an access token from OSIAM implies a successful
-login of the user. 
+login of the user.
 
 ## [Authorization Code Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#authorization-code-grant)
 
@@ -73,7 +73,7 @@ AccessToken the following way
 
     AccessToken accessToken = new AccessToken.Builder(<token>).build();
 
-## [Resource Owner Password Credentials Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#resource-owner-password-credentials-grant) 
+## [Resource Owner Password Credentials Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#resource-owner-password-credentials-grant)
 and
 ## [Client Credentials Grant](https://github.com/osiam/osiam/blob/master/docs/api_documentation.md#client-credentials-grant)
 
