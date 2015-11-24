@@ -2,10 +2,21 @@
 
 ## 1.8 - Unreleased
 
-### Changes
+### Features
 
 - Ability to set timeouts on per connector basis
 - Add client management
+- Add legacy schemas mode for connecting to OSIAM <= 2.3
+
+    Please, see [Create an OSIAM connector](docs/create-osiam-connector.md#legacy-schemas),
+    if you use an OSIAM version <= 2.3.
+
+- Restore support for OSIAM 2.x
+
+### Changes
+
+- `OsiamConnector#setMaxConnections(int maxConnections)` will also set
+  the maximum connections per route to the given value.
 
 ## 1.7 - 2015-09-11
 

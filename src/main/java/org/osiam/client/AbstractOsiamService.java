@@ -28,25 +28,17 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
 import org.glassfish.jersey.client.ClientProperties;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.OAuthErrorMessage;
-import org.osiam.client.exception.OsiamClientException;
-import org.osiam.client.exception.OsiamRequestException;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.helper.UserDeserializer;
-import org.osiam.resources.scim.ErrorResponse;
-import org.osiam.resources.scim.Resource;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
@@ -80,6 +72,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     private final String typeName;
     private final int connectTimeout;
     private final int readTimeout;
+    private final boolean legacySchemas;
 
     protected final WebTarget targetEndpoint;
 
@@ -88,9 +81,12 @@ abstract class AbstractOsiamService<T extends Resource> {
         typeName = builder.typeName;
         connectTimeout = builder.connectTimeout;
         readTimeout = builder.readTimeout;
+        legacySchemas = builder.legacySchemas;
 
+        UserDeserializer userDeserializer =
+                legacySchemas ? new UserDeserializer(OsiamUserService.LEGACY_SCHEMA) : new UserDeserializer();
         SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
-                .addDeserializer(User.class, new UserDeserializer(User.class));
+                .addDeserializer(User.class, userDeserializer);
         objectMapper.registerModule(userDeserializerModule);
 
         targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
@@ -192,8 +188,8 @@ abstract class AbstractOsiamService<T extends Resource> {
 
         String resourceAsString;
         try {
-            resourceAsString = objectMapper.writeValueAsString(resource);
-        } catch (JsonProcessingException e) {
+            resourceAsString = mapToString(resource);
+        } catch (JsonProcessingException | ClassCastException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
 
@@ -232,7 +228,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
         String resourceAsString;
         try {
-            resourceAsString = objectMapper.writeValueAsString(resource);
+            resourceAsString = mapToString(resource);
         } catch (JsonProcessingException e) {
             throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
         }
@@ -257,17 +253,47 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToResource(content);
     }
 
-    protected T mapToResource(String content) {
+    private T mapToResource(String content) {
         return mapToType(content, type);
     }
 
     protected <U> U mapToType(String content, Class<U> type) {
         try {
-            return objectMapper.readValue(content, type);
-        } catch (IOException e) {
+            if (legacySchemas && (type == User.class || type == Group.class)) {
+                ObjectNode resourceNode = (ObjectNode) objectMapper.readTree(content);
+                switchToLegacySchema(resourceNode);
+                return objectMapper.readValue(objectMapper.treeAsTokens(resourceNode), type);
+            } else {
+                return objectMapper.readValue(content, type);
+            }
+        } catch (IOException | ClassCastException e) {
             throw new OsiamClientException(String.format("Unable to parse %s: %s", typeName, content), e);
         }
     }
+
+    private String mapToString(T resource) throws JsonProcessingException {
+        if (legacySchemas) {
+            ObjectNode resourceNode = objectMapper.valueToTree(resource);
+            switchToLegacySchema(resourceNode);
+            return resourceNode.toString();
+        } else {
+            return objectMapper.writeValueAsString(resource);
+        }
+    }
+
+    private void switchToLegacySchema(ObjectNode resourceNode) {
+        ArrayNode schemas = (ArrayNode) resourceNode.get("schemas");
+        for (int i = 0; i < schemas.size(); i++) {
+            if (getSchema().equals(schemas.get(i).textValue())) {
+                schemas.remove(i);
+            }
+        }
+        schemas.add(getLegacySchema());
+    }
+
+    protected abstract String getSchema();
+
+    protected abstract String getLegacySchema();
 
     protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
         if (status.getFamily() == Family.SUCCESSFUL) {
@@ -309,14 +335,17 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     protected String extractErrorMessage(String content, StatusType status) {
-
-        String message = getScimErrorMessageSinceOsiam3(content);
-        if (message == null) {
-            message = getScimErrorMessageUpToOsiam2(content);
+        String message;
+        if (legacySchemas) {
+            message = getScimErrorMessageLegacy(content);
+        } else {
+            message = getScimErrorMessage(content);
         }
+
         if (message == null) {
             message = getOAuthErrorMessage(content);
         }
+
         if (message == null) {
             message = String.format("Could not deserialize the error response for the HTTP status '%s'.",
                     status.getReasonPhrase());
@@ -324,10 +353,11 @@ abstract class AbstractOsiamService<T extends Resource> {
                 message += String.format(" Original response: %s", content);
             }
         }
+
         return message;
     }
 
-    private String getScimErrorMessageSinceOsiam3(String content) {
+    private String getScimErrorMessage(String content) {
         try {
             ErrorResponse error = objectMapper.readValue(content, ErrorResponse.class);
             return error.getDetail();
@@ -336,7 +366,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    private String getScimErrorMessageUpToOsiam2(String content) {
+    private String getScimErrorMessageLegacy(String content) {
         try {
             Map<String, String> error = objectMapper.readValue(content, new TypeReference<Map<String, String>>() {
             });
@@ -374,6 +404,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         private String typeName;
         protected int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
         protected int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
+        protected boolean legacySchemas = OsiamConnector.DEFAULT_LEGACY_SCHEMAS;
 
         @SuppressWarnings("unchecked")
         protected Builder(String endpoint) {

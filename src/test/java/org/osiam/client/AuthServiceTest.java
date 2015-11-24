@@ -47,7 +47,8 @@ public class AuthServiceTest {
 
     @Test
     public void service_returns_valid_redirect_Uri() throws Exception {
-        service = new OsiamConnector.Builder().setEndpoint(ENDPOINT)
+        service = new OsiamConnector.Builder()
+                .withEndpoint(ENDPOINT)
                 .setClientId(VALID_CLIENT_ID)
                 .setClientSecret(VALID_CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
