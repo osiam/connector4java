@@ -200,7 +200,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
-                    .post(Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
+                    .post(Entity.json(resourceAsString));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -240,7 +240,7 @@ abstract class AbstractOsiamService<T extends Resource> {
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
-                    .method(method, Entity.entity(resourceAsString, MediaType.APPLICATION_JSON));
+                    .method(method, Entity.json(resourceAsString));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
