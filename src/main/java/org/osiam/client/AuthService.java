@@ -112,7 +112,7 @@ class AuthService {
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
-                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+                    .post(Entity.form(form));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -143,7 +143,7 @@ class AuthService {
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
-                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+                    .post(Entity.form(form));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -174,7 +174,7 @@ class AuthService {
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
-                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+                    .post(Entity.form(form));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -222,7 +222,7 @@ class AuthService {
                     .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_PASSWORD, clientSecret)
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
-                    .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+                    .post(Entity.form(form));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -271,7 +271,7 @@ class AuthService {
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .header(AUTHORIZATION_HEADER, BEARER + tokenToValidate.getToken())
-                    .post(null);
+                    .post(Entity.json(""));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -295,7 +295,7 @@ class AuthService {
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .header(AUTHORIZATION_HEADER, BEARER + tokenToRevoke.getToken())
-                    .post(null);
+                    .post(Entity.json(""));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -317,7 +317,7 @@ class AuthService {
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
-                    .post(null);
+                    .post(Entity.json(""));
 
             status = response.getStatusInfo();
             content = response.readEntity(String.class);
@@ -347,7 +347,7 @@ class AuthService {
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
-                    .post(Entity.entity(clientAsString, MediaType.APPLICATION_JSON));
+                    .post(Entity.json(clientAsString));
 
             status = response.getStatusInfo();
             createdClient = response.readEntity(String.class);
@@ -467,7 +467,7 @@ class AuthService {
                     .property(ClientProperties.CONNECT_TIMEOUT, connectionTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
                     .header(AUTHORIZATION_HEADER, BEARER + accessToken.getToken())
-                    .put(Entity.entity(clientAsString, MediaType.APPLICATION_JSON));
+                    .put(Entity.json(clientAsString));
 
             status = response.getStatusInfo();
             clientResponse = response.readEntity(String.class);
