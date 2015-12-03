@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ErrorResponse {
+public final class ErrorResponse {
     public static final String ERROR_URN = "urn:ietf:params:scim:api:messages:2.0:Error";
-    private String[] schemas = {ERROR_URN};
-    private String status;
-    private String detail;
+    private final String[] schemas = {ERROR_URN};
+    private final String status;
+    private final String detail;
 
     public ErrorResponse(@JsonProperty("status") int statusCode, @JsonProperty("detail") String message) {
         status = Integer.toString(statusCode);

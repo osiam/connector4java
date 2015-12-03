@@ -47,11 +47,4 @@ class AddressSpec extends Specification {
         address.region == builder.region
         address.streetAddress == builder.streetAddress
     }
-
-    def "empty constructor for json serializing should be present"() {
-        when:
-        def result = new Address();
-        then:
-        result
-    }
 }

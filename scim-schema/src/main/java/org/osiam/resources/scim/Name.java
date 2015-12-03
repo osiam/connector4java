@@ -23,8 +23,10 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
 
 import java.io.Serializable;
@@ -37,21 +39,30 @@ import java.io.Serializable;
  * </p>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Name implements Serializable {
+public final class Name implements Serializable {
 
     private static final long serialVersionUID = -2090787512643160922L;
 
-    private String formatted;
-    private String familyName;
-    private String givenName;
-    private String middleName;
-    private String honorificPrefix;
-    private String honorificSuffix;
+    private final String formatted;
+    private final String familyName;
+    private final String givenName;
+    private final String middleName;
+    private final String honorificPrefix;
+    private final String honorificSuffix;
 
-    /**
-     * Default constructor for Jackson
-     */
-    private Name() {
+    @JsonCreator
+    private Name(@JsonProperty("formatted") String formatted,
+                 @JsonProperty("familyName") String familyName,
+                 @JsonProperty("givenName") String givenName,
+                 @JsonProperty("middleName") String middleName,
+                 @JsonProperty("honorificPrefix") String honorificPrefix,
+                 @JsonProperty("honorificSuffix") String honorificSuffix) {
+        this.formatted = formatted;
+        this.familyName = familyName;
+        this.givenName = givenName;
+        this.middleName = middleName;
+        this.honorificPrefix = honorificPrefix;
+        this.honorificSuffix = honorificSuffix;
     }
 
     private Name(Builder builder) {

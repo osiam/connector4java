@@ -24,6 +24,7 @@ package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.osiam.resources.data.ImageDataURI;
@@ -36,24 +37,30 @@ import java.net.URISyntaxException;
 
 /**
  * This class represents a photo attribute.
- * <p/>
  * <p>
  * For more detailed information please look at the <a
  * href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section 3.2</a>
  * </p>
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE)
-public class Photo extends MultiValuedAttribute implements Serializable {
+public final class Photo extends MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = -3801047382575408796L;
 
-    @JsonProperty
     private Type type;
 
     /**
-     * Default constructor for Jackson
+     * Constructor for deserialization, it is not intended for general use.
      */
-    private Photo() {
+    @JsonCreator
+    public Photo(@JsonProperty("operation") String operation,
+                 @JsonProperty("value") String value,
+                 @JsonProperty("display") String display,
+                 @JsonProperty("primary") boolean primary,
+                 @JsonProperty("$ref") String reference,
+                 @JsonProperty("type") Type type) {
+        super(operation, value, display, primary, reference);
+        this.type = type;
     }
 
     private Photo(Builder builder) {

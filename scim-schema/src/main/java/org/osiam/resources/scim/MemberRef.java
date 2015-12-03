@@ -23,30 +23,36 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 /**
  * This class represents a {@link User} or a {@link Group} which are members of an actual {@link Group}
- * <p/>
  * <p>
  * For more detailed information please look at the
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
  * </p>
  */
-public class MemberRef extends MultiValuedAttribute implements Serializable {
-    // builder or jackson
+public final class MemberRef extends MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = 2965422671682767189L;
 
-    @JsonProperty
-    private Type type;
+    private final Type type;
 
     /**
-     * Default constructor for Jackson
+     * Constructor for deserialization, it is not intended for general use.
      */
-    private MemberRef() {
+    @JsonCreator
+    private MemberRef(@JsonProperty("operation") String operation,
+                     @JsonProperty("value") String value,
+                     @JsonProperty("display") String display,
+                     @JsonProperty("primary") boolean primary,
+                     @JsonProperty("$ref") String reference,
+                     @JsonProperty("type") Type type) {
+        super(operation, value, display, primary, reference);
+        this.type = type;
     }
 
     private MemberRef(Builder builder) {

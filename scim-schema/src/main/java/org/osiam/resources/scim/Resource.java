@@ -24,6 +24,8 @@
 package org.osiam.resources.scim;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableSet;
+import org.osiam.resources.exception.SCIMDataValidationException;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -36,16 +38,23 @@ public abstract class Resource implements Serializable {
 
     private static final long serialVersionUID = 1726103518645055449L;
 
-    private String id;
-    private String externalId;
-    private Meta meta;
+    private final String id;
+    private final String externalId;
+    private final Meta meta;
     @JsonProperty(required = true)
-    private Set<String> schemas;
+    private final Set<String> schemas;
 
-    /**
-     * Default constructor for Jackson
-     */
-    protected Resource() {
+    protected Resource(@JsonProperty("id") String id,
+                       @JsonProperty("externalId") String externalId,
+                       @JsonProperty("meta") Meta meta,
+                       @JsonProperty(value = "schemas", required = true) Set<String> schemas) {
+        this.id = id;
+        this.externalId = externalId;
+        this.meta = meta;
+        if (schemas == null || schemas.isEmpty()) {
+            throw new SCIMDataValidationException("Schemas cannot be null or empty!");
+        }
+        this.schemas = schemas;
     }
 
     protected Resource(Builder builder) {
@@ -93,7 +102,7 @@ public abstract class Resource implements Serializable {
      * @return a the list of schemas as a {@link Set}
      */
     public Set<String> getSchemas() {
-        return schemas;
+        return ImmutableSet.copyOf(schemas);
     }
 
     @Override

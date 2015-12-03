@@ -23,12 +23,12 @@
 
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import java.io.Serializable;
@@ -50,38 +50,83 @@ import java.util.*;
  */
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class User extends Resource implements Serializable {
+public final class User extends Resource implements Serializable {
 
     public static final String SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User";
     private static final long serialVersionUID = -4076516708797425414L;
 
-    private String userName;
-    private Name name;
-    private String displayName;
-    private String nickName;
-    private String profileUrl;
-    private String title;
-    private String userType;
-    private String preferredLanguage;
-    private String locale;
-    private String timezone;
-    private Boolean active;
-    private String password = "";
-    private List<Email> emails = new ArrayList<>();
-    private List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    private List<Im> ims = new ArrayList<>();
-    private List<Photo> photos = new ArrayList<>();
-    private List<Address> addresses = new ArrayList<>();
-    private List<GroupRef> groups = new ArrayList<>();
-    private List<Entitlement> entitlements = new ArrayList<>();
-    private List<Role> roles = new ArrayList<>();
-    private List<X509Certificate> x509Certificates = new ArrayList<>();
-    private Map<String, Extension> extensions = new HashMap<>();
+    private final String userName;
+    private final Name name;
+    private final String displayName;
+    private final String nickName;
+    private final String profileUrl;
+    private final String title;
+    private final String userType;
+    private final String preferredLanguage;
+    private final String locale;
+    private final String timezone;
+    private final Boolean active;
+    private final String password;
+    private final List<Email> emails;
+    private final List<PhoneNumber> phoneNumbers;
+    private final List<Im> ims;
+    private final List<Photo> photos;
+    private final List<Address> addresses;
+    private final List<GroupRef> groups;
+    private final List<Entitlement> entitlements;
+    private final List<Role> roles;
+    private final List<X509Certificate> x509Certificates;
+    private final Map<String, Extension> extensions;
 
-    /**
-     * Default constructor for Jackson
-     */
-    private User() {
+    @JsonCreator
+    private User(@JsonProperty("id") String id,
+                @JsonProperty("externalId") String externalId,
+                @JsonProperty("meta") Meta meta,
+                @JsonProperty(value = "schemas", required = true) Set<String> schemas,
+                @JsonProperty("userName") String userName,
+                @JsonProperty("name") Name name,
+                @JsonProperty("displayName") String displayName,
+                @JsonProperty("nickName") String nickName,
+                @JsonProperty("profileUrl") String profileUrl,
+                @JsonProperty("title") String title,
+                @JsonProperty("userType") String userType,
+                @JsonProperty("preferredLanguage") String preferredLanguage,
+                @JsonProperty("locale") String locale,
+                @JsonProperty("timezone") String timezone,
+                @JsonProperty("active") Boolean active,
+                @JsonProperty("emails") List<Email> emails,
+                @JsonProperty("phoneNumbers") List<PhoneNumber> phoneNumbers,
+                @JsonProperty("ims") List<Im> ims,
+                @JsonProperty("photos") List<Photo> photos,
+                @JsonProperty("addresses") List<Address> addresses,
+                @JsonProperty("groups") List<GroupRef> groups,
+                @JsonProperty("entitlements") List<Entitlement> entitlements,
+                @JsonProperty("roles") List<Role> roles,
+                @JsonProperty("x509Certificates") List<X509Certificate> x509Certificates,
+                @JsonProperty("extensions") Map<String, Extension> extensions) {
+        super(id, externalId, meta, schemas);
+        this.userName = (userName != null ? userName : "");
+        this.name = name;
+        this.displayName = displayName;
+        this.nickName = nickName;
+        this.profileUrl = profileUrl;
+        this.title = title;
+        this.userType = userType;
+        this.preferredLanguage = preferredLanguage;
+        this.locale = locale;
+        this.timezone = timezone;
+        this.active = active;
+        this.password = "";
+        this.emails = (emails != null ? emails : new ArrayList<Email>());
+        this.phoneNumbers = (phoneNumbers != null ? phoneNumbers : new ArrayList<PhoneNumber>());
+        this.ims = (ims != null ? ims : new ArrayList<Im>());
+        this.photos = (photos != null ? photos : new ArrayList<Photo>());
+        this.addresses = (addresses != null ? addresses : new ArrayList<Address>());
+        this.groups = (groups != null ? groups : new ArrayList<GroupRef>());
+        this.entitlements = (entitlements != null ? entitlements : new ArrayList<Entitlement>());
+        this.roles = (roles != null ? roles : new ArrayList<Role>());
+        this.x509Certificates = (x509Certificates != null ? x509Certificates : new ArrayList<X509Certificate>());
+        this.extensions = (extensions != null ? extensions : new HashMap<String, Extension>());
     }
 
     private User(Builder builder) {
@@ -277,7 +322,7 @@ public class User extends Resource implements Serializable {
      * @return the email addresses of the {@link User}
      */
     public List<Email> getEmails() {
-        return emails;
+        return ImmutableList.copyOf(emails);
     }
 
     /**
@@ -313,7 +358,7 @@ public class User extends Resource implements Serializable {
      * @return the phone numbers of the {@link User}
      */
     public List<PhoneNumber> getPhoneNumbers() {
-        return phoneNumbers;
+        return ImmutableList.copyOf(phoneNumbers);
     }
 
     /**
@@ -327,7 +372,7 @@ public class User extends Resource implements Serializable {
      * @return the ims of the {@link User}
      */
     public List<Im> getIms() {
-        return ims;
+        return ImmutableList.copyOf(ims);
     }
 
     /**
@@ -341,7 +386,7 @@ public class User extends Resource implements Serializable {
      * @return the photo URL's of the {@link User}
      */
     public List<Photo> getPhotos() {
-        return photos;
+        return ImmutableList.copyOf(photos);
     }
 
     /**
@@ -355,7 +400,7 @@ public class User extends Resource implements Serializable {
      * @return the addresses of the {@link User}
      */
     public List<Address> getAddresses() {
-        return addresses;
+        return ImmutableList.copyOf(addresses);
     }
 
     /**
@@ -369,7 +414,7 @@ public class User extends Resource implements Serializable {
      * @return a list of all {@link Group}s where the {@link User} is a member of
      */
     public List<GroupRef> getGroups() {
-        return groups;
+        return ImmutableList.copyOf(groups);
     }
 
     /**
@@ -383,7 +428,7 @@ public class User extends Resource implements Serializable {
      * @return a list of all entitlements of the {@link User}
      */
     public List<Entitlement> getEntitlements() {
-        return entitlements;
+        return ImmutableList.copyOf(entitlements);
     }
 
     /**
@@ -397,7 +442,7 @@ public class User extends Resource implements Serializable {
      * @return a list of the roles of the {@link User}
      */
     public List<Role> getRoles() {
-        return roles;
+        return ImmutableList.copyOf(roles);
     }
 
     /**
@@ -411,7 +456,7 @@ public class User extends Resource implements Serializable {
      * @return a list of the certificates of the {@link User}
      */
     public List<X509Certificate> getX509Certificates() {
-        return x509Certificates;
+        return ImmutableList.copyOf(x509Certificates);
     }
 
     /**
@@ -421,7 +466,7 @@ public class User extends Resource implements Serializable {
      */
     @JsonAnyGetter
     public Map<String, Extension> getExtensions() {
-        return Collections.unmodifiableMap(extensions);
+        return ImmutableMap.copyOf(extensions);
     }
 
     /**

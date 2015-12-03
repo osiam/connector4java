@@ -26,7 +26,7 @@ package org.osiam.resources.scim;
 /**
  * Java class for manager complex type.
  */
-public class Manager {
+public final class Manager {
 
     private final String managerId;
     private final String displayName;

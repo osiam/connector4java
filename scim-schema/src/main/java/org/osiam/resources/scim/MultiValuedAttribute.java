@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,7 +34,6 @@ import java.io.Serializable;
 
 /**
  * This class represents a multi valued attribute.
- * <p/>
  * <p>
  * For more detailed information please look at the
  * <a href= "http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-3.2">SCIM core schema 2.0, section
@@ -45,18 +45,29 @@ public abstract class MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = 5910207539638462247L;
 
-    private String operation;
-    private String value;
-    private String display;
-    private boolean primary;
+    private final String operation;
+    private final String value;
+    private final String display;
+    private final boolean primary;
     @JsonProperty("$ref")
-    private String reference;
+    private final String reference;
 
     /**
-     * Default constructor for Jackson
+     * This constructor is present for serialization purposes not for general use. Please don't use it.
      */
-    protected MultiValuedAttribute() {
+    @JsonCreator
+    protected MultiValuedAttribute(@JsonProperty("operation") String operation,
+                                   @JsonProperty("value") String value,
+                                   @JsonProperty("display") String display,
+                                   @JsonProperty("primary") boolean primary,
+                                   @JsonProperty("$ref") String reference) {
+        this.operation = operation;
+        this.value = value;
+        this.display = display;
+        this.primary = primary;
+        this.reference = reference;
     }
+
 
     protected MultiValuedAttribute(Builder builder) {
         this.value = builder.value;

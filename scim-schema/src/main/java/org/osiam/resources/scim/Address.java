@@ -23,6 +23,7 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,25 +37,47 @@ import java.io.Serializable;
  * </p>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Address extends MultiValuedAttribute implements Serializable {
+public final class Address extends MultiValuedAttribute implements Serializable {
 
     private static final long serialVersionUID = 2731087785568277294L;
 
-    private String formatted;
-    private String streetAddress;
-    private String locality;
-    private String region;
-    private String postalCode;
-    private String country;
-    @JsonProperty
-    private Type type;
+    private final String formatted;
+    private final String streetAddress;
+    private final String locality;
+    private final String region;
+    private final String postalCode;
+    private final String country;
+    private final Type type;
 
     /**
-     * Default constructor for Jackson
+     * Constructor for deserialization, it is not intended for general use.
      */
-    private Address() {
+    @JsonCreator
+    private Address(@JsonProperty("operation") String operation,
+                    @JsonProperty("value") String value,
+                    @JsonProperty("display") String display,
+                    @JsonProperty("primary") boolean primary,
+                    @JsonProperty("$ref") String reference,
+                    @JsonProperty("formatted") String formatted,
+                    @JsonProperty("streetAddress") String streetAddress,
+                    @JsonProperty("locality") String locality,
+                    @JsonProperty("region") String region,
+                    @JsonProperty("postalCode") String postalCode,
+                    @JsonProperty("country") String country,
+                    @JsonProperty("type") Type type) {
+        super(operation, value, display, primary, reference);
+        this.formatted = formatted;
+        this.streetAddress = streetAddress;
+        this.locality = locality;
+        this.region = region;
+        this.postalCode = postalCode;
+        this.country = country;
+        this.type = type;
     }
 
+    /**
+     * Constructor for serialization. It is not intended for public use.
+     */
     private Address(Builder builder) {
         super(builder);
         this.formatted = builder.formatted;

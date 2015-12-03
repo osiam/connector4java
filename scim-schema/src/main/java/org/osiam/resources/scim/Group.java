@@ -23,23 +23,25 @@
 
 package org.osiam.resources.scim;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * This class represent a Group resource.
- * <p/>
  * <p>
  * For more detailed information please look at the
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
  * </p>
- * <p/>
  * <p>
  * client info: The scim schema is mainly meant as a connection link between the OSIAM server and by a client like the
  * connector4Java. Some values will be not accepted by the OSIAM server. These specific values have an own client info
@@ -47,18 +49,24 @@ import java.util.Set;
  * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
-public class Group extends Resource implements Serializable {
+public final class Group extends Resource implements Serializable {
 
     public static final String SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group";
     private static final long serialVersionUID = -2995603177584656028L;
 
-    private String displayName;
-    private Set<MemberRef> members = new HashSet<>();
+    private final String displayName;
+    private final Set<MemberRef> members;
 
-    /**
-     * Default constructor for Jackson
-     */
-    private Group() {
+    @JsonCreator
+    private Group(@JsonProperty("id") String id,
+                  @JsonProperty("externalId") String externalId,
+                  @JsonProperty("meta") Meta meta,
+                  @JsonProperty(value = "schemas", required = true) Set<String> schemas,
+                  @JsonProperty("displayName") String displayName,
+                  @JsonProperty("members") Set<MemberRef> members) {
+        super(id, externalId, meta, schemas);
+        this.displayName = displayName;
+        this.members = (members != null ? members : Collections.<MemberRef>emptySet());
     }
 
     private Group(Builder builder) {
@@ -88,7 +96,7 @@ public class Group extends Resource implements Serializable {
      * @return the list of Members as a Set
      */
     public Set<MemberRef> getMembers() {
-        return members;
+        return ImmutableSet.copyOf(members);
     }
 
     @Override
