@@ -1,22 +1,77 @@
 # OSIAM Connector4Java
 
-## 1.8 - Unreleased
+## 1.8 - 2015-12-12
 
 ### Features
 
-- Ability to set timeouts on per connector basis
-- Add client management
-- Add legacy schemas mode for connecting to OSIAM <= 2.3
+- Set network timeouts on a per connector basis
 
-    Please, see [Create an OSIAM connector](docs/create-osiam-connector.md#legacy-schemas),
-    if you use an OSIAM version <= 2.3.
+    Related methods:
+    - `OsiamConnector.Builder#withReadTimeout`
+    - `OsiamConnector.Builder#withConnectTimeout`
 
-- Restore support for OSIAM 2.x
+- Manage OAuth 2 clients via the connector
+
+    Related methods:
+    - `AuthService#getClients`
+    - `AuthService#getClient`
+    - `AuthService#createClient`
+    - `AuthService#updateClient`
+    - `AuthService#deleteClient`
+
+- Support legacy SCIM schemas for connecting to OSIAM <= 2.3
+
+    See [Create an OSIAM connector](docs/create-osiam-connector.md#legacy-schemas), if you use
+    OSIAM <= 2.3.
+
+- Support OSIAM 3.x
+
+    See [Create an OSIAM connector](docs/create-osiam-connector.md#osiam-3x), if you use OSIAM 3.0.
 
 ### Changes
 
-- `OsiamConnector#setMaxConnections(int maxConnections)` will also set
-  the maximum connections per route to the given value.
+- `OsiamConnector#setMaxConnections` also sets the maximum connections per route
+
+    Anticipate that auth-server and resource-server are installed under the same domain.
+    Therefore, maximum number of connections is the same as maximum connections per route.
+    Additionally use `OsiamConnector#setMaxConnectionsPerRoute`, if your auth-server and
+    resource-server are not installed under the same domain.
+
+- Support Jackson versions < 2.5 in classpath
+
+    Applications that use Jackson < 2.5 can use the connector without upgrading Jackson.
+    See [#168](https://github.com/osiam/connector4java/pull/168) for more details.
+
+- Throw `BadCredentialsException` when retrieving access token with wrong client credentials
+
+    See [#173](https://github.com/osiam/connector4java/pull/173) for more details.
+
+- Throw `BadRequestException` when auth-server responds with `400 Bad Request`
+
+    See [#173](https://github.com/osiam/connector4java/pull/173) for more details.
+
+### Fixes
+
+- Missing `Content-Length` header on some requests
+
+    See also: [#179](https://github.com/osiam/connector4java/issues/179)
+    and [#180](https://github.com/osiam/connector4java/pull/180)
+
+### Other
+
+- Migrate documentation from wiki to markdown files in repo
+
+    You can find the documentation in the [`docs/`](docs/) folder.
+
+### Updates
+
+- `scim-schema` 1.6
+
+    See [`scim-schema`'s changelog](https://github.com/osiam/scim-schema/blob/v1.6/CHANGELOG.md)
+    for more details
+
+- `joda-time` 2.8.2
+- Jersey 2.22
 
 ## 1.7 - 2015-09-11
 
