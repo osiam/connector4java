@@ -1,19 +1,36 @@
 # OSIAM SCIM Schema
 
-## 1.6 - Unreleased
+## 1.6 - 2015-12-12
 
 ### Features
 
-- Make validated schema in `UserDeserializer` configurable
+- `Group.Builder` can add a single member to the group
 
-    This adds the ability to set the schema that the `UserDeserializer`
-    implicitly validates to a custom value using the new constructor
-    `UserDeserializer#UserDeserializer(String schema)`.
+    Related method: `Group.Builder#addMember(MemberRef member)`
+
+- Add class `ErrorResponse` that represents a SCIM error response
+- Make schema used in `UserDeserializer` configurable
 
 ### Changes
 
-- Deprecate `UserDeserializer#UserDeserializer(Class<?> valueClass)`
-- All scim-schema classes are now immutable.
+- All SCIM classes are now immutable
+- Schema definitions are now contained in the classes that use them
+
+    Instead of `Constants.USER_CORE_SCHEMA` one should now use `User.SCHEMA`.
+    This is also true for `Group` and `SCIMSearchResult`.
+    See [#150](https://github.com/osiam/scim-schema/pull/150) for more details.
+
+### Deprecations
+
+- `org.osiam.resources.helper.UserDeserializer#UserDeserializer(Class<?> valueClass)`
+- `org.osiam.resources.scim.Constants`
+- `org.osiam.resources.helper.SCIMHelper`
+
+### Updates
+
+- `jackson-databind` 2.5.4
+- `joda-time` 2.8.2
+- `tika-core` 1.10
 
 ## 1.5 - 2015-09-09
 
