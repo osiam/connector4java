@@ -26,7 +26,7 @@
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.8</version>
 
     <name>OSIAM Connector 4 Java</name>
     <description>Native Java API to connect to the REST based OSIAM services</description>
@@ -57,7 +57,7 @@
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
         <url>https://github.com/osiam/connector4java</url>
         <developerConnection>scm:git:ssh://git@github.com/osiam/connector4java.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v1.8</tag>
     </scm>
 
     <properties>
