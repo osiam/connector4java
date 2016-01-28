@@ -214,11 +214,47 @@
                 <configuration>
                     <parallel>classes</parallel>
                     <threadCount>3</threadCount>
-                    <argLine>-XX:-UseSplitVerifier</argLine>
+                    <argLine>${argLine} -XX:-UseSplitVerifier</argLine>
                     <includes>
                         <include>**/*Test.*</include>
                         <include>**/*Spec.*</include>
                     </includes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.5.201505241946</version>
+                <configuration>
+                    <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                    <destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
+                    <outputDirectory>${project.build.directory}/coverage-reports/jacoco/</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-tests</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.1.0</version>
+                <configuration>
+                    <jacocoReports>
+                        <entry>${project.build.directory}/coverage-reports/jacoco/jacoco.xml</entry>
+                    </jacocoReports>
                 </configuration>
             </plugin>
 
