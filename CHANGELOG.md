@@ -1,5 +1,11 @@
 # OSIAM Connector4Java
 
+## Unreleased
+
+### Fixes
+
+- A `400 BAD REQUEST` response creates a `BadRequestException` instead of the appropriate `ConflictException` 
+
 ## 1.8 - 2015-12-12
 
 ### Features

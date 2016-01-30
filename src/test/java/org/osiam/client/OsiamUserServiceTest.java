@@ -24,22 +24,34 @@
 package org.osiam.client;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockserver.client.server.MockServerClient;
+import org.mockserver.junit.MockServerRule;
+import org.mockserver.matchers.Times;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.User;
 
+import javax.ws.rs.core.Response;
 import java.util.Date;
 
-import static org.junit.Assert.fail;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 public class OsiamUserServiceTest {
 
+    private static final int PORT_NUMBER = 9090;
     private static final String USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
-    private static final String endpoint = "http://localhost:9090/osiam";
+    private static final String endpoint = String.format("http://localhost:%d/osiam", PORT_NUMBER);
+
+    @Rule
+    public MockServerRule mockServerRule = new MockServerRule(this, PORT_NUMBER);
+    private MockServerClient mockServerClient;
 
     private String searchedID;
     private AccessToken accessToken;
-
     private OsiamUserService service;
 
     @Before
@@ -54,51 +66,51 @@ public class OsiamUserServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void id_is_null_by_getting_single_user_raises_exception() throws Exception {
         service.getUser(null, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = NullPointerException.class)
     public void access_token_is_null_by_getting_single_user_raises_exception() throws Exception {
         service.getUser(searchedID, null);
-
-        fail("Exception expected");
     }
 
     @Test(expected = NullPointerException.class)
     public void access_token_is_null_by_getting_all_group_raises_exception() throws Exception {
         service.getAllUsers(null);
-
-        fail("Exception expected");
     }
 
     @Test(expected = NullPointerException.class)
     public void create_null_user_raises_exception() {
         service.createUser(null, accessToken);
-
-        fail("Exception excpected");
     }
 
     @Test(expected = NullPointerException.class)
     public void create_user_with_null_access_token_raises_exception() {
         User newUser = new User.Builder("irrelevant").build();
-
         service.createUser(newUser, null);
+    }
 
-        fail("Exception excpected");
+    @Test(expected = BadRequestException.class)
+    public void invalid_filter_generates_bad_request() {
+        String filter = "invalidFilterString";
+        mockServerClient
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/osiam/Users")
+                                .withQueryStringParameter("filter", filter),
+                        Times.exactly(1))
+                .respond(response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode()));
+
+        service.searchUsers(new QueryBuilder().filter(filter).build(), accessToken);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void delete_null_user_raises_exception() {
         service.deleteUser(null, accessToken);
-
-        fail("Exception excpected");
     }
 
     @Test(expected = NullPointerException.class)
     public void delete_user_with_null_access_token_raises_exception() {
         service.deleteUser("irrelevant", null);
-
-        fail("Exception excpected");
     }
 }

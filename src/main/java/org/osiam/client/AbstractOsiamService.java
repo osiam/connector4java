@@ -67,14 +67,12 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected static final String AUTHORIZATION = "Authorization";
     protected static final String BEARER = "Bearer ";
-
+    protected final WebTarget targetEndpoint;
     private final Class<T> type;
     private final String typeName;
     private final int connectTimeout;
     private final int readTimeout;
     private final boolean legacySchemas;
-
-    protected final WebTarget targetEndpoint;
 
     protected AbstractOsiamService(Builder<T> builder) {
         type = builder.type;
@@ -90,6 +88,10 @@ abstract class AbstractOsiamService<T extends Resource> {
         objectMapper.registerModule(userDeserializerModule);
 
         targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
+    }
+
+    protected static void checkAccessTokenIsNotNull(AccessToken accessToken) {
+        checkNotNull(accessToken, "The given accessToken must not be null.");
     }
 
     protected T getResource(String id, AccessToken accessToken) {
@@ -305,7 +307,7 @@ abstract class AbstractOsiamService<T extends Resource> {
             throw new UnauthorizedException(errorMessage);
         } else if (status.getStatusCode() == Status.BAD_REQUEST.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
-            throw new ConflictException(errorMessage);
+            throw new BadRequestException(errorMessage);
         } else if (status.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
             String errorMessage = extractErrorMessage(content, status);
             throw new NoResultException(errorMessage);
@@ -385,10 +387,6 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected static void checkAccessTokenIsNotNull(AccessToken accessToken) {
-        checkNotNull(accessToken, "The given accessToken must not be null.");
-    }
-
     protected int getConnectTimeout() {
         return connectTimeout;
     }
@@ -399,12 +397,12 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected static class Builder<T> {
 
-        private String endpoint;
-        private Class<T> type;
-        private String typeName;
         protected int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
         protected int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
         protected boolean legacySchemas = OsiamConnector.DEFAULT_LEGACY_SCHEMAS;
+        private String endpoint;
+        private Class<T> type;
+        private String typeName;
 
         @SuppressWarnings("unchecked")
         protected Builder(String endpoint) {
