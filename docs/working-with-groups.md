@@ -2,13 +2,7 @@ To perform any actions with groups you always need an access token. For
 retrieving an access token please see [Login and getting an access token]
 (login-and-getting-an-access-token.md).
 
-The group that will be used by OSIAM and the java connector is
-org.osiam.resources.scim. **Group**.
-Detailed information about can be found in the [scim-schema documentation]
-(https://github.com/osiam/scim-schema/blob/master/docs/README.md).
-
 Chapters:
-- [Group Object](#group)
 - [Creating a Group](#create-a-group)
 - [Deleting a Group](#delete-a-group)
 - [Update a Group](#update-a-group)
@@ -18,26 +12,6 @@ Chapters:
  - [by search string](#search-for-groups-by-search-string)
  - [by Query](#search-for-groups-by-query)
       - [braces](#braces)
-
-# Group
-The OSIAM Connector4Java is working with org.osiam.resources.scim. **Group**
-Objects.
-
-A new group can be created with his builder:
-
-```java
-Group group = new Group.Builder(<DisplayName>)
-                //...
-                .build();
-```
-
-Some variables of a group are:
-
-```java
-String displayName = group.getDisplayName();
-Set<MultiValuedAttribute> members = group.getMembers();
-//...
-```
 
 ## Create a Group
 

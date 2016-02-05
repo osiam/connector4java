@@ -66,7 +66,7 @@ object is used to explain all setter.
 
 Many multi valued attributes can have a specific type e.g. HOME, OTHER, ICQ.
 
-The OSIAM scim schema provides the canonical in a easy way to use but also custom types are possible.
+The Connector provides the canonical values as static members, but custom types are possible too.
 
 ```
 Email.Type canonicalType = Email.Type.WORK;
@@ -492,7 +492,7 @@ builder.addX509Certificate(newX509Certificate);
 If the core fields from SCIM are not sufficent for your use case, you can define extended fields for a User. These collections of user defnied fields are called extensions. Extensions are simple key-value-pairs which are identified by a unique URN.
 
 Extensions are fully supported on OSIAM Server.
-If the scim schema is used together with the OSIAM Server the extension need to be [configured](https://github.com/osiam/server/wiki/detailed_reference_installation#configuring-scim-extension) before the can be used.
+The extension need to be [configured](https://github.com/osiam/server/wiki/detailed_reference_installation#configuring-scim-extension) before the can be used.
 
 **Create an extension**
 

@@ -42,11 +42,6 @@ import java.util.Set;
  * For more detailed information please look at the
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-8">SCIM core schema 2.0, sections 8</a>
  * </p>
- * <p>
- * client info: The scim schema is mainly meant as a connection link between the OSIAM server and by a client like the
- * connector4Java. Some values will be not accepted by the OSIAM server. These specific values have an own client info
- * documentation section.
- * </p>
  */
 @JsonInclude(Include.NON_EMPTY)
 public final class Group extends Resource implements Serializable {

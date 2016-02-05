@@ -1,12 +1,7 @@
 To perform any actions with users you always need an access token. For
 retrieving an access token please see [Login and getting an access token](login-and-getting-an-access-token.md).
 
-The user class that will be used by OSIAM and the Java Connector is org.osiam.resources.scim. **User**.
-Detailed information about this class can be found at the [scim-schema]
-(https://github.com/osiam/scim-schema/blob/master/docs/api/user.md).
-
 Chapters:
-- [User Object](#user)
 - [Create a User](#create-a-user)
 - [Delete a User](#delete-a-user)
 - [Update a User](#update-a-user)
@@ -14,31 +9,6 @@ Chapters:
 - [Retrieve the currently logged in User by his access token](#retrieve-the-current-logged-in-user-by-his-access-token)
 - [Retrieve all User](#retrieve-all-users)
 - [Search for Users](#search-for-user)
-
-# User
-
-The OSIAM Connector4Java is working with org.osiam.resources.scim. **User**
-Objects.
-
-A new user can be created with his builder.
-
-```java
-User user = new User.Builder("<userName>")
-                       .setPassword("<password>")
-                       //...
-                       .build();
-```
-
-Some variables of a user are:
-
-```java
-String userName = user.getUserName();
-String userId = user.getId(); //UUID
-List<Address> addresses = user.getAddresses();
-List<Email> emails = user.getEmails();
-String password = user.getPassword(); // will always be null
-//...
-```
 
 # Create a User
 

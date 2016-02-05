@@ -15,6 +15,5 @@ The most recent version can be found at [maven central](http://search.maven.org/
 
 ## Related projects
 * [OSIAM](https://github.com/osiam/osiam)
-* [OSIAM SCIM User/Groups] (https://github.com/osiam/scim-schema)
 * [Facebook Login for OSIAM](https://github.com/osiam/osiam/blob/master/docs/facebook-connect.md)
 * [More about OSIAM Connectors](https://github.com/osiam/osiam/blob/master/docs/osiam-connectors.md)
