@@ -6,8 +6,13 @@
 - [Access token overview](login-and-getting-an-access-token.md#access-token-overview)
 - [Retrieving an access token](login-and-getting-an-access-token.md#retrieving-an-access-token)
 
-# [User](working-with-user.md)
-- [User Object](working-with-user.md#user)
+# SCIM Resources
+- [User](user.md)
+- [Update User](update-user.md)
+- [Group](group.md)
+- [Update Group](update-group.md)
+
+# [Working with Users](working-with-user.md)
 - [Create a User](working-with-user.md#create-a-user)
 - [Delete a User](working-with-user.md#delete-a-user)
 - [Update a User](working-with-user.md#update-a-user)
@@ -16,8 +21,7 @@
 - [Retrieve all User](working-with-user.md#retrieve-all-users)
 - [Search for Users](working-with-user.md#search-for-user)
 
-# [Group](working-with-groups.md)
-- [Group Object](working-with-groups.md#group)
+# [Working with Groups](working-with-groups.md)
 - [Creating a Group](working-with-groups.md#create-a-group)
 - [Deleting a Group](working-with-groups.md#delete-a-group)
 - [Update a Group](working-with-groups.md#update-a-group)
