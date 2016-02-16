@@ -154,8 +154,8 @@ abstract class AbstractOsiamService<T extends Resource> {
         checkAndHandleResponse(content, status, accessToken);
 
         try {
-            JavaType queryResultType = TypeFactory.defaultInstance().constructParametricType(SCIMSearchResult.class,
-                    type);
+            JavaType queryResultType = TypeFactory.defaultInstance().constructParametrizedType(SCIMSearchResult.class,
+                    SCIMSearchResult.class, type);
             return objectMapper.readValue(content, queryResultType);
         } catch (IOException e) {
             throw new OsiamClientException(String.format("Unable to deserialize search result: %s", content), e);
