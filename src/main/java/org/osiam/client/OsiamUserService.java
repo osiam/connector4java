@@ -67,26 +67,11 @@ class OsiamUserService extends AbstractOsiamService<User> {
 
     /**
      * See {@link OsiamConnector#getCurrentUserBasic(AccessToken)}
+     *
+     * @deprecated Please use getMe(accessToken)
      */
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
-        checkAccessTokenIsNotNull(accessToken);
-
-        StatusType status;
-        String content;
-        try {
-            Response response = targetEndpoint.path("me").request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", BEARER + accessToken.getToken())
-                    .property(ClientProperties.CONNECT_TIMEOUT, getConnectTimeout())
-                    .property(ClientProperties.READ_TIMEOUT, getReadTimeout())
-                    .get();
-
-            status = response.getStatusInfo();
-            content = response.readEntity(String.class);
-        } catch (ProcessingException e) {
-            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
-        }
-
-        checkAndHandleResponse(content, status, accessToken);
+        String content = getMeResource(accessToken);
 
         return mapToType(content, BasicUser.class);
     }
@@ -97,6 +82,15 @@ class OsiamUserService extends AbstractOsiamService<User> {
     public User getCurrentUser(AccessToken accessToken) {
         BasicUser basicUser = getCurrentUserBasic(accessToken);
         return getResource(basicUser.getId(), accessToken);
+    }
+
+    /**
+     * See {@link OsiamConnector#getMe(AccessToken)}
+     */
+    public User getMe(AccessToken accessToken) {
+        String content = getMeResource(accessToken);
+
+        return mapToType(content, User.class);
     }
 
     /**
@@ -160,6 +154,28 @@ class OsiamUserService extends AbstractOsiamService<User> {
         return LEGACY_SCHEMA;
     }
 
+    private String getMeResource(AccessToken accessToken) {
+        checkAccessTokenIsNotNull(accessToken);
+
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("Me").request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, getConnectTimeout())
+                    .property(ClientProperties.READ_TIMEOUT, getReadTimeout())
+                    .get();
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
+        }
+
+        checkAndHandleResponse(content, status, accessToken);
+        return content;
+    }
+
     /**
      * See {@link OsiamConnector.Builder}
      */
@@ -208,7 +224,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
         /**
          * Configures the user service to use legacy schemas, i.e. schemas that were defined before
          * SCIM 2 draft 09.
-         *
+         * <p>
          * <p/>This enables compatibility with OSIAM releases up to version 2.3
          * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
          * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.

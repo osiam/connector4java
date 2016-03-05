@@ -23,6 +23,7 @@
  */
 package org.osiam.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,10 +99,24 @@ public class OsiamUserServiceTest {
                                 .withMethod("GET")
                                 .withPath("/osiam/Users")
                                 .withQueryStringParameter("filter", filter),
-                        Times.exactly(1))
+                        Times.once())
                 .respond(response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode()));
 
         service.searchUsers(new QueryBuilder().filter(filter).build(), accessToken);
+    }
+
+    public void request_of_me_resource_is_build_correctly() throws Exception {
+        User resultingUser = new User.Builder("Name").setId(USER_ID).build();
+        ObjectMapper mapper = new ObjectMapper();
+        mockServerClient
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/osiam/Me")
+                                .withHeader("Authorization", "Bearer " + accessToken),
+                        Times.once())
+                .respond(response().withBody(mapper.writeValueAsString(resultingUser)));
+        service.getMe(accessToken);
     }
 
     @Test(expected = IllegalArgumentException.class)

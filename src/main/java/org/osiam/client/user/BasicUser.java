@@ -23,21 +23,22 @@
  */
 package org.osiam.client.user;
 
-import java.util.Date;
-
-import org.osiam.resources.helper.JsonDateSerializer;
-import org.osiam.resources.scim.User;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.osiam.resources.helper.JsonDateSerializer;
+import org.osiam.resources.scim.User;
+
+import java.util.Date;
 
 /**
  * represents the basic Data of a scim User
+ * @deprecated This class has been deprecated with OSIAM 3.0
  *
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-@JsonIgnoreProperties({ "link", "gender", "timezone", "verified" })
+@JsonIgnoreProperties({"link", "gender", "timezone", "verified"})
+@Deprecated
 public class BasicUser {
 
     private String id;

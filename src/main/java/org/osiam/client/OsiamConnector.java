@@ -32,14 +32,25 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.osiam.client.exception.*;
+import org.osiam.client.exception.ClientAlreadyExistsException;
+import org.osiam.client.exception.ClientNotFoundException;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.InvalidAttributeException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Client;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.UpdateGroup;
+import org.osiam.resources.scim.UpdateUser;
+import org.osiam.resources.scim.User;
 
 import javax.ws.rs.client.ClientBuilder;
 import java.net.URI;
@@ -52,13 +63,11 @@ import java.util.List;
  */
 public class OsiamConnector {
 
+    public static final ObjectMapper objectMapper = new ObjectMapper();
     static final int DEFAULT_CONNECT_TIMEOUT = 2500;
     static final int DEFAULT_READ_TIMEOUT = 5000;
     static final boolean DEFAULT_LEGACY_SCHEMAS = false;
     private static final int DEFAULT_MAX_CONNECTIONS = 40;
-
-    public static final ObjectMapper objectMapper = new ObjectMapper();
-
     private static final PoolingHttpClientConnectionManager connectionManager =
             new PoolingHttpClientConnectionManager();
 
@@ -72,84 +81,6 @@ public class OsiamConnector {
 
     static {
         setMaxConnections(DEFAULT_MAX_CONNECTIONS);
-    }
-
-    static javax.ws.rs.client.Client getClient() {
-        return client;
-    }
-
-    /**
-     * Set the connect timeout interval, in milliseconds.
-     * <p/>
-     * <p/>
-     * A value of zero (0) is equivalent to an interval of infinity. The default value is 2500. This property will be
-     * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
-     * instances at the same time.
-     * <p/>
-     *
-     * @param connectTimeout the connect timeout interval, in milliseconds
-     */
-    public static void setConnectTimeout(int connectTimeout) {
-        client.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
-    }
-
-    /**
-     * Set the read timeout interval, in milliseconds.
-     * <p/>
-     * <p/>
-     * A value of zero (0) is equivalent to an interval of infinity. The default value is 5000. This property will be
-     * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
-     * instances at the same time.
-     * <p/>
-     *
-     * @param readTimeout the read timeout interval, in milliseconds
-     */
-    public static void setReadTimeout(int readTimeout) {
-        client.property(ClientProperties.READ_TIMEOUT, readTimeout);
-    }
-
-    /**
-     * Sets the maximum number of connections that the underlying HTTP connection pool will
-     * use to connect to OSIAM.
-     *
-     * <p/>The default value is 40. This property will be set application global, so you can only
-     * define it for all {@link org.osiam.client.OsiamConnector} instances at the same time.
-     *
-     * <p/>See {@link OsiamConnector#setMaxConnectionsPerRoute(int)} if you use OSIAM 2.x and
-     * installed auth-server and resource-server under different domains.
-     *
-     * @param maxConnections The maximum number of HTTP connections
-     */
-    public static void setMaxConnections(int maxConnections) {
-        connectionManager.setMaxTotal(maxConnections);
-        connectionManager.setDefaultMaxPerRoute(maxConnections);
-    }
-
-    /**
-     * Sets the maximum number of connections that the underlying HTTP connection pool will
-     * allocate for single route.
-     *
-     * <p/>This setting should only be used, if you use OSIAM 2.x and installed auth-server and
-     * resource-server under different domains. In this case you have 2 distinct routes to OSIAM.
-     *
-     * <p/>A single route means a single FQDN, hostname or IP address. In the context of OSIAM 2.x
-     * this means the OSIAM server or the auth- or resource-server if they will be accessed under a
-     * different hostname. Remember to also set the number of maximum connections via
-     * {@link OsiamConnector#setMaxConnections(int)} based on the value set here, e.g. if you have 2
-     * separate endpoints, in sense of the hostname, for auth- and resource-server and set this
-     * value to {@code 20} you should set the maximum number of connections to {@code 40}. Remember
-     * to set maximum connections first and maximum connections per route afterwards, because
-     * {@link OsiamConnector#setMaxConnections(int)} also sets the maximum conenctions per route to
-     * the given value.
-     *
-     * <p/>The default value is 40. This property will be set application global, so
-     * you can only define this timeout for all {@link org.osiam.client.OsiamConnector} instances at
-     * the same time.
-     *
-     * @param maxConnectionsPerRoute The maximum number of HTTP connections per route
-     */
-    public static void setMaxConnectionsPerRoute(int maxConnectionsPerRoute) {
-        connectionManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
     }
 
     private AuthService authService;
@@ -203,6 +134,84 @@ public class OsiamConnector {
                     .withLegacySchemas(builder.legacySchemas)
                     .build();
         }
+    }
+
+    static javax.ws.rs.client.Client getClient() {
+        return client;
+    }
+
+    /**
+     * Set the connect timeout interval, in milliseconds.
+     * <p>
+     * <p>
+     * A value of zero (0) is equivalent to an interval of infinity. The default value is 2500. This property will be
+     * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
+     * instances at the same time.
+     * <p>
+     *
+     * @param connectTimeout the connect timeout interval, in milliseconds
+     */
+    public static void setConnectTimeout(int connectTimeout) {
+        client.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
+    }
+
+    /**
+     * Set the read timeout interval, in milliseconds.
+     * <p>
+     * <p>
+     * A value of zero (0) is equivalent to an interval of infinity. The default value is 5000. This property will be
+     * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
+     * instances at the same time.
+     * <p>
+     *
+     * @param readTimeout the read timeout interval, in milliseconds
+     */
+    public static void setReadTimeout(int readTimeout) {
+        client.property(ClientProperties.READ_TIMEOUT, readTimeout);
+    }
+
+    /**
+     * Sets the maximum number of connections that the underlying HTTP connection pool will
+     * use to connect to OSIAM.
+     * <p>
+     * <p/>The default value is 40. This property will be set application global, so you can only
+     * define it for all {@link org.osiam.client.OsiamConnector} instances at the same time.
+     * <p>
+     * <p/>See {@link OsiamConnector#setMaxConnectionsPerRoute(int)} if you use OSIAM 2.x and
+     * installed auth-server and resource-server under different domains.
+     *
+     * @param maxConnections The maximum number of HTTP connections
+     */
+    public static void setMaxConnections(int maxConnections) {
+        connectionManager.setMaxTotal(maxConnections);
+        connectionManager.setDefaultMaxPerRoute(maxConnections);
+    }
+
+    /**
+     * Sets the maximum number of connections that the underlying HTTP connection pool will
+     * allocate for single route.
+     * <p>
+     * <p/>This setting should only be used, if you use OSIAM 2.x and installed auth-server and
+     * resource-server under different domains. In this case you have 2 distinct routes to OSIAM.
+     * <p>
+     * <p/>A single route means a single FQDN, hostname or IP address. In the context of OSIAM 2.x
+     * this means the OSIAM server or the auth- or resource-server if they will be accessed under a
+     * different hostname. Remember to also set the number of maximum connections via
+     * {@link OsiamConnector#setMaxConnections(int)} based on the value set here, e.g. if you have 2
+     * separate endpoints, in sense of the hostname, for auth- and resource-server and set this
+     * value to {@code 20} you should set the maximum number of connections to {@code 40}. Remember
+     * to set maximum connections first and maximum connections per route afterwards, because
+     * {@link OsiamConnector#setMaxConnections(int)} also sets the maximum conenctions per route to
+     * the given value.
+     * <p>
+     * <p/>The default value is 40. This property will be set application global, so
+     * you can only define this timeout for all {@link org.osiam.client.OsiamConnector} instances at
+     * the same time.
+     *
+     * @param maxConnectionsPerRoute The maximum number of HTTP connections per route
+     */
+    public static void setMaxConnectionsPerRoute(int maxConnectionsPerRoute) {
+        connectionManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
     }
 
     private AuthService getAuthService() {
@@ -275,9 +284,10 @@ public class OsiamConnector {
     }
 
     /**
-     * Retrieves the User who holds the given access token. Not to be used for the grant Client-Credentials If only the
-     * basic Data like the userName, Name, primary email address is needed use the methode getCurrentUserBasic(...)
-     * since it is more performant as this one
+     * Retrieves the User holding the given access token. Not to be used for the grant Client-Credentials. If the
+     * version of OSIAM to be queried is lower than 3.0 and only the basic Data like the userName, Name, primary
+     * e-mail address is needed, consider using the method getCurrentUserBasic(...) since it is more performant than
+     * this one. Be aware, however, that that method is deprecated and going to go away with version 2.0 of the connector.
      *
      * @param accessToken the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -291,9 +301,7 @@ public class OsiamConnector {
     }
 
     /**
-     * Retrieves the basic User data as BasicUser Object from the User who holds the given access token. Not to be used
-     * for the grant Client-Credentials If only the basic Data like the userName, Name, primary email address is needed
-     * use this methode since it is more performant as the getCurrentUser(...) method
+     * Retrieves the User holding the given access token.
      *
      * @param accessToken the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -301,6 +309,23 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
+     */
+    public User getMe(AccessToken accessToken) {
+        return getUserService().getMe(accessToken);
+    }
+
+    /**
+     * Retrieves the basic User data as BasicUser Object from the User who holds the given access token. Not to be used
+     * for the grant Client-Credentials If only the basic Data like the userName, Name, primary email address is needed
+     * use this method since it is more performant as the getCurrentUser(...) method
+     *
+     * @param accessToken the OSIAM access token from for the current session
+     * @return the actual logged in user
+     * @throws UnauthorizedException             if the request could not be authorized.
+     * @throws ForbiddenException                if the scope doesn't allow this request
+     * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
+     * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
+     * @deprecated The BasicUser class hsa been deprecated. This method is going to go away with version 2.0
      */
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
         return getUserService().getCurrentUserBasic(accessToken);
@@ -714,9 +739,9 @@ public class OsiamConnector {
 
         /**
          * Use the given endpoint for communication with OSIAM.
-         *
+         * <p>
          * <p/>Use this method with OSIAM 3.x.
-         *
+         * <p>
          * <p/>For OSIAM 2.x: see {@link Builder#setEndpoint(String)},
          * {@link Builder#setAuthServerEndpoint(String)}, or
          * {@link Builder#setResourceServerEndpoint(String)}.
@@ -727,7 +752,7 @@ public class OsiamConnector {
         public Builder withEndpoint(String endpoint) {
             this.endpoint = endpoint;
             combinedEndpoint = null;
-            authServiceEndpoint= null;
+            authServiceEndpoint = null;
             resourceServiceEndpoint = null;
             return this;
         }
@@ -735,13 +760,13 @@ public class OsiamConnector {
         /**
          * Use the given combined endpoint for communication with the OAuth2-Service for
          * authentication and the SCIM2 resource server.
-         *
+         * <p>
          * <p/>Use this method with OSIAM 2.x.
-         *
+         * <p>
          * <p/>The schema will be <endpoint>/osiam-auth-server and <endpoint>/osiam-resource-server.
          * This method can be used if the authentication and the resource server are at the same
          * location and have the standard names.
-         *
+         * <p>
          * <p/>For OSIAM 3.x: see {@link Builder#withEndpoint(String)}.
          *
          * @param endpoint The endpoint to use for communication
@@ -750,7 +775,7 @@ public class OsiamConnector {
         public Builder setEndpoint(String endpoint) {
             combinedEndpoint = endpoint;
             this.endpoint = null;
-            authServiceEndpoint= null;
+            authServiceEndpoint = null;
             resourceServiceEndpoint = null;
             return this;
         }
@@ -758,9 +783,9 @@ public class OsiamConnector {
         /**
          * Use the given endpoint for communication with the OAuth2-Service for
          * authentication
-         *
+         * <p>
          * <p/>Use this method with OSIAM 2.x.
-         *
+         * <p>
          * <p/>For OSIAM 3.x: see {@link Builder#withEndpoint(String)}.
          *
          * @param endpoint The AuthService endpoint to use for communication
@@ -775,9 +800,9 @@ public class OsiamConnector {
 
         /**
          * Use the given endpoint for communication with the SCIM2 resource server.
-         *
+         * <p>
          * <p/>Use this method with OSIAM 2.x.
-         *
+         * <p>
          * <p/>For OSIAM 3.x: see {@link Builder#withEndpoint(String)}.
          *
          * @param endpoint The resource service endpoint to use
@@ -826,12 +851,12 @@ public class OsiamConnector {
 
         /**
          * Set the connect timeout per connector, in milliseconds.
-         * <p/>
-         * <p/>
+         * <p>
+         * <p>
          * A value of zero (0) is equivalent to an interval of infinity. The default value is 2500. This connect timeout
          * is set per connector and overrides the global set
          * {@link org.osiam.client.OsiamConnector#setConnectTimeout(int)}
-         * <p/>
+         * <p>
          *
          * @param connectTimeout the connect timeout per request, in milliseconds
          * @return The builder itself
@@ -843,11 +868,11 @@ public class OsiamConnector {
 
         /**
          * Set the read timeout per connector, in milliseconds.
-         * <p/>
-         * <p/>
+         * <p>
+         * <p>
          * A value of zero (0) is equivalent to an interval of infinity. The default value is 5000. This read timeout is
          * set per connector and overrides the global set {@link org.osiam.client.OsiamConnector#setConnectTimeout(int)}
-         * <p/>
+         * <p>
          *
          * @param readTimeout the read timeout per request, in milliseconds
          * @return The builder itself
@@ -860,7 +885,7 @@ public class OsiamConnector {
         /**
          * Configures the connector to use legacy schemas, i.e. schemas that were defined before
          * SCIM 2 draft 09.
-         *
+         * <p>
          * <p/>This enables compatibility with OSIAM releases up to version 2.3
          * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
          * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.
