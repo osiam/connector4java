@@ -75,30 +75,30 @@ public final class User extends Resource implements Serializable {
 
     @JsonCreator
     private User(@JsonProperty("id") String id,
-                @JsonProperty("externalId") String externalId,
-                @JsonProperty("meta") Meta meta,
-                @JsonProperty(value = "schemas", required = true) Set<String> schemas,
-                @JsonProperty("userName") String userName,
-                @JsonProperty("name") Name name,
-                @JsonProperty("displayName") String displayName,
-                @JsonProperty("nickName") String nickName,
-                @JsonProperty("profileUrl") String profileUrl,
-                @JsonProperty("title") String title,
-                @JsonProperty("userType") String userType,
-                @JsonProperty("preferredLanguage") String preferredLanguage,
-                @JsonProperty("locale") String locale,
-                @JsonProperty("timezone") String timezone,
-                @JsonProperty("active") Boolean active,
-                @JsonProperty("emails") List<Email> emails,
-                @JsonProperty("phoneNumbers") List<PhoneNumber> phoneNumbers,
-                @JsonProperty("ims") List<Im> ims,
-                @JsonProperty("photos") List<Photo> photos,
-                @JsonProperty("addresses") List<Address> addresses,
-                @JsonProperty("groups") List<GroupRef> groups,
-                @JsonProperty("entitlements") List<Entitlement> entitlements,
-                @JsonProperty("roles") List<Role> roles,
-                @JsonProperty("x509Certificates") List<X509Certificate> x509Certificates,
-                @JsonProperty("extensions") Map<String, Extension> extensions) {
+                 @JsonProperty("externalId") String externalId,
+                 @JsonProperty("meta") Meta meta,
+                 @JsonProperty(value = "schemas", required = true) Set<String> schemas,
+                 @JsonProperty("userName") String userName,
+                 @JsonProperty("name") Name name,
+                 @JsonProperty("displayName") String displayName,
+                 @JsonProperty("nickName") String nickName,
+                 @JsonProperty("profileUrl") String profileUrl,
+                 @JsonProperty("title") String title,
+                 @JsonProperty("userType") String userType,
+                 @JsonProperty("preferredLanguage") String preferredLanguage,
+                 @JsonProperty("locale") String locale,
+                 @JsonProperty("timezone") String timezone,
+                 @JsonProperty("active") Boolean active,
+                 @JsonProperty("emails") List<Email> emails,
+                 @JsonProperty("phoneNumbers") List<PhoneNumber> phoneNumbers,
+                 @JsonProperty("ims") List<Im> ims,
+                 @JsonProperty("photos") List<Photo> photos,
+                 @JsonProperty("addresses") List<Address> addresses,
+                 @JsonProperty("groups") List<GroupRef> groups,
+                 @JsonProperty("entitlements") List<Entitlement> entitlements,
+                 @JsonProperty("roles") List<Role> roles,
+                 @JsonProperty("x509Certificates") List<X509Certificate> x509Certificates,
+                 @JsonProperty("extensions") Map<String, Extension> extensions) {
         super(id, externalId, meta, schemas);
         this.userName = (userName != null ? userName : "");
         this.name = name;
@@ -506,6 +506,9 @@ public final class User extends Resource implements Serializable {
                 + getExternalId() + ", getMeta()=" + getMeta() + ", getSchemas()=" + getSchemas() + "]";
     }
 
+    public static Builder Builder(){
+        return new Builder();
+    }
     /**
      * Builder class that is used to build {@link User} instances
      */
@@ -951,7 +954,7 @@ public final class User extends Resource implements Serializable {
         }
 
         /**
-         * removes all Addresses from the actual User
+         * removes all Addresses from the current User
          *
          * @return the builder itself
          */

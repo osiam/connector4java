@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changes
+
+- Introduce a `getMe()` method to retrieve the currently logged in user
+  from OSIAM 3.0
+- The `BasicUser` class and the method `getCurrentUserBasic()` have been deprecated.
+
 ### Fixes
 
 - A `400 BAD REQUEST` response creates a `BadRequestException` instead of the appropriate `ConflictException` 
