@@ -64,6 +64,14 @@
         <tag>HEAD</tag>
     </scm>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>oss-jfrog-artifactory-snapshots</name>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
@@ -186,23 +194,6 @@
         </dependency>
 
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>osiam releases repo</id>
-            <url>https://maven-repo.evolvis.org/releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>osiam snapshots repo</id>
-            <url>https://maven-repo.evolvis.org/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -483,48 +474,6 @@
     </build>
 
     <profiles>
-        <!-- ==================== Profile: build internally for snapshot runs ==================== -->
-        <!-- Deployment needs to be run from jenkins server which has credentials to access the internal snapshot repository -->
-        <profile>
-            <id>snapshot</id>
-            <distributionManagement>
-                <repository>
-                    <id>osiam-repository</id>
-                    <name>public evolvis release repository</name>
-                    <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/releases</url>
-                </repository>
-                <snapshotRepository>
-                    <id>osiam-snapshot-repository</id>
-                    <name>public evolvis snapshot repository</name>
-                    <url>scpexe://maven-repo.evolvis.org:/var/www/maven_repo/snapshots</url>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.8.2</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-ssh-external</artifactId>
-                                <version>2.9</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>default-deploy</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- ==================== Profile: build for release runs ==================== -->
         <profile>
             <id>release</id>
