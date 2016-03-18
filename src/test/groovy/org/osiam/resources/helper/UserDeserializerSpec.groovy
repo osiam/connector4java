@@ -23,13 +23,15 @@
  */
 package org.osiam.resources.helper
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
 import org.osiam.test.util.DateHelper
 import org.osiam.test.util.JsonFixturesHelper
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -38,6 +40,13 @@ import java.nio.ByteBuffer
 class UserDeserializerSpec extends Specification {
 
     private JsonFixturesHelper jsonFixtures = new JsonFixturesHelper();
+
+    @Shared
+    def mapper = new ObjectMapper()
+
+    def setupSpec() {
+        mapper.registerModule(new SimpleModule('UserDeserializer').addDeserializer(User, new UserDeserializer()));
+    }
 
     def 'Return a User Instance'() {
         when:
@@ -111,11 +120,20 @@ class UserDeserializerSpec extends Specification {
         ExtensionFieldType.DATE_TIME | 'keyDateTime'  | DateHelper.createDate(2011, 7, 1, 18, 29, 49)
     }
 
-    def 'Extension schema registered but missing field raises exception'() {
+    def 'Extension can be declared in schemas without having any data'() {
+        given:
+        def userAsJson = '''
+                {
+                    "schemas":[
+                        "urn:ietf:params:scim:schemas:core:2.0:User",
+                        "urn:scim:schemas:extension:enterprise:2.0:User"
+                    ],
+                    "id":"a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4"
+                }'''
         when:
-        mapInvalidExtendedUser()
-        then:
-        thrown(JsonProcessingException)
+        def user = mapper.readValue(userAsJson, User)
+        then: 'No extension data is present in user'
+        user.getExtensions().size() == 0
     }
 
     def 'Extension of wrong JSON type raises exception'() {
@@ -135,10 +153,6 @@ class UserDeserializerSpec extends Specification {
 
     private User mapExtendedUser() {
         jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUser, User)
-    }
-
-    private User mapInvalidExtendedUser() {
-        jsonFixtures.configuredObjectMapper().readValue(jsonFixtures.jsonExtendedUserWithoutExtensionData, User)
     }
 
     private User mapWrongFieldExtendedUser() {
