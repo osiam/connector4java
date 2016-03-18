@@ -26,7 +26,11 @@ package org.osiam.resources.helper;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.osiam.resources.scim.Extension;
@@ -96,12 +100,13 @@ public class UserDeserializer extends StdDeserializer<User> {
 
             JsonNode extensionNode = rootNode.get(urn);
             if (extensionNode == null) {
-                throw new JsonParseException("Registered extension not present: " + urn, JsonLocation.NA);
+                continue;
             }
 
             builder.addExtension(deserializeExtension(extensionNode, urn));
 
         }
+
         return builder.build();
     }
 

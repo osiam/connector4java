@@ -23,15 +23,12 @@
  */
 package org.osiam.test.util
 
-import groovy.text.SimpleTemplateEngine
-import groovy.text.Template
-
-import org.osiam.resources.helper.UserDeserializer
-import org.osiam.resources.scim.User
-
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import groovy.text.SimpleTemplateEngine
+import org.osiam.resources.helper.UserDeserializer
+import org.osiam.resources.scim.User
 
 class JsonFixturesHelper {
 
@@ -49,7 +46,6 @@ class JsonFixturesHelper {
     def jsonSimpleUser = template.make([schemasMore:'', dataMore:'']).toString()
     def jsonBasicUser = template.make([schemasMore:'', dataMore:tplJsonPartialCollections]).toString()
     def jsonExtendedUser = template.make([schemasMore:tplJsonPartialEnterpriseUrn, dataMore:tplJsonPartialCollections + tplJsonPartialExtension]).toString()
-    def jsonExtendedUserWithoutExtensionData = template.make([schemasMore:tplJsonPartialEnterpriseUrn, dataMore:tplJsonPartialCollections]).toString()
     def jsonExtendedUserWithWrongFieldType = template.make([schemasMore:tplJsonPartialEnterpriseUrn, dataMore:tplJsonPartialCollections + tplJsonPartialWrongTypeExtension]).toString()
 
     public ObjectMapper configuredObjectMapper() {
