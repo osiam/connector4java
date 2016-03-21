@@ -64,6 +64,22 @@ For more information on OSIAM have a look at the
 
 * Java 1.7
 
+## Snapshots
+
+To receive snapshots of the OSIAM connector the oss.jfrog.org repository needs
+to be included:
+
+```
+<repositories>
+    <repository>
+        <snapshots />
+        <id>snapshots</id>
+        <name>libs-snapshot</name>
+        <url>http://oss.jfrog.org/artifactory/libs-snapshot</url>
+    </repository>
+</repositories>
+```
+
 ## Issues
 
 Issues, bugs and feature requests can be reported by using

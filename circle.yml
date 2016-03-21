@@ -4,6 +4,7 @@ dependencies:
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
+
 test:
   override:
     - mvn verify
@@ -13,3 +14,10 @@ test:
     - cp -r target/coverage-reports/jacoco/ $CIRCLE_ARTIFACTS
     - test -z $CODACY_PROJECT_TOKEN || codacy-coverage-reporter -l Java -r target/coverage-reports/jacoco/jacoco.xml --projectToken $CODACY_PROJECT_TOKEN
     - test -z $COVERALLS_REPO_TOKEN || mvn coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN
+
+deployment:
+  staging:
+    branch: master
+    commands:
+      - wget https://raw.githubusercontent.com/osiam/circleci/master/settings.xml
+      - mvn deploy -s settings.xml
