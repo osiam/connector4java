@@ -229,6 +229,7 @@
                         <exclude>circle.yml</exclude>
                         <exclude>jpmInstall.sh</exclude>
                         <exclude>**/*.md</exclude>
+                        <exclude>settings.xml</exclude>
                         <exclude>src/main/shade/**</exclude>
                         <exclude>src/test/resources/org/osiam/resources/data/noPicture.txt</exclude>
                     </excludes>
