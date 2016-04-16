@@ -506,9 +506,6 @@ public final class User extends Resource implements Serializable {
                 + getExternalId() + ", getMeta()=" + getMeta() + ", getSchemas()=" + getSchemas() + "]";
     }
 
-    public static Builder Builder(){
-        return new Builder();
-    }
     /**
      * Builder class that is used to build {@link User} instances
      */
