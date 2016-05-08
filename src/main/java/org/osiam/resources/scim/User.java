@@ -43,7 +43,6 @@ import java.util.*;
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
  * </p>
  */
-
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public final class User extends Resource implements Serializable {
 
