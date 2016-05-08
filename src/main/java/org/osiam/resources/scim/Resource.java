@@ -23,7 +23,6 @@
  */
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableSet;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
@@ -41,13 +40,9 @@ public abstract class Resource implements Serializable {
     private final String id;
     private final String externalId;
     private final Meta meta;
-    @JsonProperty(required = true)
     private final Set<String> schemas;
 
-    protected Resource(@JsonProperty("id") String id,
-                       @JsonProperty("externalId") String externalId,
-                       @JsonProperty("meta") Meta meta,
-                       @JsonProperty(value = "schemas", required = true) Set<String> schemas) {
+    protected Resource(String id, String externalId, Meta meta, Set<String> schemas) {
         this.id = id;
         this.externalId = externalId;
         this.meta = meta;
