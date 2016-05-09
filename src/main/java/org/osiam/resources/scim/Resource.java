@@ -42,7 +42,7 @@ public abstract class Resource implements Serializable {
     private final Meta meta;
     private final Set<String> schemas;
 
-    protected Resource(String id, String externalId, Meta meta, Set<String> schemas) {
+    Resource(String id, String externalId, Meta meta, Set<String> schemas) {
         this.id = id;
         this.externalId = externalId;
         this.meta = meta;
@@ -50,13 +50,6 @@ public abstract class Resource implements Serializable {
             throw new SCIMDataValidationException("Schemas cannot be null or empty!");
         }
         this.schemas = schemas;
-    }
-
-    protected Resource(Builder builder) {
-        this.id = builder.id;
-        this.externalId = builder.externalId;
-        this.meta = builder.meta;
-        this.schemas = builder.schemas;
     }
 
     /**
@@ -134,7 +127,8 @@ public abstract class Resource implements Serializable {
      * The Builder class is used to construct instances of the {@link Resource}
      */
     public abstract static class Builder {
-        protected String externalId;
+
+        private String externalId;
         private String id;
         private Meta meta;
         private Set<String> schemas = new HashSet<>();
@@ -207,6 +201,22 @@ public abstract class Resource implements Serializable {
         public Builder setMeta(Meta meta) {
             this.meta = meta;
             return this;
+        }
+
+        protected String getExternalId() {
+            return externalId;
+        }
+
+        protected String getId() {
+            return id;
+        }
+
+        protected Meta getMeta() {
+            return meta;
+        }
+
+        protected Set<String> getSchemas() {
+            return schemas;
         }
 
         /**

@@ -98,6 +98,7 @@ public final class User extends Resource implements Serializable {
                  @JsonProperty("locale") String locale,
                  @JsonProperty("timezone") String timezone,
                  @JsonProperty("active") Boolean active,
+                 @JsonProperty("password") String password,
                  @JsonProperty("emails") List<Email> emails,
                  @JsonProperty("phoneNumbers") List<PhoneNumber> phoneNumbers,
                  @JsonProperty("ims") List<Im> ims,
@@ -120,7 +121,7 @@ public final class User extends Resource implements Serializable {
         this.locale = locale;
         this.timezone = timezone;
         this.active = active;
-        this.password = "";
+        this.password = password != null ? password : "";
         this.emails = (emails != null ? emails : new ArrayList<Email>());
         this.phoneNumbers = (phoneNumbers != null ? phoneNumbers : new ArrayList<PhoneNumber>());
         this.ims = (ims != null ? ims : new ArrayList<Im>());
@@ -133,31 +134,13 @@ public final class User extends Resource implements Serializable {
         this.extensions = (extensions != null ? extensions : new HashMap<String, Extension>());
     }
 
-    private User(Builder builder) {
-        super(builder);
-        this.userName = builder.userName;
-        this.name = builder.name;
-        this.displayName = builder.displayName;
-        this.nickName = builder.nickName;
-        this.profileUrl = builder.profileUrl;
-        this.title = builder.title;
-        this.userType = builder.userType;
-        this.preferredLanguage = builder.preferredLanguage;
-        this.locale = builder.locale;
-        this.timezone = builder.timezone;
-        this.active = builder.active;
-        this.password = builder.password;
-
-        this.emails = builder.emails;
-        this.phoneNumbers = builder.phoneNumbers;
-        this.ims = builder.ims;
-        this.photos = builder.photos;
-        this.addresses = builder.addresses;
-        this.groups = builder.groups;
-        this.entitlements = builder.entitlements;
-        this.roles = builder.roles;
-        this.x509Certificates = builder.x509Certificates;
-        this.extensions = builder.extensions;
+    User(Builder builder) {
+        this(builder.getId(), builder.getExternalId(), builder.getMeta(), builder.getSchemas(),
+                builder.userName, builder.name, builder.displayName, builder.nickName, builder.profileUrl,
+                builder.title, builder.userType, builder.preferredLanguage, builder.locale, builder.timezone,
+                builder.active, builder.password, builder.emails, builder.phoneNumbers, builder.ims,
+                builder.photos, builder.addresses, builder.groups, builder.entitlements, builder.roles,
+                builder.x509Certificates, builder.extensions);
     }
 
     /**

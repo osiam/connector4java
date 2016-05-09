@@ -64,10 +64,9 @@ public final class Group extends Resource implements Serializable {
         this.members = (members != null ? members : Collections.<MemberRef>emptySet());
     }
 
-    private Group(Builder builder) {
-        super(builder);
-        this.displayName = builder.displayName;
-        this.members = builder.members;
+    Group(Builder builder) {
+        this(builder.getId(), builder.getExternalId(), builder.getMeta(), builder.getSchemas(),
+                builder.displayName, builder.members);
     }
 
     /**
