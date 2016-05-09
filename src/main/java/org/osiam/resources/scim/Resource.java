@@ -49,7 +49,7 @@ public abstract class Resource implements Serializable {
         if (schemas == null || schemas.isEmpty()) {
             throw new SCIMDataValidationException("Schemas cannot be null or empty!");
         }
-        this.schemas = schemas;
+        this.schemas = ImmutableSet.copyOf(schemas);
     }
 
     /**
@@ -90,7 +90,7 @@ public abstract class Resource implements Serializable {
      * @return a the list of schemas as a {@link Set}
      */
     public Set<String> getSchemas() {
-        return ImmutableSet.copyOf(schemas);
+        return schemas;
     }
 
     @Override
@@ -138,7 +138,7 @@ public abstract class Resource implements Serializable {
                 this.id = resource.id;
                 this.externalId = resource.externalId;
                 this.meta = resource.meta;
-                this.schemas = resource.schemas;
+                this.schemas.addAll(resource.schemas);
             }
         }
 

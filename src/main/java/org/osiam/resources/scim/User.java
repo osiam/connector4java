@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -110,7 +109,7 @@ public final class User extends Resource implements Serializable {
                  @JsonProperty("x509Certificates") List<X509Certificate> x509Certificates,
                  @JsonProperty("extensions") Map<String, Extension> extensions) {
         super(id, externalId, meta, schemas);
-        this.userName = (userName != null ? userName : "");
+        this.userName = userName != null ? userName : "";
         this.name = name;
         this.displayName = displayName;
         this.nickName = nickName;
@@ -122,16 +121,18 @@ public final class User extends Resource implements Serializable {
         this.timezone = timezone;
         this.active = active;
         this.password = password != null ? password : "";
-        this.emails = (emails != null ? emails : new ArrayList<Email>());
-        this.phoneNumbers = (phoneNumbers != null ? phoneNumbers : new ArrayList<PhoneNumber>());
-        this.ims = (ims != null ? ims : new ArrayList<Im>());
-        this.photos = (photos != null ? photos : new ArrayList<Photo>());
-        this.addresses = (addresses != null ? addresses : new ArrayList<Address>());
-        this.groups = (groups != null ? groups : new ArrayList<GroupRef>());
-        this.entitlements = (entitlements != null ? entitlements : new ArrayList<Entitlement>());
-        this.roles = (roles != null ? roles : new ArrayList<Role>());
-        this.x509Certificates = (x509Certificates != null ? x509Certificates : new ArrayList<X509Certificate>());
-        this.extensions = (extensions != null ? extensions : new HashMap<String, Extension>());
+
+        this.emails = emails != null ? ImmutableList.copyOf(emails) : ImmutableList.<Email>of();
+        this.phoneNumbers = phoneNumbers != null ? ImmutableList.copyOf(phoneNumbers) : ImmutableList.<PhoneNumber>of();
+        this.ims = ims != null ? ImmutableList.copyOf(ims) : ImmutableList.<Im>of();
+        this.photos = photos != null ? ImmutableList.copyOf(photos) : ImmutableList.<Photo>of();
+        this.addresses = addresses != null ? ImmutableList.copyOf(addresses) : ImmutableList.<Address>of();
+        this.groups = groups != null ? ImmutableList.copyOf(groups) : ImmutableList.<GroupRef>of();
+        this.entitlements = entitlements != null ? ImmutableList.copyOf(entitlements) : ImmutableList.<Entitlement>of();
+        this.roles = roles != null ? ImmutableList.copyOf(roles) : ImmutableList.<Role>of();
+        this.x509Certificates = x509Certificates != null ? ImmutableList.copyOf(x509Certificates) : ImmutableList.<X509Certificate>of();
+
+        this.extensions = extensions != null ? ImmutableMap.copyOf(extensions) : ImmutableMap.<String, Extension>of();
     }
 
     User(Builder builder) {
@@ -309,7 +310,7 @@ public final class User extends Resource implements Serializable {
      * @return the email addresses of the {@link User}
      */
     public List<Email> getEmails() {
-        return ImmutableList.copyOf(emails);
+        return emails;
     }
 
     /**
@@ -345,7 +346,7 @@ public final class User extends Resource implements Serializable {
      * @return the phone numbers of the {@link User}
      */
     public List<PhoneNumber> getPhoneNumbers() {
-        return ImmutableList.copyOf(phoneNumbers);
+        return phoneNumbers;
     }
 
     /**
@@ -359,7 +360,7 @@ public final class User extends Resource implements Serializable {
      * @return the ims of the {@link User}
      */
     public List<Im> getIms() {
-        return ImmutableList.copyOf(ims);
+        return ims;
     }
 
     /**
@@ -373,7 +374,7 @@ public final class User extends Resource implements Serializable {
      * @return the photo URL's of the {@link User}
      */
     public List<Photo> getPhotos() {
-        return ImmutableList.copyOf(photos);
+        return photos;
     }
 
     /**
@@ -387,7 +388,7 @@ public final class User extends Resource implements Serializable {
      * @return the addresses of the {@link User}
      */
     public List<Address> getAddresses() {
-        return ImmutableList.copyOf(addresses);
+        return addresses;
     }
 
     /**
@@ -401,7 +402,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of all {@link Group}s where the {@link User} is a member of
      */
     public List<GroupRef> getGroups() {
-        return ImmutableList.copyOf(groups);
+        return groups;
     }
 
     /**
@@ -415,7 +416,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of all entitlements of the {@link User}
      */
     public List<Entitlement> getEntitlements() {
-        return ImmutableList.copyOf(entitlements);
+        return entitlements;
     }
 
     /**
@@ -429,7 +430,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of the roles of the {@link User}
      */
     public List<Role> getRoles() {
-        return ImmutableList.copyOf(roles);
+        return roles;
     }
 
     /**
@@ -443,7 +444,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of the certificates of the {@link User}
      */
     public List<X509Certificate> getX509Certificates() {
-        return ImmutableList.copyOf(x509Certificates);
+        return x509Certificates;
     }
 
     /**
@@ -453,7 +454,7 @@ public final class User extends Resource implements Serializable {
      */
     @JsonAnyGetter
     public Map<String, Extension> getExtensions() {
-        return ImmutableMap.copyOf(extensions);
+        return extensions;
     }
 
     /**
@@ -548,16 +549,16 @@ public final class User extends Resource implements Serializable {
                 this.timezone = user.timezone;
                 this.active = user.active;
                 this.password = user.password;
-                this.emails = MoreObjects.firstNonNull(user.emails, this.emails);
-                this.phoneNumbers = MoreObjects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
-                this.ims = MoreObjects.firstNonNull(user.ims, this.ims);
-                this.photos = MoreObjects.firstNonNull(user.photos, this.photos);
-                this.addresses = MoreObjects.firstNonNull(user.addresses, this.addresses);
-                this.groups = MoreObjects.firstNonNull(user.groups, this.groups);
-                this.entitlements = MoreObjects.firstNonNull(user.entitlements, this.entitlements);
-                this.roles = MoreObjects.firstNonNull(user.roles, this.roles);
-                this.x509Certificates = MoreObjects.firstNonNull(user.x509Certificates, this.x509Certificates);
-                this.extensions = MoreObjects.firstNonNull(user.extensions, this.extensions);
+                this.emails.addAll(user.emails);
+                this.phoneNumbers.addAll(user.phoneNumbers);
+                this.ims.addAll(user.ims);
+                this.photos.addAll(user.photos);
+                this.addresses.addAll(user.addresses);
+                this.groups.addAll(user.groups);
+                this.entitlements.addAll(user.entitlements);
+                this.roles.addAll(user.roles);
+                this.x509Certificates.addAll(user.x509Certificates);
+                this.extensions.putAll(user.extensions);
             }
             if (!Strings.isNullOrEmpty(userName)) {
                 this.userName = userName;
