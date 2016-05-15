@@ -87,7 +87,6 @@ class UserSpec extends Specification {
         X509Certificate x509Certificate = getX509Certificate()
 
         def builder = new User.Builder('username')
-                .setId('id')
                 .setActive(true)
                 .addAddresses([address] as List)
                 .setDisplayName('displayName')
@@ -135,7 +134,6 @@ class UserSpec extends Specification {
         user.userType == 'userType'
         user.x509Certificates.first() == x509Certificate
         user.userName == 'username'
-        user.id == 'id'
         user.meta == meta
         user.externalId == 'externalId'
         user.schemas.containsAll([User.SCHEMA, 'extension'])
@@ -438,7 +436,6 @@ class UserSpec extends Specification {
         def date = DateHelper.createDate(2008, 0, 23, 18, 29, 49)
         given:
         User user = new User.Builder('bjensen')
-                .setId('a4bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4')
                 .setMeta(new Meta.Builder()
                 .setLocation('https://example.com/v1/Users/2819c223...')
                 .setResourceType('User').build())

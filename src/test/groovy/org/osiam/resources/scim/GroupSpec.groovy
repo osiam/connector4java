@@ -32,15 +32,12 @@ class GroupSpec extends Specification {
     def 'should be able to generate a group'() {
         given:
 
-        User user = new User.Builder('userName').setId('some ID').build()
-
-        MemberRef memberRef = new MemberRef.Builder(user).build()
+        MemberRef memberRef = new MemberRef.Builder().setValue('id').build()
 
         Meta meta = new Meta.Builder().build()
 
         Group.Builder builder = new Group.Builder('display')
                 .setExternalId('externalId')
-                .setId('id')
                 .setMeta(meta)
                 .setMembers([memberRef] as Set)
 
@@ -52,7 +49,6 @@ class GroupSpec extends Specification {
         group.displayName == 'display'
         group.externalId == 'externalId'
         group.schemas.first() == Group.SCHEMA
-        group.id == 'id'
     }
 
     def 'should be able to add member to group'() {
@@ -66,15 +62,13 @@ class GroupSpec extends Specification {
 
     def 'should be able to clone a group'() {
         given:
-        def group = new Group.Builder('display').
-                setId('id').build()
+        def group = new Group.Builder('display').build()
         when:
         def result = new Group.Builder(group).build()
 
         then:
         group.displayName == result.displayName
         group.members == result.members
-        group.id == result.id
     }
 
     def 'using the copy-of builder with null as parameter raises exception'() {
@@ -101,13 +95,11 @@ class GroupSpec extends Specification {
 
     def 'group can be serialized and deserialized'() {
         given:
-        User user = new User.Builder('userName').setId('some ID').build()
-        MemberRef memberRef = new MemberRef.Builder(user).build()
+        MemberRef memberRef = new MemberRef.Builder().setValue('id').build()
         Meta meta = new Meta.Builder().build()
 
         Group.Builder builder = new Group.Builder('display')
                 .setExternalId('externalId')
-                .setId('id')
                 .setMeta(meta)
                 .setMembers([memberRef] as Set)
 

@@ -159,6 +159,10 @@ public final class Group extends Resource implements Serializable {
             }
         }
 
+        /**
+         * @deprecated You should not need to set the ID with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setId(String id) {
             super.setId(id);

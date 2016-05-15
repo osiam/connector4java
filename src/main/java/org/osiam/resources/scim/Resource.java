@@ -160,16 +160,9 @@ public abstract class Resource implements Serializable {
         }
 
         /**
-         * Sets the id of the resource.
-         * <p>
-         * client info: The id of a User will be created and set by the OSIAM server. If a {@link User} or {@link Group}
-         * which is send to the OSIAM server has this value filled, the value will be ignored or the action will be
-         * rejected.
-         * </p>
-         *
-         * @param id if of the resource
-         * @return the builder itself
+         * @deprecated You should not need to set the ID with a client. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         public Builder setId(String id) {
             this.id = id;
             return this;

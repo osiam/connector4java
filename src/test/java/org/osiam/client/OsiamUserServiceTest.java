@@ -106,7 +106,7 @@ public class OsiamUserServiceTest {
     }
 
     public void request_of_me_resource_is_build_correctly() throws Exception {
-        User resultingUser = new User.Builder("Name").setId(USER_ID).build();
+        User resultingUser = new User.Builder("Name").build();
         ObjectMapper mapper = new ObjectMapper();
         mockServerClient
                 .when(
