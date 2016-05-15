@@ -12,6 +12,7 @@
 
 - Resources could be changed by using the copy-of constructor of the builders, though they are immutable.
 - A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
+- Return the right builder type in `Photo.Builder#setValue(String)`.
 
 ## 1.8 - 2015-12-12
 
