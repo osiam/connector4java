@@ -34,8 +34,9 @@ class GroupSpec extends Specification {
 
         MemberRef memberRef = new MemberRef.Builder().setValue('id').build()
 
-        Group.Builder builder = new Group.Builder('display')
-                .setExternalId('externalId')
+        Group.Builder builder = new Group.Builder()
+                .displayName('display')
+                .externalId('externalId')
                 .setMembers([memberRef] as Set)
 
         when:
@@ -50,16 +51,31 @@ class GroupSpec extends Specification {
 
     def 'should be able to add member to group'() {
         when:
-        def group = new Group.Builder('display')
+        def group = new Group.Builder()
+                .displayName('display')
                 .addMember(new MemberRef.Builder().build()).build()
 
         then:
         group.members.size() == 1
     }
 
+    def 'pre-set display name with constructor' () {
+        given:
+        def displayName = 'display name'
+
+        when:
+        def group = new Group.Builder(displayName)
+                .build()
+
+        then:
+        group.displayName == displayName
+    }
+
     def 'should be able to clone a group'() {
         given:
-        def group = new Group.Builder('display').build()
+        def group = new Group.Builder()
+                .displayName('display')
+                .build()
         when:
         def result = new Group.Builder(group).build()
 
@@ -76,9 +92,11 @@ class GroupSpec extends Specification {
         thrown(SCIMDataValidationException)
     }
 
-    def 'the copied group should have the given displayname'() {
+    def 'the copied group should have the given display name'() {
         given:
-        Group oldGroup = new Group.Builder("oldDisplayName").setExternalId("externalId").build()
+        Group oldGroup = new Group.Builder()
+                .displayName('oldDisplayName')
+                .externalId('externalId').build()
         String newDisplayName = 'newDisplayName'
         Group newGroup
 
@@ -94,8 +112,9 @@ class GroupSpec extends Specification {
         given:
         MemberRef memberRef = new MemberRef.Builder().setValue('id').build()
 
-        Group.Builder builder = new Group.Builder('display')
-                .setExternalId('externalId')
+        Group.Builder builder = new Group.Builder()
+                .displayName('display')
+                .externalId('externalId')
                 .setMembers([memberRef] as Set)
 
         Group group = builder.build()

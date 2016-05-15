@@ -2,14 +2,19 @@
 
 ## Unreleased
 
-### Changes
+### Features
 
 - Introduce a `getMe()` method to retrieve the currently logged in user
   from OSIAM 3.0
 
+### Changes
+
+- Remove `set` prefixes from single-valued attributes in the resource builders
+
 ### Fixes
 
-- Resources could be changed by using the copy-of constructor of the builders, though they are immutable.
+- Resources could be changed by using the copy-of constructor of the builders, though they were supposed
+  to be immutable.
 - A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
 - Return the right builder type in `Photo.Builder#setValue(String)`.
 

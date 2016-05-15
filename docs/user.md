@@ -84,7 +84,7 @@ boolean isActive = user.isActive();
 
 **SET:**
 ```
-builder.setActive(true);
+builder.active(true);
 ```
 
 ### addresses
@@ -122,7 +122,7 @@ String displayName = user.getDisplayName();
 
 **SET:**
 ```
-builder.setDisplayName("example DisplayName");
+builder.displayName("example DisplayName");
 ```
 
 ### emails
@@ -184,7 +184,7 @@ String externalId = user.getExternalId();
 
 **SET:**
 ```
-builder.setExternalId("external ID");
+builder.externalId("external ID");
 ```
 
 ### groups
@@ -252,7 +252,7 @@ String local = user.getLocale();
 
 **SET:**
 ```
-builder.setLocale("local");
+builder.locale("locale");
 ```
 
 ### meta
@@ -295,7 +295,7 @@ String nickName = user.getNickName();
 
 **SET:**
 ```
-builder.setNickName("nickName of the User");
+builder.nickName("nickName of the User");
 ```
 
 ### password
@@ -308,7 +308,7 @@ String nullPassword = user.getPassword(); // The password is always null
 
 **SET:**
 ```
-builder.setPassword("password of the User to be created");
+builder.password("password of the User to be created");
 ```
 
 ### phoneNumbers
@@ -386,7 +386,7 @@ String preferredLanguage = user.getPreferredLanguage();
 
 **SET:**
 ```
-builder.setPreferredLanguage("en");
+builder.preferredLanguage("en");
 ```
 
 ### profileUrl
@@ -398,7 +398,7 @@ String profileUrl = user.getProfileUrl();
 
 **SET:**
 ```
-builder.setProfileUrl("http://www.myProfile.com");
+builder.profileUrl("http://www.myProfile.com");
 ```
 
 ### roles
@@ -441,7 +441,7 @@ String title = user.getTitle();
 
 **SET:**
 ```
-builder.setTitle("Chief of Chiefs");
+builder.title("Chief of Chiefs");
 ```
 
 ### userName
@@ -465,7 +465,7 @@ String userType = user.getUserType();
 
 **SET:**
 ```
-builder.setUserType("type of the User");
+builder.userType("type of the User");
 ```
 
 ### x509Certificates

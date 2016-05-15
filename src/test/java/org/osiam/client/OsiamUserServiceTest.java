@@ -86,7 +86,7 @@ public class OsiamUserServiceTest {
 
     @Test(expected = NullPointerException.class)
     public void create_user_with_null_access_token_raises_exception() {
-        User newUser = new User.Builder("irrelevant").build();
+        User newUser = new User.Builder().build();
         service.createUser(newUser, null);
     }
 
@@ -103,20 +103,6 @@ public class OsiamUserServiceTest {
                 .respond(response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode()));
 
         service.searchUsers(new QueryBuilder().filter(filter).build(), accessToken);
-    }
-
-    public void request_of_me_resource_is_build_correctly() throws Exception {
-        User resultingUser = new User.Builder("Name").build();
-        ObjectMapper mapper = new ObjectMapper();
-        mockServerClient
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/osiam/Me")
-                                .withHeader("Authorization", "Bearer " + accessToken),
-                        Times.once())
-                .respond(response().withBody(mapper.writeValueAsString(resultingUser)));
-        service.getMe(accessToken);
     }
 
     @Test(expected = IllegalArgumentException.class)

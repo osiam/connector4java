@@ -174,6 +174,15 @@ public abstract class Resource implements Serializable {
          * @param externalId the external id
          * @return the builder itself
          */
+        public Builder externalId(String externalId) {
+            this.externalId = externalId;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #externalId(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setExternalId(String externalId) {
             this.externalId = externalId;
             return this;
