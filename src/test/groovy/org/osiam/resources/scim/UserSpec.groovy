@@ -280,7 +280,7 @@ class UserSpec extends Specification {
 
     def 'using the copy-of builder with null as parameter raises exception'() {
         when:
-        new User.Builder(null)
+        new User.Builder(null as String)
 
         then:
         thrown(IllegalArgumentException)
@@ -365,7 +365,7 @@ class UserSpec extends Specification {
                 .build()
     }
 
-    Extension getExtension(urn) {
+    Extension getExtension(String urn) {
         new Extension.Builder(urn)
                 .setField('gender', 'male')
                 .build()
