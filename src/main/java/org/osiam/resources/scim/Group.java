@@ -169,6 +169,10 @@ public final class Group extends Resource implements Serializable {
             return this;
         }
 
+        /**
+         * @deprecated You should not need to set the meta attribute with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setMeta(Meta meta) {
             super.setMeta(meta);

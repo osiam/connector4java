@@ -17,6 +17,7 @@
 
 - The `BasicUser` class and the method `OsiamConnector.getCurrentUserBasic()`
 - `Group.Builder#setId(String)` and `User.Builder#setId(String)`
+- `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
 
 ## 1.8 - 2015-12-12
 

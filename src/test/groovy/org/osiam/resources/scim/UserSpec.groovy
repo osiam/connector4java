@@ -75,7 +75,6 @@ class UserSpec extends Specification {
         given:
 
         Extension extension = getExtension('extension')
-        Meta meta = new Meta.Builder().build()
         Address address = getAddress()
         Email email = getEmail()
         Entitlement entitlement = getEntitlement()
@@ -106,7 +105,6 @@ class UserSpec extends Specification {
                 .setTimezone('MEZ')
                 .setTitle('title')
                 .addX509Certificates([x509Certificate] as List)
-                .setMeta(meta)
                 .setUserType('userType')
                 .addExtension(extension)
 
@@ -134,7 +132,6 @@ class UserSpec extends Specification {
         user.userType == 'userType'
         user.x509Certificates.first() == x509Certificate
         user.userName == 'username'
-        user.meta == meta
         user.externalId == 'externalId'
         user.schemas.containsAll([User.SCHEMA, 'extension'])
         user.getExtensions().get('extension').getField('gender', ExtensionFieldType.STRING) == extension.getField('gender', ExtensionFieldType.STRING)
@@ -436,9 +433,6 @@ class UserSpec extends Specification {
         def date = DateHelper.createDate(2008, 0, 23, 18, 29, 49)
         given:
         User user = new User.Builder('bjensen')
-                .setMeta(new Meta.Builder()
-                .setLocation('https://example.com/v1/Users/2819c223...')
-                .setResourceType('User').build())
                 .setExternalId('bjensen')
                 .setName(new Name.Builder()
                 .setFormatted('Ms. Barbara J Jensen III')

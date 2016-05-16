@@ -180,17 +180,9 @@ public abstract class Resource implements Serializable {
         }
 
         /**
-         * Sets the meta data
-         * <p>
-         * client info: The meta information of a User will be created and set by the OSIAM server. If a {@link User} or
-         * {@link Group} which is send to the OSIAM server has this value filled, the value will be ignored or the
-         * action will be rejected. For an update(PATCH) the attribute value can be set by the client. In normal case
-         * this should be set by the {@link UpdateUser} or {@link UpdateGroup} and not by the client directly.
-         * </p>
-         *
-         * @param meta the meta object
-         * @return the builder itself
+         * @deprecated You should not need to set the meta attribute with a client. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         public Builder setMeta(Meta meta) {
             this.meta = meta;
             return this;

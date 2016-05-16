@@ -220,8 +220,9 @@ public final class Meta implements Serializable {
     }
 
     /**
-     * Builder class that is used to build {@link Meta} instances
+     * @deprecated You should not need to create a meta object with a client. Will be removed in 1.12 or 2.0.
      */
+    @Deprecated
     public static class Builder {
         private final Date created;
         private final Date lastModified;

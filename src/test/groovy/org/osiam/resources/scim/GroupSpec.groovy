@@ -34,11 +34,8 @@ class GroupSpec extends Specification {
 
         MemberRef memberRef = new MemberRef.Builder().setValue('id').build()
 
-        Meta meta = new Meta.Builder().build()
-
         Group.Builder builder = new Group.Builder('display')
                 .setExternalId('externalId')
-                .setMeta(meta)
                 .setMembers([memberRef] as Set)
 
         when:
@@ -96,11 +93,9 @@ class GroupSpec extends Specification {
     def 'group can be serialized and deserialized'() {
         given:
         MemberRef memberRef = new MemberRef.Builder().setValue('id').build()
-        Meta meta = new Meta.Builder().build()
 
         Group.Builder builder = new Group.Builder('display')
                 .setExternalId('externalId')
-                .setMeta(meta)
                 .setMembers([memberRef] as Set)
 
         Group group = builder.build()
@@ -111,7 +106,6 @@ class GroupSpec extends Specification {
         then:
         group == newGroup
         group.getExternalId() == newGroup.getExternalId()
-        group.getMeta() == newGroup.getMeta()
         group.getMembers().getAt(0) == newGroup.getMembers().getAt(0)
     }
 }

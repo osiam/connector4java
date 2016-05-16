@@ -41,9 +41,6 @@ class UserJsonSpec extends Specification {
     def 'A User is correctly serialized'() {
         given:
         User user = new User.Builder('bjensen')
-                .setMeta(new Meta.Builder()
-                        .setLocation('https://example.com/v1/Users/2819c223...')
-                        .setResourceType('User').build())
                 .setExternalId('bjensen')
                 .setName(new Name.Builder()
                         .setFormatted('Ms. Barbara J Jensen III')
@@ -86,8 +83,6 @@ class UserJsonSpec extends Specification {
         JsonPath json = from(mapper.writeValueAsString(user))
 
         then:
-        json.getString('meta.location') == 'https://example.com/v1/Users/2819c223...'
-        json.getString('meta.resourceType') == 'User'
         json.getList('schemas').containsAll(['urn:ietf:params:scim:schemas:core:2.0:User',
                                              'urn:scim:schemas:extension:test:1.0:User'])
         json.getString('externalId') == 'bjensen'
