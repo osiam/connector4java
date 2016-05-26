@@ -10,7 +10,7 @@
 
 ### Fixes
 
-- A `400 BAD REQUEST` response creates a `BadRequestException` instead of the appropriate `ConflictException` 
+- A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
 
 ## 1.8 - 2015-12-12
 
