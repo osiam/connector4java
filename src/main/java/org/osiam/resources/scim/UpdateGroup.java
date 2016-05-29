@@ -133,13 +133,13 @@ public final class UpdateGroup {
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build() {
+            updateGroup = new Group.Builder();
+
             if (displayName != null) {
-                updateGroup = new Group.Builder(displayName);
-            } else {
-                updateGroup = new Group.Builder();
+                updateGroup.displayName(displayName);
             }
             if (externalId != null) {
-                updateGroup.setExternalId(externalId);
+                updateGroup.externalId(externalId);
             }
             if (deleteFields.size() > 0) {
                 Meta meta = new Meta.Builder()

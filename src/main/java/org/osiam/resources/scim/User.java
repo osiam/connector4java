@@ -527,11 +527,7 @@ public final class User extends Resource implements Serializable {
         private Map<String, Extension> extensions = new HashMap<>();
 
         /**
-         * creates a new User.Builder based on the given userName and user. All values of the given user will be copied
-         * expect the userName will be be overridden by the given one
-         *
-         * @param userName the new userName of the user
-         * @param user     a existing user
+         * @deprecated Change the user name with {@link #userName(String)}. Will be removed in 1.12 or 2.0.
          */
         public Builder(String userName, User user) {
             super(user);
@@ -599,6 +595,17 @@ public final class User extends Resource implements Serializable {
         }
 
         /**
+         * Sets the user name (See {@link User#getUserName()}).
+         *
+         * @param userName the unique name of the {@link User}
+         * @return the builder itself
+         */
+        public Builder userName(String userName) {
+            this.userName = userName;
+            return this;
+        }
+
+        /**
          * Sets the components of the {@link User}'s real name (See {@link User#getName()}).
          *
          * @param name the name object of the {@link User}
@@ -615,6 +622,15 @@ public final class User extends Resource implements Serializable {
          * @param displayName the display name of the {@link User}
          * @return the builder itself
          */
+        public Builder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #displayName(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setDisplayName(String displayName) {
             this.displayName = displayName;
             return this;
@@ -626,6 +642,15 @@ public final class User extends Resource implements Serializable {
          * @param nickName the nick name of the {@link User}
          * @return the builder itself
          */
+        public Builder nickName(String nickName) {
+            this.nickName = nickName;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #nickName(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setNickName(String nickName) {
             this.nickName = nickName;
             return this;
@@ -634,9 +659,18 @@ public final class User extends Resource implements Serializable {
         /**
          * Sets the profile URL (See {@link User#getProfileUrl()}).
          *
-         * @param profileUrl the profil URL of the {@link User}
+         * @param profileUrl the profile URL of the {@link User}
          * @return the builder itself
          */
+        public Builder profileUrl(String profileUrl) {
+            this.profileUrl = profileUrl;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #profileUrl(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setProfileUrl(String profileUrl) {
             this.profileUrl = profileUrl;
             return this;
@@ -648,6 +682,15 @@ public final class User extends Resource implements Serializable {
          * @param title the title of the {@link User}
          * @return the builder itself
          */
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #title(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setTitle(String title) {
             this.title = title;
             return this;
@@ -659,6 +702,15 @@ public final class User extends Resource implements Serializable {
          * @param userType the type of the {@link User}
          * @return the builder itself
          */
+        public Builder userType(String userType) {
+            this.userType = userType;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #userType(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setUserType(String userType) {
             this.userType = userType;
             return this;
@@ -670,6 +722,15 @@ public final class User extends Resource implements Serializable {
          * @param preferredLanguage sets the preferred language of the {@link User}
          * @return the builder itself
          */
+        public Builder preferredLanguage(String preferredLanguage) {
+            this.preferredLanguage = preferredLanguage;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #preferredLanguage(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setPreferredLanguage(String preferredLanguage) {
             this.preferredLanguage = preferredLanguage;
             return this;
@@ -681,6 +742,15 @@ public final class User extends Resource implements Serializable {
          * @param locale sets the local of the {@link User}
          * @return the builder itself
          */
+        public Builder locale(String locale) {
+            this.locale = locale;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #locale(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setLocale(String locale) {
             this.locale = locale;
             return this;
@@ -692,6 +762,15 @@ public final class User extends Resource implements Serializable {
          * @param timezone sets the time zone of the {@link User}
          * @return the builder itself
          */
+        public Builder timezone(String timezone) {
+            this.timezone = timezone;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #timezone(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setTimezone(String timezone) {
             this.timezone = timezone;
             return this;
@@ -703,6 +782,15 @@ public final class User extends Resource implements Serializable {
          * @param active the active status of the {@link User}
          * @return the builder itself
          */
+        public Builder active(Boolean active) {
+            this.active = active;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #active(Boolean)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setActive(Boolean active) {
             this.active = active;
             return this;
@@ -714,6 +802,15 @@ public final class User extends Resource implements Serializable {
          * @param password the password as clear text
          * @return the builder itself
          */
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #password(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         public Builder setPassword(String password) {
             this.password = password;
             return this;
@@ -1177,6 +1274,10 @@ public final class User extends Resource implements Serializable {
             return this;
         }
 
+        /**
+         * @deprecated You should not need to set the meta attribute with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setMeta(Meta meta) {
             super.setMeta(meta);
@@ -1184,11 +1285,25 @@ public final class User extends Resource implements Serializable {
         }
 
         @Override
+        public Builder externalId(String externalId) {
+            super.externalId(externalId);
+            return this;
+        }
+
+        /**
+         * @deprecated Use {@link #externalId(String)}. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
+        @Override
         public Builder setExternalId(String externalId) {
             super.setExternalId(externalId);
             return this;
         }
 
+        /**
+         * @deprecated You should not need to set the ID with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setId(String id) {
             super.setId(id);

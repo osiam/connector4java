@@ -53,7 +53,7 @@ String displayName = group.getDisplayName();
 
 **SET:**
 ```
-builder = new Group.Builder("displayName");
+builder.displayName("display name");
 ```
 
 ### externalId
@@ -67,7 +67,7 @@ String externalId = group.getExternalId();
 
 **SET:**
 ```
-builder.setExternalId("external ID");
+builder.externalId("external ID");
 ```
 
 ### id

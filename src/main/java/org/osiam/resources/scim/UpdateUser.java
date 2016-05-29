@@ -778,46 +778,46 @@ public final class UpdateUser {
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build() {
-            if (userName == null || userName.isEmpty()) {
-                updateUser = new User.Builder();
-            } else {
-                updateUser = new User.Builder(userName);
+            updateUser = new User.Builder();
+
+            if (userName != null && !userName.isEmpty()) {
+                updateUser.userName(userName);
             }
             if (nickName != null) {
-                updateUser.setNickName(nickName);
+                updateUser.nickName(nickName);
             }
             if (externalId != null) {
-                updateUser.setExternalId(externalId);
+                updateUser.externalId(externalId);
             }
             if (locale != null) {
-                updateUser.setLocale(locale);
+                updateUser.locale(locale);
             }
             if (password != null) {
-                updateUser.setPassword(password);
+                updateUser.password(password);
             }
             if (preferredLanguage != null) {
-                updateUser.setPreferredLanguage(preferredLanguage);
+                updateUser.preferredLanguage(preferredLanguage);
             }
             if (profileUrl != null) {
-                updateUser.setProfileUrl(profileUrl);
+                updateUser.profileUrl(profileUrl);
             }
             if (timezone != null) {
-                updateUser.setTimezone(timezone);
+                updateUser.timezone(timezone);
             }
             if (title != null) {
-                updateUser.setTitle(title);
+                updateUser.title(title);
             }
             if (name != null) {
                 updateUser.setName(name);
             }
             if (userType != null) {
-                updateUser.setUserType(userType);
+                updateUser.userType(userType);
             }
             if (displayName != null) {
-                updateUser.setDisplayName(displayName);
+                updateUser.displayName(displayName);
             }
             if (active != null) {
-                updateUser.setActive(active);
+                updateUser.active(active);
             }
             if (deleteFields.size() > 0) {
                 Meta meta = new Meta.Builder()
