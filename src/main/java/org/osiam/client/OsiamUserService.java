@@ -68,17 +68,40 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getCurrentUserBasic(AccessToken)}
      *
-     * @deprecated Please use getMe(accessToken)
+     * @deprecated The BasicUser class has been deprecated. Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
+     *             is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
-        String content = getMeResource(accessToken);
+        checkAccessTokenIsNotNull(accessToken);
+
+        StatusType status;
+        String content;
+        try {
+            Response response = targetEndpoint.path("me").request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + accessToken.getToken())
+                    .property(ClientProperties.CONNECT_TIMEOUT, getConnectTimeout())
+                    .property(ClientProperties.READ_TIMEOUT, getReadTimeout())
+                    .get();
+
+            status = response.getStatusInfo();
+            content = response.readEntity(String.class);
+        } catch (ProcessingException e) {
+            throw new ConnectionInitializationException(CONNECTION_SETUP_ERROR_STRING, e);
+        }
+
+        checkAndHandleResponse(content, status, accessToken);
 
         return mapToType(content, BasicUser.class);
     }
 
     /**
      * See {@link OsiamConnector#getCurrentUser(AccessToken)}
+     *
+     * @deprecated Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
+     *             is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public User getCurrentUser(AccessToken accessToken) {
         BasicUser basicUser = getCurrentUserBasic(accessToken);
         return getResource(basicUser.getId(), accessToken);
