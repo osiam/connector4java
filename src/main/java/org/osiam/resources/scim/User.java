@@ -23,8 +23,11 @@
  */
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.base.MoreObjects;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -32,7 +35,13 @@ import com.google.common.collect.ImmutableMap;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * User resources are meant to enable expression of common User information. It should be possible to express most user
@@ -43,7 +52,6 @@ import java.util.*;
  * <a href="http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6">SCIM core schema 2.0, section 6</a>
  * </p>
  */
-
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public final class User extends Resource implements Serializable {
 
@@ -89,6 +97,7 @@ public final class User extends Resource implements Serializable {
                  @JsonProperty("locale") String locale,
                  @JsonProperty("timezone") String timezone,
                  @JsonProperty("active") Boolean active,
+                 @JsonProperty("password") String password,
                  @JsonProperty("emails") List<Email> emails,
                  @JsonProperty("phoneNumbers") List<PhoneNumber> phoneNumbers,
                  @JsonProperty("ims") List<Im> ims,
@@ -100,7 +109,7 @@ public final class User extends Resource implements Serializable {
                  @JsonProperty("x509Certificates") List<X509Certificate> x509Certificates,
                  @JsonProperty("extensions") Map<String, Extension> extensions) {
         super(id, externalId, meta, schemas);
-        this.userName = (userName != null ? userName : "");
+        this.userName = userName != null ? userName : "";
         this.name = name;
         this.displayName = displayName;
         this.nickName = nickName;
@@ -111,44 +120,28 @@ public final class User extends Resource implements Serializable {
         this.locale = locale;
         this.timezone = timezone;
         this.active = active;
-        this.password = "";
-        this.emails = (emails != null ? emails : new ArrayList<Email>());
-        this.phoneNumbers = (phoneNumbers != null ? phoneNumbers : new ArrayList<PhoneNumber>());
-        this.ims = (ims != null ? ims : new ArrayList<Im>());
-        this.photos = (photos != null ? photos : new ArrayList<Photo>());
-        this.addresses = (addresses != null ? addresses : new ArrayList<Address>());
-        this.groups = (groups != null ? groups : new ArrayList<GroupRef>());
-        this.entitlements = (entitlements != null ? entitlements : new ArrayList<Entitlement>());
-        this.roles = (roles != null ? roles : new ArrayList<Role>());
-        this.x509Certificates = (x509Certificates != null ? x509Certificates : new ArrayList<X509Certificate>());
-        this.extensions = (extensions != null ? extensions : new HashMap<String, Extension>());
+        this.password = password != null ? password : "";
+
+        this.emails = emails != null ? ImmutableList.copyOf(emails) : ImmutableList.<Email>of();
+        this.phoneNumbers = phoneNumbers != null ? ImmutableList.copyOf(phoneNumbers) : ImmutableList.<PhoneNumber>of();
+        this.ims = ims != null ? ImmutableList.copyOf(ims) : ImmutableList.<Im>of();
+        this.photos = photos != null ? ImmutableList.copyOf(photos) : ImmutableList.<Photo>of();
+        this.addresses = addresses != null ? ImmutableList.copyOf(addresses) : ImmutableList.<Address>of();
+        this.groups = groups != null ? ImmutableList.copyOf(groups) : ImmutableList.<GroupRef>of();
+        this.entitlements = entitlements != null ? ImmutableList.copyOf(entitlements) : ImmutableList.<Entitlement>of();
+        this.roles = roles != null ? ImmutableList.copyOf(roles) : ImmutableList.<Role>of();
+        this.x509Certificates = x509Certificates != null ? ImmutableList.copyOf(x509Certificates) : ImmutableList.<X509Certificate>of();
+
+        this.extensions = extensions != null ? ImmutableMap.copyOf(extensions) : ImmutableMap.<String, Extension>of();
     }
 
-    private User(Builder builder) {
-        super(builder);
-        this.userName = builder.userName;
-        this.name = builder.name;
-        this.displayName = builder.displayName;
-        this.nickName = builder.nickName;
-        this.profileUrl = builder.profileUrl;
-        this.title = builder.title;
-        this.userType = builder.userType;
-        this.preferredLanguage = builder.preferredLanguage;
-        this.locale = builder.locale;
-        this.timezone = builder.timezone;
-        this.active = builder.active;
-        this.password = builder.password;
-
-        this.emails = builder.emails;
-        this.phoneNumbers = builder.phoneNumbers;
-        this.ims = builder.ims;
-        this.photos = builder.photos;
-        this.addresses = builder.addresses;
-        this.groups = builder.groups;
-        this.entitlements = builder.entitlements;
-        this.roles = builder.roles;
-        this.x509Certificates = builder.x509Certificates;
-        this.extensions = builder.extensions;
+    User(Builder builder) {
+        this(builder.getId(), builder.getExternalId(), builder.getMeta(), builder.getSchemas(),
+                builder.userName, builder.name, builder.displayName, builder.nickName, builder.profileUrl,
+                builder.title, builder.userType, builder.preferredLanguage, builder.locale, builder.timezone,
+                builder.active, builder.password, builder.emails, builder.phoneNumbers, builder.ims,
+                builder.photos, builder.addresses, builder.groups, builder.entitlements, builder.roles,
+                builder.x509Certificates, builder.extensions);
     }
 
     /**
@@ -317,7 +310,7 @@ public final class User extends Resource implements Serializable {
      * @return the email addresses of the {@link User}
      */
     public List<Email> getEmails() {
-        return ImmutableList.copyOf(emails);
+        return emails;
     }
 
     /**
@@ -353,7 +346,7 @@ public final class User extends Resource implements Serializable {
      * @return the phone numbers of the {@link User}
      */
     public List<PhoneNumber> getPhoneNumbers() {
-        return ImmutableList.copyOf(phoneNumbers);
+        return phoneNumbers;
     }
 
     /**
@@ -367,7 +360,7 @@ public final class User extends Resource implements Serializable {
      * @return the ims of the {@link User}
      */
     public List<Im> getIms() {
-        return ImmutableList.copyOf(ims);
+        return ims;
     }
 
     /**
@@ -381,7 +374,7 @@ public final class User extends Resource implements Serializable {
      * @return the photo URL's of the {@link User}
      */
     public List<Photo> getPhotos() {
-        return ImmutableList.copyOf(photos);
+        return photos;
     }
 
     /**
@@ -395,7 +388,7 @@ public final class User extends Resource implements Serializable {
      * @return the addresses of the {@link User}
      */
     public List<Address> getAddresses() {
-        return ImmutableList.copyOf(addresses);
+        return addresses;
     }
 
     /**
@@ -409,7 +402,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of all {@link Group}s where the {@link User} is a member of
      */
     public List<GroupRef> getGroups() {
-        return ImmutableList.copyOf(groups);
+        return groups;
     }
 
     /**
@@ -423,7 +416,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of all entitlements of the {@link User}
      */
     public List<Entitlement> getEntitlements() {
-        return ImmutableList.copyOf(entitlements);
+        return entitlements;
     }
 
     /**
@@ -437,7 +430,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of the roles of the {@link User}
      */
     public List<Role> getRoles() {
-        return ImmutableList.copyOf(roles);
+        return roles;
     }
 
     /**
@@ -451,7 +444,7 @@ public final class User extends Resource implements Serializable {
      * @return a list of the certificates of the {@link User}
      */
     public List<X509Certificate> getX509Certificates() {
-        return ImmutableList.copyOf(x509Certificates);
+        return x509Certificates;
     }
 
     /**
@@ -461,7 +454,7 @@ public final class User extends Resource implements Serializable {
      */
     @JsonAnyGetter
     public Map<String, Extension> getExtensions() {
-        return ImmutableMap.copyOf(extensions);
+        return extensions;
     }
 
     /**
@@ -556,16 +549,16 @@ public final class User extends Resource implements Serializable {
                 this.timezone = user.timezone;
                 this.active = user.active;
                 this.password = user.password;
-                this.emails = MoreObjects.firstNonNull(user.emails, this.emails);
-                this.phoneNumbers = MoreObjects.firstNonNull(user.phoneNumbers, this.phoneNumbers);
-                this.ims = MoreObjects.firstNonNull(user.ims, this.ims);
-                this.photos = MoreObjects.firstNonNull(user.photos, this.photos);
-                this.addresses = MoreObjects.firstNonNull(user.addresses, this.addresses);
-                this.groups = MoreObjects.firstNonNull(user.groups, this.groups);
-                this.entitlements = MoreObjects.firstNonNull(user.entitlements, this.entitlements);
-                this.roles = MoreObjects.firstNonNull(user.roles, this.roles);
-                this.x509Certificates = MoreObjects.firstNonNull(user.x509Certificates, this.x509Certificates);
-                this.extensions = MoreObjects.firstNonNull(user.extensions, this.extensions);
+                this.emails.addAll(user.emails);
+                this.phoneNumbers.addAll(user.phoneNumbers);
+                this.ims.addAll(user.ims);
+                this.photos.addAll(user.photos);
+                this.addresses.addAll(user.addresses);
+                this.groups.addAll(user.groups);
+                this.entitlements.addAll(user.entitlements);
+                this.roles.addAll(user.roles);
+                this.x509Certificates.addAll(user.x509Certificates);
+                this.extensions.putAll(user.extensions);
             }
             if (!Strings.isNullOrEmpty(userName)) {
                 this.userName = userName;

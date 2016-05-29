@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableSet;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,13 +60,12 @@ public final class Group extends Resource implements Serializable {
                   @JsonProperty("members") Set<MemberRef> members) {
         super(id, externalId, meta, schemas);
         this.displayName = displayName;
-        this.members = (members != null ? members : Collections.<MemberRef>emptySet());
+        this.members = members != null ? ImmutableSet.copyOf(members) : ImmutableSet.<MemberRef>of();
     }
 
-    private Group(Builder builder) {
-        super(builder);
-        this.displayName = builder.displayName;
-        this.members = builder.members;
+    Group(Builder builder) {
+        this(builder.getId(), builder.getExternalId(), builder.getMeta(), builder.getSchemas(),
+                builder.displayName, builder.members);
     }
 
     /**
@@ -91,7 +89,7 @@ public final class Group extends Resource implements Serializable {
      * @return the list of Members as a Set
      */
     public Set<MemberRef> getMembers() {
-        return ImmutableSet.copyOf(members);
+        return members;
     }
 
     @Override
@@ -121,7 +119,7 @@ public final class Group extends Resource implements Serializable {
             addSchema(SCHEMA);
             if (group != null) {
                 this.displayName = group.displayName;
-                members = group.members;
+                members.addAll(group.members);
             }
             if (!Strings.isNullOrEmpty(displayName)) {
                 this.displayName = displayName;

@@ -23,7 +23,6 @@
  */
 package org.osiam.resources.scim;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableSet;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
@@ -41,27 +40,16 @@ public abstract class Resource implements Serializable {
     private final String id;
     private final String externalId;
     private final Meta meta;
-    @JsonProperty(required = true)
     private final Set<String> schemas;
 
-    protected Resource(@JsonProperty("id") String id,
-                       @JsonProperty("externalId") String externalId,
-                       @JsonProperty("meta") Meta meta,
-                       @JsonProperty(value = "schemas", required = true) Set<String> schemas) {
+    Resource(String id, String externalId, Meta meta, Set<String> schemas) {
         this.id = id;
         this.externalId = externalId;
         this.meta = meta;
         if (schemas == null || schemas.isEmpty()) {
             throw new SCIMDataValidationException("Schemas cannot be null or empty!");
         }
-        this.schemas = schemas;
-    }
-
-    protected Resource(Builder builder) {
-        this.id = builder.id;
-        this.externalId = builder.externalId;
-        this.meta = builder.meta;
-        this.schemas = builder.schemas;
+        this.schemas = ImmutableSet.copyOf(schemas);
     }
 
     /**
@@ -102,7 +90,7 @@ public abstract class Resource implements Serializable {
      * @return a the list of schemas as a {@link Set}
      */
     public Set<String> getSchemas() {
-        return ImmutableSet.copyOf(schemas);
+        return schemas;
     }
 
     @Override
@@ -139,7 +127,8 @@ public abstract class Resource implements Serializable {
      * The Builder class is used to construct instances of the {@link Resource}
      */
     public abstract static class Builder {
-        protected String externalId;
+
+        private String externalId;
         private String id;
         private Meta meta;
         private Set<String> schemas = new HashSet<>();
@@ -149,7 +138,7 @@ public abstract class Resource implements Serializable {
                 this.id = resource.id;
                 this.externalId = resource.externalId;
                 this.meta = resource.meta;
-                this.schemas = resource.schemas;
+                this.schemas.addAll(resource.schemas);
             }
         }
 
@@ -212,6 +201,22 @@ public abstract class Resource implements Serializable {
         public Builder setMeta(Meta meta) {
             this.meta = meta;
             return this;
+        }
+
+        protected String getExternalId() {
+            return externalId;
+        }
+
+        protected String getId() {
+            return id;
+        }
+
+        protected Meta getMeta() {
+            return meta;
+        }
+
+        protected Set<String> getSchemas() {
+            return schemas;
         }
 
         /**
