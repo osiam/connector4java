@@ -10,6 +10,7 @@
 ### Changes
 
 - The user name can now be set via the builder
+- The group's display name can now be set via the builder
 
 ### Fixes
 
@@ -24,6 +25,7 @@
 - `Group.Builder#setId(String)` and `User.Builder#setId(String)`
 - `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
 - `User.Builder.Builder(String, User)`
+- `Group.Builder.Builder(String, Group)`
 
 ## 1.8 - 2015-12-12
 

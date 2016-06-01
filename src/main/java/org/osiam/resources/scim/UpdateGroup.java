@@ -133,10 +133,10 @@ public final class UpdateGroup {
          * @return a valid {@link UpdateGroup}
          */
         public UpdateGroup build() {
+            updateGroup = new Group.Builder();
+
             if (displayName != null) {
-                updateGroup = new Group.Builder(displayName);
-            } else {
-                updateGroup = new Group.Builder();
+                updateGroup.setDisplayName(displayName);
             }
             if (externalId != null) {
                 updateGroup.setExternalId(externalId);
