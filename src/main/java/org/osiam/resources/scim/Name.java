@@ -249,6 +249,18 @@ public final class Name implements Serializable {
         private String honorificPrefix;
         private String honorificSuffix;
 
+        public Builder() {
+        }
+
+        public Builder(Name name) {
+            formatted = name.getFormatted();
+            familyName = name.getFamilyName();
+            givenName = name.getGivenName();
+            middleName = name.getMiddleName();
+            honorificPrefix = name.getHonorificPrefix();
+            honorificSuffix = name.getHonorificSuffix();
+        }
+
         /**
          * Sets the full name (See {@link Name#getFormatted()}).
          *

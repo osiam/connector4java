@@ -30,32 +30,32 @@ class UserUpdateSpec extends Specification {
     def 'can update simple, singular attributes'() {
         given:
         def originalUser = new User.Builder()
-                .externalId('externalId')
-                .userName('userName')
-                .displayName('displayName')
-                .nickName('nickName')
-                .profileUrl('profileUrl')
-                .title('title')
-                .userType('userType')
-                .preferredLanguage('preferredLanguage')
-                .locale('locale')
-                .timezone('timezone')
-                .active(true)
+                .setExternalId('externalId')
+                .setUserName('userName')
+                .setDisplayName('displayName')
+                .setNickName('nickName')
+                .setProfileUrl('profileUrl')
+                .setTitle('title')
+                .setUserType('userType')
+                .setPreferredLanguage('preferredLanguage')
+                .setLocale('locale')
+                .setTimezone('timezone')
+                .setActive(true)
                 .build()
 
         when:
         def user = new User.Builder(originalUser)
-                .externalId('newExternalId')
-                .userName('newUserName')
-                .displayName('newDisplayName')
-                .nickName('newNickName')
-                .profileUrl('newProfileUrl')
-                .title('newTitle')
-                .userType('newUserType')
-                .preferredLanguage('newPreferredLanguage')
-                .locale('newLocale')
-                .timezone('newTimezone')
-                .active(false)
+                .setExternalId('newExternalId')
+                .setUserName('newUserName')
+                .setDisplayName('newDisplayName')
+                .setNickName('newNickName')
+                .setProfileUrl('newProfileUrl')
+                .setTitle('newTitle')
+                .setUserType('newUserType')
+                .setPreferredLanguage('newPreferredLanguage')
+                .setLocale('newLocale')
+                .setTimezone('newTimezone')
+                .setActive(false)
                 .build()
 
         then:
@@ -71,6 +71,40 @@ class UserUpdateSpec extends Specification {
             locale == 'newLocale'
             timezone == 'newTimezone'
             !active
+        }
+    }
+
+    def 'can update name attribute'() {
+        given:
+        def originalUser = new User.Builder()
+                .setName(new Name.Builder()
+                        .setFormatted('formatted')
+                        .setFamilyName('familyName')
+                        .setGivenName('givenName')
+                        .setMiddleName('middleName')
+                        .setHonorificPrefix('honorificPrefix')
+                        .setHonorificSuffix('honorificSuffix')
+                        .build())
+                .build()
+
+        when:
+        def user = new User.Builder(originalUser)
+                .setName(new Name.Builder(originalUser.getName())
+                        .setFamilyName('newFamilyName')
+                        .setGivenName(null)
+                        .setHonorificPrefix('newHonorificPrefix')
+                        .setHonorificSuffix(null)
+                        .build())
+                .build()
+
+        then:
+        with(user.name) {
+            formatted == 'formatted'
+            familyName == 'newFamilyName'
+            givenName == null
+            middleName == 'middleName'
+            honorificPrefix == 'newHonorificPrefix'
+            honorificSuffix == null
         }
     }
 }
