@@ -40,7 +40,8 @@ class UserJsonSpec extends Specification {
 
     def 'A User is correctly serialized'() {
         given:
-        User user = new User.Builder('bjensen')
+        User user = new User.Builder()
+                .setUserName('bjensen')
                 .setExternalId('bjensen')
                 .setName(new Name.Builder()
                         .setFormatted('Ms. Barbara J Jensen III')

@@ -7,6 +7,10 @@
 - Introduce a `getMe()` method to retrieve the currently logged in user
   from OSIAM 3.0
 
+### Changes
+
+- The user name can now be set via the builder
+
 ### Fixes
 
 - Resources could be changed by using the copy-of constructor of the builders, though they were supposed
@@ -19,6 +23,7 @@
 - The `BasicUser` class and the method `OsiamConnector.getCurrentUserBasic()`
 - `Group.Builder#setId(String)` and `User.Builder#setId(String)`
 - `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
+- `User.Builder.Builder(String, User)`
 
 ## 1.8 - 2015-12-12
 

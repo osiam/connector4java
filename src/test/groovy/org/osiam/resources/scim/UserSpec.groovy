@@ -24,6 +24,7 @@
 package org.osiam.resources.scim
 
 import org.apache.commons.lang3.SerializationUtils
+import org.osiam.resources.exception.SCIMDataValidationException
 import org.osiam.test.util.DateHelper
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -38,7 +39,9 @@ class UserSpec extends Specification {
 
     def 'should contain core schemas as default'() {
         when:
-        def user = new User.Builder('username').build()
+        def user = new User.Builder()
+                .setUserName('username')
+                .build()
         then:
         user.schemas == CORE_SCHEMA_SET
     }
@@ -53,7 +56,9 @@ class UserSpec extends Specification {
 
     def 'should be able to contain schemas'() {
         when:
-        User user = new User.Builder('username').build()
+        User user = new User.Builder()
+                .setUserName('username')
+                .build()
 
         then:
         user.schemas[0] == User.SCHEMA
@@ -85,7 +90,8 @@ class UserSpec extends Specification {
         Role role = getRole()
         X509Certificate x509Certificate = getX509Certificate()
 
-        def builder = new User.Builder('username')
+        def builder = new User.Builder()
+                .setUserName('username')
                 .setActive(true)
                 .addAddresses([address] as List)
                 .setDisplayName('displayName')
@@ -140,8 +146,7 @@ class UserSpec extends Specification {
     @Unroll
     def 'creating a user with copy builder copies #field field if present'() {
         given:
-        def builder = new User.Builder('user')
-
+        def builder = new User.Builder()
 
         when:
         builder[(field)] = value
@@ -168,7 +173,7 @@ class UserSpec extends Specification {
     @Unroll
     def 'creating a user with copy builder initializes #field empty if missing in original'() {
         given:
-        def builder = new User.Builder('user')
+        def builder = new User.Builder()
 
         when:
         builder[(field)] = value
@@ -194,7 +199,7 @@ class UserSpec extends Specification {
 
     def 'enriching extension using the getter raises exception'() {
         given:
-        def user = new User.Builder('test2').build()
+        def user = new User.Builder().build()
         when:
         user.getExtensions().put(EXTENSION_URN, EXTENSION_EMPTY)
         then:
@@ -208,7 +213,7 @@ class UserSpec extends Specification {
         def extension2Urn = 'urn:org.osiam:schemas:test:1.0:Test2'
         def extension2 = new Extension.Builder(extension2Urn).build()
         when:
-        def user = new User.Builder('test2')
+        def user = new User.Builder()
                 .addExtension(extension1)
                 .addExtension(extension2)
                 .build()
@@ -226,7 +231,7 @@ class UserSpec extends Specification {
         def coreSchemaUrn = User.SCHEMA
 
         when:
-        def user = new User.Builder('test2')
+        def user = new User.Builder()
                 .addExtension(extension1)
                 .addExtension(extension2)
                 .build()
@@ -236,7 +241,7 @@ class UserSpec extends Specification {
 
     def 'an added extension can be retrieved'() {
         given:
-        def user = new User.Builder('test2')
+        def user = new User.Builder()
                 .addExtension(EXTENSION_EMPTY)
                 .build()
         expect:
@@ -247,7 +252,7 @@ class UserSpec extends Specification {
         given:
         def extensions = new HashSet<Extension>()
         extensions.add(EXTENSION_EMPTY)
-        def user = new User.Builder('test')
+        def user = new User.Builder()
                 .addExtensions(extensions)
                 .build()
 
@@ -259,7 +264,7 @@ class UserSpec extends Specification {
     @Unroll
     def 'retrieving extension with #testCase urn raises exception'() {
         given:
-        def user = new User.Builder('test2')
+        def user = new User.Builder()
                 .build()
         when:
         user.getExtension(urn)
@@ -275,20 +280,37 @@ class UserSpec extends Specification {
 
     def 'using the copy-of builder with null as parameter raises exception'() {
         when:
-        new User.Builder(null as String)
+        new User.Builder(null as User)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(SCIMDataValidationException)
+    }
+
+    def 'pre-set user name with constructor' () {
+        given:
+        def userName = 'testuser'
+
+        when:
+        def user = new User.Builder(userName)
+                .build()
+
+        then:
+        user.userName == userName
     }
 
     def 'the copied user should have the given username'() {
         given:
-        User oldUser = new User.Builder("oldUserName").setActive(true).build()
+        User oldUser = new User.Builder()
+                .setUserName('oldUserName')
+                .setActive(true)
+                .build()
         String newUserName = 'newUserName'
         User newUser
 
         when:
-        newUser = new User.Builder(newUserName, oldUser).build()
+        newUser = new User.Builder(oldUser)
+                .setUserName(newUserName)
+                .build()
 
         then:
         newUser.isActive()
@@ -297,7 +319,7 @@ class UserSpec extends Specification {
 
     def 'the primary email is returned'() {
         given:
-        User user = new User.Builder("user")
+        User user = new User.Builder()
                 .addEmail(getEmail())
                 .build()
 
@@ -319,7 +341,7 @@ class UserSpec extends Specification {
                 .build()
 
         when:
-        def user = new User.Builder("user")
+        def user = new User.Builder()
                 .addEmail(first)
                 .addEmail(second)
                 .build()
@@ -331,7 +353,7 @@ class UserSpec extends Specification {
 
     def "no email is returned if the user doesn't have one"() {
         given:
-        def user = new User.Builder("user").build()
+        def user = new User.Builder().build()
 
         expect:
         !user.primaryOrFirstEmail.present
@@ -432,7 +454,8 @@ class UserSpec extends Specification {
     def 'user can be serialized and deserialized'() {
         def date = DateHelper.createDate(2008, 0, 23, 18, 29, 49)
         given:
-        User user = new User.Builder('bjensen')
+        User user = new User.Builder()
+                .setUserName('bjensen')
                 .setExternalId('bjensen')
                 .setName(new Name.Builder()
                 .setFormatted('Ms. Barbara J Jensen III')
