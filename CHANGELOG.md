@@ -16,6 +16,7 @@
 
 - The user name can now be set via the builder
 - The group's display name can now be set via the builder
+- Deprecate updates of resources via PATCH
 
 ### Fixes
 
@@ -34,6 +35,12 @@
 - `Group.Builder.Builder(String, Group)`
 - `org.osiam.resources.scim.User.Builder.setGroups(List<GroupRef>)`
 - `org.osiam.resources.scim.MemberRef.Builder.setReference(String)`
+- `org.osiam.client.OsiamConnector.updateUser(String, UpdateUser, AccessToken)`
+- `org.osiam.client.OsiamConnector.updateGroup(String, UpdateGroup, AccessToken)`
+- `org.osiam.resources.scim.UpdateUser`
+- `org.osiam.resources.scim.UpdateGroup`
+- `getOperation()` in all multi-valued attribute
+- `setOperation(String)` in all multi-valued attribute builders
 
 ## 1.8 - 2015-12-12
 

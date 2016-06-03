@@ -521,7 +521,8 @@ public class OsiamConnector {
 
     /**
      * update the user of the given id with the values given in the User Object. For more detailed information how to
-     * set new field, update Fields or to delete Fields please look in the documentation
+     * set new field, update Fields or to delete Fields please look in the documentation. This method is not compatible
+     * with OSIAM 3.x.
      *
      * @param id          if of the User to be updated
      * @param updateUser  all Fields that need to be updated
@@ -534,7 +535,9 @@ public class OsiamConnector {
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      * @see <a href="https://github.com/osiam/connector4java/docs/working-with-user.md">Working with user</a>
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
         return getUserService().updateUser(id, updateUser, accessToken);
     }
@@ -574,7 +577,9 @@ public class OsiamConnector {
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      * @see <a href="https://github.com/osiam/connector4java/docs/working-with-groups
      * .md#search-for-groups">Working with groups</a>
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken) {
         return getGroupService().updateGroup(id, updateGroup, accessToken);
     }

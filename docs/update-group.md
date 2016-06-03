@@ -1,3 +1,6 @@
+**NOTE:** Updating a group via the process described below is not supported by OSIAM 3.0
+Use the method `org.osiam.client.OsiamConnector.replaceGroup` instead.
+
 To update an Group you need to create an specific Group. For more details how an update Group has to look please see at the [SCIM specification](http://www.simplecloud.info/).
 
 The classs UpdateGroup was created to make this process more easy and secure.

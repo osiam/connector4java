@@ -57,6 +57,7 @@ public final class Role extends MultiValuedAttribute implements Serializable {
         type = builder.type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -116,6 +117,7 @@ public final class Role extends MultiValuedAttribute implements Serializable {
             type = role.type;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

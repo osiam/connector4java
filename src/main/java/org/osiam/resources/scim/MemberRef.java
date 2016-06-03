@@ -65,6 +65,7 @@ public final class MemberRef extends MultiValuedAttribute implements Serializabl
         return super.getReference();
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -193,6 +194,7 @@ public final class MemberRef extends MultiValuedAttribute implements Serializabl
             return this;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

@@ -60,6 +60,7 @@ public final class Entitlement extends MultiValuedAttribute implements Serializa
         type = builder.type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -149,6 +150,7 @@ public final class Entitlement extends MultiValuedAttribute implements Serializa
             type = entitlement.type;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

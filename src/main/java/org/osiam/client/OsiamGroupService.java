@@ -87,14 +87,18 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
 
     /**
      * See {@link OsiamConnector#updateGroup(String, UpdateGroup, AccessToken)}
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken) {
         return updateResource(id, updateGroup.getScimConformUpdateGroup(), accessToken);
     }
 
     /**
      * See {@link OsiamConnector#updateGroup(String, UpdateGroup, AccessToken)}
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public Group updateGroup(String id, Group group, AccessToken accessToken) {
         return updateResource(id, group, accessToken);
     }

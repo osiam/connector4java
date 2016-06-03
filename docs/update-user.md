@@ -1,3 +1,6 @@
+**NOTE:** Updating a user via the process described below is not supported by OSIAM 3.0
+Use the method `org.osiam.client.OsiamConnector.replaceUser` instead.
+
 To update an User you need to create an specific User. For more details how an update User has to look please see at the [SCIM specification](http://www.simplecloud.info/).
 
 The classs UpdateUser was created to make this process more easy and secure.

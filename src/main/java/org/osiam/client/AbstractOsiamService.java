@@ -33,12 +33,24 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
 import org.glassfish.jersey.client.ClientProperties;
-import org.osiam.client.exception.*;
+import org.osiam.client.exception.BadRequestException;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.OAuthErrorMessage;
+import org.osiam.client.exception.OsiamClientException;
+import org.osiam.client.exception.OsiamRequestException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.helper.UserDeserializer;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.ErrorResponse;
+import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.Resource;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.User;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
@@ -215,6 +227,10 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToResource(content);
     }
 
+    /**
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
+     */
+    @Deprecated
     protected T updateResource(String id, T resource, AccessToken accessToken) {
         return modifyResource(id, resource, "PATCH", accessToken);
     }

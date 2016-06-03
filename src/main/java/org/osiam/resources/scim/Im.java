@@ -62,6 +62,7 @@ public final class Im extends MultiValuedAttribute implements Serializable {
         this.type = builder.type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -152,6 +153,7 @@ public final class Im extends MultiValuedAttribute implements Serializable {
             type = im.type;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);
