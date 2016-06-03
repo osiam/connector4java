@@ -6,6 +6,11 @@
 
 - Introduce a `getMe()` method to retrieve the currently logged in user
   from OSIAM 3.0
+- `Group.Builder` API has been extended with methods to change the list of members:
+
+    - `addMembers(Collection<MemberRef>)`
+    - `removeMember(MemberRef)`
+    - `removeMembers()`
 
 ### Changes
 

@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableSet;
 import org.osiam.resources.exception.SCIMDataValidationException;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -216,13 +217,49 @@ public final class Group extends Resource implements Serializable {
         }
 
         /**
-         * Add the given member to the set of members.
+         * Add the given member to the {@link Group}.
          *
          * @param member The member to add.
          * @return The builder itself
          */
         public Builder addMember(MemberRef member) {
             members.add(member);
+            return this;
+        }
+
+        /**
+         * Add the given members to the {@link Group}.
+         *
+         * @param members The members to add
+         * @return The builder itself
+         */
+        public Builder addMembers(Collection<MemberRef> members) {
+            if (members != null) {
+                for (MemberRef entry : members) {
+                    this.addMember(entry);
+                }
+            }
+            return this;
+        }
+
+        /**
+         * Remove the given member from the {@link Group}
+         *
+         * @param member The member to add.
+         * @return The builder itself
+         */
+        public Builder removeMember(MemberRef member) {
+            members.remove(member);
+            return this;
+        }
+
+        /**
+         * Removes all members from this {@link Group}
+         *
+         * @return the builder itself
+         */
+        public Builder removeMembers() {
+            this.members.clear();
             return this;
         }
 
