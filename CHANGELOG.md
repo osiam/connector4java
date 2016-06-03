@@ -27,6 +27,7 @@
 - `User.Builder.Builder(String, User)`
 - `Group.Builder.Builder(String, Group)`
 - `org.osiam.resources.scim.User.Builder.setGroups(List<GroupRef>)`
+- `org.osiam.resources.scim.MemberRef.Builder.setReference(String)`
 
 ## 1.8 - 2015-12-12
 
