@@ -108,12 +108,9 @@ public final class Group extends Resource implements Serializable {
         private Set<MemberRef> members = new HashSet<>();
 
         /**
-         * creates a new Group.Builder based on the given displayName and group. All values of the given group will be
-         * copied expect the displayName will be be overridden by the given one
-         *
-         * @param displayName the new displayName of the group
-         * @param group       a existing group
+         * @deprecated Change the display name with {@link #setDisplayName(String)}. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         public Builder(String displayName, Group group) {
             super(group);
             addSchema(SCHEMA);
@@ -159,12 +156,20 @@ public final class Group extends Resource implements Serializable {
             }
         }
 
+        /**
+         * @deprecated You should not need to set the ID with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setId(String id) {
             super.setId(id);
             return this;
         }
 
+        /**
+         * @deprecated You should not need to set the meta attribute with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setMeta(Meta meta) {
             super.setMeta(meta);
@@ -185,6 +190,17 @@ public final class Group extends Resource implements Serializable {
         @Deprecated
         public Builder setSchemas(Set<String> schemas) {
             super.setSchemas(schemas);
+            return this;
+        }
+
+        /**
+         * Sets the display name (See {@link Group#getDisplayName()}).
+         *
+         * @param displayName the display name to set
+         * @return the builder itself
+         */
+        public Builder setDisplayName(String displayName) {
+            this.displayName = displayName;
             return this;
         }
 

@@ -527,12 +527,9 @@ public final class User extends Resource implements Serializable {
         private Map<String, Extension> extensions = new HashMap<>();
 
         /**
-         * creates a new User.Builder based on the given userName and user. All values of the given user will be copied
-         * expect the userName will be be overridden by the given one
-         *
-         * @param userName the new userName of the user
-         * @param user     a existing user
+         * @deprecated Change the user name with {@link #setUserName(String)}. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         public Builder(String userName, User user) {
             super(user);
             addSchema(SCHEMA);
@@ -599,6 +596,17 @@ public final class User extends Resource implements Serializable {
         }
 
         /**
+         * Sets the user name (See {@link User#getUserName()}).
+         *
+         * @param userName the unique name of the {@link User}
+         * @return the builder itself
+         */
+        public Builder setUserName(String userName) {
+            this.userName = userName;
+            return this;
+        }
+
+        /**
          * Sets the components of the {@link User}'s real name (See {@link User#getName()}).
          *
          * @param name the name object of the {@link User}
@@ -634,7 +642,7 @@ public final class User extends Resource implements Serializable {
         /**
          * Sets the profile URL (See {@link User#getProfileUrl()}).
          *
-         * @param profileUrl the profil URL of the {@link User}
+         * @param profileUrl the profile URL of the {@link User}
          * @return the builder itself
          */
         public Builder setProfileUrl(String profileUrl) {
@@ -1177,6 +1185,10 @@ public final class User extends Resource implements Serializable {
             return this;
         }
 
+        /**
+         * @deprecated You should not need to set the meta attribute with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setMeta(Meta meta) {
             super.setMeta(meta);
@@ -1189,6 +1201,10 @@ public final class User extends Resource implements Serializable {
             return this;
         }
 
+        /**
+         * @deprecated You should not need to set the ID with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setId(String id) {
             super.setId(id);

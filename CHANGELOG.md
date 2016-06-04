@@ -2,16 +2,30 @@
 
 ## Unreleased
 
-### Changes
+### Features
 
 - Introduce a `getMe()` method to retrieve the currently logged in user
   from OSIAM 3.0
-- The `BasicUser` class and the method `getCurrentUserBasic()` have been deprecated.
+
+### Changes
+
+- The user name can now be set via the builder
+- The group's display name can now be set via the builder
 
 ### Fixes
 
-- Resources could be changed by using the copy-of constructor of the builders, though they are immutable.
+- Resources could be changed by using the copy-of constructor of the builders, though they were supposed
+  to be immutable.
 - A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
+- Return the right builder type in `Photo.Builder#setValue(String)`.
+
+### Deprecations
+
+- The `BasicUser` class and the method `OsiamConnector.getCurrentUserBasic()`
+- `Group.Builder#setId(String)` and `User.Builder#setId(String)`
+- `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
+- `User.Builder.Builder(String, User)`
+- `Group.Builder.Builder(String, Group)`
 
 ## 1.8 - 2015-12-12
 

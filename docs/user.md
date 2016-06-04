@@ -453,7 +453,7 @@ String userName = user.getUserName();
 
 **SET:**
 ```
-builder = new User.Builder("userName");
+builder.setUserName("userName");
 ```
 
 ### userType

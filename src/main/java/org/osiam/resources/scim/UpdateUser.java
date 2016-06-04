@@ -778,10 +778,10 @@ public final class UpdateUser {
          * @return a valid {@link UpdateUser}
          */
         public UpdateUser build() {
-            if (userName == null || userName.isEmpty()) {
-                updateUser = new User.Builder();
-            } else {
-                updateUser = new User.Builder(userName);
+            updateUser = new User.Builder();
+
+            if (userName != null && !userName.isEmpty()) {
+                updateUser.setUserName(userName);
             }
             if (nickName != null) {
                 updateUser.setNickName(nickName);

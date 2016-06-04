@@ -213,6 +213,12 @@ public final class Photo extends MultiValuedAttribute implements Serializable {
 
         }
 
+        @Override
+        protected Builder setValue(String value) {
+            super.setValue(value);
+            return this;
+        }
+
         /**
          * an URI pointing to an image
          *

@@ -36,12 +36,8 @@ class SchemaRegressionSpec extends Specification {
         def coreSchemaUrn = User.SCHEMA
 
         when:
-        def userWithExtensions = new User.Builder("test2")
-                .addExtension(extension1)
-                .addExtension(extension2)
-                .build()
-
-        def userWithoutExtensions = new User.Builder("test2")
+        def userWithoutExtensions = new User.Builder()
+                .setUserName('test2')
                 .build()
         then:
         userWithoutExtensions.schemas.contains(coreSchemaUrn)

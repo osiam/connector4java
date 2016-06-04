@@ -381,7 +381,8 @@ class UpdateUserSpec extends Specification {
         x509Certificates.add(newX509Certificate)
         x509Certificates.add(deleteX509Certificate)
 
-        User.Builder userBuilder = new User.Builder('username')
+        User.Builder userBuilder = new User.Builder()
+        userBuilder.setUserName('username')
         userBuilder.setActive(true)
         userBuilder.addAddresses(addresses)
         userBuilder.setDisplayName('displayN')
