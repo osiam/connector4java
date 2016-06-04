@@ -595,7 +595,7 @@ public class OsiamConnector {
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      */
     public Group replaceGroup(String id, Group group, AccessToken accessToken) {
-        return getGroupService().updateGroup(id, group, accessToken);
+        return getGroupService().replaceGroup(id, group, accessToken);
     }
 
     /**

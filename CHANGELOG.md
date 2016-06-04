@@ -23,6 +23,7 @@
   to be immutable.
 - A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
 - Return the right builder type in `Photo.Builder#setValue(String)`.
+- Replacing a group with PUT was actually updating it with PATCH
 
 ### Deprecations
 
