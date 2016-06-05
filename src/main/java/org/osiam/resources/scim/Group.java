@@ -206,11 +206,9 @@ public final class Group extends Resource implements Serializable {
         }
 
         /**
-         * Sets the list of members as {@link Set} (See {@link Group#getMembers()}).
-         *
-         * @param members the set of members
-         * @return the builder itself
+         * @deprecated Use {@link #removeMembers()} followed by {@link #addMembers(Collection)}. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         public Builder setMembers(Set<MemberRef> members) {
             this.members = members;
             return this;
