@@ -36,39 +36,36 @@ oConnector.deleteUser(<USER_UUID>, accessToken);
 
 # Update a User
 
-The OSIAM Connector4Java provides an easy and quick way to change user data,
-whether you just want to update a single value or almost all of them.
-It is easy to change data, even if you want to change the address of all your
-employees because your company moved.
+The OSIAM Connector4Java provides a way to change user data.
+You are able to update just a single value, all of them, or anything in between.
+The following examples shows how you can update a user.
 
-The following examples show how you can use the update method:
+If you want to update a user you need to know their ID (UUID).
+Then you can create a new user based on the original user and change their attributes:
 
-```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
+```
+User newUser = new User.Builder(originalUser)
+        .setActive(true)
+        // Updating an email address
+        .removeEmail(originalUser.emails[0])
+        .addEmail(new Email.Builder(originalUser.emails[0])
+                .setValue('newValue1@example.com')
+                .setPrimary(true)
+                .build())
+        // Adding an email address
+        .addEmail(new Email.Builder()
+                .setValue('newValue2@example.com')
+                .setType(Email.Type.HOME)
+                .build())
+        // Removing an email address
+        .removeEmail(originalUser.emails[1])
+        .build();
 ```
 
-If you want to update a user you need to know his ID (UUID). Get the ID with:
+After this you just have to call the `replaceUser` method that will return the updated user:
 
-    User existingUser = [get existing User](#retrieve-a-single-user)
-
-Now you can create a UpdateUser and change his attributes:
-
-    UpdateUser updateUser = [Creating an UpdateUser](https://github.com/osiam/scim-schema/blob/master/docs/api/update-user.md)
-
-After this you just have to call the UpdateUser method which will return the
-complete updated user:
-
-    User updatedUser = oConnector.updateUser(existingUser.getId(), updateUser, accessToken);
-
-If you want to change the same attributes for several users you can call the
-method several times with different user ID's and the same UpdateUser Object.
-
-
-```java
-User updatedUser01 = oConnector.updateUser(userId01, updateUser, accessToken);
-User updatedUser02 = oConnector.updateUser(userId02, updateUser, accessToken);
-User updatedUser03 = oConnector.updateUser(userId03, updateUser, accessToken);
+```
+User updatedUser = oConnector.replaceUser(originalUser.getId(), newUser, accessToken);
 ```
 
 # Retrieve a single User

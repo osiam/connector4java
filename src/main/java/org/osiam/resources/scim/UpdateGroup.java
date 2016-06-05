@@ -28,7 +28,9 @@ import java.util.Set;
 
 /**
  * Class to create a UpdateGroup Object to update a existing Group
+ * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This class is going to go away with version 1.12 or 2.0.
  */
+@Deprecated
 public final class UpdateGroup {
 
     private Group group;

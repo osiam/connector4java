@@ -69,6 +69,7 @@ public final class Photo extends MultiValuedAttribute implements Serializable {
         this.type = builder.type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -200,6 +201,7 @@ public final class Photo extends MultiValuedAttribute implements Serializable {
             type = photo.type;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

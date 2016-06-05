@@ -128,7 +128,9 @@ public abstract class MultiValuedAttribute implements Serializable {
      * </p>
      *
      * @return the operation
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     protected String getOperation() {
         return operation;
     }
@@ -284,7 +286,9 @@ public abstract class MultiValuedAttribute implements Serializable {
          *
          * @param operation only "delete" is supported at the moment
          * @return the builder itself
+         * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
          */
+        @Deprecated
         protected Builder setOperation(String operation) {
             this.operation = operation;
             return this;

@@ -60,6 +60,7 @@ public final class PhoneNumber extends MultiValuedAttribute implements Serializa
         this.type = builder.type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -150,6 +151,7 @@ public final class PhoneNumber extends MultiValuedAttribute implements Serializa
             type = phoneNumber.type;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

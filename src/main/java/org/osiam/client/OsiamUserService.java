@@ -123,7 +123,9 @@ class OsiamUserService extends AbstractOsiamService<User> {
 
     /**
      * See {@link OsiamConnector#updateUser(String, UpdateUser, AccessToken)}
+     * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
         if (updateUser == null) {
             throw new IllegalArgumentException("The given updateUser can't be null.");

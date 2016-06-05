@@ -30,7 +30,9 @@ import java.util.Set;
 
 /**
  * Class to create a UpdateUser Object to update a existing User
+ * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This class is going to go away with version 1.12 or 2.0.
  */
+@Deprecated
 public final class UpdateUser {
 
     private User user;

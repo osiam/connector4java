@@ -65,6 +65,7 @@ public final class MemberRef extends MultiValuedAttribute implements Serializabl
         return super.getReference();
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -160,6 +161,10 @@ public final class MemberRef extends MultiValuedAttribute implements Serializabl
             setValue(resource.getId());
         }
 
+        /**
+         * @deprecated You should not need to set the reference attribute with a client. Will be removed in 1.12 or 2.0.
+         */
+        @Deprecated
         @Override
         public Builder setReference(String reference) {
             super.setReference(reference);
@@ -189,6 +194,7 @@ public final class MemberRef extends MultiValuedAttribute implements Serializabl
             return this;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

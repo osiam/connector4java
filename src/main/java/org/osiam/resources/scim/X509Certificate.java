@@ -55,6 +55,7 @@ public final class X509Certificate extends MultiValuedAttribute implements Seria
         type = builder.type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -114,6 +115,7 @@ public final class X509Certificate extends MultiValuedAttribute implements Seria
             type = x509Certificate.type;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);

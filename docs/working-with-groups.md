@@ -42,37 +42,32 @@ oConnector.deleteGroup(<GROUP_UUID>, accessToken);
 
 ## Update a Group
 
-The OSIAM connector4Java provides an easy an quick way to change group values or group members.
-It is easy to change data, even if, you want to add one user to all current groups.
+The OSIAM connector4Java provides a way to change group data or group members.
+The following examples shows how you can update a group.
 
-The following examples show how you can use the update methods:
+If you want to update a group you need to know its ID (UUID).
+Then you can create a new group based on the original group and change its attributes:
 
-```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
+```
+Group newGroup = new Group.Builder(originalGroup)
+        // Updating
+        .removeMember(originalGroup.members[0])
+        .addMember(new MemberRef.Builder(originalGroup.members[0])
+                .setValue('d869f486-29cc-11e6-a76a-e82aea766790')
+                .build())
+        // Adding
+        .addMember(new MemberRef.Builder()
+                .setValue('e0f07f9e-29cc-11e6-b251-e82aea766790')
+                .build())
+        // Removing
+        .removeMember(originalGroup.members[1])
+        .build();
 ```
 
-If you want to update a group you need to know its ID (UUID). Get the ID with:
+After this you just have to call the `replaceGroup` method that will return the updated group:
 
-    Group existingGroup = [get existing Group](#retrieve-a-single-group)
-
-Now you can create a UpdateGroup and change the attributes:
-
-    UpdateGroup updateGroup = [creating an UpdateGroup](https://github.com/osiam/scim-schema/blob/master/docs/api/update-group.md);
-
-After this you just have to call the UpdateGroup method which will return the
-complete updated group:
-
-    Group updatedGroup = oConnector.updateGroup(existingGroup.getId(), updateGroup, accessToken);
-
-If you want to change the same attributes for several groups you can call the
-method several times with different group ID's and the same UpdateGroup Object:
-
-
-```java
-Group updatedGroup01 = oConnector.updateGroup(groupId01, updateGroup, accessToken);
-Group updatedGroup02 = oConnector.updateGroup(groupId02, updateGroup, accessToken);
-Group updatedGroup03 = oConnector.updateGroup(groupId03, updateGroup, accessToken);
+```
+Group updatedGroup = oConnector.replaceGroup(originalGroup.getId(), newGroup, accessToken);
 ```
 
 ## Retrieve a single Group

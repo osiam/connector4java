@@ -973,16 +973,9 @@ public final class User extends Resource implements Serializable {
         }
 
         /**
-         * Sets a list of groups that the user belongs to (See {@link User#getGroups()})
-         * <p>
-         * client info: The groups where the user is a member of will only be set from the OSIAM server. If you want to
-         * put a user into a group, you have to add the user as a member to the group. If a {@link User} which is send
-         * to the OSIAM server has this value filled, the value will be ignored or the action will be rejected.
-         * </p>
-         *
-         * @param groups groups of the User
-         * @return the builder itself
+         * @deprecated You can not set the groups attribute on a user. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         public Builder setGroups(List<GroupRef> groups) {
             this.groups = groups;
             return this;

@@ -6,11 +6,17 @@
 
 - Introduce a `getMe()` method to retrieve the currently logged in user
   from OSIAM 3.0
+- `Group.Builder` API has been extended with methods to change the list of members:
+
+    - `addMembers(Collection<MemberRef>)`
+    - `removeMember(MemberRef)`
+    - `removeMembers()`
 
 ### Changes
 
 - The user name can now be set via the builder
 - The group's display name can now be set via the builder
+- Deprecate updates of resources via PATCH
 
 ### Fixes
 
@@ -18,6 +24,7 @@
   to be immutable.
 - A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
 - Return the right builder type in `Photo.Builder#setValue(String)`.
+- Replacing a group with PUT was actually updating it with PATCH
 
 ### Deprecations
 
@@ -26,6 +33,14 @@
 - `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
 - `User.Builder.Builder(String, User)`
 - `Group.Builder.Builder(String, Group)`
+- `org.osiam.resources.scim.User.Builder.setGroups(List<GroupRef>)`
+- `org.osiam.resources.scim.MemberRef.Builder.setReference(String)`
+- `org.osiam.client.OsiamConnector.updateUser(String, UpdateUser, AccessToken)`
+- `org.osiam.client.OsiamConnector.updateGroup(String, UpdateGroup, AccessToken)`
+- `org.osiam.resources.scim.UpdateUser`
+- `org.osiam.resources.scim.UpdateGroup`
+- `getOperation()` in all multi-valued attribute
+- `setOperation(String)` in all multi-valued attribute builders
 
 ## 1.8 - 2015-12-12
 

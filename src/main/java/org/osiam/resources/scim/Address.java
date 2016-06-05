@@ -157,6 +157,7 @@ public final class Address extends MultiValuedAttribute implements Serializable 
         return type;
     }
 
+    @Deprecated
     @Override
     public String getOperation() {
         return super.getOperation();
@@ -372,6 +373,7 @@ public final class Address extends MultiValuedAttribute implements Serializable 
             return this;
         }
 
+        @Deprecated
         @Override
         public Builder setOperation(String operation) {
             super.setOperation(operation);
