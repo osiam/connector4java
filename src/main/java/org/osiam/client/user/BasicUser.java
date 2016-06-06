@@ -33,7 +33,7 @@ import java.util.Date;
 
 /**
  * represents the basic Data of a scim User
- * @deprecated This class has been deprecated with OSIAM 3.0
+ * @deprecated This class has been deprecated with OSIAM 3.0 and is going to go away with version 1.12 or 2.0.
  *
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)

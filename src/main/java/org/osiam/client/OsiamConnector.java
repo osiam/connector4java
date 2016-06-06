@@ -287,7 +287,8 @@ public class OsiamConnector {
      * Retrieves the User holding the given access token. Not to be used for the grant Client-Credentials. If the
      * version of OSIAM to be queried is lower than 3.0 and only the basic Data like the userName, Name, primary
      * e-mail address is needed, consider using the method getCurrentUserBasic(...) since it is more performant than
-     * this one. Be aware, however, that that method is deprecated and going to go away with version 2.0 of the connector.
+     * this one. Be aware, however, that that method is deprecated and going to go away with version 2.0 of the
+     * connector. This method is not compatible with OSIAM 3.x.
      *
      * @param accessToken the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -295,7 +296,10 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
+     * @deprecated Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
+     *             is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public User getCurrentUser(AccessToken accessToken) {
         return getUserService().getCurrentUser(accessToken);
     }
@@ -317,7 +321,8 @@ public class OsiamConnector {
     /**
      * Retrieves the basic User data as BasicUser Object from the User who holds the given access token. Not to be used
      * for the grant Client-Credentials If only the basic Data like the userName, Name, primary email address is needed
-     * use this method since it is more performant as the getCurrentUser(...) method
+     * use this method since it is more performant as the getCurrentUser(...) method. This method is not compatible with
+     * OSIAM 3.x.
      *
      * @param accessToken the OSIAM access token from for the current session
      * @return the actual logged in user
@@ -325,8 +330,10 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
-     * @deprecated The BasicUser class hsa been deprecated. This method is going to go away with version 2.0
+     * @deprecated The BasicUser class has been deprecated. Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
+     *             is going to go away with version 1.12 or 2.0.
      */
+    @Deprecated
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
         return getUserService().getCurrentUserBasic(accessToken);
     }
