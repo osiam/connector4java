@@ -60,12 +60,11 @@ public final class Extension implements Serializable {
     @JsonCreator
     private Extension(@JsonProperty("urn") String urn, @JsonProperty("fields") Map<String, Field> fields) {
         this.urn = urn;
-        this.fields = fields;
+        this.fields = fields != null ? ImmutableMap.copyOf(fields) : ImmutableMap.<String, Field>of();
     }
 
     private Extension(Builder builder) {
-        this.urn = builder.urn;
-        this.fields = builder.fields;
+        this(builder.urn, builder.fields);
     }
 
     /**
@@ -192,7 +191,7 @@ public final class Extension implements Serializable {
      */
     @JsonIgnore
     public Map<String, Field> getFields() {
-        return ImmutableMap.copyOf(fields);
+        return fields;
     }
 
     /**
@@ -288,7 +287,7 @@ public final class Extension implements Serializable {
          */
         public Builder(Extension extension) {
             this.urn = extension.urn;
-            this.fields = extension.fields;
+            fields.putAll(extension.fields);
         }
 
         /**
