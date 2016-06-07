@@ -41,6 +41,7 @@
 - `org.osiam.resources.scim.UpdateGroup`
 - `getOperation()` in all multi-valued attribute
 - `setOperation(String)` in all multi-valued attribute builders
+- `org.osiam.resources.scim.Group.Builder.setMembers(Set<MemberRef>)`
 
 ## 1.8 - 2015-12-12
 
