@@ -371,6 +371,12 @@
                                         <resource>
                                             META-INF/services/org.glassfish.hk2.extension.ServiceLocatorGenerator
                                         </resource>
+                                        <resource>
+                                            META-INF/services/com.fasterxml.jackson.core.JsonFactory
+                                        </resource>
+                                        <resource>
+                                            META-INF/services/com.fasterxml.jackson.core.ObjectCodec
+                                        </resource>
                                     </resources>
                                 </transformer>
                                 <transformer
@@ -380,6 +386,24 @@
                                     </resource>
                                     <file>
                                         ${project.basedir}/src/main/shade/org.osiam.bundled.org.glassfish.hk2.extension.ServiceLocatorGenerator
+                                    </file>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>
+                                        META-INF/services/org.osiam.bundled.com.fasterxml.jackson.core.JsonFactory
+                                    </resource>
+                                    <file>
+                                        ${project.basedir}/src/main/shade/org.osiam.bundled.com.fasterxml.jackson.core.JsonFactory
+                                    </file>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>
+                                        META-INF/services/org.osiam.bundled.com.fasterxml.jackson.core.ObjectCodec
+                                    </resource>
+                                    <file>
+                                        ${project.basedir}/src/main/shade/org.osiam.bundled.com.fasterxml.jackson.core.ObjectCodec
                                     </file>
                                 </transformer>
                             </transformers>
@@ -399,6 +423,7 @@
                                     <include>javax.ws.rs</include>
                                     <include>org.javassist</include>
                                     <include>org.apache.tika</include>
+                                    <include>com.fasterxml.jackson.core</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -465,6 +490,10 @@
                                 <relocation>
                                     <pattern>org.apache.tika</pattern>
                                     <shadedPattern>org.osiam.bundled.org.apache.tika</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>org.osiam.bundled.com.fasterxml.jackson</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
