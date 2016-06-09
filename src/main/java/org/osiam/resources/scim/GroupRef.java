@@ -122,8 +122,9 @@ public final class GroupRef extends MultiValuedAttribute implements Serializable
     }
 
     /**
-     * Builder class that is used to build {@link GroupRef} instances
+     * @deprecated You should not need to create a group object with a client. Will be removed in 1.12 or 2.0.
      */
+    @Deprecated
     public static class Builder extends MultiValuedAttribute.Builder {
 
         private Type type;

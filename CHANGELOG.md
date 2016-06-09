@@ -31,6 +31,7 @@
 - The `BasicUser` class and the method `OsiamConnector.getCurrentUserBasic()`
 - `Group.Builder#setId(String)` and `User.Builder#setId(String)`
 - `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
+- `org.osiam.resources.scim.Meta.Builder`
 - `User.Builder.Builder(String, User)`
 - `Group.Builder.Builder(String, Group)`
 - `org.osiam.resources.scim.User.Builder.setGroups(List<GroupRef>)`
@@ -39,9 +40,10 @@
 - `org.osiam.client.OsiamConnector.updateGroup(String, UpdateGroup, AccessToken)`
 - `org.osiam.resources.scim.UpdateUser`
 - `org.osiam.resources.scim.UpdateGroup`
-- `getOperation()` in all multi-valued attribute
+- `getOperation()` in all multi-valued attributes
 - `setOperation(String)` in all multi-valued attribute builders
 - `org.osiam.resources.scim.Group.Builder.setMembers(Set<MemberRef>)`
+- `org.osiam.resources.scim.GroupRef.Builder`
 
 ## 1.8 - 2015-12-12
 

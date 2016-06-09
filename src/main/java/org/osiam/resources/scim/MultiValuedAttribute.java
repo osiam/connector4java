@@ -279,13 +279,6 @@ public abstract class MultiValuedAttribute implements Serializable {
         }
 
         /**
-         * Sets the operation (See {@link MultiValuedAttribute#getOperation()}).
-         * <p>
-         * Will be automatically set by the {@link UpdateUser}
-         * </p>
-         *
-         * @param operation only "delete" is supported at the moment
-         * @return the builder itself
          * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
          */
         @Deprecated
@@ -295,15 +288,9 @@ public abstract class MultiValuedAttribute implements Serializable {
         }
 
         /**
-         * Sets the reference (See {@link MemberRef#getReference()}).
-         * <p>
-         * client info: the Reference value is set by the OSIAM server. If a MultiValuedAttribute which is send to the
-         * OSIAM server has this value filled, the value will be ignored or the action will be rejected.
-         * </p>
-         *
-         * @param reference the scim conform reference to the member
-         * @return the builder itself
+         * @deprecated You should not need to set the reference with a client. Will be removed in 1.12 or 2.0.
          */
+        @Deprecated
         protected Builder setReference(String reference) {
             this.reference = reference;
             return this;
