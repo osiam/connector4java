@@ -24,7 +24,6 @@
 package org.osiam.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -71,35 +70,34 @@ import static org.osiam.client.OsiamConnector.objectMapper;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
- * installation. For the construction of an instance please use the included {@link AbstractOsiamService.Builder}
+ * installation.
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
     static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to OSIAM";
-
     private static final String AUTHORIZATION = "Authorization";
     static final String BEARER = "Bearer ";
+
     final WebTarget targetEndpoint;
     private final Class<T> type;
     private final String typeName;
     private final int connectTimeout;
     private final int readTimeout;
-    private final boolean legacySchemas;
+    private final Version version;
 
-    AbstractOsiamService(Builder<T> builder) {
-        type = builder.type;
-        typeName = builder.typeName;
-        connectTimeout = builder.connectTimeout;
-        readTimeout = builder.readTimeout;
-        legacySchemas = builder.legacySchemas;
-
+    AbstractOsiamService(String endpoint, Class<T> type, int connectTimeout, int readTimeout, Version version) {
+        this.type = type;
+        this.typeName = type.getSimpleName();
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
+        this.version = version;
         UserDeserializer userDeserializer =
-                legacySchemas ? new UserDeserializer(OsiamUserService.LEGACY_SCHEMA) : new UserDeserializer();
-        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
+                this.version == Version.OSIAM_2_LEGACY_SCHEMAS ? new UserDeserializer(OsiamUserService.LEGACY_SCHEMA) : new UserDeserializer();
+        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", com.fasterxml.jackson.core.Version.unknownVersion())
                 .addDeserializer(User.class, userDeserializer);
         objectMapper.registerModule(userDeserializerModule);
 
-        targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
+        targetEndpoint = OsiamConnector.getClient().target(endpoint);
     }
 
     static void checkAccessTokenIsNotNull(AccessToken accessToken) {
@@ -277,7 +275,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     <U> U mapToType(String content, Class<U> type) {
         try {
-            if (legacySchemas && (type == User.class || type == Group.class)) {
+            if (version == Version.OSIAM_2_LEGACY_SCHEMAS && (type == User.class || type == Group.class)) {
                 ObjectNode resourceNode = (ObjectNode) objectMapper.readTree(content);
                 switchToLegacySchema(resourceNode);
                 return objectMapper.readValue(objectMapper.treeAsTokens(resourceNode), type);
@@ -290,7 +288,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     private String mapToString(T resource) throws JsonProcessingException {
-        if (legacySchemas) {
+        if (version == Version.OSIAM_2_LEGACY_SCHEMAS) {
             ObjectNode resourceNode = objectMapper.valueToTree(resource);
             switchToLegacySchema(resourceNode);
             return resourceNode.toString();
@@ -354,7 +352,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     private String extractErrorMessage(String content, StatusType status) {
         String message;
-        if (legacySchemas) {
+        if (version == Version.OSIAM_2_LEGACY_SCHEMAS) {
             message = getScimErrorMessageLegacy(content);
         } else {
             message = getScimErrorMessage(content);
@@ -409,24 +407,5 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     int getReadTimeout() {
         return readTimeout;
-    }
-
-    static class Builder<T> {
-
-        int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
-        int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
-        boolean legacySchemas = OsiamConnector.DEFAULT_LEGACY_SCHEMAS;
-        private String endpoint;
-        private Class<T> type;
-        private String typeName;
-
-        @SuppressWarnings("unchecked")
-        Builder(String endpoint) {
-            this.endpoint = endpoint;
-            this.type = (Class<T>)
-                    ((ParameterizedType) getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[0];
-            typeName = type.getSimpleName();
-        }
     }
 }

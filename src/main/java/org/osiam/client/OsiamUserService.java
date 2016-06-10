@@ -42,20 +42,14 @@ import java.util.List;
 
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
- * installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
+ * installation.
  */
 class OsiamUserService extends AbstractOsiamService<User> {
 
     static final String LEGACY_SCHEMA = "urn:scim:schemas:core:2.0:User";
 
-    /**
-     * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
-     * one.
-     *
-     * @param builder a Builder to build the service from
-     */
-    private OsiamUserService(Builder builder) {
-        super(builder);
+    OsiamUserService(String endpoint, int connectTimeout, int readTimeout, Version version) {
+        super(endpoint, User.class, connectTimeout, readTimeout, version);
     }
 
     /**
@@ -199,74 +193,5 @@ class OsiamUserService extends AbstractOsiamService<User> {
 
         checkAndHandleResponse(content, status, accessToken);
         return content;
-    }
-
-    /**
-     * See {@link OsiamConnector.Builder}
-     */
-    public static class Builder extends AbstractOsiamService.Builder<User> {
-
-        /**
-         * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
-         * given endpoint
-         *
-         * @param endpoint The URL at which OSIAM lives.
-         */
-        public Builder(String endpoint) {
-            super(endpoint);
-        }
-
-        /**
-         * Set the connect timeout per connector, in milliseconds.
-         * <p/>
-         * <p>
-         * A value of zero (0) is equivalent to an interval of infinity. Default: 2500
-         * </p>
-         *
-         * @param connectTimeout the connect timeout per connector, in milliseconds.
-         * @return The builder itself
-         */
-        public Builder withConnectTimeout(int connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return this;
-        }
-
-        /**
-         * Set the read timeout per connector, in milliseconds.
-         * <p/>
-         * <p>
-         * A value of zero (0) is equivalent to an interval of infinity. Default: 5000
-         * </p>
-         *
-         * @param readTimeout the read timeout per connector, in milliseconds.
-         * @return The builder itself
-         */
-        public Builder withReadTimeout(int readTimeout) {
-            this.readTimeout = readTimeout;
-            return this;
-        }
-
-        /**
-         * Configures the user service to use legacy schemas, i.e. schemas that were defined before
-         * SCIM 2 draft 09.
-         * <p>
-         * <p/>This enables compatibility with OSIAM releases up to version 2.3
-         * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
-         * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.
-         *
-         * @param legacySchemas should legacy schemas be used
-         * @return The builder itself
-         */
-        public Builder withLegacySchemas(boolean legacySchemas) {
-            this.legacySchemas = legacySchemas;
-            return this;
-        }
-
-        /**
-         * See {@link OsiamConnector.Builder#build()}
-         */
-        public OsiamUserService build() {
-            return new OsiamUserService(this);
-        }
     }
 }
