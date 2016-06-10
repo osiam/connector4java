@@ -96,7 +96,7 @@ class AuthService {
         targetEndpoint = OsiamConnector.getClient().target(endpoint);
     }
 
-    public AccessToken retrieveAccessToken(Scope... scopes) {
+    AccessToken retrieveAccessToken(Scope... scopes) {
         ensureClientCredentialsAreSet();
         String formattedScopes = getScopesAsString(scopes);
         Form form = new Form();
@@ -125,7 +125,7 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    public AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
+    AccessToken retrieveAccessToken(String userName, String password, Scope... scopes) {
         ensureClientCredentialsAreSet();
         String formattedScopes = getScopesAsString(scopes);
         Form form = new Form();
@@ -156,7 +156,7 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    public AccessToken retrieveAccessToken(String authCode) {
+    AccessToken retrieveAccessToken(String authCode) {
         checkArgument(!Strings.isNullOrEmpty(authCode), "The given authentication code can't be null.");
         ensureClientCredentialsAreSet();
 
@@ -200,7 +200,7 @@ class AuthService {
         return scopeBuilder.toString().trim();
     }
 
-    public AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
+    AccessToken refreshAccessToken(AccessToken accessToken, Scope... scopes) {
         checkArgument(accessToken != null, "The given accessToken code can't be null.");
         checkArgument(accessToken.getRefreshToken() != null,
                 "Unable to perform a refresh_token_grant request without refresh token.");
@@ -239,7 +239,7 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    public URI getAuthorizationUri(Scope... scopes) {
+    URI getAuthorizationUri(Scope... scopes) {
         checkState(!Strings.isNullOrEmpty(clientRedirectUri), "Can't create the login uri: redirect URI was not set.");
         try {
             String formattedScopes = getScopesAsString(scopes);
@@ -258,7 +258,7 @@ class AuthService {
     /**
      * @see OsiamConnector#validateAccessToken(AccessToken)
      */
-    public AccessToken validateAccessToken(AccessToken tokenToValidate) {
+    AccessToken validateAccessToken(AccessToken tokenToValidate) {
         checkNotNull(tokenToValidate, "The tokenToValidate must not be null.");
 
         StatusType status;
@@ -284,7 +284,7 @@ class AuthService {
         return getAccessToken(content);
     }
 
-    public void revokeAccessToken(AccessToken tokenToRevoke) {
+    void revokeAccessToken(AccessToken tokenToRevoke) {
         StatusType status;
         String content;
         try {
@@ -306,7 +306,7 @@ class AuthService {
         checkAndHandleResponse(content, status, tokenToRevoke);
     }
 
-    public void revokeAllAccessTokens(String id, AccessToken accessToken) {
+    void revokeAllAccessTokens(String id, AccessToken accessToken) {
         StatusType status;
         String content;
         try {
@@ -328,7 +328,7 @@ class AuthService {
         checkAndHandleResponse(content, status, accessToken);
     }
 
-    public Client createClient(Client client, AccessToken accessToken) {
+    Client createClient(Client client, AccessToken accessToken) {
         StatusType status;
         String createdClient;
 
@@ -369,7 +369,7 @@ class AuthService {
         }
     }
 
-    public Client getClient(String getClientId, AccessToken accessToken) {
+    Client getClient(String getClientId, AccessToken accessToken) {
         StatusType status;
         String client;
         try {
@@ -397,7 +397,7 @@ class AuthService {
         }
     }
 
-    public List<Client> getClients(AccessToken accessToken) {
+    List<Client> getClients(AccessToken accessToken) {
         StatusType status;
         String clients;
         try {
@@ -426,7 +426,7 @@ class AuthService {
         }
     }
 
-    public void deleteClient(String deleteClientId, AccessToken accessToken) {
+    void deleteClient(String deleteClientId, AccessToken accessToken) {
         StatusType status;
         String content;
         try {
@@ -448,7 +448,7 @@ class AuthService {
         checkAndHandleResponse(content, status, accessToken);
     }
 
-    public Client updateClient(String updateClientId, Client client, AccessToken accessToken) {
+    Client updateClient(String updateClientId, Client client, AccessToken accessToken) {
         StatusType status;
         String clientResponse;
 
@@ -530,7 +530,7 @@ class AuthService {
         }
     }
 
-    protected String extractErrorMessageForbidden(AccessToken accessToken) {
+    private String extractErrorMessageForbidden(AccessToken accessToken) {
         return "Insufficient scopes: " + accessToken.getScopes();
     }
 

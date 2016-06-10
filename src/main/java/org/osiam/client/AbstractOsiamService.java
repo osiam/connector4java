@@ -75,18 +75,18 @@ import static org.osiam.client.OsiamConnector.objectMapper;
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
-    protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to OSIAM";
+    static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to OSIAM";
 
-    protected static final String AUTHORIZATION = "Authorization";
-    protected static final String BEARER = "Bearer ";
-    protected final WebTarget targetEndpoint;
+    private static final String AUTHORIZATION = "Authorization";
+    static final String BEARER = "Bearer ";
+    final WebTarget targetEndpoint;
     private final Class<T> type;
     private final String typeName;
     private final int connectTimeout;
     private final int readTimeout;
     private final boolean legacySchemas;
 
-    protected AbstractOsiamService(Builder<T> builder) {
+    AbstractOsiamService(Builder<T> builder) {
         type = builder.type;
         typeName = builder.typeName;
         connectTimeout = builder.connectTimeout;
@@ -102,11 +102,11 @@ abstract class AbstractOsiamService<T extends Resource> {
         targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
     }
 
-    protected static void checkAccessTokenIsNotNull(AccessToken accessToken) {
+    static void checkAccessTokenIsNotNull(AccessToken accessToken) {
         checkNotNull(accessToken, "The given accessToken must not be null.");
     }
 
-    protected T getResource(String id, AccessToken accessToken) {
+    T getResource(String id, AccessToken accessToken) {
         checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
         checkAccessTokenIsNotNull(accessToken);
 
@@ -130,12 +130,12 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToResource(content);
     }
 
-    protected List<T> getAllResources(AccessToken accessToken) {
+    List<T> getAllResources(AccessToken accessToken) {
         Query query = new QueryBuilder().count(Integer.MAX_VALUE).build();
         return searchResources(query, accessToken).getResources();
     }
 
-    protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
+    SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
         checkNotNull(query, "The given query must not be null.");
         checkAccessTokenIsNotNull(accessToken);
 
@@ -174,7 +174,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected void deleteResource(String id, AccessToken accessToken) {
+    void deleteResource(String id, AccessToken accessToken) {
         checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
         checkAccessTokenIsNotNull(accessToken);
 
@@ -196,7 +196,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         checkAndHandleResponse(content, status, accessToken);
     }
 
-    protected T createResource(T resource, AccessToken accessToken) {
+    T createResource(T resource, AccessToken accessToken) {
         checkNotNull(resource, "The given %s must not be null nor empty.", typeName);
         checkAccessTokenIsNotNull(accessToken);
 
@@ -231,11 +231,11 @@ abstract class AbstractOsiamService<T extends Resource> {
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    protected T updateResource(String id, T resource, AccessToken accessToken) {
+    T updateResource(String id, T resource, AccessToken accessToken) {
         return modifyResource(id, resource, "PATCH", accessToken);
     }
 
-    protected T replaceResource(String id, T resource, AccessToken accessToken) {
+    T replaceResource(String id, T resource, AccessToken accessToken) {
         return modifyResource(id, resource, "PUT", accessToken);
     }
 
@@ -275,7 +275,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToType(content, type);
     }
 
-    protected <U> U mapToType(String content, Class<U> type) {
+    <U> U mapToType(String content, Class<U> type) {
         try {
             if (legacySchemas && (type == User.class || type == Group.class)) {
                 ObjectNode resourceNode = (ObjectNode) objectMapper.readTree(content);
@@ -313,7 +313,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected abstract String getLegacySchema();
 
-    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
+    void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
         if (status.getFamily() == Family.SUCCESSFUL) {
             return;
         }
@@ -340,19 +340,19 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     }
 
-    protected String extractErrorMessageForbidden(AccessToken accessToken) {
+    private String extractErrorMessageForbidden(AccessToken accessToken) {
         return "Insufficient scopes: " + accessToken.getScopes();
     }
 
-    protected String extractErrorMessageUnauthorized(String content, StatusType status) {
+    private String extractErrorMessageUnauthorized(String content, StatusType status) {
         return extractErrorMessage(content, status);
     }
 
-    protected String extractErrorMessageDefault(String content, StatusType status) {
+    private String extractErrorMessageDefault(String content, StatusType status) {
         return extractErrorMessage(content, status);
     }
 
-    protected String extractErrorMessage(String content, StatusType status) {
+    private String extractErrorMessage(String content, StatusType status) {
         String message;
         if (legacySchemas) {
             message = getScimErrorMessageLegacy(content);
@@ -403,25 +403,25 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected int getConnectTimeout() {
+    int getConnectTimeout() {
         return connectTimeout;
     }
 
-    protected int getReadTimeout() {
+    int getReadTimeout() {
         return readTimeout;
     }
 
-    protected static class Builder<T> {
+    static class Builder<T> {
 
-        protected int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
-        protected int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
-        protected boolean legacySchemas = OsiamConnector.DEFAULT_LEGACY_SCHEMAS;
+        int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
+        int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
+        boolean legacySchemas = OsiamConnector.DEFAULT_LEGACY_SCHEMAS;
         private String endpoint;
         private Class<T> type;
         private String typeName;
 
         @SuppressWarnings("unchecked")
-        protected Builder(String endpoint) {
+        Builder(String endpoint) {
             this.endpoint = endpoint;
             this.type = (Class<T>)
                     ((ParameterizedType) getClass().getGenericSuperclass())

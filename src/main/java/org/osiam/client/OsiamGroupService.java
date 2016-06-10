@@ -38,7 +38,7 @@ import java.util.List;
 class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Builder constructs instances of
     // this class
 
-    static final String LEGACY_SCHEMA = "urn:scim:schemas:core:2.0:Group";
+    private static final String LEGACY_SCHEMA = "urn:scim:schemas:core:2.0:Group";
 
     /**
      * The private constructor for the OsiamGroupService. Please use the {@link OsiamGroupService.Builder} to construct
@@ -53,35 +53,35 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
     /**
      * See {@link OsiamConnector#getGroup(String, AccessToken)}
      */
-    public Group getGroup(String id, AccessToken accessToken) {
+    Group getGroup(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#getAllGroups(AccessToken)}
      */
-    public List<Group> getAllGroups(AccessToken accessToken) {
+    List<Group> getAllGroups(AccessToken accessToken) {
         return getAllResources(accessToken);
     }
 
     /**
      * See {@link OsiamConnector#searchGroups(Query, AccessToken)}
      */
-    public SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
+    SCIMSearchResult<Group> searchGroups(Query query, AccessToken accessToken) {
         return searchResources(query, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#deleteUser(String, AccessToken)}
      */
-    public void deleteGroup(String id, AccessToken accessToken) {
+    void deleteGroup(String id, AccessToken accessToken) {
         deleteResource(id, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#createGroup(Group, AccessToken)}
      */
-    public Group createGroup(Group group, AccessToken accessToken) {
+    Group createGroup(Group group, AccessToken accessToken) {
         return createResource(group, accessToken);
     }
 
@@ -90,7 +90,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken) {
+    Group updateGroup(String id, UpdateGroup updateGroup, AccessToken accessToken) {
         return updateResource(id, updateGroup.getScimConformUpdateGroup(), accessToken);
     }
 
@@ -99,14 +99,14 @@ class OsiamGroupService extends AbstractOsiamService<Group> { // NOSONAR - Build
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public Group updateGroup(String id, Group group, AccessToken accessToken) {
+    Group updateGroup(String id, Group group, AccessToken accessToken) {
         return updateResource(id, group, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#replaceGroup(String, Group, AccessToken)}
      */
-    public Group replaceGroup(String id, Group group, AccessToken accessToken) {
+    Group replaceGroup(String id, Group group, AccessToken accessToken) {
         return replaceResource(id, group, accessToken);
     }
 

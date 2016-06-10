@@ -61,7 +61,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getUser(String, AccessToken)}
      */
-    public User getUser(String id, AccessToken accessToken) {
+    User getUser(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
@@ -72,7 +72,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      *             is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public BasicUser getCurrentUserBasic(AccessToken accessToken) {
+    BasicUser getCurrentUserBasic(AccessToken accessToken) {
         checkAccessTokenIsNotNull(accessToken);
 
         StatusType status;
@@ -102,7 +102,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      *             is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public User getCurrentUser(AccessToken accessToken) {
+    User getCurrentUser(AccessToken accessToken) {
         BasicUser basicUser = getCurrentUserBasic(accessToken);
         return getResource(basicUser.getId(), accessToken);
     }
@@ -110,7 +110,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getMe(AccessToken)}
      */
-    public User getMe(AccessToken accessToken) {
+    User getMe(AccessToken accessToken) {
         String content = getMeResource(accessToken);
 
         return mapToType(content, User.class);
@@ -119,28 +119,28 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getAllUsers(AccessToken)}
      */
-    public List<User> getAllUsers(AccessToken accessToken) {
+    List<User> getAllUsers(AccessToken accessToken) {
         return super.getAllResources(accessToken);
     }
 
     /**
      * See {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
-    public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
+    SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
         return searchResources(query, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#deleteUser(String, AccessToken)}
      */
-    public void deleteUser(String id, AccessToken accessToken) {
+    void deleteUser(String id, AccessToken accessToken) {
         deleteResource(id, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#createUser(User, AccessToken)}
      */
-    public User createUser(User user, AccessToken accessToken) {
+    User createUser(User user, AccessToken accessToken) {
         return createResource(user, accessToken);
     }
 
@@ -149,7 +149,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
+    User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
         if (updateUser == null) {
             throw new IllegalArgumentException("The given updateUser can't be null.");
         }
@@ -159,7 +159,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#replaceUser(String, User, AccessToken)}
      */
-    public User replaceUser(String id, User user, AccessToken accessToken) {
+    User replaceUser(String id, User user, AccessToken accessToken) {
         if (user == null) {
             throw new InvalidAttributeException("The given User can't be null.");
         }
