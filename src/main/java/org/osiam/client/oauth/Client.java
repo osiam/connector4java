@@ -23,8 +23,8 @@
  */
 package org.osiam.client.oauth;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Strings;
 import org.osiam.client.exception.InvalidAttributeException;
 
@@ -32,7 +32,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Client {
 
     @JsonProperty
