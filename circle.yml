@@ -23,5 +23,5 @@ deployment:
       - mvn deploy -s settings.xml -DskipTests
       - curl -X POST https://circleci.com/api/v1/project/osiam/connector4java-integration-tests/tree/master?circle-token=$CIRCLECI_INTEGRATION_TESTS_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/connector4java-integration-tests/tree/maintenance-2.x?circle-token=$CIRCLECI_INTEGRATION_TESTS_TRIGGER_TOKEN
-      - curl -X POST https://circleci.com/api/v1/project/osiam/addon-self-administration/tree/master?circle-token=$CIRCLECI_ADDON_SELF_ADMINISTRATION_TRIGGER_TOKEN
+      - curl -X POST https://circleci.com/api/v1/project/osiam/addon-self-administration-plugin-api/tree/master?circle-token=$CIRCLECI_ADDON_SELF_ADMINISTRATION_PLUGIN_API_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/addon-administration/tree/master?circle-token=$CIRCLECI_ADDON_ADMINISTRATION_TRIGGER_TOKEN
