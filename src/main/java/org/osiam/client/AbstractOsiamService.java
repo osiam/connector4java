@@ -408,4 +408,8 @@ abstract class AbstractOsiamService<T extends Resource> {
     int getReadTimeout() {
         return readTimeout;
     }
+
+    Version getVersion() {
+        return version;
+    }
 }

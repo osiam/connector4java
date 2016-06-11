@@ -282,8 +282,7 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
-     * @deprecated Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
-     *             is going to go away with version 1.12 or 2.0.
+     * @deprecated Use {@link #getMe(AccessToken)}. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
     public User getCurrentUser(AccessToken accessToken) {

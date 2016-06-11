@@ -105,9 +105,9 @@ class OsiamUserService extends AbstractOsiamService<User> {
      * See {@link OsiamConnector#getMe(AccessToken)}
      */
     User getMe(AccessToken accessToken) {
-        String content = getMeResource(accessToken);
-
-        return mapToType(content, User.class);
+        return getVersion() == Version.OSIAM_3
+                ? mapToType(getMeResource(accessToken), User.class)
+                : getUser(getCurrentUserBasic(accessToken).getId(), accessToken);
     }
 
     /**

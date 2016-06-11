@@ -90,18 +90,9 @@ logged user you will retrieve a ConflictException.
 ```sh
 OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
 AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
-// retrieves the basic data of the actual User
-BasicUser basicUser = oConnector.getCurrentUserBasic(accessToken);
 // retrieves the complete currently logged in User.
-User user = oConnector.getCurrentUser(accessToken);
+User user = oConnector.getMe(accessToken);
 ```
-
-If you only need the basic User data like the userName or the Name, we would
-recommend to use the getCurrentUserBasic method since this one is with more
-performance.
-
-(please consider the possible runtimeException which are explained in the
-Javadoc)
 
 # Retrieve all Users
 
