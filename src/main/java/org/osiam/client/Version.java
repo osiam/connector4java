@@ -23,27 +23,6 @@
  */
 package org.osiam.client;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.fail;
-
-public class OsiamUserMeTest {
-
-    final static private String ENDPOINT = "http://localhost:9090/osiam";
-
-    private OsiamUserService service;
-
-    @Before
-    public void setUp() throws Exception {
-        service = new OsiamUserService(ENDPOINT, 0, 0, null);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void accessToken_is_null_by_getting_me_user_raises_exception() throws Exception {
-        service.getCurrentUser(null);
-
-        fail("Exception expected");
-    }
-
+enum Version {
+    OSIAM_3, OSIAM_2, OSIAM_2_LEGACY_SCHEMAS
 }

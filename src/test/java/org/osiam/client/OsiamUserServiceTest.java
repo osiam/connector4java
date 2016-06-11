@@ -57,7 +57,7 @@ public class OsiamUserServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpoint).build();
+        service = new OsiamUserService(endpoint, 0, 0, null);
         searchedID = USER_ID;
         accessToken = new AccessToken.Builder("c5d116cb-2758-4e7c-9aca-4a115bc4f19e")
                 .setExpiresAt(new Date(System.currentTimeMillis() * 2))

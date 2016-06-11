@@ -5,7 +5,8 @@
 ### Features
 
 - Introduce a `getMe()` method to retrieve the currently logged in user
-  from OSIAM 3.0
+  from OSIAM. This is supposed to be the new method to retrieve the logged in
+  user and also works with OSIAM 2.x.
 - `Group.Builder` API has been extended with methods to change the list of members:
 
     - `addMembers(Collection<MemberRef>)`

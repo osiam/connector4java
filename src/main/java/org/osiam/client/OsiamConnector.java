@@ -64,9 +64,9 @@ import java.util.List;
 public class OsiamConnector {
 
     public static final ObjectMapper objectMapper = new ObjectMapper();
-    static final int DEFAULT_CONNECT_TIMEOUT = 2500;
-    static final int DEFAULT_READ_TIMEOUT = 5000;
-    static final boolean DEFAULT_LEGACY_SCHEMAS = false;
+    private static final int DEFAULT_CONNECT_TIMEOUT = 2500;
+    private static final int DEFAULT_READ_TIMEOUT = 5000;
+    private static final boolean DEFAULT_LEGACY_SCHEMAS = false;
     private static final int DEFAULT_MAX_CONNECTIONS = 40;
     private static final PoolingHttpClientConnectionManager connectionManager =
             new PoolingHttpClientConnectionManager();
@@ -96,43 +96,29 @@ public class OsiamConnector {
     private OsiamConnector(Builder builder) {
         String authEndpoint;
         String resourceEndpoint;
+        Version version;
         if (!Strings.isNullOrEmpty(builder.endpoint)) {
             authEndpoint = builder.endpoint;
             resourceEndpoint = builder.endpoint;
+            version = Version.OSIAM_3;
         } else {
             authEndpoint = builder.getAuthServiceEndpoint();
             resourceEndpoint = builder.getResourceServiceEndpoint();
+            if (builder.legacySchemas) {
+                version = Version.OSIAM_2_LEGACY_SCHEMAS;
+            } else {
+                version = Version.OSIAM_2;
+            }
         }
 
         if (!Strings.isNullOrEmpty(authEndpoint)) {
-            AuthService.Builder authServiceBuilder = new AuthService.Builder(authEndpoint);
-            if (builder.clientId != null) {
-                authServiceBuilder = authServiceBuilder.setClientId(builder.clientId);
-            }
-            if (builder.clientSecret != null) {
-                authServiceBuilder = authServiceBuilder.setClientSecret(builder.clientSecret);
-            }
-            if (builder.clientRedirectUri != null) {
-                authServiceBuilder = authServiceBuilder.setClientRedirectUri(builder.clientRedirectUri);
-
-            }
-            authService = authServiceBuilder
-                    .withConnectTimeout(builder.connectTimeout)
-                    .withReadTimeout(builder.readTimeout)
-                    .build();
+            authService = new AuthService(authEndpoint, builder.clientId, builder.clientSecret,
+                    builder.clientRedirectUri,builder.connectTimeout,builder.readTimeout);
         }
 
         if (!Strings.isNullOrEmpty(resourceEndpoint)) {
-            userService = new OsiamUserService.Builder(resourceEndpoint)
-                    .withConnectTimeout(builder.connectTimeout)
-                    .withReadTimeout(builder.readTimeout)
-                    .withLegacySchemas(builder.legacySchemas)
-                    .build();
-            groupService = new OsiamGroupService.Builder(resourceEndpoint)
-                    .withConnectTimeout(builder.connectTimeout)
-                    .withReadTimeout(builder.readTimeout)
-                    .withLegacySchemas(builder.legacySchemas)
-                    .build();
+            userService = new OsiamUserService(resourceEndpoint, builder.connectTimeout, builder.readTimeout, version);
+            groupService = new OsiamGroupService(resourceEndpoint, builder.connectTimeout, builder.readTimeout, version);
         }
     }
 
@@ -296,8 +282,7 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
-     * @deprecated Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
-     *             is going to go away with version 1.12 or 2.0.
+     * @deprecated Use {@link #getMe(AccessToken)}. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
     public User getCurrentUser(AccessToken accessToken) {

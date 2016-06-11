@@ -24,7 +24,6 @@
 package org.osiam.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -71,42 +70,41 @@ import static org.osiam.client.OsiamConnector.objectMapper;
 
 /**
  * AbstractOsiamService provides all basic methods necessary to manipulate the Entities registered in the given OSIAM
- * installation. For the construction of an instance please use the included {@link AbstractOsiamService.Builder}
+ * installation.
  */
 abstract class AbstractOsiamService<T extends Resource> {
 
-    protected static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to OSIAM";
+    static final String CONNECTION_SETUP_ERROR_STRING = "Cannot connect to OSIAM";
+    private static final String AUTHORIZATION = "Authorization";
+    static final String BEARER = "Bearer ";
 
-    protected static final String AUTHORIZATION = "Authorization";
-    protected static final String BEARER = "Bearer ";
-    protected final WebTarget targetEndpoint;
+    final WebTarget targetEndpoint;
     private final Class<T> type;
     private final String typeName;
     private final int connectTimeout;
     private final int readTimeout;
-    private final boolean legacySchemas;
+    private final Version version;
 
-    protected AbstractOsiamService(Builder<T> builder) {
-        type = builder.type;
-        typeName = builder.typeName;
-        connectTimeout = builder.connectTimeout;
-        readTimeout = builder.readTimeout;
-        legacySchemas = builder.legacySchemas;
-
+    AbstractOsiamService(String endpoint, Class<T> type, int connectTimeout, int readTimeout, Version version) {
+        this.type = type;
+        this.typeName = type.getSimpleName();
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
+        this.version = version;
         UserDeserializer userDeserializer =
-                legacySchemas ? new UserDeserializer(OsiamUserService.LEGACY_SCHEMA) : new UserDeserializer();
-        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", Version.unknownVersion())
+                this.version == Version.OSIAM_2_LEGACY_SCHEMAS ? new UserDeserializer(OsiamUserService.LEGACY_SCHEMA) : new UserDeserializer();
+        SimpleModule userDeserializerModule = new SimpleModule("userDeserializerModule", com.fasterxml.jackson.core.Version.unknownVersion())
                 .addDeserializer(User.class, userDeserializer);
         objectMapper.registerModule(userDeserializerModule);
 
-        targetEndpoint = OsiamConnector.getClient().target(builder.endpoint);
+        targetEndpoint = OsiamConnector.getClient().target(endpoint);
     }
 
-    protected static void checkAccessTokenIsNotNull(AccessToken accessToken) {
+    static void checkAccessTokenIsNotNull(AccessToken accessToken) {
         checkNotNull(accessToken, "The given accessToken must not be null.");
     }
 
-    protected T getResource(String id, AccessToken accessToken) {
+    T getResource(String id, AccessToken accessToken) {
         checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
         checkAccessTokenIsNotNull(accessToken);
 
@@ -130,12 +128,12 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToResource(content);
     }
 
-    protected List<T> getAllResources(AccessToken accessToken) {
+    List<T> getAllResources(AccessToken accessToken) {
         Query query = new QueryBuilder().count(Integer.MAX_VALUE).build();
         return searchResources(query, accessToken).getResources();
     }
 
-    protected SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
+    SCIMSearchResult<T> searchResources(Query query, AccessToken accessToken) {
         checkNotNull(query, "The given query must not be null.");
         checkAccessTokenIsNotNull(accessToken);
 
@@ -174,7 +172,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected void deleteResource(String id, AccessToken accessToken) {
+    void deleteResource(String id, AccessToken accessToken) {
         checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
         checkAccessTokenIsNotNull(accessToken);
 
@@ -196,7 +194,7 @@ abstract class AbstractOsiamService<T extends Resource> {
         checkAndHandleResponse(content, status, accessToken);
     }
 
-    protected T createResource(T resource, AccessToken accessToken) {
+    T createResource(T resource, AccessToken accessToken) {
         checkNotNull(resource, "The given %s must not be null nor empty.", typeName);
         checkAccessTokenIsNotNull(accessToken);
 
@@ -231,11 +229,11 @@ abstract class AbstractOsiamService<T extends Resource> {
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    protected T updateResource(String id, T resource, AccessToken accessToken) {
+    T updateResource(String id, T resource, AccessToken accessToken) {
         return modifyResource(id, resource, "PATCH", accessToken);
     }
 
-    protected T replaceResource(String id, T resource, AccessToken accessToken) {
+    T replaceResource(String id, T resource, AccessToken accessToken) {
         return modifyResource(id, resource, "PUT", accessToken);
     }
 
@@ -275,9 +273,9 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToType(content, type);
     }
 
-    protected <U> U mapToType(String content, Class<U> type) {
+    <U> U mapToType(String content, Class<U> type) {
         try {
-            if (legacySchemas && (type == User.class || type == Group.class)) {
+            if (version == Version.OSIAM_2_LEGACY_SCHEMAS && (type == User.class || type == Group.class)) {
                 ObjectNode resourceNode = (ObjectNode) objectMapper.readTree(content);
                 switchToLegacySchema(resourceNode);
                 return objectMapper.readValue(objectMapper.treeAsTokens(resourceNode), type);
@@ -290,7 +288,7 @@ abstract class AbstractOsiamService<T extends Resource> {
     }
 
     private String mapToString(T resource) throws JsonProcessingException {
-        if (legacySchemas) {
+        if (version == Version.OSIAM_2_LEGACY_SCHEMAS) {
             ObjectNode resourceNode = objectMapper.valueToTree(resource);
             switchToLegacySchema(resourceNode);
             return resourceNode.toString();
@@ -313,7 +311,7 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     protected abstract String getLegacySchema();
 
-    protected void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
+    void checkAndHandleResponse(String content, StatusType status, AccessToken accessToken) {
         if (status.getFamily() == Family.SUCCESSFUL) {
             return;
         }
@@ -340,21 +338,21 @@ abstract class AbstractOsiamService<T extends Resource> {
 
     }
 
-    protected String extractErrorMessageForbidden(AccessToken accessToken) {
+    private String extractErrorMessageForbidden(AccessToken accessToken) {
         return "Insufficient scopes: " + accessToken.getScopes();
     }
 
-    protected String extractErrorMessageUnauthorized(String content, StatusType status) {
+    private String extractErrorMessageUnauthorized(String content, StatusType status) {
         return extractErrorMessage(content, status);
     }
 
-    protected String extractErrorMessageDefault(String content, StatusType status) {
+    private String extractErrorMessageDefault(String content, StatusType status) {
         return extractErrorMessage(content, status);
     }
 
-    protected String extractErrorMessage(String content, StatusType status) {
+    private String extractErrorMessage(String content, StatusType status) {
         String message;
-        if (legacySchemas) {
+        if (version == Version.OSIAM_2_LEGACY_SCHEMAS) {
             message = getScimErrorMessageLegacy(content);
         } else {
             message = getScimErrorMessage(content);
@@ -403,30 +401,15 @@ abstract class AbstractOsiamService<T extends Resource> {
         }
     }
 
-    protected int getConnectTimeout() {
+    int getConnectTimeout() {
         return connectTimeout;
     }
 
-    protected int getReadTimeout() {
+    int getReadTimeout() {
         return readTimeout;
     }
 
-    protected static class Builder<T> {
-
-        protected int connectTimeout = OsiamConnector.DEFAULT_CONNECT_TIMEOUT;
-        protected int readTimeout = OsiamConnector.DEFAULT_READ_TIMEOUT;
-        protected boolean legacySchemas = OsiamConnector.DEFAULT_LEGACY_SCHEMAS;
-        private String endpoint;
-        private Class<T> type;
-        private String typeName;
-
-        @SuppressWarnings("unchecked")
-        protected Builder(String endpoint) {
-            this.endpoint = endpoint;
-            this.type = (Class<T>)
-                    ((ParameterizedType) getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[0];
-            typeName = type.getSimpleName();
-        }
+    Version getVersion() {
+        return version;
     }
 }

@@ -38,7 +38,7 @@ public class OsiamUserEditTest {
     private static final String UPDATE_USER_ID = "94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4";
 
     private AccessToken accessToken;
-    private OsiamUserService service = new OsiamUserService.Builder(ENDPOINT).build();
+    private OsiamUserService service = new OsiamUserService(ENDPOINT, 0, 0, null);
 
     @Before
     public void setUp() throws Exception {

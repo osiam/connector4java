@@ -42,26 +42,20 @@ import java.util.List;
 
 /**
  * The OsiamUserService provides all methods necessary to manipulate the User-entries registered in the given OSIAM
- * installation. For the construction of an instance please use the included {@link OsiamUserService.Builder}
+ * installation.
  */
 class OsiamUserService extends AbstractOsiamService<User> {
 
     static final String LEGACY_SCHEMA = "urn:scim:schemas:core:2.0:User";
 
-    /**
-     * The private constructor for the OsiamUserService. Please use the {@link OsiamUserService.Builder} to construct
-     * one.
-     *
-     * @param builder a Builder to build the service from
-     */
-    private OsiamUserService(Builder builder) {
-        super(builder);
+    OsiamUserService(String endpoint, int connectTimeout, int readTimeout, Version version) {
+        super(endpoint, User.class, connectTimeout, readTimeout, version);
     }
 
     /**
      * See {@link OsiamConnector#getUser(String, AccessToken)}
      */
-    public User getUser(String id, AccessToken accessToken) {
+    User getUser(String id, AccessToken accessToken) {
         return getResource(id, accessToken);
     }
 
@@ -72,7 +66,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      *             is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public BasicUser getCurrentUserBasic(AccessToken accessToken) {
+    BasicUser getCurrentUserBasic(AccessToken accessToken) {
         checkAccessTokenIsNotNull(accessToken);
 
         StatusType status;
@@ -102,7 +96,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      *             is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public User getCurrentUser(AccessToken accessToken) {
+    User getCurrentUser(AccessToken accessToken) {
         BasicUser basicUser = getCurrentUserBasic(accessToken);
         return getResource(basicUser.getId(), accessToken);
     }
@@ -110,37 +104,37 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getMe(AccessToken)}
      */
-    public User getMe(AccessToken accessToken) {
-        String content = getMeResource(accessToken);
-
-        return mapToType(content, User.class);
+    User getMe(AccessToken accessToken) {
+        return getVersion() == Version.OSIAM_3
+                ? mapToType(getMeResource(accessToken), User.class)
+                : getUser(getCurrentUserBasic(accessToken).getId(), accessToken);
     }
 
     /**
      * See {@link OsiamConnector#getAllUsers(AccessToken)}
      */
-    public List<User> getAllUsers(AccessToken accessToken) {
+    List<User> getAllUsers(AccessToken accessToken) {
         return super.getAllResources(accessToken);
     }
 
     /**
      * See {@link OsiamConnector#searchUsers(Query, AccessToken)}
      */
-    public SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
+    SCIMSearchResult<User> searchUsers(Query query, AccessToken accessToken) {
         return searchResources(query, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#deleteUser(String, AccessToken)}
      */
-    public void deleteUser(String id, AccessToken accessToken) {
+    void deleteUser(String id, AccessToken accessToken) {
         deleteResource(id, accessToken);
     }
 
     /**
      * See {@link OsiamConnector#createUser(User, AccessToken)}
      */
-    public User createUser(User user, AccessToken accessToken) {
+    User createUser(User user, AccessToken accessToken) {
         return createResource(user, accessToken);
     }
 
@@ -149,7 +143,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
-    public User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
+    User updateUser(String id, UpdateUser updateUser, AccessToken accessToken) {
         if (updateUser == null) {
             throw new IllegalArgumentException("The given updateUser can't be null.");
         }
@@ -159,7 +153,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#replaceUser(String, User, AccessToken)}
      */
-    public User replaceUser(String id, User user, AccessToken accessToken) {
+    User replaceUser(String id, User user, AccessToken accessToken) {
         if (user == null) {
             throw new InvalidAttributeException("The given User can't be null.");
         }
@@ -199,74 +193,5 @@ class OsiamUserService extends AbstractOsiamService<User> {
 
         checkAndHandleResponse(content, status, accessToken);
         return content;
-    }
-
-    /**
-     * See {@link OsiamConnector.Builder}
-     */
-    public static class Builder extends AbstractOsiamService.Builder<User> {
-
-        /**
-         * Set up the Builder for the construction of an {@link OsiamUserService} instance for the OSIAM service at the
-         * given endpoint
-         *
-         * @param endpoint The URL at which OSIAM lives.
-         */
-        public Builder(String endpoint) {
-            super(endpoint);
-        }
-
-        /**
-         * Set the connect timeout per connector, in milliseconds.
-         * <p/>
-         * <p>
-         * A value of zero (0) is equivalent to an interval of infinity. Default: 2500
-         * </p>
-         *
-         * @param connectTimeout the connect timeout per connector, in milliseconds.
-         * @return The builder itself
-         */
-        public Builder withConnectTimeout(int connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return this;
-        }
-
-        /**
-         * Set the read timeout per connector, in milliseconds.
-         * <p/>
-         * <p>
-         * A value of zero (0) is equivalent to an interval of infinity. Default: 5000
-         * </p>
-         *
-         * @param readTimeout the read timeout per connector, in milliseconds.
-         * @return The builder itself
-         */
-        public Builder withReadTimeout(int readTimeout) {
-            this.readTimeout = readTimeout;
-            return this;
-        }
-
-        /**
-         * Configures the user service to use legacy schemas, i.e. schemas that were defined before
-         * SCIM 2 draft 09.
-         * <p>
-         * <p/>This enables compatibility with OSIAM releases up to version 2.3
-         * (resource-server 2.2). This behavior is not enabled by default. Set it to `true` if you
-         * connect to an OSIAM version <= 2.3 and, please, update to 2.5 or later immediately.
-         *
-         * @param legacySchemas should legacy schemas be used
-         * @return The builder itself
-         */
-        public Builder withLegacySchemas(boolean legacySchemas) {
-            this.legacySchemas = legacySchemas;
-            return this;
-        }
-
-        /**
-         * See {@link OsiamConnector.Builder#build()}
-         */
-        public OsiamUserService build() {
-            return new OsiamUserService(this);
-        }
     }
 }

@@ -44,7 +44,7 @@ public class OsiamGroupServiceTest {
 
     @Before
     public void setUp() throws IOException {
-        service = new OsiamGroupService.Builder(ENDPOINT).build();
+        service = new OsiamGroupService(ENDPOINT, 0, 0, null);
         searchedId = GROUP_ID_STRING;
         accessToken = new AccessToken.Builder("c5d116cb-2758-4e7c-9aca-4a115bc4f19e")
                 .setExpiresAt(new Date(System.currentTimeMillis() * 2))
