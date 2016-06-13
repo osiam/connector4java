@@ -1,3 +1,7 @@
+machine:
+  java:
+    version: openjdk7
+
 dependencies:
   override:
     - mvn -U dependency:resolve dependency:resolve-plugins
@@ -6,6 +10,8 @@ dependencies:
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
 
 test:
+  pre:
+    - test -z ${CIRCLE_TAG} || mvn versions:set -DnewVersion=${CIRCLE_TAG}
   override:
     - mvn verify
   post:
@@ -20,8 +26,14 @@ deployment:
     branch: master
     commands:
       - wget https://raw.githubusercontent.com/osiam/circleci/master/settings.xml
-      - mvn deploy -s settings.xml -DskipTests
+      - mvn deploy:deploy-file -DrepositoryId=snapshots -Durl=https://oss.jfrog.org/artifactory/oss-snapshot-local -s settings.xml
       - curl -X POST https://circleci.com/api/v1/project/osiam/connector4java-integration-tests/tree/master?circle-token=$CIRCLECI_INTEGRATION_TESTS_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/connector4java-integration-tests/tree/maintenance-2.x?circle-token=$CIRCLECI_INTEGRATION_TESTS_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/addon-self-administration-plugin-api/tree/master?circle-token=$CIRCLECI_ADDON_SELF_ADMINISTRATION_PLUGIN_API_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/addon-administration/tree/master?circle-token=$CIRCLECI_ADDON_ADMINISTRATION_TRIGGER_TOKEN
+  release:
+    tag: /.*/
+    owner: osiam
+    commands:
+      - wget https://raw.githubusercontent.com/osiam/circleci/master/settings.xml
+      - mvn deploy:deploy-file -DrepositoryId=releases -Durl=https://api.bintray.com/maven/osiam/OSIAM/org.osiam:connector4java/;publish=1 -s settings.xml
