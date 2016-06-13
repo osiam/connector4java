@@ -381,8 +381,11 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.2</version>
                 <configuration>
-                    <file>${build.directory}/${project.build.finalName}.jar</file>
+                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
                     <pomFile>pom.xml</pomFile>
+                    <classifiers>javadoc,sources</classifiers>
+                    <types>jar,jar</types>
+                    <files>${project.build.directory}/${project.build.finalName}-javadoc.jar,${project.build.directory}/${project.build.finalName}-sources.jar</files>
                 </configuration>
             </plugin>
 
