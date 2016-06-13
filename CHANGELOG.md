@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+This release deprecates the support of OSIAM 2.x.
+It will be completely removed in version 1.12 or 2.0.
+Please update to OSIAM 3.0 as soon as possible.
+
 ### Features
 
 - Introduce a `getMe()` method to retrieve the currently logged in user
@@ -13,22 +17,31 @@
     - `removeMember(MemberRef)`
     - `removeMembers()`
 
-### Changes
-
+- The scim-schema has been completely merged into this project. It is now obsolete.
+- `Address` has a `display` property now.
 - The user name can now be set via the builder
 - The group's display name can now be set via the builder
-- Deprecate updates of resources via PATCH
+- Properties of a user's name attribute can be easily updated now.
+
+### Changes
+
+- Jackson has been shaded, so that the only dependency left of the connector is Guava.
 
 ### Fixes
 
 - Resources could be changed by using the copy-of constructor of the builders, though they were supposed
   to be immutable.
+- An Extension could be changed by using the copy-of constructor of its builder, though it was supposed
+  to be immutable.
 - A `400 BAD REQUEST` response now creates a `BadRequestException` instead of a `ConflictException` 
 - Return the right builder type in `Photo.Builder#setValue(String)`.
 - Replacing a group with PUT was actually updating it with PATCH
+- Extensions defined in the `schemas` attribute of a resource will be ignored, if the resource contains
+  no data for the extension, instead of raising an exception.
 
 ### Deprecations
 
+- Updates of resources via PATCH
 - The `BasicUser` class and the method `OsiamConnector.getCurrentUserBasic()`
 - `Group.Builder#setId(String)` and `User.Builder#setId(String)`
 - `Group.Builder#setMeta(Meta)` and `User.Builder#setMeta(Meta)`
