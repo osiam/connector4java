@@ -36,4 +36,4 @@ deployment:
     owner: osiam
     commands:
       - wget https://raw.githubusercontent.com/osiam/circleci/master/settings.xml
-      - mvn deploy:deploy-file -DrepositoryId=releases -Durl=https://api.bintray.com/maven/osiam/OSIAM/org.osiam:connector4java/;publish=1 -s settings.xml
+      - mvn deploy:deploy-file -DrepositoryId=releases -Durl="https://api.bintray.com/maven/osiam/OSIAM/org.osiam:connector4java/;publish=1" -s settings.xml
