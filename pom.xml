@@ -30,7 +30,7 @@
 
     <groupId>org.osiam</groupId>
     <artifactId>connector4java</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>latest-SNAPSHOT</version>
 
     <name>OSIAM Connector 4 Java</name>
     <description>Native Java API to connect to the REST based OSIAM services</description>
