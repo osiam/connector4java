@@ -1206,7 +1206,7 @@ public final class User extends Resource implements Serializable {
 
         /**
          * @deprecated Don't use this method - let the extensions add their schema themselves. Will be removed in
-         * version 1.8 or 2.0
+         * version 1.10 or 2.0
          */
         @Override
         @Deprecated

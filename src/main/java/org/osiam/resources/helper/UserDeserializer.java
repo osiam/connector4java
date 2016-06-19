@@ -72,7 +72,7 @@ public class UserDeserializer extends StdDeserializer<User> {
 
     /**
      * @deprecated Use {@link UserDeserializer#UserDeserializer()} or
-     * {@link UserDeserializer#UserDeserializer(String)}. Will be removed in 1.9 or 2.0.
+     * {@link UserDeserializer#UserDeserializer(String)}. Will be removed in 1.11 or 2.0.
      */
     public UserDeserializer(Class<?> valueClass) {
         super(valueClass);
