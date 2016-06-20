@@ -31,6 +31,7 @@ import org.osiam.resources.scim.User;
  * This class is a collection of different helper methods around the scim schema context
  * This class has been deprecated. If You want to use the only method it contains please see
  * {@link User#getPrimaryOrFirstEmail()}
+ * @deprecated Will be removed in 1.11 or 2.0.
  */
 @Deprecated
 public class SCIMHelper {
@@ -44,7 +45,7 @@ public class SCIMHelper {
      *
      * @param user a {@link User} with a possible email
      * @return an email if found
-     * @deprecated Please use the method {@link User#getPrimaryOrFirstEmail()}
+     * @deprecated Please use the method {@link User#getPrimaryOrFirstEmail()}. Will be removed in 1.11 or 2.0.
      */
     @Deprecated
     public static Optional<Email> getPrimaryOrFirstEmail(User user) {

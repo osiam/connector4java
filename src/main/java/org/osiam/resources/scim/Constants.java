@@ -24,31 +24,29 @@
 package org.osiam.resources.scim;
 
 /**
- * Some needed Constants
- *
- * @deprecated This interface has been deprecated and is going to be removed in a future release.
+ * @deprecated These constants have been moved to their corresponding classes. Will be removed in 1.11 or 2.0.
  */
 @Deprecated
 public interface Constants {
 
     /**
-     * @deprecated please use {@link User}.SCHEMA
+     * @deprecated Please use {@link User}.SCHEMA. Will be removed in 1.11 or 2.0.
      */
     String USER_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User";
     /**
-     * @deprecated please use {@link Group}.SCHEMA
+     * @deprecated Please use {@link Group}.SCHEMA. Will be removed in 1.11 or 2.0.
      */
     String GROUP_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group";
     /**
-     * @deprecated please use {@link SCIMSearchResult}.SCHEMA
+     * @deprecated Please use {@link SCIMSearchResult}.SCHEMA. Will be removed in 1.11 or 2.0.
      */
     String LIST_RESPONSE_CORE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse";
     /**
-     * @deprecated This constant is going to be removed soon.
+     * @deprecated This constant is going to be removed in 1.11 or 2.0.
      */
     String SERVICE_PROVIDER_CORE_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig";
     /**
-     * @deprecated This constant is going to be removed soon.
+     * @deprecated This constant is going to be removed in 1.11 or 2.0.
      */
     int MAX_RESULT = 100;
 }
