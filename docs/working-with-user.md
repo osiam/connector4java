@@ -74,24 +74,32 @@ To retrieve a single user you need his UUID (for example:
 94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4):
 
 ```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
-User user = oConnector.getUser(<USER_UUID>, accessToken);
+User user = osiamConnector.getUser(<USER_UUID>, accessToken);
 ```
+
+It is possible to filter the attributes of the returned resource by specifying the attributes to return as parameters 
+to the method:
+
+ ```java
+User user = osiamConnector.getUser(<USER_ID>, accessToken, "userName", "displayName", "meta.created");
+ ```
 
 (please consider the possible runtimeException which are explained in the
 Javadoc)
 
-# Retrieve the current logged in user by his access token
+# Retrieve the currently logged in user by their access token
 
-If you are logged in with the client scope and you try to retrieve the current
-logged user you will retrieve a ConflictException.
+To retrieve the user that the currently held access token belongs to, the `getMe()` method is avaiable:
 
-```sh
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
+```java
 // retrieves the complete currently logged in User.
-User user = oConnector.getMe(accessToken);
+User user = osiamConnector.getMe(accessToken);
+```
+It is possible to filter the attributes of the returned user by supplying the wanted attributes as parameters
+to the method:
+
+```java
+User user = osiamConnector.getUser(<USER_ID>, accessToken, "userName", "displayName", "meta.created");
 ```
 
 # Retrieve all Users
@@ -99,14 +107,16 @@ User user = oConnector.getMe(accessToken);
 If you want to retrieve all users you can call the following method:
 
 ```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
-SCIMSearchResult<User> searchResult = oConnector.getAllUsers(accessToken);
+List<User> users = oConnector.getAllUsers(accessToken);
 int numberOfUsers = searchResult.getTotalResults();
 for (User actUser : searchResult.Resources()) {
 	//...
 }
-//...
+```
+It is possible to filter the attributes of the returned users by supplying the attributes as parameters to the method:
+
+```java
+List<User> users = oConnector.getAllUsers(accessToken, "userName", "meta.created");
 ```
 
 # Search for User
@@ -114,11 +124,8 @@ for (User actUser : searchResult.Resources()) {
 The [Query](query.md) class helps you
 to create an Query based on the needed filter and other attributes.
 
-A complete example how you can run a search for a user is described below:
+An example how to run a search for a user is shown below:
 
 ```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
-Query query = [Create an Query](query.md)
 SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
 ```

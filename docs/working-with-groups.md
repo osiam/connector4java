@@ -76,26 +76,34 @@ To retrieve a single Group you need her UUID (for example
 94bbe688-4b1e-4e4e-80e7-e5ba5c4d6db4):
 
 ```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
 Group group = oConnector.getGroup(<GROUP_UUID>, accessToken);
 ```
 (please consider the possible runtimeException which are explained in the
 Javadoc)
 
+It is possible to filter the attributes of the returned resource by specifying the attributes to return as parameters 
+to the method: 
+
+ ```java
+Group group = osiamConnector.getGroup(<GROUP_ID>, accessToken, "displayName", "meta.created");
+ ```
 ## Retrieve all Groups
 
 If you want to retrieve all groups you can call the following method:
 
 ```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
-SCIMSearchResult<Group> searchResult = oConnector.getAllGroups(accessToken);
+List<Group> searchResult = oConnector.getAllGroups(accessToken);
 int numberOfGroups = searchResult.getTotalResults();
 for (Group actGroup : searchResult.Resources()) {
 	//...
 }
 //...
+```
+
+It is possible to filter the attributes of the returned groups by supplying the attributes as parameters to the method:
+
+```java
+List<Group> searchResult = oConnector.getAllGroups(accessToken, "displayName", "meta.created");
 ```
 
 ## Search for groups
@@ -107,8 +115,6 @@ examples in the page are for users. Please adapt them for groups)
 A complete example how you can run a search for a user is described below:
 
 ```java
-OsiamConnector oConnector = [Retrieving an OsiamConnector](create-osiam-connector.md)
-AccessToken accessToken = [Retrieving an AccessToken](login-and-getting-an-access-token.md#retrieving-an-accesstoken)
 Query query = [Create an Query](query.md)
 SCIMSearchResult<Group> result = oConnector.searchGroups(query, accessToken);
 ```

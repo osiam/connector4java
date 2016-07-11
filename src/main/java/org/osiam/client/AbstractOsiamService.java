@@ -30,26 +30,15 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import org.glassfish.jersey.client.ClientProperties;
-import org.osiam.client.exception.BadRequestException;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.OAuthErrorMessage;
-import org.osiam.client.exception.OsiamClientException;
-import org.osiam.client.exception.OsiamRequestException;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.helper.UserDeserializer;
-import org.osiam.resources.scim.ErrorResponse;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.Resource;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
@@ -60,7 +49,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
 
@@ -104,14 +92,21 @@ abstract class AbstractOsiamService<T extends Resource> {
         checkNotNull(accessToken, "The given accessToken must not be null.");
     }
 
-    T getResource(String id, AccessToken accessToken) {
+    T getResource(String id, AccessToken accessToken, String... attributes) {
         checkArgument(!Strings.isNullOrEmpty(id), "The given id must not be null nor empty.");
         checkAccessTokenIsNotNull(accessToken);
 
         StatusType status;
         String content;
+
+        WebTarget target;
+        if (attributes == null || attributes.length == 0) {
+            target = targetEndpoint;
+        } else {
+            target = targetEndpoint.queryParam("attributes", Joiner.on(",").join(attributes));
+        }
         try {
-            Response response = targetEndpoint.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
+            Response response = target.path(typeName + "s").path(id).request(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER + accessToken.getToken())
                     .property(ClientProperties.CONNECT_TIMEOUT, connectTimeout)
                     .property(ClientProperties.READ_TIMEOUT, readTimeout)
@@ -128,8 +123,12 @@ abstract class AbstractOsiamService<T extends Resource> {
         return mapToResource(content);
     }
 
-    List<T> getAllResources(AccessToken accessToken) {
-        Query query = new QueryBuilder().count(Integer.MAX_VALUE).build();
+    List<T> getAllResources(AccessToken accessToken, String... attributes) {
+        QueryBuilder qBuilder = new QueryBuilder().count(Integer.MAX_VALUE);
+        if (attributes != null && attributes.length > 0) {
+            qBuilder.attributes(Joiner.on(',').join(attributes));
+        }
+        Query query = qBuilder.build();
         return searchResources(query, accessToken).getResources();
     }
 

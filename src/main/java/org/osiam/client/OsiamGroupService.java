@@ -46,15 +46,15 @@ class OsiamGroupService extends AbstractOsiamService<Group> {
     /**
      * See {@link OsiamConnector#getGroup(String, AccessToken)}
      */
-    Group getGroup(String id, AccessToken accessToken) {
-        return getResource(id, accessToken);
+    Group getGroup(String id, AccessToken accessToken, String... attributes) {
+        return getResource(id, accessToken, attributes);
     }
 
     /**
      * See {@link OsiamConnector#getAllGroups(AccessToken)}
      */
-    List<Group> getAllGroups(AccessToken accessToken) {
-        return getAllResources(accessToken);
+    List<Group> getAllGroups(AccessToken accessToken, String... attributes) {
+        return getAllResources(accessToken, attributes);
     }
 
     /**
@@ -80,6 +80,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> {
 
     /**
      * See {@link OsiamConnector#updateGroup(String, UpdateGroup, AccessToken)}
+     *
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
@@ -89,6 +90,7 @@ class OsiamGroupService extends AbstractOsiamService<Group> {
 
     /**
      * See {@link OsiamConnector#updateGroup(String, UpdateGroup, AccessToken)}
+     *
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
