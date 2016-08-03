@@ -1,6 +1,6 @@
 # OSIAM Connector4Java
 
-## Unreleased
+## 1.9 - 2016-08-04
 
 This release deprecates the support of OSIAM 2.x.
 It will be completely removed in version 1.12 or 2.0.
