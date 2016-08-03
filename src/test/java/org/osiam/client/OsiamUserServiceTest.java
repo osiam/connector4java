@@ -23,7 +23,6 @@
  */
 package org.osiam.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,17 +47,17 @@ public class OsiamUserServiceTest {
     private static final String endpoint = String.format("http://localhost:%d/osiam", PORT_NUMBER);
 
     @Rule
-    public MockServerRule mockServerRule = new MockServerRule(this, PORT_NUMBER);
+    public MockServerRule mockServerRule = new MockServerRule(this, false, PORT_NUMBER);
     private MockServerClient mockServerClient;
 
-    private String searchedID;
+    private String searchedId;
     private AccessToken accessToken;
     private OsiamUserService service;
 
     @Before
     public void setUp() throws Exception {
         service = new OsiamUserService(endpoint, 0, 0, null);
-        searchedID = USER_ID;
+        searchedId = USER_ID;
         accessToken = new AccessToken.Builder("c5d116cb-2758-4e7c-9aca-4a115bc4f19e")
                 .setExpiresAt(new Date(System.currentTimeMillis() * 2))
                 .build();
@@ -71,7 +70,7 @@ public class OsiamUserServiceTest {
 
     @Test(expected = NullPointerException.class)
     public void access_token_is_null_by_getting_single_user_raises_exception() throws Exception {
-        service.getUser(searchedID, null);
+        service.getUser(searchedId, null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -103,6 +102,52 @@ public class OsiamUserServiceTest {
                 .respond(response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode()));
 
         service.searchUsers(new QueryBuilder().filter(filter).build(), accessToken);
+    }
+
+    @Test
+    public void passing_attributes_to_a_request_for_all_users_generates_the_correct_request() {
+        mockServerClient
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/osiam/Users")
+                                .withQueryStringParameter("attributes", "userName"),
+                        Times.once())
+                .respond(response().withBody(
+                        "{ \"schemas\":[\"urn:ietf:params:scim:api:messages:2.0:ListResponse\"],"
+                                + "\"totalResults\":2,"
+                                + "\"Resources\":["
+                                + "{"
+                                + "\"schemas\":[\"urn:ietf:params:scim:schemas:core:2.0:User\"],"
+                                + "\"id\":\"2819c223-7f76-453a-919d-413861904646\","
+                                + "\"userName\":\"bjensen\""
+                                + "},"
+                                + "{"
+                                + "\"id\":\"c75ad752-64ae-4823-840d-ffa80929976c\","
+                                + "\"schemas\":[\"urn:ietf:params:scim:schemas:core:2.0:User\"],"
+                                + "\"userName\":\"jsmith\""
+                                + "}]}"));
+        service.getAllUsers(accessToken, "userName");
+    }
+
+
+    @Test
+    public void passing_attributes_for_single_user_creates_the_correct_request() {
+        String userId = "irrelevant";
+        mockServerClient
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/osiam/Users/" + userId)
+                                .withQueryStringParameter("attributes", "userName,nickName"),
+                        Times.once())
+                .respond(response().withBody("{\"id\":\"irrelevant\", "
+                        + "\"schemas\":[\"urn:ietf:params:scim:schemas:core:2.0:User\"],"
+                        + "\"id\":\"" + userId + "\","
+                        + "\"userName\":\"marissa\", "
+                        + "\"nickName\":\"mari\" "
+                        + "}"));
+        service.getUser(userId, accessToken, "userName", "nickName");
     }
 
     @Test(expected = IllegalArgumentException.class)

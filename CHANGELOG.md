@@ -8,6 +8,8 @@ Please update to OSIAM 3.0 as soon as possible.
 
 ### Features
 
+- It is now possible to filter the attributes of the returned `User` and `Group` resources by supplying the
+  attributes as arguments to the the appropriate methods. 
 - Introduce a `getMe()` method to retrieve the currently logged in user
   from OSIAM. This is supposed to be the new method to retrieve the logged in
   user and also works with OSIAM 2.x.

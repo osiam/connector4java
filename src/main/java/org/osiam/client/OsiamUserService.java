@@ -23,6 +23,7 @@
  */
 package org.osiam.client;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import org.glassfish.jersey.client.ClientProperties;
 import org.osiam.client.exception.ConnectionInitializationException;
@@ -35,6 +36,7 @@ import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.StatusType;
@@ -55,15 +57,15 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getUser(String, AccessToken)}
      */
-    User getUser(String id, AccessToken accessToken) {
-        return getResource(id, accessToken);
+    User getUser(String id, AccessToken accessToken, String... attributes) {
+        return getResource(id, accessToken, attributes);
     }
 
     /**
      * See {@link OsiamConnector#getCurrentUserBasic(AccessToken)}
      *
      * @deprecated The BasicUser class has been deprecated. Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
-     *             is going to go away with version 1.12 or 2.0.
+     * is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
     BasicUser getCurrentUserBasic(AccessToken accessToken) {
@@ -92,8 +94,8 @@ class OsiamUserService extends AbstractOsiamService<User> {
     /**
      * See {@link OsiamConnector#getCurrentUser(AccessToken)}
      *
-     * @deprecated Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
-     *             is going to go away with version 1.12 or 2.0.
+     * @deprecated Use {@link #getMe(AccessToken, String...)} with OSIAM 3.x. This method
+     * is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
     User getCurrentUser(AccessToken accessToken) {
@@ -102,19 +104,19 @@ class OsiamUserService extends AbstractOsiamService<User> {
     }
 
     /**
-     * See {@link OsiamConnector#getMe(AccessToken)}
+     * See {@link OsiamConnector#getMe(AccessToken, String...)}
      */
-    User getMe(AccessToken accessToken) {
+    User getMe(AccessToken accessToken, String... attributes) {
         return getVersion() == Version.OSIAM_3
-                ? mapToType(getMeResource(accessToken), User.class)
+                ? mapToType(getMeResource(accessToken, attributes), User.class)
                 : getUser(getCurrentUserBasic(accessToken).getId(), accessToken);
     }
 
     /**
-     * See {@link OsiamConnector#getAllUsers(AccessToken)}
+     * See {@link OsiamConnector#getAllUsers(AccessToken, String...)}
      */
-    List<User> getAllUsers(AccessToken accessToken) {
-        return super.getAllResources(accessToken);
+    List<User> getAllUsers(AccessToken accessToken, String... attributes) {
+        return super.getAllResources(accessToken, attributes);
     }
 
     /**
@@ -140,6 +142,7 @@ class OsiamUserService extends AbstractOsiamService<User> {
 
     /**
      * See {@link OsiamConnector#updateUser(String, UpdateUser, AccessToken)}
+     *
      * @deprecated Updating with PATCH has been removed in OSIAM 3.0. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
@@ -173,13 +176,19 @@ class OsiamUserService extends AbstractOsiamService<User> {
         return LEGACY_SCHEMA;
     }
 
-    private String getMeResource(AccessToken accessToken) {
+    private String getMeResource(AccessToken accessToken, String... attributes) {
         checkAccessTokenIsNotNull(accessToken);
+        WebTarget target;
+        if (attributes == null || attributes.length == 0) {
+            target = targetEndpoint;
+        } else {
+            target = targetEndpoint.queryParam("attributes", Joiner.on(",").join(attributes));
+        }
 
         StatusType status;
         String content;
         try {
-            Response response = targetEndpoint.path("Me").request(MediaType.APPLICATION_JSON)
+            Response response = target.path("Me").request(MediaType.APPLICATION_JSON)
                     .header("Authorization", BEARER + accessToken.getToken())
                     .property(ClientProperties.CONNECT_TIMEOUT, getConnectTimeout())
                     .property(ClientProperties.READ_TIMEOUT, getReadTimeout())

@@ -32,25 +32,14 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.osiam.client.exception.ClientAlreadyExistsException;
-import org.osiam.client.exception.ClientNotFoundException;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.exception.ForbiddenException;
-import org.osiam.client.exception.InvalidAttributeException;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.*;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Client;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 
 import javax.ws.rs.client.ClientBuilder;
 import java.net.URI;
@@ -113,7 +102,7 @@ public class OsiamConnector {
 
         if (!Strings.isNullOrEmpty(authEndpoint)) {
             authService = new AuthService(authEndpoint, builder.clientId, builder.clientSecret,
-                    builder.clientRedirectUri,builder.connectTimeout,builder.readTimeout);
+                    builder.clientRedirectUri, builder.connectTimeout, builder.readTimeout);
         }
 
         if (!Strings.isNullOrEmpty(resourceEndpoint)) {
@@ -129,7 +118,6 @@ public class OsiamConnector {
     /**
      * Set the connect timeout interval, in milliseconds.
      * <p>
-     * <p>
      * A value of zero (0) is equivalent to an interval of infinity. The default value is 2500. This property will be
      * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
      * instances at the same time.
@@ -143,7 +131,6 @@ public class OsiamConnector {
 
     /**
      * Set the read timeout interval, in milliseconds.
-     * <p>
      * <p>
      * A value of zero (0) is equivalent to an interval of infinity. The default value is 5000. This property will be
      * set application global, so you can only define this timeout for all {@link org.osiam.client.OsiamConnector}
@@ -160,10 +147,10 @@ public class OsiamConnector {
      * Sets the maximum number of connections that the underlying HTTP connection pool will
      * use to connect to OSIAM.
      * <p>
-     * <p/>The default value is 40. This property will be set application global, so you can only
+     * The default value is 40. This property will be set application global, so you can only
      * define it for all {@link org.osiam.client.OsiamConnector} instances at the same time.
      * <p>
-     * <p/>See {@link OsiamConnector#setMaxConnectionsPerRoute(int)} if you use OSIAM 2.x and
+     * See {@link OsiamConnector#setMaxConnectionsPerRoute(int)} if you use OSIAM 2.x and
      * installed auth-server and resource-server under different domains.
      *
      * @param maxConnections The maximum number of HTTP connections
@@ -177,10 +164,10 @@ public class OsiamConnector {
      * Sets the maximum number of connections that the underlying HTTP connection pool will
      * allocate for single route.
      * <p>
-     * <p/>This setting should only be used, if you use OSIAM 2.x and installed auth-server and
+     * This setting should only be used, if you use OSIAM 2.x and installed auth-server and
      * resource-server under different domains. In this case you have 2 distinct routes to OSIAM.
      * <p>
-     * <p/>A single route means a single FQDN, hostname or IP address. In the context of OSIAM 2.x
+     * A single route means a single FQDN, hostname or IP address. In the context of OSIAM 2.x
      * this means the OSIAM server or the auth- or resource-server if they will be accessed under a
      * different hostname. Remember to also set the number of maximum connections via
      * {@link OsiamConnector#setMaxConnections(int)} based on the value set here, e.g. if you have 2
@@ -190,7 +177,7 @@ public class OsiamConnector {
      * {@link OsiamConnector#setMaxConnections(int)} also sets the maximum conenctions per route to
      * the given value.
      * <p>
-     * <p/>The default value is 40. This property will be set application global, so
+     * The default value is 40. This property will be set application global, so
      * you can only define this timeout for all {@link org.osiam.client.OsiamConnector} instances at
      * the same time.
      *
@@ -227,6 +214,7 @@ public class OsiamConnector {
      *
      * @param id          the id of the wanted user
      * @param accessToken the OSIAM access token from for the current session
+     * @param attributes  the attributes that should be returned in the response. If none are given, all are returned
      * @return the user with the given id
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws NoResultException                 if no user with the given id can be found
@@ -234,24 +222,25 @@ public class OsiamConnector {
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      */
-    public User getUser(String id, AccessToken accessToken) {
-        return getUserService().getUser(id, accessToken);
+    public User getUser(String id, AccessToken accessToken, String... attributes) {
+        return getUserService().getUser(id, accessToken, attributes);
     }
 
     /**
      * Retrieve a list of the of all {@link User} resources saved in the OSIAM service. If you need to have all User but
-     * the number is very big, this method can be slow. In this case you can also use Query.Builder with no filter to
+     * the number is very large, this method can be slow. In this case you can also use Query.Builder with no filter to
      * split the number of User returned
      *
      * @param accessToken A valid AccessToken
+     * @param attributes  the list of attributes that should be returned in the response
      * @return a list of all Users
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      */
-    public List<User> getAllUsers(AccessToken accessToken) {
-        return getUserService().getAllUsers(accessToken);
+    public List<User> getAllUsers(AccessToken accessToken, String... attributes) {
+        return getUserService().getAllUsers(accessToken, attributes);
     }
 
     /**
@@ -282,7 +271,7 @@ public class OsiamConnector {
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
-     * @deprecated Use {@link #getMe(AccessToken)}. This method is going to go away with version 1.12 or 2.0.
+     * @deprecated Use {@link #getMe(AccessToken, String...)}. This method is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
     public User getCurrentUser(AccessToken accessToken) {
@@ -293,14 +282,15 @@ public class OsiamConnector {
      * Retrieves the User holding the given access token.
      *
      * @param accessToken the OSIAM access token from for the current session
+     * @param attributes  the attributes that should be returned in the response. If none are given, all are returned
      * @return the actual logged in user
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      */
-    public User getMe(AccessToken accessToken) {
-        return getUserService().getMe(accessToken);
+    public User getMe(AccessToken accessToken, String... attributes) {
+        return getUserService().getMe(accessToken, attributes);
     }
 
     /**
@@ -316,7 +306,7 @@ public class OsiamConnector {
      * @throws ConnectionInitializationException if no connection to the given OSIAM services could be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      * @deprecated The BasicUser class has been deprecated. Use {@link #getMe(AccessToken)} with OSIAM 3.x. This method
-     *             is going to go away with version 1.12 or 2.0.
+     * is going to go away with version 1.12 or 2.0.
      */
     @Deprecated
     public BasicUser getCurrentUserBasic(AccessToken accessToken) {
@@ -329,6 +319,7 @@ public class OsiamConnector {
      *
      * @param id          the id of the wanted group
      * @param accessToken the access token from OSIAM for the current session.
+     * @param attributes  the attributes that should be returned in the response. If none are given, all are returned
      * @return the group with the given id.
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws NoResultException                 if no user with the given id can be found
@@ -336,23 +327,24 @@ public class OsiamConnector {
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      */
-    public Group getGroup(String id, AccessToken accessToken) {
-        return getGroupService().getGroup(id, accessToken);
+    public Group getGroup(String id, AccessToken accessToken, String... attributes) {
+        return getGroupService().getGroup(id, accessToken, attributes);
     }
 
     /**
      * Retrieve a list of the of all {@link Group} resources saved in the OSIAM service. If you need to have all Group
-     * but the number is very big, this method can be slow. In this case you can also use Query.Builder with no filter
+     * but the number is very large, this method can be slow. In this case you can also use Query.Builder with no filter
      * to split the number of Groups returned
      *
      * @param accessToken the OSIAM access token for the current session
+     * @param attributes  the list of attributes that should be returned in the response
      * @return a list of all groups
      * @throws UnauthorizedException             if the request could not be authorized.
      * @throws ForbiddenException                if the scope doesn't allow this request
      * @throws ConnectionInitializationException if the connection to the given OSIAM service could not be initialized
      * @throws IllegalStateException             if OSIAM's endpoint(s) are not properly configured
      */
-    public List<Group> getAllGroups(AccessToken accessToken) {
+    public List<Group> getAllGroups(AccessToken accessToken, String... attributes) {
         return getGroupService().getAllGroups(accessToken);
     }
 
