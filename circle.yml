@@ -4,10 +4,8 @@ machine:
 
 dependencies:
   override:
+    - curl -L https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/2.0.1/codacy-coverage-reporter-2.0.1-assembly.jar -o codacy-coverage-reporter.jar
     - mvn -U dependency:resolve dependency:resolve-plugins
-    - curl http://www.jpm4j.org/install/script > jpmInstall.sh
-    - sudo sh jpmInstall.sh
-    - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
 
 test:
   pre:
@@ -18,7 +16,7 @@ test:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
     - cp -r target/coverage-reports/jacoco/ $CIRCLE_ARTIFACTS
-    - test -z $CODACY_PROJECT_TOKEN || codacy-coverage-reporter -l Java -r target/coverage-reports/jacoco/jacoco.xml --projectToken $CODACY_PROJECT_TOKEN
+    - test -z $CODACY_PROJECT_TOKEN || java -cp codacy-coverage-reporter.jar com.codacy.CodacyCoverageReporter -l Java -r target/coverage-reports/jacoco/jacoco.xml
     - test -z $COVERALLS_REPO_TOKEN || mvn coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN
 
 deployment:
