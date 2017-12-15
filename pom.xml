@@ -53,10 +53,6 @@
         </developer>
     </developers>
 
-    <prerequisites>
-        <maven>3.0.4</maven>
-    </prerequisites>
-
     <scm>
         <connection>scm:git://git@github.com/osiam/connector4java.git</connection>
         <url>https://github.com/osiam/connector4java</url>
@@ -202,7 +198,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.0.4</version>
+                                    <version>3.5.2</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
@@ -224,6 +220,8 @@
                         <exclude>settings.xml</exclude>
                         <exclude>src/main/shade/**</exclude>
                         <exclude>src/test/resources/org/osiam/resources/data/noPicture.txt</exclude>
+                        <exclude>mvnw*</exclude>
+                        <exclude>.mvn/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

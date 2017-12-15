@@ -5,26 +5,26 @@ machine:
 dependencies:
   override:
     - curl -L https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/1.0.13/codacy-coverage-reporter-1.0.13-assembly.jar -o codacy-coverage-reporter.jar
-    - mvn -U dependency:resolve dependency:resolve-plugins
+    - ./mvnw -U dependency:resolve dependency:resolve-plugins
 
 test:
   pre:
-    - test -z ${CIRCLE_TAG} || mvn versions:set -DnewVersion=${CIRCLE_TAG}
+    - test -z ${CIRCLE_TAG} || ./mvnw versions:set -DnewVersion=${CIRCLE_TAG}
   override:
-    - mvn verify
+    - ./mvnw verify
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
     - cp -r target/coverage-reports/jacoco/ $CIRCLE_ARTIFACTS
     - test -z $CODACY_PROJECT_TOKEN || java -cp codacy-coverage-reporter.jar com.codacy.CodacyCoverageReporter -l Java -r target/coverage-reports/jacoco/jacoco.xml
-    - test -z $COVERALLS_REPO_TOKEN || mvn coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN
+    - test -z $COVERALLS_REPO_TOKEN || ./mvnw coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN
 
 deployment:
   staging:
     branch: master
     commands:
       - wget https://raw.githubusercontent.com/osiam/circleci/master/settings.xml
-      - mvn deploy:deploy-file -DrepositoryId=snapshots -Durl=https://oss.jfrog.org/artifactory/oss-snapshot-local -s settings.xml
+      - ./mvnw deploy:deploy-file -DrepositoryId=snapshots -Durl=https://oss.jfrog.org/artifactory/oss-snapshot-local -s settings.xml
       - curl -X POST https://circleci.com/api/v1/project/osiam/connector4java-integration-tests/tree/master?circle-token=$CIRCLECI_INTEGRATION_TESTS_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/connector4java-integration-tests/tree/maintenance-2.x?circle-token=$CIRCLECI_INTEGRATION_TESTS_TRIGGER_TOKEN
       - curl -X POST https://circleci.com/api/v1/project/osiam/addon-self-administration-plugin-api/tree/master?circle-token=$CIRCLECI_ADDON_SELF_ADMINISTRATION_PLUGIN_API_TRIGGER_TOKEN
@@ -34,4 +34,4 @@ deployment:
     owner: osiam
     commands:
       - wget https://raw.githubusercontent.com/osiam/circleci/master/settings.xml
-      - mvn deploy:deploy-file -DrepositoryId=releases -Durl="https://api.bintray.com/maven/osiam/OSIAM/org.osiam:connector4java/;publish=1" -s settings.xml
+      - ./mvnw deploy:deploy-file -DrepositoryId=releases -Durl="https://api.bintray.com/maven/osiam/OSIAM/org.osiam:connector4java/;publish=1" -s settings.xml
