@@ -1,5 +1,7 @@
 # connector4java [![Circle CI](https://circleci.com/gh/osiam/connector4java.svg?style=svg)](https://circleci.com/gh/osiam/connector4java) [![Codacy Badge](https://api.codacy.com/project/badge/grade/d8892c83a8fb4007bf38d3699b696a44)](https://www.codacy.com/app/OSIAM/connector4java) [![Codacy Coverage Badge](https://api.codacy.com/project/badge/coverage/d8892c83a8fb4007bf38d3699b696a44)](https://www.codacy.com/app/OSIAM/connector4java)
 
+**Active development of this project has stopped.**
+
 For more information and documentation please take a look in the
 [docs](docs/README.md).
 
