@@ -86,3 +86,27 @@ to be included:
 
 Issues, bugs and feature requests can be reported by using
 [OSIAM's issue tracker](https://github.com/osiam/connector4java/issues).
+
+## Use Maven wrapper
+
+### Create & Update
+
+    mvn -N io.takari:maven:wrapper -Dmaven=<version>
+
+### Use
+
+    Instead of using e.g. `mvn clean install` you can use `./mvnw clean install`
+
+## Test the application
+
+    ./mvnw clean test
+
+## Check versions of dependencies and plugins
+
+### Dependencies
+
+    ./mvnw versions:display-dependency-updates
+
+### Plugins
+
+    ./mvnw versions:display-plugin-updates
